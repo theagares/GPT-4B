@@ -1,0 +1,227 @@
+.login-screen {
+  width: 100%;
+  min-height: 100vh;
+  background-color: white;
+  border-radius: 40px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.logo-section {
+  width: 63px;
+  height: 68px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.login-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+.login-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #252525;
+  text-align: center;
+  line-height: 24px;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input-group {
+  width: 100%;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  width: 24px;
+  height: 24px;
+  z-index: 1;
+}
+
+.login-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 40px 0 44px;
+  border: none;
+  background-color: rgba(196, 196, 196, 0.2);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.login-input::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.login-input:focus {
+  outline: none;
+  background-color: rgba(196, 196, 196, 0.3);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-icon {
+  font-size: 20px;
+}
+
+.login-button {
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(90deg, rgba(88, 76, 220, 1) 0%, rgba(88, 76, 220, 1) 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: opacity 0.2s;
+}
+
+.login-button:hover {
+  opacity: 0.9;
+}
+
+.login-button:active {
+  opacity: 0.8;
+}
+
+.login-links {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+}
+
+.forgot-link {
+  color: black;
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+
+.signup-link {
+  color: black;
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+
+.divider {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.divider img {
+  width: 1px;
+  height: auto;
+}
+
+.social-login {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.social-button {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #cfd9de;
+  border-radius: 20px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Roboto', sans-serif;
+  color: #0f1419;
+  transition: background-color 0.2s;
+}
+
+.social-button:hover {
+  background-color: #f7f9fa;
+}
+
+.apple-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apple-icon img {
+  width: 100%;
+  height: 100%;
+}
+
+.google-icon {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.google-icon-vector,
+.google-icon-vector-2 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.google-icon-vector img,
+.google-icon-vector-2 img {
+  width: 100%;
+  height: 100%;
+}
+

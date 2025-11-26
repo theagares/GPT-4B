@@ -1,0 +1,302 @@
+.landing-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: white;
+  border-radius: 40px;
+  overflow-y: auto;
+  padding-bottom: 100px;
+}
+
+.landing-container {
+  padding: 24px 20px;
+  max-width: 405px;
+  margin: 0 auto;
+}
+
+.landing-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-logo {
+  width: 21px;
+  height: 21px;
+  object-fit: cover;
+}
+
+/* AI Banner */
+.ai-banner {
+  background-color: #eeedfb;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.banner-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.banner-subtitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: #1c398e;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.banner-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #584cdc;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 20px;
+}
+
+.banner-button {
+  background-color: #584cdc;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: white;
+  font-size: 10px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-end;
+  transition: opacity 0.2s;
+}
+
+.banner-button:hover {
+  opacity: 0.9;
+}
+
+.button-icon {
+  width: 13px;
+  height: 13px;
+}
+
+/* Popular Gifts Section */
+.popular-gifts-section {
+  margin-bottom: 32px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.section-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 400;
+  color: #0a0a0a;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.sort-button {
+  background: none;
+  border: none;
+  color: #584cdc;
+  font-size: 9px;
+  font-weight: 600;
+  font-family: 'SF Pro', sans-serif;
+  cursor: pointer;
+  padding: 0;
+}
+
+.gift-cards-container {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 0;
+  margin-bottom: 16px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.gift-cards-container::-webkit-scrollbar {
+  display: none;
+}
+
+.gift-card {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  width: 113px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.gift-card-image {
+  position: relative;
+  width: 100%;
+  height: 99px;
+  overflow: hidden;
+}
+
+.gift-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rank-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background-color: #ff6900;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  padding: 1px 7px;
+  border-radius: 8px;
+}
+
+.gift-card-content {
+  padding: 12px 8px;
+}
+
+.category-badge {
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 1px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  color: #0a0a0a;
+  margin-bottom: 8px;
+}
+
+.gift-card-title {
+  font-size: 12px;
+  font-weight: 400;
+  color: #0a0a0a;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 8px 0;
+  line-height: 15px;
+}
+
+.gift-card-price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.price {
+  font-size: 12px;
+  font-weight: 400;
+  color: #8b1ad3;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.popularity {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6a7282;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.view-all-button {
+  background: none;
+  border: none;
+  color: #6a7282;
+  font-size: 9px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+  display: block;
+}
+
+/* Alerts Section */
+.alerts-section {
+  margin-bottom: 24px;
+}
+
+.alerts-title {
+  font-size: 15px;
+  font-weight: 400;
+  color: #0a0a0a;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 16px 0;
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.alert-card {
+  background: white;
+  border: 0.65px solid rgba(0, 0, 0, 0.1);
+  border-radius: 13px;
+  padding: 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.alert-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.alert-text {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 400;
+  color: #364153;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  line-height: 22px;
+  margin: 0;
+}
+
+.alert-button {
+  background: white;
+  border: 0.65px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  padding: 1px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  color: #0a0a0a;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+}
+
+.alert-button:hover {
+  background-color: #f5f5f5;
+}
+

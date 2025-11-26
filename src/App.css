@@ -1,0 +1,16 @@
+.app {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: #fff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+@media (max-width: 430px) {
+  .app {
+    max-width: 100%;
+  }
+}
+

@@ -1,0 +1,115 @@
+.business-card-wallet {
+  width: 100%;
+  min-height: 100vh;
+  background-color: white;
+  border-radius: 40px;
+  overflow-y: auto;
+  padding-bottom: 100px;
+}
+
+.wallet-container {
+  padding: 24px;
+  max-width: 405px;
+  margin: 0 auto;
+}
+
+.search-section {
+  margin-bottom: 24px;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  height: 36px;
+  padding: 4px 12px 4px 40px;
+  background-color: #f3f4f6;
+  border: none;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  color: #717182;
+}
+
+.search-input::placeholder {
+  color: #717182;
+}
+
+.search-input:focus {
+  outline: none;
+  background-color: #e5e7eb;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.business-card-item {
+  aspect-ratio: 1;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.card-placeholder:hover {
+  opacity: 0.8;
+}
+
+.wallet-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.footer-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: #6a7282;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  text-align: center;
+  margin: 0;
+}
+
+.upgrade-link {
+  font-size: 14px;
+  font-weight: 400;
+  color: #155dfc;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  text-decoration: underline;
+  text-underline-position: from-font;
+  cursor: pointer;
+}
+
+.upgrade-link:hover {
+  opacity: 0.8;
+}
+
