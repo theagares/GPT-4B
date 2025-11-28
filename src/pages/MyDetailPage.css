@@ -1,0 +1,386 @@
+.my-detail-page {
+  width: 100%;
+  max-width: 393px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, rgba(168, 162, 242, 1) 0%, rgba(88, 76, 220, 1) 100%);
+  border-radius: 40px;
+  overflow-y: auto;
+  position: relative;
+  margin: 0 auto;
+  padding-bottom: 100px;
+}
+
+.my-detail-background {
+  width: 100%;
+  min-height: calc(100vh - 100px);
+  position: relative;
+  padding: 0 24px;
+  padding-top: 8px;
+}
+
+/* 헤더 */
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  height: 56px;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  gap: 16px;
+}
+
+.back-button {
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 11;
+}
+
+.back-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: grayscale(100%) brightness(1000%);
+}
+
+/* 프로필 카드 */
+.profile-card {
+  background: linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(255, 255, 255, 1) 100%);
+  border-radius: 24px;
+  padding: 24px;
+  margin-top: 80px;
+  box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 223.125px;
+  position: relative;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 64px;
+  margin-bottom: 0;
+  width: 309px;
+}
+
+.profile-image-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.profile-image-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-image-overlay img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.4492px;
+}
+
+.profile-position,
+.profile-department {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.1504px;
+}
+
+.customize-button {
+  background: #584cdc;
+  border: none;
+  border-radius: 16px;
+  padding: 8px 16px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: white;
+  line-height: 20px;
+  letter-spacing: -0.1504px;
+  cursor: pointer;
+  position: absolute;
+  top: 80px;
+  right: 24px;
+  width: 108px;
+  height: auto;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+/* 환영 메시지 팝업 */
+.welcome-popup {
+  position: absolute;
+  top: 107px;
+  right: 24px;
+  background: white;
+  border-radius: 7.179px;
+  padding: 11.483px;
+  box-shadow: 0px 17.949px 35.897px -8.615px rgba(0, 0, 0, 0.25);
+  width: 186.667px;
+  z-index: 10;
+}
+
+.welcome-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5.741px;
+}
+
+.welcome-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 11.487px;
+  font-weight: 400;
+  line-height: 17.231px;
+  color: #0a0a0a;
+  margin: 0;
+  letter-spacing: -0.2244px;
+}
+
+.close-button {
+  width: 11.483px;
+  height: 11.483px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.welcome-message {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 11.487px;
+  font-weight: 400;
+  line-height: 17.231px;
+  color: #4a5565;
+  margin: 0;
+  letter-spacing: -0.2244px;
+}
+
+/* 통계 섹션 */
+.stats-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  height: 98px;
+  display: flex;
+  align-items: center;
+}
+
+.stat-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-label-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+}
+
+.stat-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.stat-label {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #0a0a0a;
+  letter-spacing: -0.1504px;
+}
+
+.stat-value {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 32px;
+  color: #0a0a0a;
+  margin: 0;
+  letter-spacing: 0.0703px;
+}
+
+.stat-arrow {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* 명함 정보 섹션 */
+.info-section {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-section-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.1504px;
+  padding-left: 2px;
+}
+
+.info-card {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  min-height: 77px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.info-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.info-label {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #0a0a0a;
+  margin: 0;
+  letter-spacing: -0.1504px;
+}
+
+.info-value {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+  color: #0a0a0a;
+  margin: 0;
+  letter-spacing: -0.3125px;
+}
+
+.action-button {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #584cdc;
+  line-height: 20px;
+  letter-spacing: -0.1504px;
+  cursor: pointer;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.action-button:hover {
+  background: #f3f3f5;
+}
+

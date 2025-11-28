@@ -1,0 +1,183 @@
+.my-page {
+  width: 100%;
+  max-width: 393px;
+  min-height: 100vh;
+  background-color: #000000;
+  border-radius: 40px;
+  overflow: visible;
+  position: relative;
+  margin: 0 auto;
+}
+
+.my-page-background {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  background: linear-gradient(180deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%);
+  position: relative;
+  overflow: visible;
+}
+
+/* 개인 명함 카드 컨테이너 */
+.business-card-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+  height: auto;
+  padding: 200px 35px 0;
+  position: relative;
+  overflow: visible;
+}
+
+.business-card {
+  width: 550px;
+  height: 330px;
+  transform: rotate(90deg);
+  position: relative;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-out;
+  will-change: transform, opacity;
+  flex-shrink: 0;
+}
+
+.card-content {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(255, 255, 255, 1) 100%);
+  border-radius: 42px;
+  padding: 42px 0 0 42px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25),
+              0px 37.311px 74.622px -17.909px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  height: auto;
+  min-height: 120px;
+}
+
+.card-logo {
+  width: 54px;
+  height: 58px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.card-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: auto;
+  width: auto;
+  min-width: 100px;
+}
+
+.card-name {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 50px;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.8px;
+  height: auto;
+  white-space: nowrap;
+}
+
+.card-position {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 35px;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.3px;
+  height: auto;
+  white-space: nowrap;
+}
+
+.card-department {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 24px;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+/* 스와이프 업 안내 버튼 */
+.swipe-up-button {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 12px;
+  transition: opacity 0.2s;
+}
+
+.swipe-up-button:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.swipe-up-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.swipe-arrows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.arrow-up {
+  width: 11.644px;
+  height: 6.057px;
+  transform: rotate(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-up img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.swipe-text {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+  color: white;
+  text-align: center;
+  margin: 0;
+  width: 100%;
+}
+
