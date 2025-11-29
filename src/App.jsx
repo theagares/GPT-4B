@@ -9,6 +9,11 @@ import AddEventPage from './pages/AddEventPage'
 import MyPage from './pages/MyPage'
 import MyDetailPage from './pages/MyDetailPage'
 import GiftHistoryPage from './pages/GiftHistoryPage'
+import OCR from './pages/OCR'
+import Confirm from './pages/Confirm'
+import AddInfo from './pages/AddInfo'
+import CardDetail from './pages/CardDetail'
+import Cardbook from './pages/Cardbook'
 import './App.css'
 
 function App() {
@@ -19,6 +24,11 @@ function App() {
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/dashboard" element={<LandingPage />} />
         <Route path="/business-cards" element={<BusinessCardWallet />} />
+        <Route path="/ocr" element={<OCR />} />
+        <Route path="/confirm" element={<Confirm />} />
+        <Route path="/add" element={<AddInfo />} />
+        <Route path="/cards" element={<Cardbook />} />
+        <Route path="/cards/:id" element={<CardDetail />} />
         <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/calendar/event/:eventId" element={<EventDetailPage />} />
         <Route path="/calendar/add" element={<AddEventPage />} />

@@ -1,0 +1,290 @@
+.ocr-page {
+  width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
+  background: linear-gradient(180deg, #1e2939 0%, #364153 50%, #1e2939 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 1000;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.ocr-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+.ocr-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.ocr-back-button,
+.ocr-flip-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ocr-back-button:hover,
+.ocr-flip-button:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.ocr-title-section {
+  padding: 96px 24px 24px;
+  text-align: center;
+  position: relative;
+  z-index: 5;
+}
+
+.ocr-title {
+  font-size: 20px;
+  font-weight: 400;
+  color: white;
+  margin: 0 0 8px 0;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.ocr-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.ocr-guide-message {
+  position: absolute;
+  bottom: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.ocr-error-message {
+  position: absolute;
+  bottom: 180px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  z-index: 10;
+}
+
+/* Permission Dialog */
+.permission-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.permission-dialog {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(25px);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 270px;
+  position: relative;
+  overflow: hidden;
+}
+
+.permission-dialog-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.permission-dialog-close img {
+  width: 100%;
+  height: 100%;
+}
+
+.permission-dialog-content {
+  padding: 19px 16px 15px;
+  text-align: center;
+}
+
+.permission-dialog-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 2px 0;
+  font-family: 'SF Pro', 'Inter', 'Noto Sans KR', sans-serif;
+  line-height: 22px;
+}
+
+.permission-dialog-description {
+  font-size: 13px;
+  font-weight: 400;
+  color: #000000;
+  margin: 0;
+  font-family: 'SF Pro', 'Inter', 'Noto Sans KR', sans-serif;
+  line-height: 18px;
+}
+
+.permission-dialog-button {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-top: 0.333px solid rgba(0, 0, 0, 0.1);
+  background: transparent;
+  color: #007aff;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'SF Pro', 'Inter', 'Noto Sans KR', sans-serif;
+  transition: background 0.2s;
+}
+
+.permission-dialog-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.permission-dialog-button:active {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* File Upload Styles */
+.ocr-file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  min-height: 400px;
+}
+
+.ocr-file-upload-area {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.ocr-file-upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.ocr-file-upload-label:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.02);
+}
+
+.ocr-file-upload-label:active {
+  transform: scale(0.98);
+}
+
+.ocr-file-upload-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.ocr-file-upload-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  margin: 0 0 8px 0;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.ocr-file-upload-hint {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.ocr-processing {
+  margin-top: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  text-align: center;
+}
+
+.ocr-switch-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ocr-switch-button:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
