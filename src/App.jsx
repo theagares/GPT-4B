@@ -1,6 +1,12 @@
 import { Routes, Route } from 'react-router-dom'
 import WelcomeScreen from './pages/WelcomeScreen'
 import LoginScreen from './pages/LoginScreen'
+import SignupPage from './pages/SignupPage'
+import SignupInfoPage from './pages/SignupInfoPage'
+import SignupFormPage from './pages/SignupFormPage'
+import WelcomePage from './pages/WelcomePage'
+import LLMPage from './pages/LLMPage'
+import ChatHistoryPage from './pages/ChatHistoryPage'
 import LandingPage from './pages/LandingPage'
 import BusinessCardWallet from './pages/BusinessCardWallet'
 import CalendarPage from './pages/CalendarPage'
@@ -9,6 +15,9 @@ import AddEventPage from './pages/AddEventPage'
 import MyPage from './pages/MyPage'
 import MyDetailPage from './pages/MyDetailPage'
 import GiftHistoryPage from './pages/GiftHistoryPage'
+import PopularGiftsPage from './pages/PopularGiftsPage'
+import GiftDetailPage from './pages/GiftDetailPage'
+import FilterPage from './pages/FilterPage'
 import OCR from './pages/OCR'
 import Confirm from './pages/Confirm'
 import AddInfo from './pages/AddInfo'
@@ -23,6 +32,12 @@ function App() {
       <Routes>
         <Route path="/" element={<WelcomeScreen />} />
         <Route path="/login" element={<LoginScreen />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/signup/info" element={<SignupInfoPage />} />
+        <Route path="/signup/form" element={<SignupFormPage />} />
+        <Route path="/welcome" element={<WelcomePage />} />
+        <Route path="/llm" element={<LLMPage />} />
+        <Route path="/chat-history" element={<ChatHistoryPage />} />
         <Route path="/dashboard" element={<LandingPage />} />
         <Route path="/business-cards" element={<BusinessCardWallet />} />
         <Route path="/ocr" element={<OCR />} />
@@ -37,6 +52,9 @@ function App() {
         <Route path="/my" element={<MyPage />} />
         <Route path="/my/detail" element={<MyDetailPage />} />
         <Route path="/my/gift-history" element={<GiftHistoryPage />} />
+        <Route path="/popular-gifts" element={<PopularGiftsPage />} />
+        <Route path="/popular-gifts/:giftId" element={<GiftDetailPage />} />
+        <Route path="/popular-gifts/filter" element={<FilterPage />} />
       </Routes>
     </div>
   )

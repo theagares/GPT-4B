@@ -1,0 +1,36 @@
+.signup-info-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #584CDC;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 40px;
+  overflow: hidden;
+}
+
+.signup-info-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.signup-info-line1 {
+  font-size: 24px;
+  font-weight: 500;
+  color: white;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.signup-info-line2 {
+  font-size: 24px;
+  font-weight: 500;
+  color: white;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.3;
+}
+

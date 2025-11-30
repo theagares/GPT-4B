@@ -1,0 +1,187 @@
+.signup-form-screen {
+  width: 100%;
+  min-height: 100vh;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.signup-form-container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 20px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: #666;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+}
+
+.progress-percentage {
+  font-size: 14px;
+  font-weight: 600;
+  color: #584CDC;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+}
+
+.progress-indicators {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.progress-indicator-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.progress-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  background-color: #E0E0E0;
+  color: #999;
+  border: 2px solid #E0E0E0;
+}
+
+.progress-circle.active {
+  background-color: #584CDC;
+  color: white;
+  border-color: #584CDC;
+}
+
+.progress-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #584CDC;
+}
+
+.step-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #584CDC;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin-bottom: 8px;
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #252525;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.form-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: #999;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.input-wrapper {
+  width: 100%;
+}
+
+.form-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+  border: 1px solid #E0E0E0;
+  background-color: #F5F5F5;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  color: #252525;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #584CDC;
+  background-color: white;
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+.edit-previous-link {
+  background: none;
+  border: none;
+  color: #584CDC;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  margin-top: -16px;
+}
+
+.edit-previous-link:hover {
+  opacity: 0.8;
+}
+
+.continue-button {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.continue-button.active {
+  background-color: #584CDC;
+  color: white;
+}
+
+.continue-button.active:hover {
+  opacity: 0.9;
+}
+
+.continue-button.disabled {
+  background-color: #E0E0E0;
+  color: #999;
+  cursor: not-allowed;
+}

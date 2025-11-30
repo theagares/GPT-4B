@@ -36,13 +36,16 @@ function BottomNavigation() {
         <span className="nav-label">명함집</span>
       </Link>
 
-      <div className="nav-item ai-recommend">
+      <Link 
+        to="/llm" 
+        className={`nav-item ai-recommend ${isActive('/llm') ? 'active' : ''}`}
+      >
         <div className="ai-icon-wrapper">
           <img src={imgSpeakerNotes} alt="AI" className="ai-background-icon" />
           <img src={imgGpt4B4} alt="GPT-4b" className="ai-logo" />
         </div>
         <span className="nav-label ai-label">AI 추천</span>
-      </div>
+      </Link>
 
       <Link 
         to="/calendar" 

@@ -1,0 +1,27 @@
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import './WelcomePage.css'
+
+function WelcomePage() {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // 2초 후 대시보드로 이동
+    const timer = setTimeout(() => {
+      navigate('/dashboard')
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [navigate])
+
+  return (
+    <div className="welcome-page">
+      <div className="welcome-content">
+        <h1>Welcome !!</h1>
+      </div>
+    </div>
+  )
+}
+
+export default WelcomePage
+

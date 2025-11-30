@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import './LandingPage.css'
 
@@ -10,6 +11,8 @@ const imgIcon = "https://www.figma.com/api/mcp/asset/dd2c3a79-4460-4073-9292-db1
 const imgIcon1 = "https://www.figma.com/api/mcp/asset/49a9be54-9062-4383-b3ba-bd80bcd932c2"
 
 function LandingPage() {
+  const navigate = useNavigate()
+
   return (
     <div className="landing-page">
       <div className="landing-container">
@@ -104,7 +107,7 @@ function LandingPage() {
             </div>
           </div>
 
-          <button className="view-all-button">전체보기</button>
+          <button className="view-all-button" onClick={() => navigate('/popular-gifts')}>전체보기</button>
         </div>
 
         {/* Important Alerts Section */}

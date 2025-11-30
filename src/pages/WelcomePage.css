@@ -1,0 +1,21 @@
+.welcome-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #584CDC;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcome-content {
+  text-align: center;
+}
+
+.welcome-content h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+

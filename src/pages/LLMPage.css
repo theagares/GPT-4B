@@ -1,0 +1,371 @@
+.llm-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.llm-container {
+  width: 100%;
+  max-width: 393px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.llm-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-button:hover {
+  opacity: 0.7;
+}
+
+.header-title-button {
+  background: none;
+  border: none;
+  cursor: pointer; 
+  padding: 0;
+  margin-left: auto;
+}
+
+.header-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #252525;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.header-title-button:hover .header-title {
+  opacity: 0.7;
+}
+
+.llm-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 32px;
+}
+
+.logo-section {
+  width: 80px;
+  height: 86px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.llm-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.greeting-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.greeting-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: #584CDC;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.subtitle-text {
+  font-size: 16px;
+  font-weight: 400;
+  color: #999;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.input-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  gap: 12px;
+  background-color: white;
+}
+
+.input-bar-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #252525;
+  flex-shrink: 0;
+}
+
+.input-bar-icon:hover {
+  opacity: 0.7;
+}
+
+.message-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #E0E0E0;
+  border-radius: 24px;
+  font-size: 14px;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  color: #252525;
+  outline: none;
+  background-color: #F5F5F5;
+}
+
+.message-input:focus {
+  border-color: #584CDC;
+  background-color: white;
+}
+
+.message-input::placeholder {
+  color: #999;
+}
+
+.send-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #584CDC;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+
+.send-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.send-button:not(:disabled):hover {
+  opacity: 0.7;
+}
+
+/* Tutorial Overlay */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0 16px 90px 16px;
+}
+
+.tutorial-content {
+  position: relative;
+  width: 100%;
+  max-width: 393px;
+  margin: 0 auto;
+}
+
+.tutorial-bubble {
+  position: relative;
+  background-color: white;
+  padding: 12px 6px;
+  padding-top: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 220px;
+  margin-left: 8px;
+}
+
+.tutorial-close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: opacity 0.2s;
+}
+
+.tutorial-close-button:hover {
+  opacity: 0.7;
+}
+
+.tutorial-bubble p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #252525;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.bubble-arrow {
+  position: absolute;
+  bottom: -8px;
+  left: 16px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white;
+}
+
+.llm-page.tutorial-active .llm-container {
+  pointer-events: none;
+}
+
+.llm-page.tutorial-active .input-bar {
+  pointer-events: none;
+  position: relative;
+  z-index: 1001;
+}
+
+.llm-page.tutorial-active .input-bar-icon {
+  pointer-events: auto;
+}
+
+.llm-page.tutorial-active .message-input,
+.llm-page.tutorial-active .send-button {
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* LLM Selection Modal */
+.llm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.llm-modal {
+  background-color: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.llm-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.llm-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #252525;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.llm-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.llm-modal-close:hover {
+  opacity: 0.7;
+}
+
+.llm-options {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.llm-option {
+  padding: 16px 20px;
+  background-color: white;
+  border: 1px solid #E0E0E0;
+  border-radius: 12px;
+  margin: 4px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.llm-option:hover {
+  background-color: #F5F5F5;
+  border-color: #584CDC;
+}
+
+.llm-option.selected {
+  background-color: #584CDC;
+  border-color: #584CDC;
+  color: white;
+}
+
+.llm-option-emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.llm-option-name {
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  color: inherit;
+}
+
+.llm-option.selected .llm-option-name {
+  color: white;
+}
