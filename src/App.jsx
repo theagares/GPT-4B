@@ -14,6 +14,7 @@ import Confirm from './pages/Confirm'
 import AddInfo from './pages/AddInfo'
 import CardDetail from './pages/CardDetail'
 import Cardbook from './pages/Cardbook'
+import CardCustomize from './pages/CardCustomize'
 import './App.css'
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/ocr" element={<OCR />} />
         <Route path="/confirm" element={<Confirm />} />
         <Route path="/add" element={<AddInfo />} />
+        <Route path="/customize" element={<CardCustomize />} />
         <Route path="/cards" element={<Cardbook />} />
         <Route path="/cards/:id" element={<CardDetail />} />
         <Route path="/calendar" element={<CalendarPage />} />

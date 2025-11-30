@@ -1,4 +1,5 @@
 import { BusinessCard } from "../../store/cardStore";
+import "./CardConfirm.css";
 
 type CardConfirmProps = {
   card: BusinessCard;
@@ -22,35 +23,30 @@ const CardConfirm = ({
   isSaving = false,
 }: CardConfirmProps) => {
   return (
-    <div className="space-y-6">
-      <section className="rounded-3xl bg-white p-6 shadow-lg shadow-primary/5">
-        <p className="text-sm text-slate-500">OCR 결과 요약</p>
-        <div className="mt-4 space-y-2 rounded-2xl bg-slate-50 p-4">
-          <p className="text-sm text-slate-500">이름</p>
-          <p className="text-2xl font-semibold text-slate-900">{card.name}</p>
+    <div className="card-confirm-container">
+      <section className="card-confirm-section">
+        <p className="card-confirm-label">OCR 결과 요약</p>
+        <div className="card-confirm-name-section">
+          <p className="card-confirm-name-label">이름</p>
+          <p className="card-confirm-name">{card.name}</p>
         </div>
-        <dl className="mt-4 space-y-3">
+        <div className="card-confirm-info-list">
           {infoRows.map((key) => {
             if (!card[key]) return null;
             return (
-              <div
-                key={key}
-                className="flex items-start justify-between rounded-2xl bg-slate-50 px-4 py-3"
-              >
-                <dt className="text-sm text-slate-500">{labelMap[key]}</dt>
-                <dd className="text-sm font-medium text-slate-900">
-                  {card[key]}
-                </dd>
+              <div key={key} className="card-confirm-info-item">
+                <dt className="card-confirm-info-label">{labelMap[key]}</dt>
+                <dd className="card-confirm-info-value">{card[key]}</dd>
               </div>
             );
           })}
-        </dl>
+        </div>
       </section>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="card-confirm-actions">
         <button
           type="button"
           onClick={onEdit}
-          className="rounded-2xl border border-slate-200 bg-white py-3 text-sm font-semibold text-slate-700 transition hover:border-primary hover:text-primary"
+          className="card-confirm-edit-button"
         >
           수정하기
         </button>
@@ -58,7 +54,7 @@ const CardConfirm = ({
           type="button"
           disabled={isSaving}
           onClick={onConfirm}
-          className="rounded-2xl bg-primary py-3 text-sm font-semibold text-white shadow-lg shadow-primary/30 disabled:opacity-60"
+          className="card-confirm-save-button"
         >
           {isSaving ? "저장 중..." : "저장 완료"}
         </button>

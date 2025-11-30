@@ -1,0 +1,138 @@
+.card-confirm-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card-confirm-section {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.card-confirm-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 16px 0;
+}
+
+.card-confirm-name-section {
+  background: #f9fafb;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.card-confirm-name-label {
+  font-size: 13px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 8px 0;
+}
+
+.card-confirm-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.card-confirm-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-confirm-info-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 16px;
+  gap: 16px;
+}
+
+.card-confirm-info-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  flex-shrink: 0;
+  min-width: 60px;
+}
+
+.card-confirm-info-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  text-align: right;
+  word-break: break-word;
+  flex: 1;
+}
+
+.card-confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.card-confirm-edit-button {
+  padding: 16px 20px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.card-confirm-edit-button:hover {
+  border-color: rgba(109, 48, 223, 1);
+  color: rgba(109, 48, 223, 1);
+  background: #f9fafb;
+}
+
+.card-confirm-edit-button:active {
+  transform: scale(0.98);
+}
+
+.card-confirm-save-button {
+  padding: 16px 20px;
+  background: rgba(109, 48, 223, 1);
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0px 4px 12px rgba(109, 48, 223, 0.3);
+}
+
+.card-confirm-save-button:hover {
+  background: rgba(88, 76, 220, 1);
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 16px rgba(109, 48, 223, 0.4);
+}
+
+.card-confirm-save-button:active {
+  transform: translateY(0);
+}
+
+.card-confirm-save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

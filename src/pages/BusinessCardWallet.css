@@ -313,6 +313,103 @@
   background-color: #e5e7eb;
 }
 
+/* Grid View */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.grid-card-item {
+  cursor: pointer;
+  transition: transform 0.2s;
+  width: 100%;
+  min-width: 0;
+}
+
+.grid-card-item:hover {
+  transform: translateY(-4px);
+}
+
+.grid-business-card {
+  width: 100%;
+  aspect-ratio: 1.6;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25),
+              0px 37.311px 74.622px -17.909px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.grid-card-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.grid-card-company {
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grid-card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+  gap: 8px;
+}
+
+.grid-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grid-card-position {
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grid-card-contact {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.grid-card-phone,
+.grid-card-email {
+  font-size: 9px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 1px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* View All Button */
 .view-all-section {
   display: flex;

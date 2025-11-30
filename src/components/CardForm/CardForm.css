@@ -1,0 +1,114 @@
+.card-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-form-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-form-label-required {
+  color: #ef4444;
+  font-size: 12px;
+}
+
+.card-form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.card-form-input:focus {
+  outline: none;
+  border-color: rgba(109, 48, 223, 1);
+  box-shadow: 0px 0px 0px 3px rgba(109, 48, 223, 0.1);
+}
+
+.card-form-input::placeholder {
+  color: #9ca3af;
+}
+
+.card-form-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 14px 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  resize: vertical;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.card-form-textarea:focus {
+  outline: none;
+  border-color: rgba(109, 48, 223, 1);
+  box-shadow: 0px 0px 0px 3px rgba(109, 48, 223, 0.1);
+}
+
+.card-form-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.card-form-submit-button {
+  width: 100%;
+  padding: 16px 24px;
+  background: rgba(109, 48, 223, 1);
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0px 4px 12px rgba(109, 48, 223, 0.3);
+  margin-top: 8px;
+}
+
+.card-form-submit-button:hover:not(:disabled) {
+  background: rgba(88, 76, 220, 1);
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 16px rgba(109, 48, 223, 0.4);
+}
+
+.card-form-submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.card-form-submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

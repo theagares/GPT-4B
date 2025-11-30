@@ -1,0 +1,252 @@
+.card-customize-page {
+  width: 100%;
+  max-width: 393px;
+  min-height: 100vh;
+  background-color: white;
+  border-radius: 40px;
+  overflow-y: auto;
+  padding-bottom: 100px;
+  margin: 0 auto;
+}
+
+.card-customize-container {
+  padding: 24px;
+  max-width: 405px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.card-customize-back-button {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 40px;
+  height: 40px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-customize-back-button:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  transform: scale(1.05);
+}
+
+.card-customize-back-button:active {
+  transform: scale(0.95);
+}
+
+.card-customize-header {
+  margin-bottom: 32px;
+  padding-top: 16px;
+  text-align: center;
+}
+
+.card-customize-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.card-customize-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.card-customize-preview-section {
+  margin-bottom: 32px;
+}
+
+.card-customize-preview-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 16px 0;
+}
+
+.card-customize-preview-card {
+  width: 100%;
+  aspect-ratio: 1.6;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25),
+              0px 37.311px 74.622px -17.909px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-customize-preview-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-customize-preview-company {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.card-customize-preview-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+}
+
+.card-customize-preview-name {
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 4px 0;
+}
+
+.card-customize-preview-position {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.card-customize-preview-contact {
+  text-align: right;
+}
+
+.card-customize-preview-phone,
+.card-customize-preview-email {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 2px 0;
+}
+
+.card-customize-designs-section {
+  margin-bottom: 32px;
+}
+
+.card-customize-designs-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 16px 0;
+}
+
+.card-customize-designs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.card-customize-design-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.card-customize-design-item:hover {
+  border-color: rgba(109, 48, 223, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-customize-design-item.selected {
+  border-color: rgba(109, 48, 223, 1);
+  background: #f9fafb;
+  box-shadow: 0px 0px 0px 3px rgba(109, 48, 223, 0.1);
+}
+
+.card-customize-design-preview {
+  width: 100%;
+  aspect-ratio: 1.6;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-customize-design-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  text-align: center;
+}
+
+.card-customize-design-item.selected .card-customize-design-name {
+  color: rgba(109, 48, 223, 1);
+  font-weight: 600;
+}
+
+.card-customize-apply-button {
+  width: 100%;
+  padding: 16px 24px;
+  background: rgba(109, 48, 223, 1);
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0px 4px 12px rgba(109, 48, 223, 0.3);
+}
+
+.card-customize-apply-button:hover {
+  background: rgba(88, 76, 220, 1);
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 16px rgba(109, 48, 223, 0.4);
+}
+
+.card-customize-apply-button:active {
+  transform: translateY(0);
+}
+
+.card-customize-empty {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.card-customize-empty p {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.card-customize-empty button {
+  padding: 12px 24px;
+  background: rgba(109, 48, 223, 1);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}

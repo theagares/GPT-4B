@@ -9,6 +9,7 @@ export type BusinessCard = {
   email?: string;
   memo?: string;
   image?: string;
+  design?: string;
 };
 
 type CardState = {

@@ -6,6 +6,16 @@ import './BusinessCardWallet.css'
 
 const imgIcon = "https://www.figma.com/api/mcp/asset/d56d758a-c7b8-42c8-bd08-19709b82a5d6"
 
+// 명함 디자인 맵
+const cardDesigns = {
+  'design-1': 'linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%)',
+  'design-2': 'linear-gradient(147.99deg, rgba(59, 130, 246, 1) 0%, rgba(37, 99, 235, 1) 100%)',
+  'design-3': 'linear-gradient(147.99deg, rgba(16, 185, 129, 1) 0%, rgba(5, 150, 105, 1) 100%)',
+  'design-4': 'linear-gradient(147.99deg, rgba(236, 72, 153, 1) 0%, rgba(219, 39, 119, 1) 100%)',
+  'design-5': 'linear-gradient(147.99deg, rgba(249, 115, 22, 1) 0%, rgba(234, 88, 12, 1) 100%)',
+  'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
+}
+
 function BusinessCardWallet() {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
@@ -13,6 +23,7 @@ function BusinessCardWallet() {
   const [isFlipping, setIsFlipping] = useState(false)
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [flippingCardId, setFlippingCardId] = useState(null)
+  const [isGridView, setIsGridView] = useState(false)
   const cards = useCardStore((state) => state.cards)
 
   // 검색 필터링
@@ -114,100 +125,135 @@ function BusinessCardWallet() {
           </div>
         </div>
 
-        {/* Business Card Carousel */}
+        {/* Business Card Display */}
         {filteredCards.length > 0 ? (
           <div className="card-carousel-section">
-            <div className="carousel-container">
-              <button 
-                className="carousel-nav-btn carousel-nav-prev"
-                onClick={handlePrev}
-                aria-label="Previous card"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
+            {!isGridView ? (
+              <>
+                <div className="carousel-container">
+                  <button 
+                    className="carousel-nav-btn carousel-nav-prev"
+                    onClick={handlePrev}
+                    aria-label="Previous card"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
 
-              <div className="carousel-wrapper">
-                <div className="carousel-track">
-                  {filteredCards.map((card, index) => {
-                    const offset = index - currentIndex
-                    const isActive = index === currentIndex
-                    const isVisible = Math.abs(offset) <= 1
-                    
-                    if (!isVisible) return null
-                    
-                    return (
-                      <div 
-                        key={card.id} 
-                        className={`carousel-card ${isActive ? 'active' : ''} ${flippingCardId === card.id && isFlipping ? 'flipping' : ''}`}
-                        style={{
-                          transform: `translateX(${offset * 85}%) scale(${isActive ? 1 : 0.7})`,
-                          opacity: isActive ? 1 : 0.3,
-                          filter: isActive ? 'blur(0)' : 'blur(3px)',
-                          zIndex: isActive ? 10 : 5 - Math.abs(offset)
-                        }}
-                        onClick={() => isActive && handleCardClick(card.id)}
-                      >
-                        <div className="business-card-display">
-                          <div className="card-display-content">
-                            {card.company && <p className="card-company">{card.company}</p>}
-                            <div className="card-info-section">
-                              <div>
-                                <h3 className="card-name">{card.name}</h3>
-                                {card.position && <p className="card-position">{card.position}</p>}
-                              </div>
-                              <div className="card-contact">
-                                {card.phone && <p className="card-phone">{card.phone}</p>}
-                                {card.email && <p className="card-email">{card.email}</p>}
+                  <div className="carousel-wrapper">
+                    <div className="carousel-track">
+                      {filteredCards.map((card, index) => {
+                        const offset = index - currentIndex
+                        const isActive = index === currentIndex
+                        const isVisible = Math.abs(offset) <= 1
+                        
+                        if (!isVisible) return null
+                        
+                        return (
+                          <div 
+                            key={card.id} 
+                            className={`carousel-card ${isActive ? 'active' : ''} ${flippingCardId === card.id && isFlipping ? 'flipping' : ''}`}
+                            style={{
+                              transform: `translateX(${offset * 85}%) scale(${isActive ? 1 : 0.7})`,
+                              opacity: isActive ? 1 : 0.3,
+                              filter: isActive ? 'blur(0)' : 'blur(3px)',
+                              zIndex: isActive ? 10 : 5 - Math.abs(offset)
+                            }}
+                            onClick={() => isActive && handleCardClick(card.id)}
+                          >
+                            <div 
+                              className="business-card-display"
+                              style={{
+                                background: card.design && cardDesigns[card.design] 
+                                  ? cardDesigns[card.design] 
+                                  : cardDesigns['design-1']
+                              }}
+                            >
+                              <div className="card-display-content">
+                                {card.company && <p className="card-company">{card.company}</p>}
+                                <div className="card-info-section">
+                                  <div>
+                                    <h3 className="card-name">{card.name}</h3>
+                                    {card.position && <p className="card-position">{card.position}</p>}
+                                  </div>
+                                  <div className="card-contact">
+                                    {card.phone && <p className="card-phone">{card.phone}</p>}
+                                    {card.email && <p className="card-email">{card.email}</p>}
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  <button 
+                    className="carousel-nav-btn carousel-nav-next"
+                    onClick={handleNext}
+                    aria-label="Next card"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 18L15 12L9 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="card-actions">
+                  <button 
+                    className="action-btn action-btn-primary"
+                    onClick={handleConfirmCard}
+                  >
+                    명함 확인하기
+                  </button>
+                  <button 
+                    className="action-btn action-btn-secondary"
+                    onClick={handleEditInfo}
+                  >
+                    정보 수정
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="cards-grid">
+                {filteredCards.map((card) => (
+                  <div
+                    key={card.id}
+                    className="grid-card-item"
+                    onClick={() => handleCardClick(card.id)}
+                  >
+                    <div 
+                      className="grid-business-card"
+                      style={{
+                        background: card.design && cardDesigns[card.design] 
+                          ? cardDesigns[card.design] 
+                          : cardDesigns['design-1']
+                      }}
+                    >
+                      <div className="grid-card-content">
+                        {card.company && <p className="grid-card-company">{card.company}</p>}
+                        <div className="grid-card-info">
+                          <div>
+                            <h3 className="grid-card-name">{card.name}</h3>
+                          </div>
                         </div>
                       </div>
-                    )
-                  })}
-                </div>
+                    </div>
+                  </div>
+                ))}
               </div>
+            )}
 
-              <button 
-                className="carousel-nav-btn carousel-nav-next"
-                onClick={handleNext}
-                aria-label="Next card"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 18L15 12L9 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="card-actions">
-              <button 
-                className="action-btn action-btn-primary"
-                onClick={handleConfirmCard}
-              >
-                명함 확인하기
-              </button>
-              <button 
-                className="action-btn action-btn-secondary"
-                onClick={handleEditInfo}
-              >
-                정보 수정
-              </button>
-            </div>
-
-            {/* View All Button */}
+            {/* View Toggle Button */}
             <div className="view-all-section">
               <button 
                 className="view-all-btn"
-                onClick={() => {
-                  // Show all cards in a grid view - could navigate to a different view or toggle display
-                  // For now, just scroll to show more context
-                  window.scrollTo({ top: 0, behavior: 'smooth' })
-                }}
+                onClick={() => setIsGridView(!isGridView)}
               >
-                전체 펼쳐보기
+                {isGridView ? '슬라이드로 보기' : '전체 펼쳐보기'}
               </button>
             </div>
           </div>
@@ -251,7 +297,7 @@ function CardDetailModal({ card, onClose }) {
   }
 
   const handleCustomize = () => {
-    navigate('/add', { state: { draft: card } })
+    navigate('/customize', { state: { card } })
   }
 
   return (
@@ -267,7 +313,14 @@ function CardDetailModal({ card, onClose }) {
         </div>
 
         <div className="modal-card-display">
-          <div className="modal-business-card">
+          <div 
+            className="modal-business-card"
+            style={{
+              background: card.design && cardDesigns[card.design] 
+                ? cardDesigns[card.design] 
+                : cardDesigns['design-1']
+            }}
+          >
             <div className="modal-card-content">
               {card.company && <p className="modal-card-company">{card.company}</p>}
               <div className="modal-card-info-section">

@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { BusinessCard } from "../../store/cardStore";
+import "./CardForm.css";
 
 const fields: Array<{
   name: keyof BusinessCard;
@@ -59,50 +60,55 @@ const CardForm = ({
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
-      {fields.map((field) => (
-        <label key={field.name as string} className="block space-y-2">
-          <span className="text-sm font-medium text-slate-600">
-            {field.label}
-          </span>
-          {field.multiline ? (
-            <textarea
-              value={formValues[field.name] ?? ""}
-              onChange={(event) =>
-                setFormValues((prev) => ({
-                  ...prev,
-                  [field.name]: event.target.value,
-                }))
-              }
-              placeholder={field.placeholder}
-              required={field.required}
-              rows={3}
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none ring-primary/30 transition focus:ring-2"
-            />
-          ) : (
-            <input
-              value={formValues[field.name] ?? ""}
-              onChange={(event) =>
-                setFormValues((prev) => ({
-                  ...prev,
-                  [field.name]: event.target.value,
-                }))
-              }
-              placeholder={field.placeholder}
-              required={field.required}
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none ring-primary/30 transition focus:ring-2"
-            />
-          )}
-        </label>
-      ))}
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full rounded-2xl bg-primary py-3 text-center text-base font-semibold text-white shadow-lg shadow-primary/30 transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
-      >
-        {isSubmitting ? "저장 중..." : "저장하기"}
-      </button>
-    </form>
+    <div className="card-form-container">
+      <form className="card-form" onSubmit={handleSubmit}>
+        {fields.map((field) => (
+          <div key={field.name as string} className="card-form-field">
+            <label className="card-form-label">
+              {field.label}
+              {field.required && (
+                <span className="card-form-label-required">*</span>
+              )}
+            </label>
+            {field.multiline ? (
+              <textarea
+                value={formValues[field.name] ?? ""}
+                onChange={(event) =>
+                  setFormValues((prev) => ({
+                    ...prev,
+                    [field.name]: event.target.value,
+                  }))
+                }
+                placeholder={field.placeholder}
+                required={field.required}
+                className="card-form-textarea"
+              />
+            ) : (
+              <input
+                type="text"
+                value={formValues[field.name] ?? ""}
+                onChange={(event) =>
+                  setFormValues((prev) => ({
+                    ...prev,
+                    [field.name]: event.target.value,
+                  }))
+                }
+                placeholder={field.placeholder}
+                required={field.required}
+                className="card-form-input"
+              />
+            )}
+          </div>
+        ))}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="card-form-submit-button"
+        >
+          {isSubmitting ? "저장 중..." : "저장하기"}
+        </button>
+      </form>
+    </div>
   );
 };
 

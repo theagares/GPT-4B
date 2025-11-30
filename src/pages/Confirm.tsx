@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CardConfirm from "../components/CardConfirm/CardConfirm";
 import { BusinessCard, useCardStore } from "../store/cardStore";
+import "./Confirm.css";
 
 const Confirm = () => {
   const navigate = useNavigate();
@@ -21,17 +22,21 @@ const Confirm = () => {
 
   if (!pendingCard) {
     return (
-      <div className="rounded-3xl bg-white/80 p-6 text-center shadow-lg">
-        <p className="text-sm text-slate-500">
-          확인할 OCR 결과가 없습니다.
-        </p>
-        <button
-          type="button"
-          onClick={() => navigate("/ocr")}
-          className="mt-4 rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white"
-        >
-          OCR 촬영으로 이동
-        </button>
+      <div className="confirm-page">
+        <div className="confirm-container">
+          <div className="confirm-empty-state">
+            <p className="confirm-empty-message">
+              확인할 OCR 결과가 없습니다.
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate("/ocr")}
+              className="confirm-empty-button"
+            >
+              OCR 촬영으로 이동
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -39,7 +44,7 @@ const Confirm = () => {
   const handleConfirm = () => {
     addCard(pendingCard);
     setPendingCard(null);
-    navigate("/cards");
+    navigate("/business-cards");
   };
 
   const handleEdit = () => {
@@ -47,22 +52,22 @@ const Confirm = () => {
   };
 
   return (
-    <section className="space-y-6">
-      <div>
-        <p className="text-sm text-slate-500">Step 2.</p>
-        <h2 className="text-2xl font-semibold text-slate-900">
-          OCR 결과를 확인하세요
-        </h2>
-        <p className="mt-2 text-sm text-slate-500">
-          정보가 잘 인식되었는지 확인 후, 수정이 필요하면 직접 편집하세요.
-        </p>
+    <div className="confirm-page">
+      <div className="confirm-container">
+        <div className="confirm-header">
+          <p className="confirm-step">Step 2.</p>
+          <h1 className="confirm-title">OCR 결과를 확인하세요</h1>
+          <p className="confirm-subtitle">
+            정보가 잘 인식되었는지 확인 후, 수정이 필요하면 직접 편집하세요.
+          </p>
+        </div>
+        <CardConfirm
+          card={pendingCard}
+          onConfirm={handleConfirm}
+          onEdit={handleEdit}
+        />
       </div>
-      <CardConfirm
-        card={pendingCard}
-        onConfirm={handleConfirm}
-        onEdit={handleEdit}
-      />
-    </section>
+    </div>
   );
 };
 
