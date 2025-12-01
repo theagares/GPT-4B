@@ -9,19 +9,30 @@ const AddInfo = () => {
   const addCard = useCardStore((state) => state.addCard);
   const updateCard = useCardStore((state) => state.updateCard);
   const setPendingCard = useCardStore((state) => state.setPendingCard);
+  const getCardById = useCardStore((state) => state.getCardById);
+  const pendingCard = useCardStore((state) => state.pendingCard);
   const draft = (location.state as { draft?: BusinessCard } | undefined)
     ?.draft;
 
   const handleSubmit = (card: BusinessCard) => {
-    // 기존 명함 수정인 경우 (id가 있고 이미 존재하는 경우)
-    if (card.id && draft?.id) {
+    // draft가 pendingCard인 경우 (Confirm에서 수정하기로 온 경우)
+    if (draft?.id && draft.id === pendingCard?.id) {
+      // pendingCard 업데이트
+      setPendingCard(card);
+      navigate("/confirm");
+      return;
+    }
+    
+    // 기존 명함 수정인 경우 (id가 있고 이미 저장된 명함인 경우)
+    if (card.id && draft?.id && getCardById(card.id)) {
       updateCard(card.id, card);
+      navigate("/business-cards");
     } else {
       // 새 명함 추가인 경우
       addCard(card);
+      navigate("/business-cards");
     }
     setPendingCard(null);
-    navigate("/business-cards");
   };
 
   return (
