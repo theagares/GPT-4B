@@ -4,14 +4,14 @@ import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
 import './MyDetailPage.css'
 
-// 명함 디자인 맵 (MyDetailPage용 - 끝에 white)
+// 명함 디자인 맵 (MyDetailPage용 - 유사 색상 그라데이션)
 const cardDesigns = {
-  'design-1': 'linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(255, 255, 255, 1) 100%)',
-  'design-2': 'linear-gradient(147.99deg, rgba(59, 130, 246, 1) 0%, rgba(255, 255, 255, 1) 100%)',
-  'design-3': 'linear-gradient(147.99deg, rgba(16, 185, 129, 1) 0%, rgba(255, 255, 255, 1) 100%)',
-  'design-4': 'linear-gradient(147.99deg, rgba(236, 72, 153, 1) 0%, rgba(255, 255, 255, 1) 100%)',
-  'design-5': 'linear-gradient(147.99deg, rgba(249, 115, 22, 1) 0%, rgba(255, 255, 255, 1) 100%)',
-  'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(255, 255, 255, 1) 100%)',
+  'design-1': 'linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(139, 92, 246, 1) 100%)',
+  'design-2': 'linear-gradient(147.99deg, rgba(59, 130, 246, 1) 0%, rgba(96, 165, 250, 1) 100%)',
+  'design-3': 'linear-gradient(147.99deg, rgba(16, 185, 129, 1) 0%, rgba(52, 211, 153, 1) 100%)',
+  'design-4': 'linear-gradient(147.99deg, rgba(236, 72, 153, 1) 0%, rgba(244, 114, 182, 1) 100%)',
+  'design-5': 'linear-gradient(147.99deg, rgba(249, 115, 22, 1) 0%, rgba(251, 146, 60, 1) 100%)',
+  'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(129, 140, 248, 1) 100%)',
 }
 
 // 페이지 배경 디자인 맵 (명함 색상에 맞춘 연한 배경)
@@ -133,6 +133,12 @@ function MyDetailPage() {
             background: cardDesigns[myCardDesign] || cardDesigns['design-1']
           }}
         >
+          {/* 우측 상단 연락처 정보 */}
+          <div className="profile-contact">
+            <p className="profile-phone">010-1234-5678</p>
+            <p className="profile-email">park.sangmu@company.com</p>
+          </div>
+
           <div className="profile-header">
             <div className="profile-image-wrapper">
               <img src={imgImageWithFallback} alt="프로필" className="profile-image" />
@@ -142,14 +148,13 @@ function MyDetailPage() {
             </div>
             <div className="profile-info">
               <h2 className="profile-name">박상무</h2>
-              <p className="profile-phone">010-1234-5678</p>
-              <p className="profile-email">park.sangmu@company.com</p>
             </div>
           </div>
+          
+          {/* 하단 소속/직급 정보 */}
           <div className="profile-details">
-            <p className="profile-company">한국프로축구연맹</p>
+            <p className="profile-company">한국프로축구연맹 영업본부</p>
             <p className="profile-position">상무</p>
-            <p className="profile-department">영업본부</p>
           </div>
         </div>
 
@@ -187,13 +192,6 @@ function MyDetailPage() {
           <h3 className="info-section-title">명함 정보</h3>
           <div className="info-card">
             <div className="info-row">
-              <img src={imgIcon3} alt="소속" className="info-icon" />
-              <div className="info-content">
-                <p className="info-label">사명 / 부서 / 직급</p>
-                <p className="info-value">한국프로축구연맹 / 영업본부 / 상무</p>
-              </div>
-            </div>
-            <div className="info-row">
               <img src={imgIcon4} alt="전화" className="info-icon" />
               <div className="info-content">
                 <p className="info-label">전화번호</p>
@@ -208,6 +206,13 @@ function MyDetailPage() {
                 <p className="info-value">park.sangmu@company.com</p>
               </div>
               <button className="action-button" onClick={handleEmail}>메일</button>
+            </div>
+            <div className="info-row">
+              <img src={imgIcon3} alt="소속" className="info-icon" />
+              <div className="info-content">
+                <p className="info-label">소속 / 직급</p>
+                <p className="info-value">한국프로축구연맹 영업본부 / 상무</p>
+              </div>
             </div>
           </div>
         </div>

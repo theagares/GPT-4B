@@ -16,13 +16,22 @@
 .landing-header {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .header-logo {
   width: 21px;
   height: 21px;
   object-fit: cover;
+}
+
+.welcome-message {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 20px;
 }
 
 /* AI Banner */

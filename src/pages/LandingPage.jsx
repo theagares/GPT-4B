@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import './LandingPage.css'
@@ -53,6 +54,14 @@ const popularGifts = [
 
 function LandingPage() {
   const navigate = useNavigate()
+  const [userName, setUserName] = useState('')
+
+  useEffect(() => {
+    const name = localStorage.getItem('userName')
+    if (name) {
+      setUserName(name)
+    }
+  }, [])
 
   return (
     <div className="landing-page">
@@ -60,6 +69,9 @@ function LandingPage() {
         {/* Header */}
         <div className="landing-header">
           <img src={imgGpt4B1} alt="GPT-4b Logo" className="header-logo" />
+          {userName && (
+            <span className="welcome-message">{userName}님 환영합니다!</span>
+          )}
         </div>
 
         {/* AI Gift Recommendation Banner */}
@@ -69,10 +81,6 @@ function LandingPage() {
               <p className="banner-subtitle">AI 맞춤형 선물 추천</p>
               <p className="banner-title">상대방의 정보를 기반으로 최적의 선물을 찾아드립니다</p>
             </div>
-            <button className="banner-button">
-              <img src={imgIcon} alt="arrow" className="button-icon" />
-              <span>추천 받으러 가기</span>
-            </button>
           </div>
         </div>
 

@@ -587,7 +587,7 @@
 }
 
 .card-detail-modal {
-  background-color: #f9fafb;
+  /* background-color: #f9fafb; */ /* Removed to allow inline style */
   border-radius: 40px 40px 0 0;
   width: 100%;
   max-width: 393px;
@@ -598,6 +598,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  transition: background 0.3s ease;
 }
 
 /* Top Navigation */
@@ -671,7 +672,7 @@
 
 .modal-customize-button {
   padding: 8px 16px;
-  background-color: rgba(109, 48, 223, 1);
+  background-color: #584cdc;
   color: white;
   border: none;
   border-radius: 8px;
@@ -688,20 +689,54 @@
 
 /* Main Card Info */
 .modal-main-card {
-  background-color: white;
+  /* background-color: white; */ /* Removed to allow inline style */
   border-radius: 20px;
   padding: 24px;
   margin: 0 20px 16px 20px;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease;
+  min-height: 140px;
+  position: relative;
+}
+
+.modal-profile-contact {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-end;
+}
+
+.modal-profile-phone,
+.modal-profile-email {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 11.2px;
+  font-weight: 400;
+  color: white;
+  margin: 0;
+  line-height: 16px;
 }
 
 .modal-profile-section {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: 8px;
   flex: 1;
+  width: 100%;
+  margin-top: 0px;
+}
+
+.modal-profile-left {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .modal-profile-icon {
@@ -710,36 +745,49 @@
   flex-shrink: 0;
 }
 
+.modal-profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  position: absolute;
+  bottom: 16px;
+  left: 24px;
+}
+
+.modal-profile-company {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: white;
+  margin: 0;
+  line-height: 16px;
+}
+
 .modal-profile-info {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1;
 }
 
 .modal-profile-name {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 400;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  padding: 0;
+  color: white;
+  line-height: 24px;
 }
 
 .modal-profile-position {
-  font-size: 14px;
-  font-weight: 400;
-  color: #1f2937;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  margin: 0;
-}
-
-.modal-profile-company {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
-  color: #1f2937;
-  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  color: white;
   margin: 0;
+  line-height: 16px;
 }
 
 .modal-contact-section {
@@ -777,6 +825,17 @@
 
 .gift-history-icon {
   font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.gift-history-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .gift-history-text {
@@ -815,7 +874,7 @@
 
 .modal-info-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   padding: 16px 20px;
   gap: 12px;
 }
@@ -823,7 +882,16 @@
 .info-icon {
   font-size: 20px;
   flex-shrink: 0;
-  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.info-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .info-content {
@@ -854,7 +922,7 @@
 .info-action-button {
   background-color: transparent;
   border: none;
-  color: rgba(109, 48, 223, 1);
+  color: #584cdc;
   font-size: 14px;
   font-weight: 500;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
@@ -871,6 +939,39 @@
   height: 1px;
   background-color: #e5e7eb;
   margin: 0 20px;
+}
+
+/* Delete Button Section */
+.modal-delete-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-top: 8px;
+}
+
+.modal-delete-text-button {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  padding: 6px 20px;
+  transition: all 0.2s;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.modal-delete-text-button:hover {
+  background-color: rgba(255, 255, 255, 1);
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modal-delete-text-button:active {
+  transform: scale(0.98);
 }
 
 .modal-memo-input {

@@ -6,20 +6,20 @@ function SignupFormPage() {
   const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({
-    name: '이태환',
-    email: 'lth2000@hci.ac.kr',
-    phone: '010-2000-1102',
-    affiliation: '카카오 마케팅팀',
-    position: '부장'
+    name: '',
+    email: '',
+    phone: '',
+    affiliation: '',
+    position: ''
   })
   const [isValid, setIsValid] = useState(false)
 
   const steps = [
-    { key: 'name', title: '이름을 입력해주세요.', subtitle: '명함에 표시될 이름을 입력하세요', placeholder: '이름을 입력하세요' },
-    { key: 'email', title: '메일주소를 입력해주세요.', subtitle: '명함에 표시될 이름을 입력하세요', placeholder: '메일주소를 입력하세요' },
-    { key: 'phone', title: '전화번호를 입력해주세요.', subtitle: '명함에 표시될 이름을 입력하세요', placeholder: '전화번호를 입력하세요' },
-    { key: 'affiliation', title: '소속을 입력해주세요.', subtitle: '명함에 표시될 이름을 입력하세요', placeholder: '소속을 입력하세요' },
-    { key: 'position', title: '직급을 입력해주세요.', subtitle: '명함에 표시될 이름을 입력하세요', placeholder: '직급을 입력하세요' }
+    { key: 'name', title: '이름을 입력해주세요.', subtitle: '명함에 표시될 이름을 입력하세요', placeholder: '김길동' },
+    { key: 'email', title: '메일주소를 입력해주세요.', subtitle: '명함에 표시될 이메일 주소를 입력하세요', placeholder: 'example@email.com' },
+    { key: 'phone', title: '전화번호를 입력해주세요.', subtitle: '명함에 표시될 전화번호를 입력하세요', placeholder: '010-1234-5678' },
+    { key: 'affiliation', title: '소속을 입력해주세요.', subtitle: '명함에 표시될 소속(사명+부서)을 입력하세요', placeholder: '삼성전자 US사업부' },
+    { key: 'position', title: '직급을 입력해주세요.', subtitle: '명함에 표시될 직급을 입력하세요', placeholder: '개발3팀장' }
   ]
 
   const currentStepData = steps[currentStep - 1]
@@ -60,8 +60,11 @@ function SignupFormPage() {
     if (isValid && currentStep < 5) {
       setCurrentStep(prev => prev + 1)
     } else if (isValid && currentStep === 5) {
-      // 모든 단계 완료 - Welcome 화면으로 이동
+      // 모든 단계 완료 - 이름을 localStorage에 저장하고 Welcome 화면으로 이동
       console.log('Form completed:', formData)
+      if (formData.name) {
+        localStorage.setItem('userName', formData.name)
+      }
       navigate('/welcome')
     }
   }

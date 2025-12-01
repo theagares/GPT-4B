@@ -292,10 +292,13 @@ function MyPage() {
                 </div>
                 <div className="card-info">
                   <h2 className="card-name">박상무</h2>
-                  <p className="card-company">한국프로축구연맹</p>
-                  <p className="card-position">상무</p>
-                  <p className="card-department">영업본부</p>
                 </div>
+              </div>
+              
+              {/* 하단 소속/직급 정보 */}
+              <div className="card-details">
+                <p className="card-company">한국프로축구연맹 영업본부</p>
+                <p className="card-position">상무</p>
               </div>
             </div>
           </div>

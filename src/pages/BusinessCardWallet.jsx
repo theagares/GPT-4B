@@ -16,6 +16,16 @@ const cardDesigns = {
   'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
 }
 
+// 페이지 배경색 맵 (명함 색상에 맞춘 연한 배경)
+const pageBackgroundDesigns = {
+  'design-1': 'linear-gradient(180deg, rgba(200, 195, 245, 1) 0%, rgba(168, 162, 242, 1) 50%, rgba(88, 76, 220, 1) 100%)',
+  'design-2': 'linear-gradient(180deg, rgba(191, 219, 254, 1) 0%, rgba(147, 197, 253, 1) 50%, rgba(59, 130, 246, 1) 100%)',
+  'design-3': 'linear-gradient(180deg, rgba(167, 243, 208, 1) 0%, rgba(110, 231, 183, 1) 50%, rgba(16, 185, 129, 1) 100%)',
+  'design-4': 'linear-gradient(180deg, rgba(252, 231, 243, 1) 0%, rgba(251, 182, 206, 1) 50%, rgba(236, 72, 153, 1) 100%)',
+  'design-5': 'linear-gradient(180deg, rgba(255, 237, 213, 1) 0%, rgba(254, 215, 170, 1) 50%, rgba(249, 115, 22, 1) 100%)',
+  'design-6': 'linear-gradient(180deg, rgba(221, 214, 254, 1) 0%, rgba(196, 181, 253, 1) 50%, rgba(99, 102, 241, 1) 100%)',
+}
+
 function BusinessCardWallet() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -372,9 +382,25 @@ function CardDetailModal({ card, onClose }) {
     navigate('/card/gift-history', { state: { card } })
   }
 
+  // 모달 배경색 (명함 디자인에 맞춤)
+  const modalBackground = card?.design 
+    ? pageBackgroundDesigns[card.design] || pageBackgroundDesigns['design-1']
+    : pageBackgroundDesigns['design-1']
+
+  // 프로필 카드 배경색 (명함 디자인에 맞춤)
+  const profileCardBackground = card?.design 
+    ? cardDesigns[card.design] || cardDesigns['design-1']
+    : cardDesigns['design-1']
+
   return (
     <div className="card-detail-modal-overlay" onClick={onClose}>
-      <div className="card-detail-modal" onClick={(e) => e.stopPropagation()}>
+      <div 
+        className="card-detail-modal" 
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: modalBackground
+        }}
+      >
         {/* Top Navigation */}
         <div className="modal-top-nav">
           <button className="modal-back-button" onClick={onClose}>
@@ -389,14 +415,6 @@ function CardDetailModal({ card, onClose }) {
               </svg>
             </button>
             <div className="modal-top-actions">
-              <button className="modal-delete-button" onClick={handleDelete}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 6H5H21" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M10 11V17" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M14 11V17" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
               <button className="modal-customize-button" onClick={handleCustomize}>
                 명함 커스텀하기
               </button>
@@ -405,36 +423,50 @@ function CardDetailModal({ card, onClose }) {
         </div>
 
         {/* Main Card Info */}
-        <div className="modal-main-card">
+        <div 
+          className="modal-main-card"
+          style={{
+            background: profileCardBackground
+          }}
+        >
+          {/* 우측 상단 연락처 정보 */}
+          <div className="modal-profile-contact">
+            {card.phone && <p className="modal-profile-phone">{card.phone}</p>}
+            {card.email && <p className="modal-profile-email">{card.email}</p>}
+          </div>
+
           <div className="modal-profile-section">
-            <div className="modal-profile-icon">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="20" cy="20" r="20" fill="#E5E7EB"/>
-                <path d="M20 12C21.6569 12 23 13.3431 23 15C23 16.6569 21.6569 18 20 18C18.3431 18 17 16.6569 17 15C17 13.3431 18.3431 12 20 12Z" fill="#9CA3AF"/>
-                <path d="M14 26C14 23.2386 16.2386 21 19 21H21C23.7614 21 26 23.2386 26 26V28H14V26Z" fill="#9CA3AF"/>
-              </svg>
+            <div className="modal-profile-left">
+              <div className="modal-profile-icon">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="20" cy="20" r="20" fill="#E5E7EB"/>
+                  <path d="M20 12C21.6569 12 23 13.3431 23 15C23 16.6569 21.6569 18 20 18C18.3431 18 17 16.6569 17 15C17 13.3431 18.3431 12 20 12Z" fill="#9CA3AF"/>
+                  <path d="M14 26C14 23.2386 16.2386 21 19 21H21C23.7614 21 26 23.2386 26 26V28H14V26Z" fill="#9CA3AF"/>
+                </svg>
+              </div>
+              <div className="modal-profile-info">
+                <h2 className="modal-profile-name">
+                  {card.name}
+                </h2>
+              </div>
             </div>
-            <div className="modal-profile-info">
-              <h2 
-                className="modal-profile-name"
-                style={{
-                  background: card.design && cardDesigns[card.design] 
-                    ? cardDesigns[card.design] 
-                    : cardDesigns['design-1'],
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }}
-              >
-                {card.name}
-              </h2>
+            <div className="modal-profile-details">
+              {card.company && <p className="modal-profile-company">{card.company}</p>}
+              {card.position && <p className="modal-profile-position">{card.position}</p>}
             </div>
           </div>
         </div>
 
         {/* Gift History Button */}
         <button className="modal-gift-history-button" onClick={handleGiftHistory}>
-          <span className="gift-history-icon">📅</span>
+          <span className="gift-history-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M16 2V6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M8 2V6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M3 10H21" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </span>
           <span className="gift-history-text">선물 히스토리</span>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 18L15 12L9 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -445,23 +477,15 @@ function CardDetailModal({ card, onClose }) {
         <div className="modal-info-section">
           <h3 className="modal-info-title">명함 정보</h3>
           <div className="modal-info-card">
-            {/* Position/Department */}
-            <div className="modal-info-row">
-              <span className="info-icon">💼</span>
-              <div className="info-content">
-                <span className="info-label">직급 / 부서</span>
-                <span className="info-value">
-                  {card.position && card.company ? `${card.position} / ${card.company}` : card.position || card.company || '-'}
-                </span>
-              </div>
-            </div>
-            <div className="info-divider"></div>
-
             {/* Phone Number */}
             {card.phone && (
               <>
                 <div className="modal-info-row">
-                  <span className="info-icon">📞</span>
+                  <span className="info-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M22 16.92V19.92C22 20.52 21.52 21 20.92 21C9.4 21 0 11.6 0 0.08C0 -0.52 0.48 -1 1.08 -1H4.08C4.68 -1 5.16 -0.52 5.16 0.08C5.16 1.08 5.28 2.04 5.48 2.96C5.64 3.4 5.6 3.92 5.28 4.28L3.64 5.92C4.84 8.56 7.44 11.16 10.08 12.36L11.72 10.72C12.08 10.4 12.6 10.36 13.04 10.52C13.96 10.72 14.92 10.84 15.92 10.84C16.52 10.84 17 11.32 17 11.92V14.92C17 15.52 16.52 16 15.92 16H22Z" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
                   <div className="info-content">
                     <span className="info-label">전화번호</span>
                     <span className="info-value">{card.phone}</span>
@@ -476,7 +500,12 @@ function CardDetailModal({ card, onClose }) {
             {card.email && (
               <>
                 <div className="modal-info-row">
-                  <span className="info-icon">✉️</span>
+                  <span className="info-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M22 6L12 13L2 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
                   <div className="info-content">
                     <span className="info-label">이메일</span>
                     <span className="info-value">{card.email}</span>
@@ -487,9 +516,37 @@ function CardDetailModal({ card, onClose }) {
               </>
             )}
 
+            {/* Position/Department */}
+            <div className="modal-info-row">
+              <span className="info-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 7H4C2.9 7 2 7.9 2 9V19C2 20.1 2.9 21 4 21H16C17.1 21 18 20.1 18 19V9C18 7.9 17.1 7 16 7Z" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M22 5V17C22 18.1 21.1 19 20 19H18" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M6 11H10" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M8 15H10" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M16 7V5C16 3.9 15.1 3 14 3H8C6.9 3 6 3.9 6 5V7" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+              <div className="info-content">
+                <span className="info-label">소속 / 직급</span>
+                <span className="info-value">
+                  {card.position && card.company ? `${card.company} / ${card.position}` : card.position || card.company || '-'}
+                </span>
+              </div>
+            </div>
+            <div className="info-divider"></div>
+
             {/* Memo */}
             <div className="modal-info-row">
-              <span className="info-icon">🗒️</span>
+              <span className="info-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M14 2V8H20" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M16 13H8" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M16 17H8" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M10 9H9H8" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
               <div className="info-content info-content-memo">
                 <span className="info-label">메모</span>
                 <textarea
@@ -501,6 +558,13 @@ function CardDetailModal({ card, onClose }) {
                 />
               </div>
             </div>
+          </div>
+          
+          {/* Delete Button */}
+          <div className="modal-delete-section">
+            <button className="modal-delete-text-button" onClick={handleDelete}>
+              명함 삭제하기
+            </button>
           </div>
         </div>
       </div>
