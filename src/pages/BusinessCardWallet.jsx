@@ -1,10 +1,57 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
 import './BusinessCardWallet.css'
 
 const imgIcon = "https://www.figma.com/api/mcp/asset/d56d758a-c7b8-42c8-bd08-19709b82a5d6"
+const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/c2072de6-f1a8-4f36-a042-2df786f153b1"
+
+// 전체 선물 이력 데이터 (실제로는 store나 API에서 가져와야 함)
+const allGiftHistory = [
+  {
+    id: 1,
+    cardId: 'card-1',
+    cardName: '안연주',
+    giftName: '프리미엄 와인 세트',
+    year: '2025'
+  },
+  {
+    id: 2,
+    cardId: 'card-1',
+    cardName: '안연주',
+    giftName: '명품 선물 세트',
+    year: '2025'
+  },
+  {
+    id: 3,
+    cardId: 'card-2',
+    cardName: '이부장',
+    giftName: '꽃다발 선물',
+    year: '2025'
+  },
+  {
+    id: 4,
+    cardId: 'card-3',
+    cardName: '최대리',
+    giftName: '초콜릿 선물 세트',
+    year: '2025'
+  },
+  {
+    id: 5,
+    cardId: 'card-1',
+    cardName: '안연주',
+    giftName: '선물 배송 상자',
+    year: '2024'
+  },
+  {
+    id: 6,
+    cardId: 'card-2',
+    cardName: '이부장',
+    giftName: '고급 와인 세트',
+    year: '2024'
+  }
+]
 
 // 명함 디자인 맵
 const cardDesigns = {
@@ -350,6 +397,14 @@ function CardDetailModal({ card, onClose }) {
   const updateCard = useCardStore((state) => state.updateCard)
   const deleteCard = useCardStore((state) => state.deleteCard)
 
+  // 현재 명함의 선물 이력 개수 계산
+  const giftHistoryCount = useMemo(() => {
+    if (!card) return 0
+    return allGiftHistory.filter(
+      gift => gift.cardId === card.id || gift.cardName === card.name
+    ).length
+  }, [card])
+
   const handleSaveMemo = () => {
     updateCard(card.id, { memo })
   }
@@ -375,6 +430,11 @@ function CardDetailModal({ card, onClose }) {
     if (card.email) {
       window.location.href = `mailto:${card.email}`
     }
+  }
+
+  const handleGiftRecommend = () => {
+    // 선물 추천 받기 페이지로 이동
+    navigate('/gift-recommend', { state: { card } })
   }
 
   const handleGiftHistory = () => {
@@ -457,21 +517,44 @@ function CardDetailModal({ card, onClose }) {
           </div>
         </div>
 
-        {/* Gift History Button */}
-        <button className="modal-gift-history-button" onClick={handleGiftHistory}>
-          <span className="gift-history-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M16 2V6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M8 2V6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M3 10H21" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </span>
-          <span className="gift-history-text">선물 히스토리</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 18L15 12L9 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
+        {/* Gift Action Buttons */}
+        <div className="modal-gift-actions">
+          <button className="modal-gift-card-button modal-gift-recommend-button" onClick={handleGiftRecommend}>
+            <div className="gift-card-content-wrapper">
+              <div className="gift-card-info">
+                <div className="gift-card-label-row">
+                  <img src={imgGpt4B1} alt="GPT-4b Logo" className="gift-card-logo" />
+                  <div className="gift-card-label-wrapper">
+                    <span className="gift-card-label">선물 추천</span>
+                    <span className="gift-card-label">받으러가기</span>
+                  </div>
+                </div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="gift-card-arrow">
+                <path d="M9 18L15 12L9 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </button>
+          
+          <button className="modal-gift-card-button" onClick={handleGiftHistory}>
+            <div className="gift-card-content-wrapper">
+              <div className="gift-card-info">
+                <div className="gift-card-label-row">
+                  <svg className="gift-card-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 2L3 5V11C3 11.5523 3.44772 12 4 12H12C12.5523 12 13 11.5523 13 11V5L8 2Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M3 5L8 8L13 5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M8 2V8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span className="gift-card-label">선물 이력</span>
+                </div>
+                <p className="gift-card-value gift-card-value-left">{giftHistoryCount}회</p>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="gift-card-arrow">
+                <path d="M9 18L15 12L9 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </button>
+        </div>
 
         {/* Business Card Information Section */}
         <div className="modal-info-section">
@@ -482,8 +565,8 @@ function CardDetailModal({ card, onClose }) {
               <>
                 <div className="modal-info-row">
                   <span className="info-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M22 16.92V19.92C22 20.52 21.52 21 20.92 21C9.4 21 0 11.6 0 0.08C0 -0.52 0.48 -1 1.08 -1H4.08C4.68 -1 5.16 -0.52 5.16 0.08C5.16 1.08 5.28 2.04 5.48 2.96C5.64 3.4 5.6 3.92 5.28 4.28L3.64 5.92C4.84 8.56 7.44 11.16 10.08 12.36L11.72 10.72C12.08 10.4 12.6 10.36 13.04 10.52C13.96 10.72 14.92 10.84 15.92 10.84C16.52 10.84 17 11.32 17 11.92V14.92C17 15.52 16.52 16 15.92 16H22Z" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M14.6667 11.28V13.28C14.6667 13.68 14.3467 14 13.9467 14C6.26667 14 0 7.73333 0 0.0533333C0 -0.346667 0.32 -0.666667 0.72 -0.666667H2.72C3.12 -0.666667 3.44 -0.346667 3.44 0.0533333C3.44 0.72 3.52 1.36 3.65333 1.97333C3.76 2.26667 3.73333 2.61333 3.52 2.85333L2.42667 3.94667C3.22667 5.70667 4.29333 6.77333 6.05333 7.57333L7.14667 6.48C7.38667 6.26667 7.73333 6.24 8.02667 6.34667C8.64 6.48 9.28 6.56 9.94667 6.56C10.3467 6.56 10.6667 6.88 10.6667 7.28V9.28C10.6667 9.68 10.3467 10 9.94667 10H14.6667Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </span>
                   <div className="info-content">
@@ -501,9 +584,9 @@ function CardDetailModal({ card, onClose }) {
               <>
                 <div className="modal-info-row">
                   <span className="info-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M22 6L12 13L2 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.66667 2.66667H13.3333C14.0667 2.66667 14.6667 3.26667 14.6667 4V12C14.6667 12.7333 14.0667 13.3333 13.3333 13.3333H2.66667C1.93333 13.3333 1.33333 12.7333 1.33333 12V4C1.33333 3.26667 1.93333 2.66667 2.66667 2.66667Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M14.6667 4L8 8.66667L1.33333 4" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </span>
                   <div className="info-content">
@@ -519,12 +602,10 @@ function CardDetailModal({ card, onClose }) {
             {/* Position/Department */}
             <div className="modal-info-row">
               <span className="info-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M16 7H4C2.9 7 2 7.9 2 9V19C2 20.1 2.9 21 4 21H16C17.1 21 18 20.1 18 19V9C18 7.9 17.1 7 16 7Z" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M22 5V17C22 18.1 21.1 19 20 19H18" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M6 11H10" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M8 15H10" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M16 7V5C16 3.9 15.1 3 14 3H8C6.9 3 6 3.9 6 5V7" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 3H13C13.5523 3 14 3.44772 14 4V12C14 12.5523 13.5523 13 13 13H3C2.44772 13 2 12.5523 2 12V4C2 3.44772 2.44772 3 3 3Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M5 6H11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M5 9H9" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </span>
               <div className="info-content">

@@ -18,6 +18,8 @@ import GiftHistoryPage from './pages/GiftHistoryPage'
 import CardGiftHistoryPage from './pages/CardGiftHistoryPage'
 import PopularGiftsPage from './pages/PopularGiftsPage'
 import GiftDetailPage from './pages/GiftDetailPage'
+import GiftRecommendPage from './pages/GiftRecommendPage'
+import GiftRecommendResultPage from './pages/GiftRecommendResultPage'
 import FilterPage from './pages/FilterPage'
 import OCR from './pages/OCR'
 import Confirm from './pages/Confirm'
@@ -55,6 +57,8 @@ function App() {
         <Route path="/my/detail" element={<MyDetailPage />} />
         <Route path="/my/gift-history" element={<GiftHistoryPage />} />
         <Route path="/card/gift-history" element={<CardGiftHistoryPage />} />
+        <Route path="/gift-recommend" element={<GiftRecommendPage />} />
+        <Route path="/gift-recommend/result" element={<GiftRecommendResultPage />} />
         <Route path="/popular-gifts" element={<PopularGiftsPage />} />
         <Route path="/popular-gifts/:giftId" element={<GiftDetailPage />} />
         <Route path="/popular-gifts/filter" element={<FilterPage />} />

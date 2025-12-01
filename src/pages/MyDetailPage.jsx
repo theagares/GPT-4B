@@ -157,7 +157,11 @@ function MyDetailPage() {
             <div className="stat-content">
               <div className="stat-info">
                 <div className="stat-label-row">
-                  <img src={imgIcon} alt="명함" className="stat-icon" />
+                  <svg className="stat-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 3H13C13.5523 3 14 3.44772 14 4V12C14 12.5523 13.5523 13 13 13H3C2.44772 13 2 12.5523 2 12V4C2 3.44772 2.44772 3 3 3Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5 6H11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5 9H9" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                   <span className="stat-label">총 명함 갯수</span>
                 </div>
                 <p className="stat-value">{cards.length}개</p>
@@ -169,7 +173,11 @@ function MyDetailPage() {
             <div className="stat-content">
               <div className="stat-info">
                 <div className="stat-label-row">
-                  <img src={imgIcon2} alt="선물" className="stat-icon" />
+                  <svg className="stat-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 2L3 5V11C3 11.5523 3.44772 12 4 12H12C12.5523 12 13 11.5523 13 11V5L8 2Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M3 5L8 8L13 5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M8 2V8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                   <span className="stat-label">선물 이력</span>
                 </div>
                 <p className="stat-value">15회</p>
