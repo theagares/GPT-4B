@@ -12,6 +12,10 @@ function BottomNavigation() {
   const location = useLocation()
 
   const isActive = (path) => {
+    if (path === '/my') {
+      // MY 탭은 /my로 시작하는 모든 경로에서 활성화
+      return location.pathname === path || location.pathname.startsWith('/my/')
+    }
     return location.pathname === path
   }
 
