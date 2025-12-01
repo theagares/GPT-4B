@@ -54,9 +54,14 @@ const CardCustomize = () => {
   const location = useLocation();
   const card = (location.state as { card?: BusinessCard } | undefined)?.card;
   const updateCard = useCardStore((state) => state.updateCard);
-  const [selectedDesign, setSelectedDesign] = useState<string>(
-    card?.design || "design-1"
-  );
+  const [selectedDesign, setSelectedDesign] = useState<string>(() => {
+    if (card?.id === 'my-card') {
+      // 내 명함인 경우 localStorage에서 불러오기
+      const savedDesign = localStorage.getItem('my-card-design');
+      return savedDesign || card?.design || "design-1";
+    }
+    return card?.design || "design-1";
+  });
 
   if (!card) {
     return (
@@ -78,8 +83,17 @@ const CardCustomize = () => {
   };
 
   const handleApply = () => {
-    updateCard(card.id, { design: selectedDesign });
-    navigate('/business-cards', { state: { selectCardId: card.id } });
+    // 내 명함인 경우 localStorage에 저장
+    if (card.id === 'my-card') {
+      localStorage.setItem('my-card-design', selectedDesign);
+      // 같은 탭에서 변경 감지를 위한 커스텀 이벤트 발생
+      window.dispatchEvent(new Event('myCardDesignChanged'));
+      navigate('/my/detail');
+    } else {
+      // 일반 명함인 경우 store에 저장
+      updateCard(card.id, { design: selectedDesign });
+      navigate('/business-cards', { state: { selectCardId: card.id } });
+    }
   };
 
   return (

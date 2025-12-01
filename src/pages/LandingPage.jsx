@@ -10,6 +10,47 @@ const imgImageWithFallback3 = "https://www.figma.com/api/mcp/asset/33109928-c22e
 const imgIcon = "https://www.figma.com/api/mcp/asset/dd2c3a79-4460-4073-9292-db10d6d07dab"
 const imgIcon1 = "https://www.figma.com/api/mcp/asset/49a9be54-9062-4383-b3ba-bd80bcd932c2"
 
+// 인기 선물 데이터 (랭킹 순으로 정렬)
+const popularGifts = [
+  {
+    id: 1,
+    rank: 1,
+    image: imgImageWithFallback,
+    title: "프리미엄 와인 세트",
+    category: "주류",
+    price: "150,000원",
+    popularity: "인기 95%"
+  },
+  {
+    id: 2,
+    rank: 2,
+    image: imgImageWithFallback1,
+    title: "명품 선물 세트",
+    category: "고급 선물",
+    price: "300,000원",
+    popularity: "인기 92%"
+  },
+  {
+    id: 3,
+    rank: 3,
+    image: imgImageWithFallback2,
+    title: "스페셜티 커피 세트",
+    category: "식음료",
+    price: "80,000원",
+    popularity: "인기 88%"
+  },
+  {
+    id: 4,
+    rank: 4,
+    image: imgImageWithFallback3,
+    title: "비즈니스 선물 세트",
+    category: "사무용품",
+    price: "120,000원",
+    popularity: "인기 85%"
+  }
+].sort((a, b) => a.rank - b.rank) // 랭킹 순으로 정렬
+.slice(0, 4) // 최대 4개까지만 표시
+
 function LandingPage() {
   const navigate = useNavigate()
 
@@ -46,65 +87,21 @@ function LandingPage() {
           </div>
 
           <div className="gift-cards-container">
-            <div className="gift-card">
-              <div className="gift-card-image">
-                <img src={imgImageWithFallback} alt="프리미엄 와인 세트" />
-                <div className="rank-badge">#1</div>
-              </div>
-              <div className="gift-card-content">
-                <div className="category-badge">주류</div>
-                <h3 className="gift-card-title">프리미엄 와인 세트</h3>
-                <div className="gift-card-price">
-                  <span className="price">150,000원</span>
-                  <span className="popularity">인기 95%</span>
+            {popularGifts.map((gift) => (
+              <div key={gift.id} className="gift-card">
+                <div className="gift-card-image">
+                  <img src={gift.image} alt={gift.title} />
+                  <div className="rank-badge">#{gift.rank}</div>
+                </div>
+                <div className="gift-card-content">
+                  <div className="category-badge">{gift.category}</div>
+                  <h3 className="gift-card-title">{gift.title}</h3>
+                  <div className="gift-card-price">
+                    <span className="price">{gift.price}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="gift-card">
-              <div className="gift-card-image">
-                <img src={imgImageWithFallback1} alt="명품 선물 세트" />
-                <div className="rank-badge">#2</div>
-              </div>
-              <div className="gift-card-content">
-                <div className="category-badge">고급 선물</div>
-                <h3 className="gift-card-title">명품 선물 세트</h3>
-                <div className="gift-card-price">
-                  <span className="price">300,000원</span>
-                  <span className="popularity">인기 92%</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="gift-card">
-              <div className="gift-card-image">
-                <img src={imgImageWithFallback2} alt="스페셜티 커피 세트" />
-                <div className="rank-badge">#3</div>
-              </div>
-              <div className="gift-card-content">
-                <div className="category-badge">식음료</div>
-                <h3 className="gift-card-title">스페셜티 커피 세트</h3>
-                <div className="gift-card-price">
-                  <span className="price">80,000원</span>
-                  <span className="popularity">인기 88%</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="gift-card">
-              <div className="gift-card-image">
-                <img src={imgImageWithFallback3} alt="비즈니스 선물 세트" />
-                <div className="rank-badge">#4</div>
-              </div>
-              <div className="gift-card-content">
-                <div className="category-badge">사무용품</div>
-                <h3 className="gift-card-title">비즈니스 선물 세트</h3>
-                <div className="gift-card-price">
-                  <span className="price">120,000원</span>
-                  <span className="popularity">인기 85%</span>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
           <button className="view-all-button" onClick={() => navigate('/popular-gifts')}>전체보기</button>

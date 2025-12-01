@@ -1,7 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import './MyDetailPage.css'
+
+// 명함 디자인 맵 (MyDetailPage용 - 끝에 white)
+const cardDesigns = {
+  'design-1': 'linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(255, 255, 255, 1) 100%)',
+  'design-2': 'linear-gradient(147.99deg, rgba(59, 130, 246, 1) 0%, rgba(255, 255, 255, 1) 100%)',
+  'design-3': 'linear-gradient(147.99deg, rgba(16, 185, 129, 1) 0%, rgba(255, 255, 255, 1) 100%)',
+  'design-4': 'linear-gradient(147.99deg, rgba(236, 72, 153, 1) 0%, rgba(255, 255, 255, 1) 100%)',
+  'design-5': 'linear-gradient(147.99deg, rgba(249, 115, 22, 1) 0%, rgba(255, 255, 255, 1) 100%)',
+  'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(255, 255, 255, 1) 100%)',
+}
+
+// 페이지 배경 디자인 맵 (명함 색상에 맞춘 연한 배경)
+const pageBackgroundDesigns = {
+  'design-1': 'linear-gradient(180deg, rgba(168, 162, 242, 1) 0%, rgba(88, 76, 220, 1) 100%)',
+  'design-2': 'linear-gradient(180deg, rgba(147, 197, 253, 1) 0%, rgba(59, 130, 246, 1) 100%)',
+  'design-3': 'linear-gradient(180deg, rgba(110, 231, 183, 1) 0%, rgba(16, 185, 129, 1) 100%)',
+  'design-4': 'linear-gradient(180deg, rgba(251, 182, 206, 1) 0%, rgba(236, 72, 153, 1) 100%)',
+  'design-5': 'linear-gradient(180deg, rgba(254, 215, 170, 1) 0%, rgba(249, 115, 22, 1) 100%)',
+  'design-6': 'linear-gradient(180deg, rgba(196, 181, 253, 1) 0%, rgba(99, 102, 241, 1) 100%)',
+}
 
 // 이미지 URL
 const imgImageWithFallback = "https://www.figma.com/api/mcp/asset/3b95cfd9-db95-4104-9484-d911aac379e5"
@@ -20,14 +40,49 @@ const imgIcon5 = "https://www.figma.com/api/mcp/asset/a449d7fe-86bc-419e-a053-3b
 
 function MyDetailPage() {
   const navigate = useNavigate()
+  const [myCardDesign, setMyCardDesign] = useState('design-1')
+
+  // localStorage에서 내 명함 디자인 불러오기
+  useEffect(() => {
+    const savedDesign = localStorage.getItem('my-card-design')
+    if (savedDesign) {
+      setMyCardDesign(savedDesign)
+    }
+  }, [])
+
+  // localStorage 변경 감지
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedDesign = localStorage.getItem('my-card-design')
+      if (savedDesign) {
+        setMyCardDesign(savedDesign)
+      }
+    }
+    window.addEventListener('storage', handleStorageChange)
+    // 같은 탭에서의 변경도 감지하기 위해 커스텀 이벤트 사용
+    window.addEventListener('myCardDesignChanged', handleStorageChange)
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('myCardDesignChanged', handleStorageChange)
+    }
+  }, [])
 
   const handleBack = () => {
     navigate('/my')
   }
 
   const handleCustomize = () => {
-    // TODO: 명함 커스텀 페이지로 이동
-    console.log('명함 커스텀하기')
+    // 내 명함 정보를 BusinessCard 형태로 만들어서 CardCustomize로 전달
+    const myCard = {
+      id: 'my-card',
+      name: '박상무',
+      position: '상무',
+      company: '영업본부',
+      phone: '010-1234-5678',
+      email: 'park.sangmu@company.com',
+      design: myCardDesign
+    }
+    navigate('/customize', { state: { card: myCard } })
   }
 
   const handleCall = () => {
@@ -47,7 +102,12 @@ function MyDetailPage() {
   }
 
   return (
-    <div className="my-detail-page">
+    <div 
+      className="my-detail-page"
+      style={{
+        background: pageBackgroundDesigns[myCardDesign] || pageBackgroundDesigns['design-1']
+      }}
+    >
       <div className="my-detail-background">
         {/* 헤더 */}
         <div className="detail-header">
@@ -59,7 +119,12 @@ function MyDetailPage() {
         </button>
 
         {/* 프로필 카드 */}
-        <div className="profile-card">
+        <div 
+          className="profile-card"
+          style={{
+            background: cardDesigns[myCardDesign] || cardDesigns['design-1']
+          }}
+        >
           <div className="profile-header">
             <div className="profile-image-wrapper">
               <img src={imgImageWithFallback} alt="프로필" className="profile-image" />
