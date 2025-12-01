@@ -43,6 +43,25 @@ function MyDetailPage() {
   const navigate = useNavigate()
   const [myCardDesign, setMyCardDesign] = useState('design-1')
   const cards = useCardStore((state) => state.cards)
+  
+  // 내 정보 상태
+  const loadMyInfo = () => {
+    const savedInfo = localStorage.getItem('my-info');
+    if (savedInfo) {
+      return JSON.parse(savedInfo);
+    }
+    // 기본값
+    return {
+      name: "박상무",
+      position: "상무",
+      company: "한국프로축구연맹 영업본부",
+      phone: "010-1234-5678",
+      email: "park.sangmu@company.com",
+      memo: "",
+    };
+  };
+
+  const [myInfo, setMyInfo] = useState(loadMyInfo())
 
   // localStorage에서 내 명함 디자인 불러오기
   useEffect(() => {
@@ -69,6 +88,23 @@ function MyDetailPage() {
     }
   }, [])
 
+  // 내 정보 업데이트 감지
+  useEffect(() => {
+    const handleMyInfoUpdate = () => {
+      setMyInfo(loadMyInfo())
+    }
+    window.addEventListener('myInfoUpdated', handleMyInfoUpdate)
+    // 페이지 포커스 시에도 업데이트
+    const handleFocus = () => {
+      setMyInfo(loadMyInfo())
+    }
+    window.addEventListener('focus', handleFocus)
+    return () => {
+      window.removeEventListener('myInfoUpdated', handleMyInfoUpdate)
+      window.removeEventListener('focus', handleFocus)
+    }
+  }, [])
+
   const handleBack = () => {
     navigate('/my')
   }
@@ -87,12 +123,24 @@ function MyDetailPage() {
     navigate('/customize', { state: { card: myCard } })
   }
 
+  const handleCall = () => {
+    window.location.href = `tel:${myInfo.phone}`
+  }
+
+  const handleEmail = () => {
+    window.location.href = `mailto:${myInfo.email}`
+  }
+
   const handleBusinessCards = () => {
     navigate('/business-cards')
   }
 
   const handleGiftHistory = () => {
     navigate('/my/gift-history')
+  }
+
+  const handleEditMyInfo = () => {
+    navigate('/my/edit')
   }
 
   return (
@@ -127,8 +175,8 @@ function MyDetailPage() {
         >
           {/* 우측 상단 연락처 정보 */}
           <div className="profile-contact">
-            <p className="profile-phone">010-1234-5678</p>
-            <p className="profile-email">park.sangmu@company.com</p>
+            <p className="profile-phone">{myInfo.phone}</p>
+            <p className="profile-email">{myInfo.email}</p>
           </div>
 
           <div className="profile-header">
@@ -139,15 +187,20 @@ function MyDetailPage() {
               </div>
             </div>
             <div className="profile-info">
-              <h2 className="profile-name">박상무</h2>
+              <h2 className="profile-name">{myInfo.name}</h2>
             </div>
           </div>
           
           {/* 하단 소속/직급 정보 */}
           <div className="profile-details">
-            <p className="profile-company">한국프로축구연맹 영업본부</p>
-            <p className="profile-position">상무</p>
+            <p className="profile-company">{myInfo.company}</p>
+            <p className="profile-position">{myInfo.position}</p>
           </div>
+
+          {/* 내 정보 수정하기 버튼 */}
+          <button className="edit-my-info-button" onClick={handleEditMyInfo}>
+            내 정보 수정하기
+          </button>
         </div>
 
 
@@ -195,25 +248,26 @@ function MyDetailPage() {
               <img src={imgIcon4} alt="전화" className="info-icon" />
               <div className="info-content">
                 <p className="info-label">전화번호</p>
-                <p className="info-value">010-1234-5678</p>
+                <p className="info-value">{myInfo.phone}</p>
               </div>
             </div>
             <div className="info-row">
               <img src={imgIcon5} alt="이메일" className="info-icon" />
               <div className="info-content">
                 <p className="info-label">이메일</p>
-                <p className="info-value">park.sangmu@company.com</p>
+                <p className="info-value">{myInfo.email}</p>
               </div>
             </div>
             <div className="info-row">
               <img src={imgIcon3} alt="소속" className="info-icon" />
               <div className="info-content">
                 <p className="info-label">소속 / 직급</p>
-                <p className="info-value">한국프로축구연맹 영업본부 / 상무</p>
+                <p className="info-value">{myInfo.company} / {myInfo.position}</p>
               </div>
             </div>
           </div>
         </div>
+
       </div>
 
       <BottomNavigation />
@@ -222,4 +276,5 @@ function MyDetailPage() {
 }
 
 export default MyDetailPage
+
 

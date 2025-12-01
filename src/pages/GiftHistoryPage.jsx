@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import './GiftHistoryPage.css'
 
-// 이미지 URL
-const imgImageWithFallback = "https://www.figma.com/api/mcp/asset/22a17804-a225-448c-ad64-50983c1fa891"
-const imgImageWithFallback1 = "https://www.figma.com/api/mcp/asset/3479ec16-6041-4bb0-be11-8808d8df88df"
-const imgImageWithFallback2 = "https://www.figma.com/api/mcp/asset/3c2a8783-5233-4eeb-b511-684069144ba3"
-const imgImageWithFallback3 = "https://www.figma.com/api/mcp/asset/c80efe8f-7bb1-4967-bf18-e4af3f5139e6"
-const imgImageWithFallback4 = "https://www.figma.com/api/mcp/asset/e58eabb5-b484-4998-af61-7a34377ede25"
+// GiftHistoryPage 전용 이미지 URL (LandingPage와 독립적)
+const giftHistoryImage1 = "https://www.figma.com/api/mcp/asset/22a17804-a225-448c-ad64-50983c1fa891"
+const giftHistoryImage2 = "https://www.figma.com/api/mcp/asset/3479ec16-6041-4bb0-be11-8808d8df88df"
+const giftHistoryImage3 = "https://www.figma.com/api/mcp/asset/3c2a8783-5233-4eeb-b511-684069144ba3"
+const giftHistoryImage4 = "https://www.figma.com/api/mcp/asset/c80efe8f-7bb1-4967-bf18-e4af3f5139e6"
+const giftHistoryImage5 = "https://www.figma.com/api/mcp/asset/e58eabb5-b484-4998-af61-7a34377ede25"
 const imgVector4 = "https://www.figma.com/api/mcp/asset/9f59a389-f83e-4f13-b23f-43517aa98dce"
 
 function GiftHistoryPage() {
@@ -19,11 +19,11 @@ function GiftHistoryPage() {
     navigate('/my/detail')
   }
 
-  // 선물 이력 데이터
+  // 선물 이력 데이터 (LandingPage와 독립적)
   const giftHistory2025 = [
     {
       id: 1,
-      image: imgImageWithFallback,
+      image: giftHistoryImage1,
       name: '박부장',
       position: '부장',
       giftName: '프리미엄 와인 세트',
@@ -33,7 +33,7 @@ function GiftHistoryPage() {
     },
     {
       id: 2,
-      image: imgImageWithFallback1,
+      image: giftHistoryImage2,
       name: '이부장',
       position: '부장',
       giftName: '명품 신발 세트',
@@ -43,7 +43,7 @@ function GiftHistoryPage() {
     },
     {
       id: 3,
-      image: imgImageWithFallback2,
+      image: giftHistoryImage3,
       name: '최대리',
       position: '대리',
       giftName: '명품 가방',
@@ -53,7 +53,7 @@ function GiftHistoryPage() {
     },
     {
       id: 4,
-      image: imgImageWithFallback3,
+      image: giftHistoryImage4,
       name: '김과장',
       position: '과장',
       giftName: '스마트워치',
@@ -63,7 +63,7 @@ function GiftHistoryPage() {
     },
     {
       id: 5,
-      image: imgImageWithFallback4,
+      image: giftHistoryImage5,
       name: '정이사',
       position: '이사',
       giftName: '프리미엄 와인 세트',
@@ -76,7 +76,7 @@ function GiftHistoryPage() {
   const giftHistory2024 = [
     {
       id: 6,
-      image: imgImageWithFallback,
+      image: giftHistoryImage1,
       name: '박상무',
       position: '상무',
       giftName: '고급 와인 세트',
@@ -86,7 +86,7 @@ function GiftHistoryPage() {
     },
     {
       id: 7,
-      image: imgImageWithFallback1,
+      image: giftHistoryImage2,
       name: '이부장',
       position: '부장',
       giftName: '프리미엄 선물 박스',
@@ -109,7 +109,7 @@ function GiftHistoryPage() {
               <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <h1 className="gift-history-title">Order Details</h1>
+          <h1 className="gift-history-title">선물 히스토리</h1>
         </div>
 
         {/* 수신자 정보 섹션 */}
@@ -147,14 +147,15 @@ function GiftHistoryPage() {
                 <img src={gift.image} alt={gift.giftName} className="gift-image" />
               </div>
               <div className="gift-info">
-                <h3 className="gift-name">{gift.giftName}</h3>
+                <div className="gift-header-info">
+                  <h3 className="gift-name">{gift.giftName}</h3>
+                  <button className="status-badge">{gift.status}</button>
+                </div>
                 <p className="gift-price">{gift.price}</p>
-                <button className="status-badge">{gift.status}</button>
                 <div className="gift-date">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="date-icon">
                     <path d="M12.6667 2.66667H12V2C12 1.63181 11.7015 1.33333 11.3333 1.33333C10.9651 1.33333 10.6667 1.63181 10.6667 2V2.66667H5.33333V2C5.33333 1.63181 5.03486 1.33333 4.66667 1.33333C4.29848 1.33333 4 1.63181 4 2V2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V4C14 3.26362 13.403 2.66667 12.6667 2.66667ZM12.6667 12.6667H3.33333V6.66667H12.6667V12.6667Z" fill="#6a7282"/>
                   </svg>
-                  <span className="date-label">선물 날짜:</span>
                   <span className="date-value">{gift.date}</span>
                 </div>
               </div>

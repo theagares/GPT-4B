@@ -38,6 +38,25 @@ function MyPage() {
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
   const [myCardDesign, setMyCardDesign] = useState('design-1')
+  
+  // 내 정보 상태
+  const loadMyInfo = () => {
+    const savedInfo = localStorage.getItem('my-info');
+    if (savedInfo) {
+      return JSON.parse(savedInfo);
+    }
+    // 기본값
+    return {
+      name: "박상무",
+      position: "상무",
+      company: "한국프로축구연맹 영업본부",
+      phone: "010-1234-5678",
+      email: "sangmu.park@example.com",
+      memo: "",
+    };
+  };
+
+  const [myInfo, setMyInfo] = useState(loadMyInfo())
 
   // 최소 스와이프 거리 (픽셀)
   const minSwipeDistance = 300
@@ -64,6 +83,23 @@ function MyPage() {
     return () => {
       window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener('myCardDesignChanged', handleStorageChange)
+    }
+  }, [])
+
+  // 내 정보 업데이트 감지
+  useEffect(() => {
+    const handleMyInfoUpdate = () => {
+      setMyInfo(loadMyInfo())
+    }
+    window.addEventListener('myInfoUpdated', handleMyInfoUpdate)
+    // 페이지 포커스 시에도 업데이트
+    const handleFocus = () => {
+      setMyInfo(loadMyInfo())
+    }
+    window.addEventListener('focus', handleFocus)
+    return () => {
+      window.removeEventListener('myInfoUpdated', handleMyInfoUpdate)
+      window.removeEventListener('focus', handleFocus)
     }
   }, [])
 
@@ -282,8 +318,8 @@ function MyPage() {
             >
               {/* 우측 상단 연락처 정보 */}
               <div className="card-contact">
-                <p className="card-phone">010-1234-5678</p>
-                <p className="card-email">sangmu.park@example.com</p>
+                <p className="card-phone">{myInfo.phone}</p>
+                <p className="card-email">{myInfo.email}</p>
               </div>
               
               <div className="card-header">
@@ -291,14 +327,14 @@ function MyPage() {
                   <img src={imgGpt4B2} alt="GPT-4b Logo" />
                 </div>
                 <div className="card-info">
-                  <h2 className="card-name">박상무</h2>
+                  <h2 className="card-name">{myInfo.name}</h2>
                 </div>
               </div>
               
               {/* 하단 소속/직급 정보 */}
               <div className="card-details">
-                <p className="card-company">한국프로축구연맹 영업본부</p>
-                <p className="card-position">상무</p>
+                <p className="card-company">{myInfo.company}</p>
+                <p className="card-position">{myInfo.position}</p>
               </div>
             </div>
           </div>

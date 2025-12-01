@@ -78,7 +78,7 @@
   font-weight: 700;
   line-height: 28px;
   color: white;
-  margin: 0 0 4px 0;
+  margin: 0 0 2px 0;
   letter-spacing: -0.2px;
 }
 
@@ -475,5 +475,32 @@
 
 .action-button:hover {
   background: #f3f3f5;
+}
+
+/* 내 정보 수정하기 버튼 */
+.edit-my-info-button {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  padding: 4px 8px;
+  background: white;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: #000000;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.edit-my-info-button:hover {
+  background: #f9fafb;
+}
+
+.edit-my-info-button:active {
+  transform: scale(0.95);
 }
 

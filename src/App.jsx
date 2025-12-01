@@ -28,6 +28,7 @@ import CardDetail from './pages/CardDetail'
 import Cardbook from './pages/Cardbook'
 import CardCustomize from './pages/CardCustomize'
 import UpgradePage from './pages/UpgradePage'
+import EditMyInfoPage from './pages/EditMyInfoPage'
 import './App.css'
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
         <Route path="/calendar/add" element={<AddEventPage />} />
         <Route path="/my" element={<MyPage />} />
         <Route path="/my/detail" element={<MyDetailPage />} />
+        <Route path="/my/edit" element={<EditMyInfoPage />} />
         <Route path="/my/gift-history" element={<GiftHistoryPage />} />
         <Route path="/card/gift-history" element={<CardGiftHistoryPage />} />
         <Route path="/gift-recommend" element={<GiftRecommendPage />} />

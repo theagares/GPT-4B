@@ -41,6 +41,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 .back-button {
@@ -197,27 +198,36 @@
 .gift-info {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+  width: 100%;
+}
+
+.gift-header-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   width: 100%;
 }
 
 .gift-name {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 22px;
   color: #0a0a0a;
   margin: 0;
   word-break: break-word;
   overflow-wrap: break-word;
+  flex: 1;
 }
 
 .gift-price {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 22px;
-  color: #0a0a0a;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  color: #584cdc;
   margin: 0;
 }
 
@@ -234,13 +244,14 @@
   width: fit-content;
   cursor: default;
   margin: 0;
+  flex-shrink: 0;
 }
 
 .gift-date {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 4px;
+  margin: 0;
 }
 
 .date-icon {
@@ -249,18 +260,10 @@
   flex-shrink: 0;
 }
 
-.date-label {
-  font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 16px;
-  color: #6a7282;
-}
-
 .date-value {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
-  line-height: 16px;
+  line-height: 20px;
   color: #6a7282;
 }

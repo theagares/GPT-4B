@@ -696,7 +696,7 @@ function CalendarPage() {
                 <input
                   type="text"
                   className="event-title-input"
-                  placeholder={`${modalSelectedDate.getDate()}일`}
+                  placeholder={`A사 미팅`}
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
                 />
