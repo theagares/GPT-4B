@@ -50,6 +50,7 @@ function App() {
         <Route path="/ocr" element={<OCR />} />
         <Route path="/confirm" element={<Confirm />} />
         <Route path="/add" element={<AddInfo />} />
+        <Route path="/add-info" element={<AddInfo />} />
         <Route path="/customize" element={<CardCustomize />} />
         <Route path="/cards" element={<Cardbook />} />
         <Route path="/cards/:id" element={<CardDetail />} />

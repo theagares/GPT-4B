@@ -87,6 +87,15 @@
   pointer-events: none;
 }
 
+.ocr-step {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 8px 0;
+  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
 .ocr-title {
   font-size: 20px;
   font-weight: 600;

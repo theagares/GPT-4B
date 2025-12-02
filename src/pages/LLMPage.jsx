@@ -12,10 +12,12 @@ const geminiIcon = "/assets/gemini-icon.svg"
 function LLMPage() {
   const navigate = useNavigate()
   const [message, setMessage] = useState('')
+  const [messages, setMessages] = useState([])
   const [showTutorial, setShowTutorial] = useState(false)
   const [showLLMModal, setShowLLMModal] = useState(false)
   const [selectedLLM, setSelectedLLM] = useState(null)
   const plusButtonRef = useRef(null)
+  const messagesEndRef = useRef(null)
 
   useEffect(() => {
     // AI 추천 탭 최초 입장 시에만 안내 표시
@@ -25,15 +27,34 @@ function LLMPage() {
     }
   }, [])
 
+  // 자동 스크롤 함수
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  // 메시지가 추가될 때마다 자동 스크롤
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
   const handleBack = () => {
     navigate(-1)
   }
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      // 메시지 전송 로직
-      console.log('Sending message:', message)
+      // 사용자 메시지 추가
+      setMessages([...messages, { type: 'user', text: message.trim() }])
       setMessage('')
+      
+      // TODO: AI 응답 받기 (실제로는 API 호출)
+      // 임시로 AI 응답 추가
+      setTimeout(() => {
+        setMessages(prev => [...prev, { 
+          type: 'ai', 
+          text: '안녕하세요! GPT-4b입니다. 무엇을 도와드릴까요?' 
+        }])
+      }, 500)
     }
   }
 
@@ -84,13 +105,26 @@ function LLMPage() {
 
         {/* Main Content */}
         <div className="llm-content">
-          <div className="logo-section">
-            <img src={imgGpt4B1} alt="GPT-4b Logo" className="llm-logo" />
-          </div>
-          <div className="greeting-section">
-            <h1 className="greeting-text">안녕하세요</h1>
-            <p className="subtitle-text">GPT-4b에게 마음껏 질문하세요!</p>
-          </div>
+          {messages.length === 0 ? (
+            <>
+              <div className="logo-section">
+                <img src={imgGpt4B1} alt="GPT-4b Logo" className="llm-logo" />
+              </div>
+              <div className="greeting-section">
+                <h1 className="greeting-text">안녕하세요</h1>
+                <p className="subtitle-text">GPT-4b에게 마음껏 질문하세요!</p>
+              </div>
+            </>
+          ) : (
+            <div className="messages-container">
+              {messages.map((msg, index) => (
+                <div key={index} className={`message-bubble ${msg.type === 'user' ? 'user-message' : 'ai-message'}`}>
+                  <p>{msg.text}</p>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+          )}
         </div>
 
         {/* Input Bar */}

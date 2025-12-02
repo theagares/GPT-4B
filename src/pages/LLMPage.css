@@ -14,6 +14,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  padding-bottom: 80px;
 }
 
 .llm-header {
@@ -71,9 +72,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 40px 20px;
   gap: 32px;
+  overflow-y: auto;
+}
+
+.llm-content:has(.messages-container) {
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.messages-container {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  overflow-y: auto;
+  padding-bottom: 80px;
 }
 
 .logo-section {
@@ -122,6 +140,13 @@
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   gap: 12px;
   background-color: white;
+  position: fixed;
+  bottom: 83px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 393px;
+  z-index: 1001;
 }
 
 .input-bar-icon {
@@ -181,6 +206,43 @@
 
 .send-button:not(:disabled):hover {
   opacity: 0.7;
+}
+
+/* Message Bubbles */
+.message-bubble {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  word-wrap: break-word;
+}
+
+.ai-message {
+  background-color: #f3f4f6;
+  align-self: flex-start;
+  margin-right: auto;
+}
+
+.user-message {
+  background-color: #584cdc;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.ai-message p,
+.user-message p {
+  margin: 0;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.ai-message p {
+  color: #1f2937;
+}
+
+.user-message p {
+  color: white;
 }
 
 /* Tutorial Overlay */

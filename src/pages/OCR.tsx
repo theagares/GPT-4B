@@ -145,7 +145,7 @@ const OCR = () => {
         <div className="ocr-header">
           <button
             className="ocr-back-button"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/business-cards")}
             type="button"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -212,6 +212,7 @@ const OCR = () => {
 
         {/* Title Section */}
         <div className="ocr-title-section">
+          <p className="ocr-step">Step 1.</p>
           <h1 className="ocr-title">명함을 촬영해주세요</h1>
           <p className="ocr-subtitle">명함이 가이드 안에 들어오도록 조정해주세요</p>
         </div>
