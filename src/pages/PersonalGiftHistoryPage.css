@@ -1,0 +1,231 @@
+/* PersonalGiftHistoryPage 전용 스타일 - 다른 컴포넌트와 완전히 독립적 */
+.personal-gift-history-page {
+  width: 100%;
+  max-width: 393px;
+  min-height: 100vh;
+  background: #ffffff;
+  border-radius: 40px;
+  overflow-y: auto;
+  position: relative;
+  margin: 0 auto;
+  padding-bottom: 100px;
+}
+
+.personal-gift-history-container {
+  width: 100%;
+  min-height: calc(100vh - 100px);
+  position: relative;
+  padding: 0 20px;
+  padding-top: 20px;
+  box-sizing: border-box;
+}
+
+/* 헤더 */
+.personal-gift-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  height: 56px;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+.personal-gift-history-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  color: #0a0a0a;
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.personal-back-button {
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 11;
+}
+
+.personal-back-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* 연도별 탭 */
+.personal-tab-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ececf0;
+  border-radius: 14px;
+  height: 36px;
+  padding: 3.5px;
+  margin: 0;
+  margin-bottom: 24px;
+  gap: 0;
+}
+
+.personal-tab-button {
+  flex: 1;
+  height: 29px;
+  background: transparent;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  padding: 5px 9px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #0a0a0a;
+  letter-spacing: -0.1504px;
+  transition: all 0.2s;
+}
+
+.personal-tab-button.active {
+  background: white;
+  border: 1px solid transparent;
+}
+
+/* 선물 리스트 */
+.personal-gift-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+}
+
+.personal-gift-card {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid #e5e7eb;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.personal-gift-card:last-child {
+  border-bottom: none;
+}
+
+.personal-gift-image-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f3f4f6;
+}
+
+.personal-gift-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.personal-gift-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.personal-gift-recipient {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #0a0a0a;
+  margin: 0;
+}
+
+.personal-gift-name {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #0a0a0a;
+  margin: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.personal-gift-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.personal-category-tag {
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: #6a7282;
+}
+
+.personal-status-tag {
+  background: rgba(88, 76, 220, 0.1);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: #584cdc;
+}
+
+.personal-gift-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.personal-gift-date {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #6a7282;
+}
+
+.personal-gift-price {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #0a0a0a;
+}
+
+.personal-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #6a7282;
+}
+

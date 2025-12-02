@@ -15,6 +15,7 @@ import AddEventPage from './pages/AddEventPage'
 import MyPage from './pages/MyPage'
 import MyDetailPage from './pages/MyDetailPage'
 import GiftHistoryPage from './pages/GiftHistoryPage'
+import PersonalGiftHistoryPage from './pages/PersonalGiftHistoryPage'
 import CardGiftHistoryPage from './pages/CardGiftHistoryPage'
 import PopularGiftsPage from './pages/PopularGiftsPage'
 import GiftDetailPage from './pages/GiftDetailPage'
@@ -57,7 +58,7 @@ function App() {
         <Route path="/my" element={<MyPage />} />
         <Route path="/my/detail" element={<MyDetailPage />} />
         <Route path="/my/edit" element={<EditMyInfoPage />} />
-        <Route path="/my/gift-history" element={<GiftHistoryPage />} />
+        <Route path="/my/gift-history" element={<PersonalGiftHistoryPage />} />
         <Route path="/card/gift-history" element={<CardGiftHistoryPage />} />
         <Route path="/gift-recommend" element={<GiftRecommendPage />} />
         <Route path="/gift-recommend/result" element={<GiftRecommendResultPage />} />
