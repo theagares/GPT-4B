@@ -188,27 +188,40 @@ function PersonalGiftHistoryPage() {
           <div className="personal-loading">로딩 중...</div>
         ) : (
           <div className="personal-gift-list">
-            {giftHistory.map((gift) => (
-              <div key={gift.id} className="personal-gift-card">
-                <div className="personal-gift-image-wrapper">
-                  <img src={gift.image} alt={gift.giftName} className="personal-gift-image" />
+            {giftHistory.length > 0 ? (
+              giftHistory.map((gift) => (
+                <div key={gift.id} className="personal-gift-card">
+                  <div className="personal-gift-card-content">
+                    <div className="personal-gift-image-wrapper">
+                      <img src={gift.image} alt={gift.giftName} className="personal-gift-image" />
+                    </div>
+                    <div className="personal-gift-info">
+                      <div className="personal-gift-header">
+                        <p className="personal-gift-recipient">{gift.recipient} {gift.recipientPosition}</p>
+                        <p className="personal-gift-name">{gift.giftName}</p>
+                      </div>
+                      <div className="personal-gift-badges">
+                        <span className="personal-category-badge">{gift.category}</span>
+                        <span className="personal-status-badge">{gift.status}</span>
+                      </div>
+                      <div className="personal-gift-footer">
+                        <div className="personal-gift-date">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="personal-date-icon">
+                            <path d="M12.6667 2.66667H12V2C12 1.63181 11.7015 1.33333 11.3333 1.33333C10.9651 1.33333 10.6667 1.63181 10.6667 2V2.66667H5.33333V2C5.33333 1.63181 5.03486 1.33333 4.66667 1.33333C4.29848 1.33333 4 1.63181 4 2V2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V4C14 3.26362 13.403 2.66667 12.6667 2.66667ZM12.6667 12.6667H3.33333V6.66667H12.6667V12.6667Z" fill="#6a7282"/>
+                          </svg>
+                          <span>{gift.date}</span>
+                        </div>
+                        <span className="personal-gift-price">{gift.price}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="personal-gift-info">
-                  <div className="personal-gift-recipient">
-                    {gift.recipient} {gift.recipientPosition}
-                  </div>
-                  <h3 className="personal-gift-name">{gift.giftName}</h3>
-                  <div className="personal-gift-tags">
-                    <span className="personal-category-tag">{gift.category}</span>
-                    <span className="personal-status-tag">{gift.status}</span>
-                  </div>
-                  <div className="personal-gift-footer">
-                    <span className="personal-gift-date">{gift.date}</span>
-                    <span className="personal-gift-price">{gift.price}</span>
-                  </div>
-                </div>
+              ))
+            ) : (
+              <div className="personal-empty-gift-history">
+                <p>선물 이력이 없습니다.</p>
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>

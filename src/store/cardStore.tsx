@@ -24,6 +24,14 @@ type CardState = {
 
 const demoCards: BusinessCard[] = [
   {
+    id: "card-park-sangmu", // 박상무 명함 고정 ID
+    name: "박상무",
+    position: "상무",
+    company: "테스트 회사",
+    phone: "010-1234-5678",
+    email: "park@test.com",
+  },
+  {
     id: crypto.randomUUID(),
     name: "최하늘",
     position: "Product Designer",

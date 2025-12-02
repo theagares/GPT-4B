@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
+import { fetchBusinessCardGiftHistory } from './BusinessCardGiftHistoryPage'
 import './BusinessCardWallet.css'
 
 const imgIcon = "https://www.figma.com/api/mcp/asset/d56d758a-c7b8-42c8-bd08-19709b82a5d6"
@@ -11,8 +12,8 @@ const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/c2072de6-f1a8-4f36-a042-2
 const allGiftHistory = [
   {
     id: 1,
-    cardId: 'card-1',
-    cardName: '안연주',
+    cardId: 'card-park-sangmu',
+    cardName: '박상무',
     giftName: '프리미엄 와인 세트',
     year: '2025'
   },
@@ -413,12 +414,30 @@ function CardDetailModal({ card, onClose }) {
   const updateCard = useCardStore((state) => state.updateCard)
   const deleteCard = useCardStore((state) => state.deleteCard)
 
-  // 현재 명함의 선물 이력 개수 계산
-  const giftHistoryCount = useMemo(() => {
-    if (!card) return 0
-    return allGiftHistory.filter(
-      gift => gift.cardId === card.id || gift.cardName === card.name
-    ).length
+  // 현재 명함의 선물 이력 개수 계산 (BusinessCardGiftHistoryPage 데이터와 연동)
+  const [giftHistoryCount, setGiftHistoryCount] = useState(0)
+  
+  useEffect(() => {
+    if (!card) {
+      setGiftHistoryCount(0)
+      return
+    }
+    
+    const loadGiftHistoryCount = async () => {
+      try {
+        // 두 연도의 데이터를 모두 가져와서 총 개수 계산
+        const [data2025, data2024] = await Promise.all([
+          fetchBusinessCardGiftHistory(card.id, card.name, '2025'),
+          fetchBusinessCardGiftHistory(card.id, card.name, '2024')
+        ])
+        setGiftHistoryCount(data2025.length + data2024.length)
+      } catch (error) {
+        console.error('Failed to load gift history count:', error)
+        setGiftHistoryCount(0)
+      }
+    }
+    
+    loadGiftHistoryCount()
   }, [card])
 
   const handleSaveMemo = () => {
@@ -454,8 +473,8 @@ function CardDetailModal({ card, onClose }) {
   }
 
   const handleGiftHistory = () => {
-    // 해당 명함의 선물 히스토리 페이지로 이동
-    navigate('/card/gift-history', { state: { card } })
+    // 해당 명함의 선물 히스토리 페이지로 이동 (새로운 독립적인 페이지)
+    navigate('/business-card/gift-history', { state: { card } })
   }
 
   // 모달 배경색 (명함 디자인에 맞춤)

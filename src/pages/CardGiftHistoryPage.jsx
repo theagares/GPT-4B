@@ -37,12 +37,12 @@ function CardGiftHistoryPage() {
   const allGiftHistory = [
     {
       id: 1,
-      cardId: 'card-1', // 명함 ID
-      cardName: '안연주',
+      cardId: 'card-park-sangmu', // 박상무 명함 ID
+      cardName: '박상무',
       image: imgImageWithFallback,
       icon: imgIcon,
-      name: '안연주',
-      position: '대리',
+      name: '박상무',
+      position: '상무',
       giftName: '프리미엄 와인 세트',
       category: '주류',
       status: '전달 완료',
@@ -149,28 +149,24 @@ function CardGiftHistoryPage() {
               <img src={imgVector4} alt="뒤로" />
             </div>
           </button>
-          <h1 className="card-gift-history-title">
-            {card ? `${card.name}님의 선물 이력` : '선물 이력'}
-          </h1>
+          <h1 className="card-gift-history-title">선물 이력</h1>
         </div>
 
         {/* 탭 리스트 */}
-        {cardGiftHistory.length > 0 && (
-          <div className="tab-list">
-            <button 
-              className={`tab-button ${selectedYear === '2025' ? 'active' : ''}`}
-              onClick={() => setSelectedYear('2025')}
-            >
-              2025년 ({count2025})
-            </button>
-            <button 
-              className={`tab-button ${selectedYear === '2024' ? 'active' : ''}`}
-              onClick={() => setSelectedYear('2024')}
-            >
-              2024년 ({count2024})
-            </button>
-          </div>
-        )}
+        <div className="tab-list">
+          <button 
+            className={`tab-button ${selectedYear === '2025' ? 'active' : ''}`}
+            onClick={() => setSelectedYear('2025')}
+          >
+            2025년 ({count2025})
+          </button>
+          <button 
+            className={`tab-button ${selectedYear === '2024' ? 'active' : ''}`}
+            onClick={() => setSelectedYear('2024')}
+          >
+            2024년 ({count2024})
+          </button>
+        </div>
 
         {/* 선물 이력 리스트 */}
         <div className="gift-list">
@@ -183,11 +179,7 @@ function CardGiftHistoryPage() {
                   </div>
                   <div className="gift-info">
                     <div className="gift-header">
-                      <div className="gift-header-top">
-                        <img src={gift.icon} alt="" className="gift-icon" />
-                        <span className="gift-recipient-name">{gift.name}</span>
-                        <span className="gift-recipient-position">{gift.position}</span>
-                      </div>
+                      <p className="gift-recipient">{gift.name} {gift.position}</p>
                       <p className="gift-name">{gift.giftName}</p>
                     </div>
                     <div className="gift-badges">
@@ -196,7 +188,9 @@ function CardGiftHistoryPage() {
                     </div>
                     <div className="gift-footer">
                       <div className="gift-date">
-                        <img src={imgIcon1} alt="날짜" className="date-icon" />
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="date-icon">
+                          <path d="M12.6667 2.66667H12V2C12 1.63181 11.7015 1.33333 11.3333 1.33333C10.9651 1.33333 10.6667 1.63181 10.6667 2V2.66667H5.33333V2C5.33333 1.63181 5.03486 1.33333 4.66667 1.33333C4.29848 1.33333 4 1.63181 4 2V2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V12.6667C2 13.403 2.59695 14 3.33333 14H12.6667C13.403 14 14 13.403 14 12.6667V4C14 3.26362 13.403 2.66667 12.6667 2.66667ZM12.6667 12.6667H3.33333V6.66667H12.6667V12.6667Z" fill="#6a7282"/>
+                        </svg>
                         <span>{gift.date}</span>
                       </div>
                       <span className="gift-price">{gift.price}</span>

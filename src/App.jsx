@@ -17,6 +17,7 @@ import MyDetailPage from './pages/MyDetailPage'
 import GiftHistoryPage from './pages/GiftHistoryPage'
 import PersonalGiftHistoryPage from './pages/PersonalGiftHistoryPage'
 import CardGiftHistoryPage from './pages/CardGiftHistoryPage'
+import BusinessCardGiftHistoryPage from './pages/BusinessCardGiftHistoryPage'
 import PopularGiftsPage from './pages/PopularGiftsPage'
 import GiftDetailPage from './pages/GiftDetailPage'
 import GiftRecommendPage from './pages/GiftRecommendPage'
@@ -60,6 +61,7 @@ function App() {
         <Route path="/my/edit" element={<EditMyInfoPage />} />
         <Route path="/my/gift-history" element={<PersonalGiftHistoryPage />} />
         <Route path="/card/gift-history" element={<CardGiftHistoryPage />} />
+        <Route path="/business-card/gift-history" element={<BusinessCardGiftHistoryPage />} />
         <Route path="/gift-recommend" element={<GiftRecommendPage />} />
         <Route path="/gift-recommend/result" element={<GiftRecommendResultPage />} />
         <Route path="/popular-gifts" element={<PopularGiftsPage />} />
