@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { authAPI } from '../utils/api'
+import { setToken, setUser } from '../utils/auth'
 import './LoginScreen.css'
 
 const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/c2072de6-f1a8-4f36-a042-2df786f153b1"
@@ -38,14 +40,33 @@ function GoogleIcon() {
 
 function LoginScreen() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    // 로그인 로직 (임시로 대시보드로 이동)
-    navigate('/dashboard')
+    
+    if (!username || !password) {
+      alert('아이디와 비밀번호를 입력해주세요.')
+      return
+    }
+
+    try {
+      const response = await authAPI.login(username, password)
+      
+      if (response.data.success) {
+        setToken(response.data.token)
+        setUser(response.data.user)
+        navigate('/dashboard')
+      } else {
+        alert('로그인에 실패했습니다.')
+      }
+    } catch (error) {
+      console.error('Login error:', error)
+      const message = error.response?.data?.message || '로그인에 실패했습니다.'
+      alert(message)
+    }
   }
 
   const handleAppleLogin = async () => {
@@ -83,13 +104,13 @@ function LoginScreen() {
           <div className="input-group">
             <div className="input-wrapper">
               <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                placeholder="아이디를 입력하세요"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="login-input"
               />
-              <img src={imgIcOutlineEmail} alt="email" className="input-icon-right" />
+              <img src={imgIcOutlineEmail} alt="username" className="input-icon-right" />
             </div>
           </div>
 
