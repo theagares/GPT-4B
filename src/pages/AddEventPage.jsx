@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { calendarAPI } from '../utils/api'
+import { isAuthenticated } from '../utils/auth'
 import './AddEventPage.css'
 
 // 아이콘 이미지 URL
@@ -32,11 +34,15 @@ function AddEventPage() {
   
   const [formData, setFormData] = useState({
     title: '',
-    participant: '',
     startTime: { hour: 9, minute: 0 },
     endTime: { hour: 10, minute: 0 },
-    memo: ''
+    memo: '',
+    notification: ''
   })
+  const [participants, setParticipants] = useState([])
+  const [participantInput, setParticipantInput] = useState('')
+  const [showNotificationDropdown, setShowNotificationDropdown] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear()
@@ -130,84 +136,80 @@ function AddEventPage() {
     setShowCategoryDropdown(false)
   }
 
+  const handleAddParticipant = () => {
+    if (participantInput.trim() && !participants.includes(participantInput.trim())) {
+      setParticipants([...participants, participantInput.trim()])
+      setParticipantInput('')
+    }
+  }
+
+  const handleRemoveParticipant = (index) => {
+    setParticipants(participants.filter((_, i) => i !== index))
+  }
+
+  const handleParticipantKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleAddParticipant()
+    }
+  }
+
   const handleSave = async () => {
+    if (isSaving) {
+      return // 이미 저장 중이면 중복 호출 방지
+    }
+
     if (!formData.title.trim()) {
       alert('일정 제목을 입력해주세요.')
       return
     }
 
-    try {
-      // TODO: 백엔드 API로 이벤트 생성
-      // const eventData = {
-      //   summary: formData.title,
-      //   start: {
-      //     dateTime: new Date(
-      //       selectedDate.getFullYear(),
-      //       selectedDate.getMonth(),
-      //       selectedDate.getDate(),
-      //       formData.startTime.hour,
-      //       formData.startTime.minute
-      //     ).toISOString()
-      //   },
-      //   end: {
-      //     dateTime: new Date(
-      //       selectedDate.getFullYear(),
-      //       selectedDate.getMonth(),
-      //       selectedDate.getDate(),
-      //       formData.endTime.hour,
-      //       formData.endTime.minute
-      //     ).toISOString()
-      //   },
-      //   colorId: selectedCategory.id === '미팅' ? '1' : selectedCategory.id === '업무' ? '2' : selectedCategory.id === '개인' ? '3' : '4',
-      //   extendedProperties: {
-      //     private: {
-      //       participant: formData.participant,
-      //       memo: formData.memo
-      //     }
-      //   }
-      // }
-      // const response = await fetch('/api/calendar/events', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(eventData)
-      // })
+    if (!isAuthenticated()) {
+      alert('로그인이 필요합니다.')
+      navigate('/login')
+      return
+    }
 
-      // 임시: localStorage에 저장
-      const newEvent = {
-        id: `event_${Date.now()}`,
+    setIsSaving(true)
+    try {
+      const startDate = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+        formData.startTime.hour,
+        formData.startTime.minute
+      )
+      const endDate = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+        formData.endTime.hour,
+        formData.endTime.minute
+      )
+
+      const eventData = {
         title: formData.title,
-        participant: formData.participant,
-        startDate: new Date(
-          selectedDate.getFullYear(),
-          selectedDate.getMonth(),
-          selectedDate.getDate(),
-          formData.startTime.hour,
-          formData.startTime.minute
-        ),
-        endDate: new Date(
-          selectedDate.getFullYear(),
-          selectedDate.getMonth(),
-          selectedDate.getDate(),
-          formData.endTime.hour,
-          formData.endTime.minute
-        ),
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
         category: selectedCategory.id,
         color: selectedCategory.color,
-        memo: formData.memo
+        participants: participants,
+        memo: formData.memo || null,
+        notification: formData.notification || null
       }
 
-      const storedEvents = JSON.parse(localStorage.getItem('calendarEvents') || '[]')
-      storedEvents.push({
-        ...newEvent,
-        startDate: newEvent.startDate.toISOString(),
-        endDate: newEvent.endDate.toISOString()
-      })
-      localStorage.setItem('calendarEvents', JSON.stringify(storedEvents))
+      const response = await calendarAPI.createEvent(eventData)
 
-      navigate('/calendar')
+      if (response.data && response.data.success) {
+        navigate('/calendar')
+      } else {
+        throw new Error('Failed to create event')
+      }
     } catch (err) {
       console.error('이벤트 생성 실패:', err)
       alert('일정 추가에 실패했습니다.')
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -324,17 +326,42 @@ function AddEventPage() {
       </div>
 
       {/* 참여자 추가 */}
-      <div className="participant-section">
-        <input
-          type="text"
-          className="participant-input"
-          placeholder="참여자 추가"
-          value={formData.participant}
-          onChange={(e) => handleInputChange('participant', e.target.value)}
-        />
-        <button className="participant-button">
-          <img src={imgButton} alt="참여자 추가" />
-        </button>
+      <div className="participant-section-wrapper">
+        <label className="participant-label">참여자</label>
+        <div className="participant-section">
+          <input
+            type="text"
+            className="participant-input"
+            placeholder="참여자 추가"
+            value={participantInput}
+            onChange={(e) => setParticipantInput(e.target.value)}
+            onKeyPress={handleParticipantKeyPress}
+          />
+          <button 
+            className={`participant-button ${participantInput.trim() ? 'active' : ''}`}
+            onClick={handleAddParticipant}
+            disabled={!participantInput.trim()}
+            type="button"
+          >
+            <img src={imgButton} alt="참여자 추가" />
+          </button>
+        </div>
+        {participants.length > 0 && (
+          <div className="participants-list">
+            {participants.map((participant, index) => (
+              <div key={index} className="participant-tag">
+                <span>{participant}</span>
+                <button 
+                  className="participant-remove"
+                  onClick={() => handleRemoveParticipant(index)}
+                  type="button"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 날짜/시간 표시 */}
@@ -414,9 +441,45 @@ function AddEventPage() {
         />
       </div>
 
+      {/* 알림 설정 */}
+      <div className="notification-section">
+        <div className="notification-label">알림</div>
+        <div className="notification-dropdown-wrapper">
+          <button
+            className="notification-button"
+            onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
+            type="button"
+          >
+            <span>{formData.notification || '없음'}</span>
+            <img src={imgIcon} alt="드롭다운" className="dropdown-icon" />
+          </button>
+          {showNotificationDropdown && (
+            <div className="notification-dropdown">
+              {['없음', '5분 전', '10분 전', '15분 전', '30분 전', '1시간 전', '2시간 전', '1일 전', '2일 전', '1주 전'].map((option) => (
+                <button
+                  key={option}
+                  className={`notification-option ${formData.notification === option ? 'selected' : ''}`}
+                  onClick={() => {
+                    handleInputChange('notification', option === '없음' ? '' : option)
+                    setShowNotificationDropdown(false)
+                  }}
+                  type="button"
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* 추가 버튼 */}
-      <button className="add-button" onClick={handleSave}>
-        추가
+      <button 
+        className="add-button" 
+        onClick={handleSave}
+        disabled={isSaving || !formData.title.trim()}
+      >
+        {isSaving ? '저장 중...' : '추가'}
       </button>
       </div>
     </div>

@@ -78,6 +78,7 @@ function CalendarPage() {
   const [events, setEvents] = useState([]) // 구글 캘린더 이벤트 배열
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [isSaving, setIsSaving] = useState(false)
   const [showAddEventModal, setShowAddEventModal] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0])
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false)
@@ -203,7 +204,16 @@ function CalendarPage() {
     const endDate = new Date(year, month + 1, 0)
     
     fetchCalendarEvents(startDate, endDate).then(dbEvents => {
-      const transformedEvents = dbEvents.map(transformDBEvent)
+      // 중복 제거: id 기준으로 중복 제거
+      const uniqueEvents = dbEvents.reduce((acc, event) => {
+        const existingIndex = acc.findIndex(e => e.id === event.id)
+        if (existingIndex === -1) {
+          acc.push(event)
+        }
+        return acc
+      }, [])
+      
+      const transformedEvents = uniqueEvents.map(transformDBEvent)
       setEvents(transformedEvents)
     })
   }, [currentDate])
@@ -364,6 +374,10 @@ function CalendarPage() {
   }
 
   const handleSave = async () => {
+    if (isSaving) {
+      return // 이미 저장 중이면 중복 호출 방지
+    }
+
     if (!formData.title.trim()) {
       // eslint-disable-next-line no-alert
       alert('일정 제목을 입력해주세요.')
@@ -376,6 +390,7 @@ function CalendarPage() {
       return
     }
 
+    setIsSaving(true)
     try {
       const startDate = new Date(
         modalSelectedDate.getFullYear(),
@@ -406,23 +421,39 @@ function CalendarPage() {
       }
 
       // DB에 이벤트 저장
-      await calendarAPI.createEvent(eventData)
+      const response = await calendarAPI.createEvent(eventData)
 
-      // 이벤트 목록 새로고침
-      const year = currentDate.getFullYear()
-      const month = currentDate.getMonth()
-      const startDateRange = new Date(year, month, 1)
-      const endDateRange = new Date(year, month + 1, 0)
-      
-      const dbEvents = await fetchCalendarEvents(startDateRange, endDateRange)
-      const transformedEvents = dbEvents.map(transformDBEvent)
-      setEvents(transformedEvents)
+      if (response.data && response.data.success) {
+        // 모달 먼저 닫기
+        handleCloseModal()
 
-      handleCloseModal()
+        // 이벤트 목록 새로고침 (약간의 지연을 두어 DB 반영 시간 확보)
+        setTimeout(async () => {
+          const year = currentDate.getFullYear()
+          const month = currentDate.getMonth()
+          const startDateRange = new Date(year, month, 1)
+          const endDateRange = new Date(year, month + 1, 0)
+          
+          const dbEvents = await fetchCalendarEvents(startDateRange, endDateRange)
+          // 중복 제거: id 기준으로 중복 제거
+          const uniqueEvents = dbEvents.reduce((acc, event) => {
+            const existingIndex = acc.findIndex(e => e.id === event.id)
+            if (existingIndex === -1) {
+              acc.push(event)
+            }
+            return acc
+          }, [])
+          
+          const transformedEvents = uniqueEvents.map(transformDBEvent)
+          setEvents(transformedEvents)
+        }, 200)
+      }
     } catch (err) {
       console.error('이벤트 생성 실패:', err)
       // eslint-disable-next-line no-alert
       alert('일정 추가에 실패했습니다: ' + (err.response?.data?.message || err.message))
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -878,11 +909,11 @@ function CalendarPage() {
 
             {/* 추가 버튼 */}
             <button 
-              className={`add-button ${formData.title.trim() ? 'add-button-active' : ''}`}
+              className={`add-button ${formData.title.trim() && !isSaving ? 'add-button-active' : ''}`}
               onClick={handleSave}
-              disabled={!formData.title.trim()}
+              disabled={!formData.title.trim() || isSaving}
             >
-              추가
+              {isSaving ? '저장 중...' : '추가'}
             </button>
           </div>
         </div>

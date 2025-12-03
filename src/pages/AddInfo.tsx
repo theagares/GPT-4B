@@ -41,28 +41,33 @@ const AddInfo = () => {
   const cardBackground = cardDesigns[cardDesign as keyof typeof cardDesigns] || cardDesigns['design-1'];
 
   // 수정 폼 제출 핸들러 (CardForm에서 사용)
-  const handleFormSubmit = (updatedCard: BusinessCard) => {
-    // draft가 pendingCard인 경우 (Confirm에서 수정하기로 온 경우)
-    if (draft?.id && draft.id === pendingCard?.id) {
-      // pendingCard 업데이트
-      setPendingCard(updatedCard);
-      navigate("/confirm");
-      return;
+  const handleFormSubmit = async (updatedCard: BusinessCard) => {
+    try {
+      // draft가 pendingCard인 경우 (Confirm에서 수정하기로 온 경우)
+      if (draft?.id && draft.id === pendingCard?.id) {
+        // pendingCard 업데이트
+        setPendingCard(updatedCard);
+        navigate("/confirm");
+        return;
+      }
+      
+      // 기존 명함 수정인 경우 (id가 있고 이미 저장된 명함인 경우)
+      if (updatedCard.id && getCardById(updatedCard.id)) {
+        await updateCard(updatedCard.id, updatedCard);
+        navigate("/business-cards");
+      } else {
+        // 새 명함 추가인 경우 (DB에 저장)
+        await addCard(updatedCard);
+        navigate("/business-cards");
+      }
+      setPendingCard(null);
+    } catch (error) {
+      console.error('Failed to save card:', error);
+      alert('명함 저장에 실패했습니다. 다시 시도해주세요.');
     }
-    
-    // 기존 명함 수정인 경우 (id가 있고 이미 저장된 명함인 경우)
-    if (updatedCard.id && getCardById(updatedCard.id)) {
-      updateCard(updatedCard.id, updatedCard);
-      navigate("/business-cards");
-    } else {
-      // 새 명함 추가인 경우
-      addCard(updatedCard);
-      navigate("/business-cards");
-    }
-    setPendingCard(null);
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (!card) return;
 
     // 메모 업데이트
@@ -71,21 +76,26 @@ const AddInfo = () => {
       memo: memo.trim() || undefined,
     };
 
-    // 명함 저장
-    if (fromOCR && pendingCard) {
-      // OCR에서 온 경우 새 명함 추가
-      addCard(updatedCard);
-      const savedCardId = updatedCard.id;
-      setPendingCard(null);
-      navigate("/business-cards", { state: { openCardId: savedCardId } });
-    } else if (card.id && getCardById(card.id)) {
-      // 기존 명함 수정인 경우
-      updateCard(card.id, updatedCard);
-      navigate("/business-cards");
-    } else {
-      // 새 명함 추가인 경우
-      addCard(updatedCard);
-      navigate("/business-cards");
+    try {
+      // 명함 저장
+      if (fromOCR && pendingCard) {
+        // OCR에서 온 경우 새 명함 추가 (DB에 저장)
+        const savedCard = await addCard(updatedCard);
+        setPendingCard(null);
+        // DB에서 반환된 실제 카드 ID 사용
+        navigate("/business-cards", { state: { openCardId: savedCard.id } });
+      } else if (card.id && getCardById(card.id)) {
+        // 기존 명함 수정인 경우
+        await updateCard(card.id, updatedCard);
+        navigate("/business-cards");
+      } else {
+        // 새 명함 추가인 경우
+        await addCard(updatedCard);
+        navigate("/business-cards");
+      }
+    } catch (error) {
+      console.error('Failed to save card:', error);
+      alert('명함 저장에 실패했습니다. 다시 시도해주세요.');
     }
   };
 

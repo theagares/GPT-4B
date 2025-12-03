@@ -21,7 +21,7 @@ type CardState = {
   cards: BusinessCard[];
   pendingCard: BusinessCard | null;
   isLoading: boolean;
-  addCard: (card: BusinessCard) => Promise<void>;
+  addCard: (card: BusinessCard) => Promise<BusinessCard>;
   setPendingCard: (card: BusinessCard | null) => void;
   getCardById: (id: string | number) => BusinessCard | undefined;
   updateCard: (id: string | number, updates: Partial<BusinessCard>) => Promise<void>;
@@ -98,18 +98,25 @@ export const useCardStore = create<CardState>((set, get) => ({
   addCard: async (card) => {
     if (isAuthenticated()) {
       try {
-        // DB에 저장
-        const response = await cardAPI.create({
+        // DB에 저장 (빈 문자열을 undefined로 변환하여 백엔드에서 null로 처리되도록 함)
+        const cleanCardData = {
           name: card.name,
-          position: card.position,
-          company: card.company,
-          phone: card.phone,
-          email: card.email,
-          memo: card.memo,
-          image: card.image,
+          position: card.position && card.position.trim() !== '' ? card.position : undefined,
+          company: card.company && card.company.trim() !== '' ? card.company : undefined,
+          phone: card.phone && card.phone.trim() !== '' ? card.phone : undefined,
+          email: card.email && card.email.trim() !== '' ? card.email : undefined,
+          memo: card.memo && card.memo.trim() !== '' ? card.memo : undefined,
+          image: card.image && card.image.trim() !== '' ? card.image : undefined,
           design: card.design || 'design-1',
           isFavorite: card.isFavorite || false,
+        };
+
+        console.log('[CardStore] Creating card with data:', {
+          ...cleanCardData,
+          image: cleanCardData.image ? `[Base64 image, length: ${cleanCardData.image.length}]` : undefined
         });
+
+        const response = await cardAPI.create(cleanCardData);
         
         if (response.data.success) {
           const newCard = response.data.data;
@@ -131,7 +138,10 @@ export const useCardStore = create<CardState>((set, get) => ({
           set((state) => ({
             cards: [formattedCard, ...state.cards],
           }));
+          // 새로 생성된 카드 반환
+          return formattedCard;
         }
+        throw new Error('Failed to create card: API response was not successful');
       } catch (error) {
         console.error('Failed to create card:', error);
         throw error;
@@ -142,6 +152,7 @@ export const useCardStore = create<CardState>((set, get) => ({
       set((state) => ({
         cards: [newCard, ...state.cards],
       }));
+      return newCard;
     }
   },
   
