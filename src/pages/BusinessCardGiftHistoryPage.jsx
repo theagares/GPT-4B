@@ -5,10 +5,6 @@ import './BusinessCardGiftHistoryPage.css'
 
 // BusinessCardGiftHistoryPage 전용 이미지 URL (완전히 독립적)
 const businessCardGiftImage1 = "https://www.figma.com/api/mcp/asset/22a17804-a225-448c-ad64-50983c1fa891"
-const businessCardGiftImage2 = "https://www.figma.com/api/mcp/asset/3479ec16-6041-4bb0-be11-8808d8df88df"
-const businessCardGiftImage3 = "https://www.figma.com/api/mcp/asset/3c2a8783-5233-4eeb-b511-684069144ba3"
-const businessCardGiftImage4 = "https://www.figma.com/api/mcp/asset/c80efe8f-7bb1-4967-bf18-e4af3f5139e6"
-const businessCardGiftImage5 = "https://www.figma.com/api/mcp/asset/e58eabb5-b484-4998-af61-7a34377ede25"
 
 // BusinessCardGiftHistoryPage 전용 데이터 페칭 함수 (완전히 독립적)
 // 대시보드, PersonalGiftHistoryPage와 절대 공유하지 않음

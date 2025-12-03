@@ -9,10 +9,15 @@ const imgImageWithFallback1 = "https://www.figma.com/api/mcp/asset/3479ec16-6041
 const imgImageWithFallback2 = "https://www.figma.com/api/mcp/asset/3c2a8783-5233-4eeb-b511-684069144ba3"
 const imgImageWithFallback3 = "https://www.figma.com/api/mcp/asset/c80efe8f-7bb1-4967-bf18-e4af3f5139e6"
 const imgImageWithFallback4 = "https://www.figma.com/api/mcp/asset/e58eabb5-b484-4998-af61-7a34377ede25"
-const imgIcon = "https://www.figma.com/api/mcp/asset/4559e990-44f1-4e81-b6c5-efd365a6f9d0"
-const imgIcon2 = "https://www.figma.com/api/mcp/asset/8f3100aa-3650-47a0-a821-c71242a680d5"
-const imgIcon4 = "https://www.figma.com/api/mcp/asset/988283d6-6878-4cbf-8f8a-db34ab956392"
-const imgVector4 = "https://www.figma.com/api/mcp/asset/9f59a389-f83e-4f13-b23f-43517aa98dce"
+
+// 뒤로가기 아이콘 SVG 컴포넌트
+function BackIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 function CardGiftHistoryPage() {
   const navigate = useNavigate()
@@ -33,7 +38,6 @@ function CardGiftHistoryPage() {
       cardId: 'card-park-sangmu', // 박상무 명함 ID
       cardName: '박상무',
       image: imgImageWithFallback,
-      icon: imgIcon,
       name: '박상무',
       position: '상무',
       giftName: '프리미엄 와인 세트',
@@ -48,7 +52,6 @@ function CardGiftHistoryPage() {
       cardId: 'card-1',
       cardName: '안연주',
       image: imgImageWithFallback1,
-      icon: imgIcon,
       name: '안연주',
       position: '대리',
       giftName: '명품 선물 세트',
@@ -63,7 +66,6 @@ function CardGiftHistoryPage() {
       cardId: 'card-2',
       cardName: '이부장',
       image: imgImageWithFallback2,
-      icon: imgIcon2,
       name: '이부장',
       position: '부장',
       giftName: '꽃다발 선물',
@@ -78,7 +80,6 @@ function CardGiftHistoryPage() {
       cardId: 'card-3',
       cardName: '최대리',
       image: imgImageWithFallback3,
-      icon: imgIcon4,
       name: '최대리',
       position: '대리',
       giftName: '초콜릿 선물 세트',
@@ -93,7 +94,6 @@ function CardGiftHistoryPage() {
       cardId: 'card-1',
       cardName: '안연주',
       image: imgImageWithFallback4,
-      icon: imgIcon,
       name: '안연주',
       position: '대리',
       giftName: '선물 배송 상자',
@@ -108,7 +108,6 @@ function CardGiftHistoryPage() {
       cardId: 'card-2',
       cardName: '이부장',
       image: imgImageWithFallback,
-      icon: imgIcon2,
       name: '이부장',
       position: '부장',
       giftName: '고급 와인 세트',
@@ -139,7 +138,7 @@ function CardGiftHistoryPage() {
         <div className="card-gift-history-header">
           <button className="back-button" onClick={handleBack}>
             <div className="back-icon">
-              <img src={imgVector4} alt="뒤로" />
+              <BackIcon />
             </div>
           </button>
           <h1 className="card-gift-history-title">선물 이력</h1>

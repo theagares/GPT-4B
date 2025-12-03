@@ -1,8 +1,15 @@
 import { Link, useLocation } from 'react-router-dom'
 import './BottomNavigation.css'
 
-const imgImage10 = "https://www.figma.com/api/mcp/asset/718710cb-5c8b-4c5f-9937-711e40a7523d"
-const imgGpt4B4 = "https://www.figma.com/api/mcp/asset/4aef3389-774e-415a-b6d4-c3775374a44f"
+// MY(사용자) 아이콘 SVG 컴포넌트
+function MyIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 // 대시보드(집) 아이콘 SVG 컴포넌트
 function HomeIcon() {
@@ -74,7 +81,7 @@ function BottomNavigation() {
         className={`nav-item ai-recommend ${isActive('/llm') ? 'active' : ''}`}
       >
         <div className="ai-icon-wrapper">
-          <img src={imgGpt4B4} alt="GPT-4b" className="ai-logo" />
+          <img src="/assets/gpt_4b_logo_white.png" alt="GPT-4b" className="ai-logo" />
         </div>
         <span className="nav-label ai-label">AI 추천</span>
       </Link>
@@ -91,7 +98,7 @@ function BottomNavigation() {
         to="/my" 
         className={`nav-item ${isActive('/my') ? 'active' : ''}`}
       >
-        <img src={imgImage10} alt="MY" className="nav-icon" />
+        <MyIcon />
         <span className="nav-label">MY</span>
       </Link>
     </div>

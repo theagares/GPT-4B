@@ -18,7 +18,7 @@ function WelcomeScreen() {
     <div className="welcome-screen">
       <div className="welcome-content">
         <div className="logo-container">
-          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="logo" />
+          <img src="/assets/gpt_4b_logo_white.png" alt="GPT-4b Logo" className="logo" />
         </div>
         <div className="welcome-text">
           <p>GPT-4b가</p>

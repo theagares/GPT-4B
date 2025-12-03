@@ -2,7 +2,14 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import './GiftDetailPage.css'
 
-const imgVector = "https://www.figma.com/api/mcp/asset/c52eba95-e375-469d-8423-31aeaf519d2d"
+// SVG Icon Component
+function BackIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 // 선물 데이터 (PopularGiftsPage와 동일한 데이터)
 const allGifts = [
@@ -219,7 +226,7 @@ function GiftDetailPage() {
       <div className="gift-detail-header">
         <button className="back-button" onClick={handleBack}>
           <div className="back-icon">
-            <img src={imgVector} alt="뒤로 가기" />
+            <BackIcon />
           </div>
         </button>
         <h1 className="page-title">상품 상세</h1>

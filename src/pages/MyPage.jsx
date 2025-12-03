@@ -22,10 +22,23 @@ const backgroundColors = {
   'design-6': 'linear-gradient(180deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
 }
 
-// 이미지 URL
-const imgGpt4B2 = "https://www.figma.com/api/mcp/asset/cd29f31a-6dd1-4564-9d37-1a87e76147bd"
-const imgVector = "https://www.figma.com/api/mcp/asset/711cfff5-444e-4151-9308-a5686c4411d8"
-const imgVector4 = "https://www.figma.com/api/mcp/asset/9f59a389-f83e-4f13-b23f-43517aa98dce"
+// 뒤로가기 아이콘 SVG 컴포넌트
+function BackIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+// 위로 화살표 아이콘 SVG 컴포넌트
+function ArrowUpIcon() {
+  return (
+    <svg width="12" height="6" viewBox="0 0 12 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 1L6 5L11 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 function MyPage() {
   const navigate = useNavigate()
@@ -294,7 +307,7 @@ function MyPage() {
         <div className="my-page-header">
           <button className="back-button" onClick={handleBack}>
             <div className="back-icon">
-              <img src={imgVector4} alt="뒤로" style={{ filter: 'brightness(0) invert(1)' }} />
+              <BackIcon />
             </div>
           </button>
         </div>
@@ -324,7 +337,7 @@ function MyPage() {
               
               <div className="card-header">
                 <div className="card-logo">
-                  <img src={imgGpt4B2} alt="GPT-4b Logo" />
+                  <img src="/assets/gpt_4b_logo_white.png" alt="GPT-4b Logo" />
                 </div>
                 <div className="card-info">
                   <h2 className="card-name">{myInfo.name}</h2>
@@ -344,10 +357,10 @@ function MyPage() {
         <button className="swipe-up-button" onClick={handleSwipeUp} disabled={isAnimating}>
           <div className="swipe-arrows">
             <div className="arrow-up">
-              <img src={imgVector} alt="위로" />
+              <ArrowUpIcon />
             </div>
             <div className="arrow-up">
-              <img src={imgVector} alt="위로" />
+              <ArrowUpIcon />
             </div>
           </div>
           <p className="swipe-text">위로 밀어서 상세정보 확인하기</p>

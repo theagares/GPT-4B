@@ -2,11 +2,30 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import './PopularGiftsPage.css'
 
-const imgVector = "https://www.figma.com/api/mcp/asset/c52eba95-e375-469d-8423-31aeaf519d2d"
+// SVG Icon Components
+function BackIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
-const imgIcon = "https://www.figma.com/api/mcp/asset/ba5c2029-c444-4fec-b5ed-5a9c41343af2"
+function SortIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 6L8 10L12 6" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
-const imgIcon1 = "https://www.figma.com/api/mcp/asset/08bca237-e94e-4e39-8d22-1707bebcc602"
+function FilterIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 4H14M4 8H12M6 12H10" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 const imgImageWithFallback = "https://www.figma.com/api/mcp/asset/4b1421cd-2596-45d3-8139-9dcc9a7eb9f4"
 
@@ -214,7 +233,7 @@ function PopularGiftsPage() {
         <div className="header-content">
           <button className="back-button" onClick={handleBack}>
             <div className="back-icon">
-              <img src={imgVector} alt="뒤로 가기" />
+              <BackIcon />
             </div>
           </button>
           <h1 className="page-title">인기 선물</h1>
@@ -226,7 +245,7 @@ function PopularGiftsPage() {
       <div className="sort-filter-bar">
         <button className="sort-button">
           <span className="sort-text">인기순</span>
-          <img src={imgIcon} alt="정렬" className="sort-icon" />
+          <span className="sort-icon"><SortIcon /></span>
         </button>
         <Link 
           to="/popular-gifts/filter" 
@@ -236,7 +255,7 @@ function PopularGiftsPage() {
             priceRange: appliedPriceRange
           }}
         >
-          <img src={imgIcon1} alt="필터" className="filter-icon" />
+          <span className="filter-icon"><FilterIcon /></span>
           <span className="filter-text">필터</span>
         </Link>
       </div>

@@ -2,11 +2,14 @@ import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import './FilterPage.css'
 
-const imgVector = "https://www.figma.com/api/mcp/asset/c52eba95-e375-469d-8423-31aeaf519d2d"
-
-const imgCloseVector1 = "https://www.figma.com/api/mcp/asset/ebf55ca3-03b8-4ecd-aa16-69b3841d2705"
-
-const imgCloseVector2 = "https://www.figma.com/api/mcp/asset/22fe3212-d886-4b6d-92be-3d2893dd159b"
+// SVG Icon Components
+function CloseIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 function FilterPage() {
   const navigate = useNavigate()
@@ -19,10 +22,6 @@ function FilterPage() {
   const [selectedPriceRange, setSelectedPriceRange] = useState(
     location.state?.priceRange || '전체'
   )
-
-  const handleBack = () => {
-    navigate(-1)
-  }
 
   const handleClose = () => {
     navigate(-1)
@@ -52,13 +51,7 @@ function FilterPage() {
       {/* Header */}
       <div className="filter-page-header">
         <div className="header-content">
-          <button className="back-button" onClick={handleBack}>
-            <div className="back-icon">
-              <img src={imgVector} alt="뒤로 가기" />
-            </div>
-          </button>
           <h1 className="page-title">인기 선물</h1>
-          <div className="header-spacer"></div>
         </div>
       </div>
 
@@ -69,12 +62,7 @@ function FilterPage() {
           <h2 className="filter-title">필터</h2>
           <button className="filter-close-button" onClick={handleClose}>
             <div className="filter-close-icon">
-              <div className="close-icon-line">
-                <img src={imgCloseVector1} alt="" />
-              </div>
-              <div className="close-icon-line">
-                <img src={imgCloseVector2} alt="" />
-              </div>
+              <CloseIcon />
             </div>
           </button>
         </div>

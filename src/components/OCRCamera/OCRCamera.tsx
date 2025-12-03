@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import "./OCRCamera.css";
 
-const imgCameraIcon = "https://www.figma.com/api/mcp/asset/6efbcce4-972f-414d-afca-756ba17f83b4";
+// SVG Icon Component
+function CameraIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M23 19A2 2 0 0 1 21 21H3A2 2 0 0 1 1 19V8A2 2 0 0 1 3 6H7L9 3H15L17 6H21A2 2 0 0 1 23 8V19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M12 17A3 3 0 1 0 12 11A3 3 0 0 0 12 17Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 type OCRCameraProps = {
   onCapture: (image: string) => void;
@@ -111,7 +119,9 @@ const OCRCamera = ({ onCapture, isProcessing = false, onError, onCameraToggle }:
           className="ocr-capture-button"
         >
           <div className="ocr-capture-button-inner">
-            <img src={imgCameraIcon} alt="촬영" className="ocr-capture-icon" />
+            <div className="ocr-capture-icon">
+              <CameraIcon />
+            </div>
           </div>
         </button>
         <p className="ocr-capture-hint">버튼을 눌러 촬영하세요</p>

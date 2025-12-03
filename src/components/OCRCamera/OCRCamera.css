@@ -170,7 +170,16 @@
 .ocr-capture-icon {
   width: 28px;
   height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ocr-capture-icon svg {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  stroke: #0a0a0a;
 }
 
 .ocr-capture-hint {
