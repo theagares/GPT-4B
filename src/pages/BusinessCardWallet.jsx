@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
-import { fetchBusinessCardGiftHistory } from './BusinessCardGiftHistoryPage'
 import { giftAPI } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
 import './BusinessCardWallet.css'
@@ -391,9 +390,6 @@ function CardDetailModal({ card, onClose }) {
   const navigate = useNavigate()
   const updateCard = useCardStore((state) => state.updateCard)
   const deleteCard = useCardStore((state) => state.deleteCard)
-
-  // 현재 명함의 선물 이력 개수 계산 (BusinessCardGiftHistoryPage 데이터와 연동)
-  const [giftHistoryCount, setGiftHistoryCount] = useState(0)
   
   useEffect(() => {
     if (!card) {
@@ -402,16 +398,36 @@ function CardDetailModal({ card, onClose }) {
     }
     
     const loadGiftHistoryCount = async () => {
+      if (!isAuthenticated()) {
+        setGiftHistoryCount(0)
+        return
+      }
+
+      setIsLoadingGifts(true)
       try {
-        // 두 연도의 데이터를 모두 가져와서 총 개수 계산
-        const [data2025, data2024] = await Promise.all([
-          fetchBusinessCardGiftHistory(card.id, card.name, '2025'),
-          fetchBusinessCardGiftHistory(card.id, card.name, '2024')
-        ])
-        setGiftHistoryCount(data2025.length + data2024.length)
+        // card.id를 숫자로 변환 (DB의 cardId는 INT 타입)
+        let cardId = card.id
+        if (typeof cardId === 'string') {
+          cardId = parseInt(cardId, 10)
+          if (isNaN(cardId)) {
+            throw new Error('Invalid card ID format')
+          }
+        }
+
+        // DB에서 해당 명함의 모든 선물 이력 가져오기
+        const response = await giftAPI.getAll({ cardId: String(cardId) })
+        
+        if (response.data && response.data.success) {
+          const giftsData = Array.isArray(response.data.data) ? response.data.data : []
+          setGiftHistoryCount(giftsData.length)
+        } else {
+          setGiftHistoryCount(0)
+        }
       } catch (error) {
         console.error('Failed to load gift history count:', error)
         setGiftHistoryCount(0)
+      } finally {
+        setIsLoadingGifts(false)
       }
     }
     
