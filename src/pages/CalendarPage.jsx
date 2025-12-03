@@ -3,10 +3,14 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import './CalendarPage.css'
 
-const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/a3f2241c-a552-4bd3-b5e3-fa9bb210880a"
-const imgIcon = "https://www.figma.com/api/mcp/asset/8c0e2d4e-0d4b-4f42-bb90-de66d03a6b27"
-const imgButton = "https://www.figma.com/api/mcp/asset/b1c95ac0-e7f1-4a27-91f0-452379c5df52"
-const imgBackIcon = "https://www.figma.com/api/mcp/asset/ee258417-6b3f-4f61-b06d-4c34a0ab3bbf"
+// 드롭다운 아이콘 SVG 컴포넌트
+function DropdownIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 6L8 10L12 6" stroke="#6a7282" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 const WEEKDAYS_KR = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일']
 
@@ -592,7 +596,7 @@ function CalendarPage() {
   return (
     <div className="calendar-page">
       <div className="logo-header">
-        <img src={imgGpt4B1} alt="GPT-4b Logo" className="calendar-logo" />
+        <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="calendar-logo" />
       </div>
 
       <div className="calendar-component">
@@ -707,7 +711,7 @@ function CalendarPage() {
                   >
                     <div className="category-dot" style={{ backgroundColor: selectedCategory.color }} />
                     <span>{selectedCategory.label}</span>
-                    <img src={imgIcon} alt="드롭다운" className="dropdown-icon" />
+                    <DropdownIcon />
                   </button>
                   {showCategoryDropdown && (
                     <div className="category-dropdown">

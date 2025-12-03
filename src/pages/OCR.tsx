@@ -5,8 +5,14 @@ import { runOCR } from "../utils/ocr";
 import { useCardStore } from "../store/cardStore";
 import "./OCR.css";
 
-const imgClose = "https://www.figma.com/api/mcp/asset/6648b9d4-a842-4e72-bb51-ca84e67e9f31";
-const imgCameraIcon = "https://www.figma.com/api/mcp/asset/6efbcce4-972f-414d-afca-756ba17f83b4";
+// 닫기 아이콘 SVG 컴포넌트
+function CloseIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 // 모바일/웹 감지 함수
 const isMobileDevice = () => {
@@ -279,7 +285,7 @@ const OCR = () => {
               onClick={() => setShowPermissionDialog(false)}
               type="button"
             >
-              <img src={imgClose} alt="닫기" />
+              <CloseIcon />
             </button>
             <div className="permission-dialog-content">
               <h2 className="permission-dialog-title">카메라를 허용해주세요</h2>

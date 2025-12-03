@@ -36,11 +36,11 @@
 .back-button {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0px;
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  padding: 6px 8px;
   border-radius: 8px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 14px;
@@ -53,9 +53,23 @@
   top: 66px;
   white-space: nowrap;
   flex-direction: row;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .back-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-icon svg {
   width: 16px;
   height: 16px;
 }
@@ -216,6 +230,15 @@
 }
 
 .participant-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.participant-icon svg {
   width: 15px;
   height: 15px;
 }

@@ -3,14 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
 import './LandingPage.css'
-
-const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/a3f2241c-a552-4bd3-b5e3-fa9bb210880a"
 const imgImageWithFallback = "https://www.figma.com/api/mcp/asset/e61c2b5d-68eb-409e-9b25-a90abd759a96"
 const imgImageWithFallback1 = "https://www.figma.com/api/mcp/asset/2fbadc50-65b5-4cb8-8a55-788f604b6dd8"
 const imgImageWithFallback2 = "https://www.figma.com/api/mcp/asset/a166d192-abaa-4496-bc6a-bd5336537959"
 const imgImageWithFallback3 = "https://www.figma.com/api/mcp/asset/33109928-c22e-44a9-be00-18c92d851a45"
-const imgIcon = "https://www.figma.com/api/mcp/asset/dd2c3a79-4460-4073-9292-db10d6d07dab"
-const imgIcon1 = "https://www.figma.com/api/mcp/asset/49a9be54-9062-4383-b3ba-bd80bcd932c2"
 
 // 인기 선물 데이터 (랭킹 순으로 정렬)
 const popularGifts = [
@@ -112,7 +108,7 @@ function LandingPage() {
       <div className="landing-container">
         {/* Header */}
         <div className="landing-header">
-          <img src={imgGpt4B1} alt="GPT-4b Logo" className="header-logo" />
+          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="header-logo" />
           {userName && (
             <span className="welcome-message">{userName}님 환영합니다!</span>
           )}

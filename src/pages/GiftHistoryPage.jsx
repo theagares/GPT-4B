@@ -9,7 +9,6 @@ const giftHistoryImage2 = "https://www.figma.com/api/mcp/asset/3479ec16-6041-4bb
 const giftHistoryImage3 = "https://www.figma.com/api/mcp/asset/3c2a8783-5233-4eeb-b511-684069144ba3"
 const giftHistoryImage4 = "https://www.figma.com/api/mcp/asset/c80efe8f-7bb1-4967-bf18-e4af3f5139e6"
 const giftHistoryImage5 = "https://www.figma.com/api/mcp/asset/e58eabb5-b484-4998-af61-7a34377ede25"
-const imgVector4 = "https://www.figma.com/api/mcp/asset/9f59a389-f83e-4f13-b23f-43517aa98dce"
 
 function GiftHistoryPage() {
   const navigate = useNavigate()

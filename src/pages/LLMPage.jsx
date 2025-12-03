@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './LLMPage.css'
 
-const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/c2072de6-f1a8-4f36-a042-2df786f153b1"
-
 // LLM 아이콘 이미지 경로
 const claudeIcon = "/assets/claude-icon.svg"
 const gptIcon = "/assets/gpt-icon.svg"
@@ -85,7 +83,7 @@ function LLMPage() {
   }
 
   return (
-    <div className={`llm-page ${showTutorial ? 'tutorial-active' : ''}`}>
+    <div className={`llm-page ${showTutorial ? 'tutorial-active' : ''} ${showLLMModal ? 'modal-active' : ''}`}>
       <div className="llm-container">
         {/* Header */}
         <div className="llm-header">
@@ -108,7 +106,7 @@ function LLMPage() {
           {messages.length === 0 ? (
             <>
               <div className="logo-section">
-                <img src={imgGpt4B1} alt="GPT-4b Logo" className="llm-logo" />
+                <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="llm-logo" />
               </div>
               <div className="greeting-section">
                 <h1 className="greeting-text">안녕하세요</h1>

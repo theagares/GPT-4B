@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import './LoginScreen.css'
 
-const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/c2072de6-f1a8-4f36-a042-2df786f153b1"
-
 // 이메일 아이콘 SVG 컴포넌트
 function EmailIcon() {
   return (
@@ -51,7 +49,7 @@ function LoginScreen() {
     <div className="login-screen">
       <div className="login-container">
         <div className="logo-section">
-          <img src={imgGpt4B1} alt="GPT-4b Logo" className="login-logo" />
+          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="login-logo" />
         </div>
 
         <h1 className="login-title">선물 추천을 위한 최고의 선택, GPT-4b</h1>

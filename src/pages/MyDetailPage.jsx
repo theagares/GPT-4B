@@ -24,20 +24,59 @@ const pageBackgroundDesigns = {
   'design-6': 'linear-gradient(180deg, rgba(196, 181, 253, 1) 0%, rgba(99, 102, 241, 1) 100%)',
 }
 
-// 이미지 URL
-const imgImageWithFallback = "https://www.figma.com/api/mcp/asset/3b95cfd9-db95-4104-9484-d911aac379e5"
-const imgVector = "https://www.figma.com/api/mcp/asset/1add6121-300a-4db2-9a42-890b6a55dee7"
-const imgVector1 = "https://www.figma.com/api/mcp/asset/239848fd-423e-49f5-a070-6e3fd15a1445"
-const imgVector2 = "https://www.figma.com/api/mcp/asset/13c42b79-cc2b-4d57-b6b0-746b06d8bd04"
-const imgVector3 = "https://www.figma.com/api/mcp/asset/675e7aad-5822-4717-88d2-1b35bc0e7c3e"
-const imgVector4 = "https://www.figma.com/api/mcp/asset/9f59a389-f83e-4f13-b23f-43517aa98dce"
-const imgVector5 = "https://www.figma.com/api/mcp/asset/e71af735-2a29-47a8-bafd-4888fe0e7a29"
-const imgIcon = "https://www.figma.com/api/mcp/asset/bd9c8744-6965-436c-bae8-6c45e9c85ec3"
-const imgIcon1 = "https://www.figma.com/api/mcp/asset/fe25d611-37cd-4fb2-b0ee-4307e8b4c14f"
-const imgIcon2 = "https://www.figma.com/api/mcp/asset/d6582f6f-6223-4128-b8b6-49b616da781c"
-const imgIcon3 = "https://www.figma.com/api/mcp/asset/1f3d9c82-6f21-4254-94d8-62b7a94a0dc1"
-const imgIcon4 = "https://www.figma.com/api/mcp/asset/2aba6a6f-c4a0-413f-beb5-22c0c7a7f953"
-const imgIcon5 = "https://www.figma.com/api/mcp/asset/a449d7fe-86bc-419e-a053-3b2baf2a7359"
+
+// 화살표 아이콘 SVG 컴포넌트
+function ArrowRightIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+// 전화 아이콘 SVG 컴포넌트
+function PhoneIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7292C21.7209 20.9842 21.5573 21.2126 21.3522 21.3992C21.1472 21.5858 20.9053 21.7262 20.6419 21.8115C20.3785 21.8968 20.0996 21.9252 19.82 21.895C16.7428 21.4596 13.787 20.4711 11.19 18.995C8.77382 17.6547 6.72533 15.7567 5.20997 13.459C3.59049 10.9908 2.52934 8.17462 2.10997 5.22499C2.07771 4.94689 2.10487 4.66575 2.18966 4.39977C2.27444 4.13379 2.41485 3.88913 2.60231 3.68157C2.78977 3.474 3.02001 3.30809 3.27868 3.19402C3.53735 3.07994 3.81883 3.02026 4.10497 2.99899H7.10497C7.58779 2.95399 8.06281 3.12411 8.40997 3.46499C8.75713 3.80587 9.02487 4.28133 9.16497 4.82499C9.30507 5.36865 9.30756 5.94767 9.17197 6.49299C9.03638 7.03831 8.77135 7.51676 8.42497 7.86199L7.09497 9.19199C8.51369 11.8842 10.6158 13.9863 13.308 15.405L14.638 14.075C14.9832 13.7286 15.4617 13.4636 16.007 13.328C16.5523 13.1924 17.1313 13.1949 17.675 13.335C18.2186 13.4751 18.6941 13.7428 19.035 14.09C19.3759 14.4372 19.546 14.9122 19.501 15.395L19.501 15.395Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+// 이메일 아이콘 SVG 컴포넌트
+function EmailIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M22 6L12 13L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+// 건물/소속 아이콘 SVG 컴포넌트
+function BuildingIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 21H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M5 21V7L13 2V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M19 21V11H13V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9 9V9.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9 12V12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9 15V15.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9 18V18.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+// 프로필 이미지 오버레이 카메라 아이콘 SVG 컴포넌트
+function ProfileCameraIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M23 19A2 2 0 0 1 21 21H3A2 2 0 0 1 1 19V8A2 2 0 0 1 3 6H7L9 3H15L17 6H21A2 2 0 0 1 23 8V19Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M12 17A3 3 0 1 0 12 11A3 3 0 0 0 12 17Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 function MyDetailPage() {
   const navigate = useNavigate()
@@ -181,9 +220,9 @@ function MyDetailPage() {
 
           <div className="profile-header">
             <div className="profile-image-wrapper">
-              <img src={imgImageWithFallback} alt="프로필" className="profile-image" />
+              <div className="profile-image-placeholder"></div>
               <div className="profile-image-overlay">
-                <img src={imgVector} alt="" />
+                <ProfileCameraIcon />
               </div>
             </div>
             <div className="profile-info">
@@ -219,7 +258,7 @@ function MyDetailPage() {
                 </div>
                 <p className="stat-value">{cards.length}개</p>
               </div>
-              <img src={imgIcon1} alt="화살표" className="stat-arrow" />
+              <ArrowRightIcon />
             </div>
           </div>
           <div className="stat-card" onClick={handleGiftHistory} style={{ cursor: 'pointer' }}>
@@ -235,7 +274,7 @@ function MyDetailPage() {
                 </div>
                 <p className="stat-value">15회</p>
               </div>
-              <img src={imgIcon1} alt="화살표" className="stat-arrow" />
+              <ArrowRightIcon />
             </div>
           </div>
         </div>
@@ -245,21 +284,21 @@ function MyDetailPage() {
           <h3 className="info-section-title">명함 정보</h3>
           <div className="info-card">
             <div className="info-row">
-              <img src={imgIcon4} alt="전화" className="info-icon" />
+              <PhoneIcon />
               <div className="info-content">
                 <p className="info-label">전화번호</p>
                 <p className="info-value">{myInfo.phone}</p>
               </div>
             </div>
             <div className="info-row">
-              <img src={imgIcon5} alt="이메일" className="info-icon" />
+              <EmailIcon />
               <div className="info-content">
                 <p className="info-label">이메일</p>
                 <p className="info-value">{myInfo.email}</p>
               </div>
             </div>
             <div className="info-row">
-              <img src={imgIcon3} alt="소속" className="info-icon" />
+              <BuildingIcon />
               <div className="info-content">
                 <p className="info-label">소속 / 직급</p>
                 <p className="info-value">{myInfo.company} / {myInfo.position}</p>

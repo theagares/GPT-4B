@@ -10,15 +10,8 @@ const imgImageWithFallback2 = "https://www.figma.com/api/mcp/asset/3c2a8783-5233
 const imgImageWithFallback3 = "https://www.figma.com/api/mcp/asset/c80efe8f-7bb1-4967-bf18-e4af3f5139e6"
 const imgImageWithFallback4 = "https://www.figma.com/api/mcp/asset/e58eabb5-b484-4998-af61-7a34377ede25"
 const imgIcon = "https://www.figma.com/api/mcp/asset/4559e990-44f1-4e81-b6c5-efd365a6f9d0"
-const imgIcon1 = "https://www.figma.com/api/mcp/asset/fe12d10e-419c-476a-b374-b338c1dbe6ac"
 const imgIcon2 = "https://www.figma.com/api/mcp/asset/8f3100aa-3650-47a0-a821-c71242a680d5"
-const imgIcon3 = "https://www.figma.com/api/mcp/asset/1080043a-0fab-4492-95f0-0f0e5044b808"
 const imgIcon4 = "https://www.figma.com/api/mcp/asset/988283d6-6878-4cbf-8f8a-db34ab956392"
-const imgIcon5 = "https://www.figma.com/api/mcp/asset/a5dde2e3-0ba0-4ff7-aea7-b8a954df0490"
-const imgIcon6 = "https://www.figma.com/api/mcp/asset/0636429d-fceb-48c6-8f3f-ef670746ab4a"
-const imgIcon7 = "https://www.figma.com/api/mcp/asset/2f9bc1d1-6e2d-4be5-809b-b2b414fcd824"
-const imgIcon8 = "https://www.figma.com/api/mcp/asset/506a72c8-4ef6-4dc5-9692-6ca8071e44e9"
-const imgIcon9 = "https://www.figma.com/api/mcp/asset/9967873f-8e09-4acf-9f4b-eabdb6d4bbd3"
 const imgVector4 = "https://www.figma.com/api/mcp/asset/9f59a389-f83e-4f13-b23f-43517aa98dce"
 
 function CardGiftHistoryPage() {

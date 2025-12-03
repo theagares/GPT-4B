@@ -4,15 +4,24 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import './EventDetailPage.css'
 
-// 아이콘 이미지 URL
+// 뒤로가기 아이콘 SVG 컴포넌트
+function BackIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
-const imgIcon = "https://www.figma.com/api/mcp/asset/ee258417-6b3f-4f61-b06d-4c34a0ab3bbf"
-
-const imgIcon1 = "https://www.figma.com/api/mcp/asset/5dfd05ca-69e9-4ad2-91f9-9ca220872e77"
-
-const imgImage8 = "https://www.figma.com/api/mcp/asset/5135f6d8-2215-44f2-999f-16d9c71f7707"
-
-const imgImage9 = "https://www.figma.com/api/mcp/asset/9413a1e4-8f67-4a81-bc06-45582d87fbdc"
+// 참석자(사람) 아이콘 SVG 컴포넌트
+function PersonIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="12" cy="7" r="4" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 // 날짜 포맷팅 함수
 
@@ -416,7 +425,9 @@ function EventDetailPage() {
 
         <button className="back-button" onClick={handleBack}>
 
-          <img src={imgIcon} alt="뒤로" className="back-icon" />
+          <span className="back-icon">
+            <BackIcon />
+          </span>
 
           <span>뒤로</span>
 
@@ -650,7 +661,7 @@ function EventDetailPage() {
 
                 <div className="participant-info">
 
-                  <img src={imgImage9} alt="참석자" className="participant-icon" />
+                  <PersonIcon />
 
                   <span>{event.participant}</span>
 

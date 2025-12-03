@@ -5,9 +5,17 @@ import './AddEventPage.css'
 // 아이콘 이미지 URL
 const imgVector = "https://www.figma.com/api/mcp/asset/db824051-d071-4c9e-8840-c8a9b8da272b"
 const imgVector1 = "https://www.figma.com/api/mcp/asset/d9e6a3bb-fb3e-42dd-b262-1e478ad0bda1"
-const imgIcon = "https://www.figma.com/api/mcp/asset/8c0e2d4e-0d4b-4f42-bb90-de66d03a6b27"
 const imgButton = "https://www.figma.com/api/mcp/asset/b1c95ac0-e7f1-4a27-91f0-452379c5df52"
 const imgBackIcon = "https://www.figma.com/api/mcp/asset/ee258417-6b3f-4f61-b06d-4c34a0ab3bbf"
+
+// 드롭다운 아이콘 SVG 컴포넌트
+function DropdownIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 6L8 10L12 6" stroke="#6a7282" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 
                 'July', 'August', 'September', 'October', 'November', 'December']
@@ -304,7 +312,7 @@ function AddEventPage() {
           >
             <div className="category-dot" style={{ backgroundColor: selectedCategory.color }}></div>
             <span>{selectedCategory.label}</span>
-            <img src={imgIcon} alt="드롭다운" className="dropdown-icon" />
+            <DropdownIcon />
           </button>
           {showCategoryDropdown && (
             <div className="category-dropdown">

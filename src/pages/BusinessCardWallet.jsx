@@ -5,8 +5,6 @@ import { useCardStore } from '../store/cardStore'
 import { fetchBusinessCardGiftHistory } from './BusinessCardGiftHistoryPage'
 import './BusinessCardWallet.css'
 
-const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/c2072de6-f1a8-4f36-a042-2df786f153b1"
-
 // 돋보기 아이콘 SVG 컴포넌트
 function SearchIcon() {
   return (
@@ -593,7 +591,7 @@ function CardDetailModal({ card, onClose }) {
             <div className="gift-card-content-wrapper">
               <div className="gift-card-info">
                 <div className="gift-card-label-row">
-                  <img src={imgGpt4B1} alt="GPT-4b Logo" className="gift-card-logo" />
+                  <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="gift-card-logo" />
                   <div className="gift-card-label-wrapper">
                     <span className="gift-card-label">선물 추천</span>
                     <span className="gift-card-label">받으러가기</span>

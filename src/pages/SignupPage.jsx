@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './SignupPage.css'
 
-const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/c2072de6-f1a8-4f36-a042-2df786f153b1"
-
 // 체크 아이콘 SVG 컴포넌트
 function CheckIcon() {
   return (
@@ -96,7 +94,7 @@ function SignupPage() {
     <div className="signup-screen">
       <div className="signup-container">
         <div className="logo-section">
-          <img src={imgGpt4B1} alt="GPT-4b Logo" className="signup-logo" />
+          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="signup-logo" />
         </div>
 
         <div className="signup-text-section">

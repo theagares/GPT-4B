@@ -149,6 +149,11 @@
   z-index: 1001;
 }
 
+/* 모달이 열렸을 때 입력 바가 뒤로 가도록 */
+.llm-page.modal-active .input-bar {
+  z-index: 999;
+}
+
 .input-bar-icon {
   background: none;
   border: none;
@@ -324,7 +329,8 @@
 
 .llm-page.tutorial-active .input-bar {
   pointer-events: none;
-  position: relative;
+  position: fixed;
+  bottom: 83px;
   z-index: 1001;
 }
 

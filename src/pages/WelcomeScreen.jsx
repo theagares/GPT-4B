@@ -2,8 +2,6 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './WelcomeScreen.css'
 
-const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/86742c55-8ab8-407e-b9a4-e70520c170e1"
-
 function WelcomeScreen() {
   const navigate = useNavigate()
 
@@ -20,7 +18,7 @@ function WelcomeScreen() {
     <div className="welcome-screen">
       <div className="welcome-content">
         <div className="logo-container">
-          <img src={imgGpt4B1} alt="GPT-4b Logo" className="logo" />
+          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="logo" />
         </div>
         <div className="welcome-text">
           <p>GPT-4b가</p>
