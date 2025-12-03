@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-
 import { useNavigate, useParams } from 'react-router-dom'
-
+import { calendarAPI } from '../utils/api'
+import { isAuthenticated } from '../utils/auth'
 import './EventDetailPage.css'
 
 // 아이콘 이미지 URL
@@ -107,117 +107,81 @@ function EventDetailPage() {
   const [participantInput, setParticipantInput] = useState('')
 
   // 이벤트 데이터 로드
-
   useEffect(() => {
-
     const fetchEvent = async () => {
-
-      try {
-
-        // localStorage나 전역 상태에서 이벤트 가져오기
-
-        const storedEvents = JSON.parse(localStorage.getItem('calendarEvents') || '[]')
-
-        const foundEvent = storedEvents.find(e => e.id === eventId)
-
-        
-
-        if (foundEvent) {
-
-          const eventData = {
-
-            ...foundEvent,
-
-            startDate: new Date(foundEvent.startDate),
-
-            endDate: new Date(foundEvent.endDate)
-
-          }
-
-          setEvent(eventData)
-
-          setFormData({
-
-            title: eventData.title,
-
-            participant: eventData.participant || '',
-
-            startDate: eventData.startDate,
-
-            endDate: eventData.endDate,
-
-            memo: eventData.memo || '',
-
-            notification: eventData.notification || ''
-
-          })
-
-        } else {
-
-          // 샘플 데이터
-
-          const today = new Date()
-
-          const sampleEvent = {
-
-            id: eventId || 'event1',
-
-            title: 'A사 미팅',
-
-            participant: '지문호',
-
-            startDate: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 0),
-
-            endDate: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 11, 0),
-
-            memo: '첫 번째 미팅입니다. 모두 참석 부탁드립니다.',
-
-            notification: '10분 전',
-
-            category: '미팅',
-
-            color: '#584cdc'
-
-          }
-
-          
-
-          setEvent(sampleEvent)
-
-          setFormData({
-
-            title: sampleEvent.title,
-
-            participant: sampleEvent.participant,
-
-            startDate: sampleEvent.startDate,
-
-            endDate: sampleEvent.endDate,
-
-            memo: sampleEvent.memo || '',
-
-            notification: sampleEvent.notification || ''
-
-          })
-
-        }
-
-      } catch (err) {
-
-        console.error('이벤트 로드 실패:', err)
-
-      } finally {
-
+      if (!eventId) {
         setLoading(false)
-
+        return
       }
 
+      try {
+        if (isAuthenticated()) {
+          // DB에서 이벤트 가져오기
+          const response = await calendarAPI.getEvents()
+          
+          if (response.data && response.data.success) {
+            const events = response.data.data || []
+            const foundEvent = events.find(e => String(e.id) === String(eventId))
+            
+            if (foundEvent) {
+              const eventData = {
+                ...foundEvent,
+                startDate: new Date(foundEvent.startDate),
+                endDate: new Date(foundEvent.endDate),
+                participants: typeof foundEvent.participants === 'string' 
+                  ? foundEvent.participants.split(', ').filter(p => p)
+                  : (foundEvent.participants || [])
+              }
+              
+              setEvent(eventData)
+              setFormData({
+                title: eventData.title || '',
+                participant: eventData.participants && eventData.participants.length > 0 
+                  ? eventData.participants.join(', ')
+                  : '',
+                startDate: eventData.startDate,
+                endDate: eventData.endDate,
+                memo: eventData.memo || '',
+                notification: eventData.notification || ''
+              })
+              setLoading(false)
+              return
+            }
+          }
+        }
+
+        // DB에서 찾지 못한 경우 localStorage에서 찾기 (fallback)
+        const storedEvents = JSON.parse(localStorage.getItem('calendarEvents') || '[]')
+        const foundEvent = storedEvents.find(e => String(e.id) === String(eventId))
+
+        if (foundEvent) {
+          const eventData = {
+            ...foundEvent,
+            startDate: new Date(foundEvent.startDate),
+            endDate: new Date(foundEvent.endDate)
+          }
+          setEvent(eventData)
+          setFormData({
+            title: eventData.title,
+            participant: eventData.participant || '',
+            startDate: eventData.startDate,
+            endDate: eventData.endDate,
+            memo: eventData.memo || '',
+            notification: eventData.notification || ''
+          })
+          setLoading(false)
+        } else {
+          // 이벤트를 찾을 수 없으면 에러 표시
+          setLoading(false)
+          console.error('Event not found:', eventId)
+        }
+      } catch (err) {
+        console.error('이벤트 로드 실패:', err)
+        setLoading(false)
+      }
     }
 
-    
-
     fetchEvent()
-
   }, [eventId])
 
   const handleBack = () => {
@@ -241,69 +205,91 @@ function EventDetailPage() {
   const handleSave = async () => {
 
     try {
+      // 참가자를 배열로 변환
+      const participants = formData.participant 
+        ? formData.participant.split(',').map(p => p.trim()).filter(p => p)
+        : []
 
+      const startDate = formData.startDate || event.startDate
+      const endDate = formData.endDate || event.endDate
+
+      // DB에 업데이트 (인증된 사용자인 경우)
+      if (isAuthenticated() && event && event.id) {
+        const eventData = {
+          title: formData.title,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+          category: event.category || '미팅',
+          color: event.color || '#4A90E2',
+          description: event.description || event.category || '미팅',
+          location: event.location || '',
+          participants: participants,
+          memo: formData.memo || '',
+          notification: formData.notification || ''
+        }
+
+        const response = await calendarAPI.updateEvent(event.id, eventData)
+
+        if (response.data && response.data.success) {
+          // 업데이트된 이벤트 데이터로 상태 업데이트
+          const updatedEvent = {
+            ...event,
+            ...response.data.data,
+            title: formData.title,
+            participants: participants,
+            memo: formData.memo,
+            notification: formData.notification,
+            startDate: new Date(response.data.data.startDate),
+            endDate: new Date(response.data.data.endDate)
+          }
+
+          setEvent(updatedEvent)
+          setIsEditing(false)
+          setShowNotificationDropdown(false)
+          
+          // 성공 메시지 (선택사항)
+          // alert('일정이 저장되었습니다.')
+          return
+        } else {
+          throw new Error('일정 업데이트에 실패했습니다.')
+        }
+      }
+
+      // 인증되지 않았거나 DB에 없는 경우 localStorage에 저장 (fallback)
       const updatedEvent = {
-
         ...event,
-
         title: formData.title,
-
         participant: formData.participant,
-
         memo: formData.memo,
-
         notification: formData.notification,
-
-        startDate: formData.startDate || event.startDate,
-
-        endDate: formData.endDate || event.endDate
-
+        startDate: startDate,
+        endDate: endDate
       }
 
       setEvent(updatedEvent)
 
-      
-
       const storedEvents = JSON.parse(localStorage.getItem('calendarEvents') || '[]')
-
       const eventIndex = storedEvents.findIndex(e => e.id === eventId)
 
       if (eventIndex >= 0) {
-
         storedEvents[eventIndex] = {
-
           ...storedEvents[eventIndex],
-
           title: formData.title,
-
           participant: formData.participant,
-
           memo: formData.memo,
-
           notification: formData.notification,
-
-          startDate: (formData.startDate || event.startDate).toISOString(),
-
-          endDate: (formData.endDate || event.endDate).toISOString()
-
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
         }
-
         localStorage.setItem('calendarEvents', JSON.stringify(storedEvents))
-
       }
 
-      
-
       setIsEditing(false)
-
       setShowNotificationDropdown(false)
 
     } catch (err) {
-
       console.error('이벤트 저장 실패:', err)
-
-      alert('일정 저장에 실패했습니다.')
-
+      alert('일정 저장에 실패했습니다. 다시 시도해주세요.')
     }
 
   }
@@ -343,14 +329,22 @@ function EventDetailPage() {
     if (window.confirm('정말 이 일정을 삭제하시겠습니까?')) {
 
       try {
+        // DB에서 삭제 (인증된 사용자인 경우)
+        if (isAuthenticated() && event && event.id) {
+          const response = await calendarAPI.deleteEvent(event.id)
+          
+          if (response.data && response.data.success) {
+            navigate('/calendar')
+            return
+          } else {
+            throw new Error('일정 삭제에 실패했습니다.')
+          }
+        }
 
+        // 인증되지 않았거나 DB에 없는 경우 localStorage에서 삭제 (fallback)
         const storedEvents = JSON.parse(localStorage.getItem('calendarEvents') || '[]')
-
         const filteredEvents = storedEvents.filter(e => e.id !== eventId)
-
         localStorage.setItem('calendarEvents', JSON.stringify(filteredEvents))
-
-        
 
         navigate('/calendar')
 
@@ -358,7 +352,7 @@ function EventDetailPage() {
 
         console.error('이벤트 삭제 실패:', err)
 
-        alert('일정 삭제에 실패했습니다.')
+        alert('일정 삭제에 실패했습니다. 다시 시도해주세요.')
 
       }
 
@@ -648,13 +642,21 @@ function EventDetailPage() {
 
                 <h4 className="event-title">{event.title}</h4>
 
-                <div className="participant-info">
+                {(event.participants && event.participants.length > 0) || event.participant ? (
+                  <div className="participant-info">
 
-                  <img src={imgImage9} alt="참석자" className="participant-icon" />
+                    <img src={imgImage9} alt="참석자" className="participant-icon" />
 
-                  <span>{event.participant}</span>
+                    <span>
+                      {event.participants && Array.isArray(event.participants) && event.participants.length > 0
+                        ? event.participants.join(', ')
+                        : (event.participants && typeof event.participants === 'string' && event.participants.trim() !== ''
+                          ? event.participants
+                          : (event.participant || ''))}
+                    </span>
 
-                </div>
+                  </div>
+                ) : null}
 
               </div>
 
@@ -829,6 +831,39 @@ function EventDetailPage() {
         )}
 
       </div>
+
+      {/* 참석자 섹션 - 읽기 모드에서만 표시 */}
+      {!isEditing && (
+        <div className="participant-section-detail">
+          <div className="section-header">
+            <h3 className="section-title">참석자</h3>
+          </div>
+          <div className="participant-content">
+            {(() => {
+              const participants = event.participants && Array.isArray(event.participants) && event.participants.length > 0
+                ? event.participants
+                : (event.participants && typeof event.participants === 'string' && event.participants.trim() !== ''
+                  ? event.participants.split(', ').filter(p => p.trim())
+                  : (event.participant && event.participant.trim() !== ''
+                    ? event.participant.split(', ').filter(p => p.trim())
+                    : []))
+              
+              return participants.length > 0 ? (
+                <div className="participants-display">
+                  {participants.map((participant, index) => (
+                    <div key={index} className="participant-item">
+                      <img src={imgImage9} alt="참석자" className="participant-icon" />
+                      <span>{participant.trim()}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>참석자가 없습니다.</p>
+              )
+            })()}
+          </div>
+        </div>
+      )}
 
       {/* 알림 섹션 */}
 

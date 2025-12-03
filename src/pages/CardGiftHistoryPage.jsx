@@ -1,153 +1,181 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
+import { giftAPI } from '../utils/api'
+import { isAuthenticated } from '../utils/auth'
 import './CardGiftHistoryPage.css'
 
-// 이미지 URL
-const imgImageWithFallback = "https://www.figma.com/api/mcp/asset/22a17804-a225-448c-ad64-50983c1fa891"
-const imgImageWithFallback1 = "https://www.figma.com/api/mcp/asset/3479ec16-6041-4bb0-be11-8808d8df88df"
-const imgImageWithFallback2 = "https://www.figma.com/api/mcp/asset/3c2a8783-5233-4eeb-b511-684069144ba3"
-const imgImageWithFallback3 = "https://www.figma.com/api/mcp/asset/c80efe8f-7bb1-4967-bf18-e4af3f5139e6"
-const imgImageWithFallback4 = "https://www.figma.com/api/mcp/asset/e58eabb5-b484-4998-af61-7a34377ede25"
-const imgIcon = "https://www.figma.com/api/mcp/asset/4559e990-44f1-4e81-b6c5-efd365a6f9d0"
-const imgIcon1 = "https://www.figma.com/api/mcp/asset/fe12d10e-419c-476a-b374-b338c1dbe6ac"
-const imgIcon2 = "https://www.figma.com/api/mcp/asset/8f3100aa-3650-47a0-a821-c71242a680d5"
-const imgIcon3 = "https://www.figma.com/api/mcp/asset/1080043a-0fab-4492-95f0-0f0e5044b808"
-const imgIcon4 = "https://www.figma.com/api/mcp/asset/988283d6-6878-4cbf-8f8a-db34ab956392"
-const imgIcon5 = "https://www.figma.com/api/mcp/asset/a5dde2e3-0ba0-4ff7-aea7-b8a954df0490"
-const imgIcon6 = "https://www.figma.com/api/mcp/asset/0636429d-fceb-48c6-8f3f-ef670746ab4a"
-const imgIcon7 = "https://www.figma.com/api/mcp/asset/2f9bc1d1-6e2d-4be5-809b-b2b414fcd824"
-const imgIcon8 = "https://www.figma.com/api/mcp/asset/506a72c8-4ef6-4dc5-9692-6ca8071e44e9"
-const imgIcon9 = "https://www.figma.com/api/mcp/asset/9967873f-8e09-4acf-9f4b-eabdb6d4bbd3"
-const imgVector4 = "https://www.figma.com/api/mcp/asset/9f59a389-f83e-4f13-b23f-43517aa98dce"
+// CardGiftHistoryPage 전용 이미지 URL (다른 컴포넌트와 완전히 독립적)
+const cardGiftImage1 = "https://www.figma.com/api/mcp/asset/22a17804-a225-448c-ad64-50983c1fa891"
+const cardGiftImage2 = "https://www.figma.com/api/mcp/asset/3479ec16-6041-4bb0-be11-8808d8df88df"
+const cardGiftImage3 = "https://www.figma.com/api/mcp/asset/3c2a8783-5233-4eeb-b511-684069144ba3"
+const cardGiftImage4 = "https://www.figma.com/api/mcp/asset/c80efe8f-7bb1-4967-bf18-e4af3f5139e6"
+const cardGiftImage5 = "https://www.figma.com/api/mcp/asset/e58eabb5-b484-4998-af61-7a34377ede25"
 
 function CardGiftHistoryPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const [selectedYear, setSelectedYear] = useState('2025')
-  
+  const [gifts, setGifts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
   // location.state에서 card 정보 가져오기
   const card = location.state?.card
-  
-  const handleBack = () => {
-    navigate(-1) // 이전 페이지로 돌아가기
+
+  // 모든 선물에서 연도 추출 함수
+  const getGiftYear = (gift) => {
+    if (gift.year) return String(gift.year)
+    if (gift.purchaseDate || gift.createdAt) {
+      const date = new Date(gift.purchaseDate || gift.createdAt)
+      return String(date.getFullYear())
+    }
+    return String(new Date().getFullYear())
   }
 
-  // 전체 선물 이력 데이터 (실제로는 store나 API에서 가져와야 함)
-  const allGiftHistory = [
-    {
-      id: 1,
-      cardId: 'card-park-sangmu', // 박상무 명함 ID
-      cardName: '박상무',
-      image: imgImageWithFallback,
-      icon: imgIcon,
-      name: '박상무',
-      position: '상무',
-      giftName: '프리미엄 와인 세트',
-      category: '주류',
-      status: '전달 완료',
-      date: '2025.10.15',
-      price: '150,000원',
-      year: '2025'
-    },
-    {
-      id: 2,
-      cardId: 'card-1',
-      cardName: '안연주',
-      image: imgImageWithFallback1,
-      icon: imgIcon,
-      name: '안연주',
-      position: '대리',
-      giftName: '명품 선물 세트',
-      category: '고급 선물',
-      status: '전달 완료',
-      date: '2025.09.20',
-      price: '300,000원',
-      year: '2025'
-    },
-    {
-      id: 3,
-      cardId: 'card-2',
-      cardName: '이부장',
-      image: imgImageWithFallback2,
-      icon: imgIcon2,
-      name: '이부장',
-      position: '부장',
-      giftName: '꽃다발 선물',
-      category: '꽃',
-      status: '전달 완료',
-      date: '2025.08.05',
-      price: '50,000원',
-      year: '2025'
-    },
-    {
-      id: 4,
-      cardId: 'card-3',
-      cardName: '최대리',
-      image: imgImageWithFallback3,
-      icon: imgIcon4,
-      name: '최대리',
-      position: '대리',
-      giftName: '초콜릿 선물 세트',
-      category: '식품',
-      status: '전달 완료',
-      date: '2025.07.12',
-      price: '80,000원',
-      year: '2025'
-    },
-    {
-      id: 5,
-      cardId: 'card-1',
-      cardName: '안연주',
-      image: imgImageWithFallback4,
-      icon: imgIcon,
-      name: '안연주',
-      position: '대리',
-      giftName: '선물 배송 상자',
-      category: '기타',
-      status: '전달 완료',
-      date: '2024.12.20',
-      price: '200,000원',
-      year: '2024'
-    },
-    {
-      id: 6,
-      cardId: 'card-2',
-      cardName: '이부장',
-      image: imgImageWithFallback,
-      icon: imgIcon2,
-      name: '이부장',
-      position: '부장',
-      giftName: '고급 와인 세트',
-      category: '주류',
-      status: '전달 완료',
-      date: '2024.11.15',
-      price: '180,000원',
-      year: '2024'
-    }
-  ]
+  // 사용 가능한 모든 연도 추출
+  const availableYears = [...new Set(gifts.map(g => getGiftYear(g)))].sort((a, b) => b.localeCompare(a))
 
-  // 특정 명함의 선물 이력만 필터링
-  const cardGiftHistory = card 
-    ? allGiftHistory.filter(gift => gift.cardId === card.id || gift.cardName === card.name)
-    : []
+  // 초기 선택 연도: 현재 연도
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString())
+
+  // gifts가 로드되면 가장 최근 연도로 자동 선택
+  useEffect(() => {
+    if (availableYears.length > 0 && !availableYears.includes(selectedYear)) {
+      setSelectedYear(availableYears[0])
+    }
+  }, [gifts.length]) // gifts.length를 의존성으로 사용하여 gifts가 로드될 때만 실행
+
+  // DB에서 해당 명함의 선물 이력 가져오기 (더미 데이터 없이 DB 데이터만 사용)
+  useEffect(() => {
+    const fetchGifts = async () => {
+      if (!isAuthenticated()) {
+        setGifts([])
+        setLoading(false)
+        setError('로그인이 필요합니다.')
+        return
+      }
+
+      if (!card || !card.id) {
+        setGifts([])
+        setLoading(false)
+        setError('명함 정보가 없습니다.')
+        return
+      }
+
+      setLoading(true)
+      setError(null)
+      setGifts([]) // 로딩 시작 시 빈 배열로 초기화 (더미 데이터 방지)
+
+      try {
+        // card.id를 숫자로 변환 (DB의 cardId는 INT 타입)
+        let cardId = card.id
+        if (typeof cardId === 'string') {
+          cardId = parseInt(cardId, 10)
+          if (isNaN(cardId)) {
+            throw new Error('Invalid card ID format')
+          }
+        }
+
+        console.log('[CardGiftHistoryPage] Fetching gifts for cardId:', cardId)
+        const response = await giftAPI.getAll({ cardId: String(cardId) })
+        console.log('[CardGiftHistoryPage] API Response:', response.data)
+
+        if (response.data && response.data.success) {
+          const giftsData = Array.isArray(response.data.data) ? response.data.data : []
+          console.log('[CardGiftHistoryPage] Fetched gifts from DB:', giftsData)
+          console.log('[CardGiftHistoryPage] Gifts count:', giftsData.length)
+
+          // DB에서 가져온 데이터만 설정 (더미 데이터 없음)
+          setGifts(giftsData)
+
+          if (giftsData.length === 0) {
+            console.log('[CardGiftHistoryPage] No gifts found in DB for cardId:', cardId)
+          }
+        } else {
+          const errorMsg = response.data?.message || '선물 이력을 불러오는데 실패했습니다.'
+          console.error('[CardGiftHistoryPage] API returned error:', errorMsg)
+          setError(errorMsg)
+          setGifts([])
+        }
+      } catch (err) {
+        console.error('[CardGiftHistoryPage] Failed to fetch gifts:', err)
+        console.error('[CardGiftHistoryPage] Error details:', err.response?.data)
+        const errorMsg = err.response?.data?.message || err.message || '선물 이력을 불러오는 중 오류가 발생했습니다.'
+        setError(errorMsg)
+        setGifts([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchGifts()
+  }, [card])
+
+  // 날짜를 YYYY.MM.DD 형식으로 변환
+  const formatDate = (dateString) => {
+    if (!dateString) return ''
+    const date = new Date(dateString)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}.${month}.${day}`
+  }
+
+  // 가격을 원화 형식으로 변환
+  const formatPrice = (price) => {
+    if (!price) return '0원'
+    return `${Number(price).toLocaleString('ko-KR')}원`
+  }
+
+  // 이미지 선택 (giftImage가 있으면 사용, 없으면 기본 이미지 순환)
+  const getGiftImage = (index, giftImage) => {
+    if (giftImage) return giftImage
+    const images = [cardGiftImage1, cardGiftImage2, cardGiftImage3, cardGiftImage4, cardGiftImage5]
+    return images[index % images.length]
+  }
 
   // 연도별로 필터링
-  const giftHistory = cardGiftHistory.filter(gift => gift.year === selectedYear)
+  const giftHistoryByYear = gifts.filter(gift => {
+    const giftYear = getGiftYear(gift)
+    return giftYear === String(selectedYear)
+  })
 
-  // 연도별 개수 계산
-  const count2025 = cardGiftHistory.filter(g => g.year === '2025').length
-  const count2024 = cardGiftHistory.filter(g => g.year === '2024').length
+  // 연도별 개수 계산 (동적으로)
+  const yearCounts = availableYears.reduce((acc, year) => {
+    acc[year] = gifts.filter(g => getGiftYear(g) === year).length
+    return acc
+  }, {})
+
+  const handleBack = () => {
+    navigate(-1)
+  }
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year)
+  }
+
+  // UI 형식으로 변환
+  const giftHistory = giftHistoryByYear.map((gift, index) => ({
+    id: gift.id,
+    image: getGiftImage(index, gift.giftImage),
+    recipient: gift.cardName || card?.name || '이름 없음',
+    recipientPosition: gift.cardCompany || card?.company || '',
+    giftName: gift.giftName || '선물',
+    category: gift.category || '기타',
+    status: '전달 완료',
+    date: formatDate(gift.purchaseDate || gift.createdAt),
+    price: formatPrice(gift.price)
+  }))
 
   return (
     <div className="card-gift-history-page">
       <div className="card-gift-history-container">
         {/* 헤더 */}
         <div className="card-gift-history-header">
-          <button className="back-button" onClick={handleBack}>
-            <div className="back-icon">
-              <img src={imgVector4} alt="뒤로" />
-            </div>
+          <button className="card-back-button" onClick={handleBack}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </button>
           <h1 className="card-gift-history-title">선물 이력</h1>
         </div>
@@ -169,13 +197,20 @@ function CardGiftHistoryPage() {
         </div>
 
         {/* 선물 이력 리스트 */}
-        <div className="gift-list">
-          {giftHistory.length > 0 ? (
-            giftHistory.map((gift) => (
-              <div key={gift.id} className="gift-card">
-                <div className="gift-card-content">
-                  <div className="gift-image-wrapper">
-                    <img src={gift.image} alt={gift.giftName} className="gift-image" />
+        {loading ? (
+          <div className="card-loading">로딩 중...</div>
+        ) : error ? (
+          <div className="card-error">{error}</div>
+        ) : giftHistory.length > 0 ? (
+          <div className="card-gift-list">
+            {giftHistory.map((gift) => (
+              <div key={gift.id} className="card-gift-card">
+                <div className="card-gift-image-wrapper">
+                  <img src={gift.image} alt={gift.giftName} className="card-gift-image" />
+                </div>
+                <div className="card-gift-info">
+                  <div className="card-gift-recipient">
+                    {gift.recipient} {gift.recipientPosition}
                   </div>
                   <div className="gift-info">
                     <div className="gift-header">
@@ -198,13 +233,11 @@ function CardGiftHistoryPage() {
                   </div>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="empty-gift-history">
-              <p>선물 이력이 없습니다.</p>
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="card-empty">등록된 선물 이력이 없습니다.</div>
+        )}
       </div>
 
       <BottomNavigation />
@@ -213,5 +246,3 @@ function CardGiftHistoryPage() {
 }
 
 export default CardGiftHistoryPage
-
-

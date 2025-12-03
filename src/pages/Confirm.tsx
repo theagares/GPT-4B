@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CardConfirm from "../components/CardConfirm/CardConfirm";
 import { BusinessCard, useCardStore } from "../store/cardStore";
+import { isAuthenticated } from "../utils/auth";
 import "./Confirm.css";
 
 const Confirm = () => {

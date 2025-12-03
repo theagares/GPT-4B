@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
-import { fetchBusinessCardGiftHistory } from './BusinessCardGiftHistoryPage'
+import { giftAPI } from '../utils/api'
+import { isAuthenticated } from '../utils/auth'
 import './BusinessCardWallet.css'
 
 const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/c2072de6-f1a8-4f36-a042-2df786f153b1"
@@ -113,16 +114,31 @@ function BusinessCardWallet() {
   const [flippingCardId, setFlippingCardId] = useState(null)
   const [isGridView, setIsGridView] = useState(false)
   const cards = useCardStore((state) => state.cards)
+  const fetchCards = useCardStore((state) => state.fetchCards)
+  const isLoading = useCardStore((state) => state.isLoading)
+  
+  // 명함 목록 가져오기 (검색어가 변경될 때마다)
+  useEffect(() => {
+    if (isAuthenticated()) {
+      // 검색어가 변경되면 서버에서 검색된 결과를 가져옴
+      const timeoutId = setTimeout(() => {
+        fetchCards(searchQuery);
+      }, 300); // 300ms debounce
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [fetchCards, searchQuery])
+  
+  // 초기 로드 (페이지 진입 시 한 번만)
+  useEffect(() => {
+    if (isAuthenticated()) {
+      fetchCards();
+    }
+  }, []) // 빈 배열로 한 번만 실행
 
-  // 검색 필터링
-  const filteredCards = cards.filter(card => {
-    const query = searchQuery.toLowerCase()
-    return (
-      card.company?.toLowerCase().includes(query) ||
-      card.position?.toLowerCase().includes(query) ||
-      card.name?.toLowerCase().includes(query)
-    )
-  })
+  // 검색 필터링 (서버 측 검색을 사용하므로 클라이언트 측 필터링은 선택적)
+  // 서버에서 이미 검색된 결과를 받으므로 필터링 불필요
+  const filteredCards = cards
 
   const currentCard = filteredCards[currentIndex] || filteredCards[0]
 
@@ -281,7 +297,11 @@ function BusinessCardWallet() {
         </div>
 
         {/* Business Card Display */}
-        {filteredCards.length > 0 ? (
+        {isLoading ? (
+          <div className="empty-state">
+            <p className="empty-message">로딩 중...</p>
+          </div>
+        ) : filteredCards.length > 0 ? (
           <div className="card-carousel-section">
             {!isGridView ? (
               <>
@@ -445,12 +465,11 @@ function BusinessCardWallet() {
 // Card Detail Modal Component
 function CardDetailModal({ card, onClose }) {
   const [memo, setMemo] = useState(card.memo || '')
+  const [giftHistoryCount, setGiftHistoryCount] = useState(0)
+  const [isLoadingGifts, setIsLoadingGifts] = useState(false)
   const navigate = useNavigate()
   const updateCard = useCardStore((state) => state.updateCard)
   const deleteCard = useCardStore((state) => state.deleteCard)
-
-  // 현재 명함의 선물 이력 개수 계산 (BusinessCardGiftHistoryPage 데이터와 연동)
-  const [giftHistoryCount, setGiftHistoryCount] = useState(0)
   
   useEffect(() => {
     if (!card) {
@@ -459,16 +478,36 @@ function CardDetailModal({ card, onClose }) {
     }
     
     const loadGiftHistoryCount = async () => {
+      if (!isAuthenticated()) {
+        setGiftHistoryCount(0)
+        return
+      }
+
+      setIsLoadingGifts(true)
       try {
-        // 두 연도의 데이터를 모두 가져와서 총 개수 계산
-        const [data2025, data2024] = await Promise.all([
-          fetchBusinessCardGiftHistory(card.id, card.name, '2025'),
-          fetchBusinessCardGiftHistory(card.id, card.name, '2024')
-        ])
-        setGiftHistoryCount(data2025.length + data2024.length)
+        // card.id를 숫자로 변환 (DB의 cardId는 INT 타입)
+        let cardId = card.id
+        if (typeof cardId === 'string') {
+          cardId = parseInt(cardId, 10)
+          if (isNaN(cardId)) {
+            throw new Error('Invalid card ID format')
+          }
+        }
+
+        // DB에서 해당 명함의 모든 선물 이력 가져오기
+        const response = await giftAPI.getAll({ cardId: String(cardId) })
+        
+        if (response.data && response.data.success) {
+          const giftsData = Array.isArray(response.data.data) ? response.data.data : []
+          setGiftHistoryCount(giftsData.length)
+        } else {
+          setGiftHistoryCount(0)
+        }
       } catch (error) {
         console.error('Failed to load gift history count:', error)
         setGiftHistoryCount(0)
+      } finally {
+        setIsLoadingGifts(false)
       }
     }
     

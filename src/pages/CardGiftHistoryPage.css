@@ -1,3 +1,4 @@
+/* CardGiftHistoryPage 전용 스타일 - PersonalGiftHistoryPage와 동일한 스타일 적용 */
 .card-gift-history-page {
   width: 100%;
   max-width: 393px;
@@ -14,8 +15,8 @@
   width: 100%;
   min-height: calc(100vh - 100px);
   position: relative;
-  padding: 0 16px;
-  padding-top: 36px;
+  padding: 0 20px;
+  padding-top: 20px;
   box-sizing: border-box;
 }
 
@@ -24,7 +25,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
+  padding: 12px 0;
   height: 56px;
   position: relative;
   z-index: 10;
@@ -41,9 +42,10 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  white-space: nowrap;
 }
 
-.back-button {
+.card-back-button {
   width: 40px;
   height: 40px;
   background: transparent;
@@ -57,23 +59,13 @@
   z-index: 11;
 }
 
-.back-icon {
+.card-back-button svg {
   width: 24px;
   height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.back-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: brightness(0) saturate(100%) invert(37%) sepia(90%) saturate(2000%) hue-rotate(240deg) brightness(0.9) contrast(1.1);
-}
-
-/* 탭 리스트 */
-.tab-list {
+/* 연도별 탭 */
+.card-tab-list {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,12 +79,14 @@
   gap: 0;
 }
 
-.tab-button {
+.card-tab-button {
   flex: 1;
   height: 29px;
   background: transparent;
   border: none;
-  border-radius: 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  padding: 5px 9px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -101,7 +95,7 @@
   transition: all 0.2s;
 }
 
-.tab-button.active {
+.card-tab-button.active {
   background: white;
   color: #0a0a0a;
   font-weight: 600;
@@ -137,12 +131,15 @@
   flex-shrink: 0;
   border-radius: 12px;
   overflow: hidden;
+  flex-shrink: 0;
+  background: #f3f4f6;
 }
 
-.gift-image {
+.card-gift-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .gift-info {
@@ -168,17 +165,19 @@
   line-height: 1.4;
 }
 
-.gift-name {
+.card-gift-name {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: #1f2937;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #0a0a0a;
   margin: 0;
   line-height: 1.4;
 }
 
-.gift-badges {
+.card-gift-tags {
   display: flex;
+  align-items: center;
   gap: 6px;
   flex-wrap: wrap;
 }
@@ -187,6 +186,7 @@
   padding: 4px 10px;
   background: #e9d5ff;
   border-radius: 6px;
+  padding: 4px 8px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 11px;
   font-weight: 500;
@@ -197,27 +197,26 @@
   padding: 4px 10px;
   background: #e9d5ff;
   border-radius: 6px;
+  padding: 4px 8px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 11px;
   font-weight: 500;
   color: #6b21a8;
 }
 
-.gift-footer {
+.card-gift-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: auto;
+  justify-content: space-between;
+  margin-top: 4px;
 }
 
-.gift-date {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.card-gift-date {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
-  color: #6b7280;
+  line-height: 20px;
+  color: #6a7282;
 }
 
 .date-icon {
@@ -226,7 +225,11 @@
   flex-shrink: 0;
 }
 
-.gift-price {
+.card-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 14px;
   font-weight: 600;
@@ -234,17 +237,26 @@
   margin-left: auto;
 }
 
-.empty-gift-history {
-  padding: 60px 20px;
-  text-align: center;
-}
-
-.empty-gift-history p {
+.card-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #9ca3af;
-  margin: 0;
+  color: #ef4444;
+  text-align: center;
 }
 
-
+.card-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #6a7282;
+  text-align: center;
+}

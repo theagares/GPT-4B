@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { BusinessCard, useCardStore } from "../store/cardStore";
+import { userAPI } from "../utils/api";
 import "./CardCustomize.css";
 
 type CardDesign = {
@@ -56,12 +57,12 @@ const CardCustomize = () => {
   const updateCard = useCardStore((state) => state.updateCard);
   const [selectedDesign, setSelectedDesign] = useState<string>(() => {
     if (card?.id === 'my-card') {
-      // 내 명함인 경우 localStorage에서 불러오기
-      const savedDesign = localStorage.getItem('my-card-design');
-      return savedDesign || card?.design || "design-1";
+      // 내 명함인 경우 card.design에서 불러오기 (DB에서 가져온 값)
+      return card?.design || "design-1";
     }
     return card?.design || "design-1";
   });
+  const [isSaving, setIsSaving] = useState(false);
 
   if (!card) {
     return (
@@ -82,13 +83,23 @@ const CardCustomize = () => {
     setSelectedDesign(designId);
   };
 
-  const handleApply = () => {
-    // 내 명함인 경우 localStorage에 저장
+  const handleApply = async () => {
+    // 내 명함인 경우 DB에 저장
     if (card.id === 'my-card') {
-      localStorage.setItem('my-card-design', selectedDesign);
-      // 같은 탭에서 변경 감지를 위한 커스텀 이벤트 발생
-      window.dispatchEvent(new Event('myCardDesignChanged'));
-      navigate('/my/detail');
+      setIsSaving(true);
+      try {
+        // DB에 디자인 저장
+        await userAPI.updateProfile({ cardDesign: selectedDesign });
+        // 같은 탭에서 변경 감지를 위한 커스텀 이벤트 발생
+        window.dispatchEvent(new Event('myCardDesignChanged'));
+        window.dispatchEvent(new Event('myInfoUpdated'));
+        navigate('/my/detail');
+      } catch (error) {
+        console.error('Failed to save card design:', error);
+        alert('디자인 저장에 실패했습니다. 다시 시도해주세요.');
+      } finally {
+        setIsSaving(false);
+      }
     } else {
       // 일반 명함인 경우 store에 저장
       updateCard(card.id, { design: selectedDesign });
@@ -173,8 +184,9 @@ const CardCustomize = () => {
           className="card-customize-apply-button"
           onClick={handleApply}
           type="button"
+          disabled={isSaving}
         >
-          디자인 적용하기
+          {isSaving ? '저장 중...' : '디자인 적용하기'}
         </button>
       </div>
     </div>

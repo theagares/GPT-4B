@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
+import { userAPI, giftAPI } from '../utils/api'
+import { isAuthenticated } from '../utils/auth'
 import './MyDetailPage.css'
 
 // 명함 디자인 맵 (MyDetailPage용 - 유사 색상 그라데이션)
@@ -43,65 +45,162 @@ function MyDetailPage() {
   const navigate = useNavigate()
   const [myCardDesign, setMyCardDesign] = useState('design-1')
   const cards = useCardStore((state) => state.cards)
+  const [myInfo, setMyInfo] = useState({
+    name: '',
+    position: '',
+    company: '',
+    phone: '',
+    email: '',
+    memo: '',
+  })
+  const [isLoading, setIsLoading] = useState(true)
+  const [giftCount, setGiftCount] = useState(0)
   
-  // 내 정보 상태
-  const loadMyInfo = () => {
-    const savedInfo = localStorage.getItem('my-info');
-    if (savedInfo) {
-      return JSON.parse(savedInfo);
-    }
-    // 기본값
-    return {
-      name: "박상무",
-      position: "상무",
-      company: "한국프로축구연맹 영업본부",
-      phone: "010-1234-5678",
-      email: "park.sangmu@company.com",
-      memo: "",
-    };
-  };
-
-  const [myInfo, setMyInfo] = useState(loadMyInfo())
-
-  // localStorage에서 내 명함 디자인 불러오기
+  // DB에서 선물 개수 가져오기
   useEffect(() => {
-    const savedDesign = localStorage.getItem('my-card-design')
-    if (savedDesign) {
-      setMyCardDesign(savedDesign)
-    }
-  }, [])
+    const fetchGiftCount = async () => {
+      if (!isAuthenticated()) {
+        setGiftCount(0)
+        return
+      }
 
-  // localStorage 변경 감지
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedDesign = localStorage.getItem('my-card-design')
-      if (savedDesign) {
-        setMyCardDesign(savedDesign)
+      try {
+        const response = await giftAPI.getAll()
+        if (response.data.success) {
+          setGiftCount(response.data.data?.length || 0)
+        }
+      } catch (error) {
+        console.error('Failed to fetch gift count:', error)
+        setGiftCount(0)
       }
     }
-    window.addEventListener('storage', handleStorageChange)
-    // 같은 탭에서의 변경도 감지하기 위해 커스텀 이벤트 사용
-    window.addEventListener('myCardDesignChanged', handleStorageChange)
+
+    fetchGiftCount()
+  }, [])
+  
+  // DB에서 사용자 정보 가져오기
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (!isAuthenticated()) {
+        // 로그인하지 않은 경우 기본값 사용
+        const savedInfo = localStorage.getItem('my-info');
+        if (savedInfo) {
+          setMyInfo(JSON.parse(savedInfo));
+        } else {
+          setMyInfo({
+            name: "박상무",
+            position: "상무",
+            company: "한국프로축구연맹 영업본부",
+            phone: "010-1234-5678",
+            email: "park.sangmu@company.com",
+            memo: "",
+          });
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await userAPI.getProfile();
+        if (response.data.success) {
+          const userData = response.data.data;
+          // DB에서 가져온 정보로 설정
+          const savedInfo = localStorage.getItem('my-info');
+          const localInfo = savedInfo ? JSON.parse(savedInfo) : {};
+          
+          setMyInfo({
+            name: userData.name || localInfo.name || '',
+            position: userData.position || localInfo.position || '',
+            company: userData.company || localInfo.company || '',
+            phone: userData.phone || localInfo.phone || '',
+            email: userData.email || localInfo.email || '',
+            memo: localInfo.memo || '',
+          });
+          
+          // DB에서 디자인 정보 가져오기
+          if (userData.cardDesign) {
+            setMyCardDesign(userData.cardDesign);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch user info:', error);
+        // 에러 발생 시 localStorage에서 가져오기
+        const savedInfo = localStorage.getItem('my-info');
+        if (savedInfo) {
+          setMyInfo(JSON.parse(savedInfo));
+        }
+        const savedDesign = localStorage.getItem('my-card-design');
+        if (savedDesign) {
+          setMyCardDesign(savedDesign);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, [])
+
+  // 디자인 변경 감지 (DB 업데이트 후)
+  useEffect(() => {
+    const handleDesignChange = async () => {
+      if (isAuthenticated()) {
+        try {
+          const response = await userAPI.getProfile();
+          if (response.data.success && response.data.data.cardDesign) {
+            setMyCardDesign(response.data.data.cardDesign);
+          }
+        } catch (error) {
+          console.error('Failed to fetch card design:', error);
+        }
+      }
+    };
+    
+    window.addEventListener('myCardDesignChanged', handleDesignChange);
+    window.addEventListener('myInfoUpdated', handleDesignChange);
+    
     return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('myCardDesignChanged', handleStorageChange)
-    }
+      window.removeEventListener('myCardDesignChanged', handleDesignChange);
+      window.removeEventListener('myInfoUpdated', handleDesignChange);
+    };
   }, [])
 
   // 내 정보 업데이트 감지
   useEffect(() => {
-    const handleMyInfoUpdate = () => {
-      setMyInfo(loadMyInfo())
+    const handleMyInfoUpdate = async () => {
+      if (isAuthenticated()) {
+        try {
+          const response = await userAPI.getProfile();
+          if (response.data.success) {
+            const userData = response.data.data;
+            const savedInfo = localStorage.getItem('my-info');
+            const localInfo = savedInfo ? JSON.parse(savedInfo) : {};
+            
+            setMyInfo({
+              name: userData.name || localInfo.name || '',
+              position: userData.position || localInfo.position || '',
+              company: userData.company || localInfo.company || '',
+              phone: userData.phone || localInfo.phone || '',
+              email: userData.email || localInfo.email || '',
+              memo: localInfo.memo || '',
+            });
+            
+            // DB에서 디자인 정보 가져오기
+            if (userData.cardDesign) {
+              setMyCardDesign(userData.cardDesign);
+            }
+          }
+        } catch (error) {
+          console.error('Failed to fetch user info:', error);
+        }
+      }
     }
     window.addEventListener('myInfoUpdated', handleMyInfoUpdate)
     // 페이지 포커스 시에도 업데이트
-    const handleFocus = () => {
-      setMyInfo(loadMyInfo())
-    }
-    window.addEventListener('focus', handleFocus)
+    window.addEventListener('focus', handleMyInfoUpdate)
     return () => {
       window.removeEventListener('myInfoUpdated', handleMyInfoUpdate)
-      window.removeEventListener('focus', handleFocus)
+      window.removeEventListener('focus', handleMyInfoUpdate)
     }
   }, [])
 
@@ -113,11 +212,11 @@ function MyDetailPage() {
     // 내 명함 정보를 BusinessCard 형태로 만들어서 CardCustomize로 전달
     const myCard = {
       id: 'my-card',
-      name: '박상무',
-      position: '상무',
-      company: '영업본부',
-      phone: '010-1234-5678',
-      email: 'park.sangmu@company.com',
+      name: myInfo.name || '',
+      position: myInfo.position || '',
+      company: myInfo.company || '',
+      phone: myInfo.phone || '',
+      email: myInfo.email || '',
       design: myCardDesign
     }
     navigate('/customize', { state: { card: myCard } })
@@ -141,6 +240,16 @@ function MyDetailPage() {
 
   const handleEditMyInfo = () => {
     navigate('/my/edit')
+  }
+
+  if (isLoading) {
+    return (
+      <div className="my-detail-page">
+        <div className="my-detail-background" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+          <p>로딩 중...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -233,7 +342,7 @@ function MyDetailPage() {
                   </svg>
                   <span className="stat-label">선물 이력</span>
                 </div>
-                <p className="stat-value">15회</p>
+                <p className="stat-value">{giftCount}회</p>
               </div>
               <img src={imgIcon1} alt="화살표" className="stat-arrow" />
             </div>

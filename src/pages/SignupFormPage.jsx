@@ -1,10 +1,18 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { authAPI } from '../utils/api'
+import { setToken, setUser } from '../utils/auth'
 import './SignupFormPage.css'
 
 function SignupFormPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [currentStep, setCurrentStep] = useState(1)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // SignupPage에서 전달받은 username과 password
+  const { username, password } = location.state || {}
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,6 +21,14 @@ function SignupFormPage() {
     position: ''
   })
   const [isValid, setIsValid] = useState(false)
+  
+  // SignupPage에서 받은 정보가 없으면 돌아가기
+  useEffect(() => {
+    if (!username || !password) {
+      alert('회원가입 정보가 누락되었습니다. 처음부터 다시 시도해주세요.')
+      navigate('/signup')
+    }
+  }, [username, password, navigate])
 
   const steps = [
     { key: 'name', title: '이름을 입력해주세요.', subtitle: '명함에 표시될 이름을 입력하세요', placeholder: '김길동' },
@@ -56,16 +72,73 @@ function SignupFormPage() {
     }))
   }
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (isValid && currentStep < 5) {
       setCurrentStep(prev => prev + 1)
     } else if (isValid && currentStep === 5) {
-      // 모든 단계 완료 - 이름을 localStorage에 저장하고 Welcome 화면으로 이동
-      console.log('Form completed:', formData)
-      if (formData.name) {
-        localStorage.setItem('userName', formData.name)
+      // 모든 단계 완료 - 회원가입 API 호출
+      if (!username || !password) {
+        alert('회원가입 정보가 누락되었습니다. 처음부터 다시 시도해주세요.')
+        navigate('/signup')
+        return
       }
-      navigate('/welcome')
+
+      if (!formData.name || !formData.email) {
+        alert('이름과 이메일을 입력해주세요.')
+        return
+      }
+
+      setIsSubmitting(true)
+      try {
+        // 회원가입 API 호출 (username, email, password, name, phone, position, company)
+        const response = await authAPI.register(
+          username,
+          formData.email,
+          password,
+          formData.name,
+          formData.phone,
+          formData.position,
+          formData.affiliation // affiliation을 company로 사용
+        )
+
+        if (response.data.success) {
+          // 토큰과 사용자 정보 저장
+          setToken(response.data.token)
+          setUser(response.data.user)
+          
+          // 이름을 localStorage에 저장 (기존 코드 호환성)
+          if (formData.name) {
+            localStorage.setItem('userName', formData.name)
+          }
+          
+          // Welcome 화면으로 이동
+          navigate('/welcome')
+        } else {
+          alert('회원가입에 실패했습니다: ' + (response.data.message || '알 수 없는 오류'))
+        }
+      } catch (error) {
+        console.error('Signup error:', error)
+        console.error('Error response:', error.response?.data)
+        console.error('Error status:', error.response?.status)
+        
+        let errorMessage = '회원가입에 실패했습니다.'
+        
+        if (error.response?.data) {
+          if (error.response.data.message) {
+            errorMessage = error.response.data.message
+          } else if (error.response.data.errors && error.response.data.errors.length > 0) {
+            errorMessage = error.response.data.errors.map(err => err.msg || err.message).join(', ')
+          } else if (error.response.data.error) {
+            errorMessage = error.response.data.error
+          }
+        } else if (error.message) {
+          errorMessage = error.message
+        }
+        
+        alert(`회원가입 실패: ${errorMessage}`)
+      } finally {
+        setIsSubmitting(false)
+      }
     }
   }
 
@@ -129,11 +202,11 @@ function SignupFormPage() {
           )}
 
           <button
-            className={`continue-button ${isValid ? 'active' : 'disabled'}`}
+            className={`continue-button ${isValid && !isSubmitting ? 'active' : 'disabled'}`}
             onClick={handleContinue}
-            disabled={!isValid}
+            disabled={!isValid || isSubmitting}
           >
-            {currentStep === 5 ? '시작하기' : '계속하기'} &gt;
+            {isSubmitting ? '처리 중...' : (currentStep === 5 ? '시작하기' : '계속하기')} &gt;
           </button>
         </div>
       </div>

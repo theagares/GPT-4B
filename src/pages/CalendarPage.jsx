@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
+import { calendarAPI } from '../utils/api'
+import { isAuthenticated } from '../utils/auth'
 import './CalendarPage.css'
 
 const imgGpt4B1 = "https://www.figma.com/api/mcp/asset/a3f2241c-a552-4bd3-b5e3-fa9bb210880a"
@@ -76,6 +78,7 @@ function CalendarPage() {
   const [events, setEvents] = useState([]) // 구글 캘린더 이벤트 배열
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [isSaving, setIsSaving] = useState(false)
   const [showAddEventModal, setShowAddEventModal] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0])
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false)
@@ -99,103 +102,70 @@ function CalendarPage() {
     notification: ''
   })
 
-  // 구글 캘린더 API에서 이벤트를 가져오는 함수 (백엔드 연동 시 사용)
-  // TODO: 백엔드 API 엔드포인트로 변경
+  // DB에서 이벤트를 가져오는 함수
   const fetchCalendarEvents = async (startDate, endDate) => {
     setLoading(true)
     setError(null)
     
     try {
-      // 백엔드 API 호출 예시
-      // const response = await fetch(`/api/calendar/events?start=${startDate.toISOString()}&end=${endDate.toISOString()}`)
-      // const data = await response.json()
-      // return data.events || []
+      if (!isAuthenticated()) {
+        setLoading(false)
+        return []
+      }
+
+      // DB에서 이벤트 가져오기
+      const response = await calendarAPI.getEvents(
+        startDate.toISOString(),
+        endDate.toISOString()
+      )
       
-      // 임시: 샘플 데이터 (구글 캘린더 형식)
-      // 실제 백엔드 연동 시에는 이 부분을 API 호출로 대체
-      const today = new Date()
-      const todayStr = formatDateToISO(today)
-      const todayISO = `${todayStr}T`
+      if (response.data.success) {
+        return response.data.data || []
+      }
       
-      const sampleEvents = [
-        {
-          id: 'event1',
-          summary: 'A사 미팅',
-          start: { dateTime: `${todayISO}10:00:00+09:00` },
-          end: { dateTime: `${todayISO}11:00:00+09:00` },
-          colorId: '1',
-          description: '미팅',
-          location: '',
-          extendedProperties: {
-            private: {
-              participant: '지문호',
-              memo: '첫 번째 미팅입니다. 모두 참석 부탁드립니다.'
-            }
-          }
-        },
-        {
-          id: 'event2',
-          summary: '프로젝트 마감',
-          start: { dateTime: `${todayISO}15:00:00+09:00` },
-          end: { dateTime: `${todayISO}16:00:00+09:00` },
-          colorId: '2',
-          description: '업무',
-          location: '',
-          extendedProperties: {
-            private: {
-              participant: '',
-              memo: ''
-            }
-          }
-        },
-        {
-          id: 'event3',
-          summary: '점심 약속',
-          start: { dateTime: `${todayISO}12:30:00+09:00` },
-          end: { dateTime: `${todayISO}13:30:00+09:00` },
-          colorId: '3',
-          description: '개인',
-          location: '',
-          extendedProperties: {
-            private: {
-              participant: '',
-              memo: ''
-            }
-          }
-        }
-      ]
-      
-      // 현재 월의 이벤트만 반환 (실제로는 API에서 startDate와 endDate로 필터링)
-      return sampleEvents
+      return []
     } catch (err) {
-      setError(err.message)
+      console.error('Failed to fetch events:', err)
+      setError(err.response?.data?.message || err.message || '이벤트를 불러오는데 실패했습니다.')
       return []
     } finally {
       setLoading(false)
     }
   }
 
-  // 구글 캘린더 이벤트를 UI 형식으로 변환
-  const transformGoogleEvent = (googleEvent) => {
-    const startDate = parseISODate(googleEvent.start?.dateTime || googleEvent.start?.date)
-    const category = googleEvent.description || getCategoryFromColorId(googleEvent.colorId)
-    const color = COLOR_MAP[category] || COLOR_MAP['기타']
-    const extendedProps = googleEvent.extendedProperties?.private || {}
+  // DB 이벤트를 UI 형식으로 변환
+  const transformDBEvent = (dbEvent) => {
+    const startDate = new Date(dbEvent.startDate)
+    const endDate = new Date(dbEvent.endDate)
+    const category = dbEvent.category || '기타'
+    const color = dbEvent.color || COLOR_MAP[category] || COLOR_MAP['기타']
+    
+    // participants가 문자열인 경우 배열로 변환
+    let participant = ''
+    if (dbEvent.participants) {
+      if (typeof dbEvent.participants === 'string') {
+        const participants = dbEvent.participants.split(', ').filter(p => p)
+        participant = participants.join(', ')
+      } else if (Array.isArray(dbEvent.participants)) {
+        participant = dbEvent.participants.join(', ')
+      }
+    }
     
     return {
-      id: googleEvent.id,
-      title: googleEvent.summary || '제목 없음',
+      id: String(dbEvent.id),
+      title: dbEvent.title || '제목 없음',
       time: formatTime(startDate),
       startDate: startDate,
-      endDate: parseISODate(googleEvent.end?.dateTime || googleEvent.end?.date),
+      endDate: endDate,
       category: category,
       color: color,
-      description: googleEvent.description,
-      location: googleEvent.location,
-      participant: extendedProps.participant || '',
-      memo: extendedProps.memo || '',
-      // 원본 구글 캘린더 이벤트 데이터 보관 (필요시 사용)
-      rawEvent: googleEvent
+      description: dbEvent.description || category,
+      location: dbEvent.location || '',
+      participant: participant,
+      memo: dbEvent.memo || '',
+      notification: dbEvent.notification || '',
+      // 원본 DB 이벤트 데이터 보관 (필요시 사용)
+      rawEvent: dbEvent
     }
   }
 
@@ -223,41 +193,28 @@ function CalendarPage() {
 
   // 현재 월이 변경될 때 이벤트 로드
   useEffect(() => {
+    if (!isAuthenticated()) {
+      setEvents([])
+      return
+    }
+
     const year = currentDate.getFullYear()
     const month = currentDate.getMonth()
     const startDate = new Date(year, month, 1)
     const endDate = new Date(year, month + 1, 0)
     
-    fetchCalendarEvents(startDate, endDate).then(googleEvents => {
-      const transformedEvents = googleEvents.map(transformGoogleEvent)
+    fetchCalendarEvents(startDate, endDate).then(dbEvents => {
+      // 중복 제거: id 기준으로 중복 제거
+      const uniqueEvents = dbEvents.reduce((acc, event) => {
+        const existingIndex = acc.findIndex(e => e.id === event.id)
+        if (existingIndex === -1) {
+          acc.push(event)
+        }
+        return acc
+      }, [])
       
-      // localStorage에서 저장된 이벤트도 불러오기
-      try {
-        const storedEvents = JSON.parse(localStorage.getItem('calendarEvents') || '[]')
-        const storedTransformed = storedEvents
-          .filter(e => {
-            const eventDate = new Date(e.startDate)
-            return eventDate >= startDate && eventDate <= endDate
-          })
-          .map(e => ({
-            id: e.id,
-            title: e.title,
-            time: formatTime(new Date(e.startDate)),
-            startDate: new Date(e.startDate),
-            endDate: new Date(e.endDate),
-            category: e.category,
-            color: e.color,
-            description: e.category,
-            location: '',
-            participant: e.participant || '',
-            memo: e.memo || ''
-          }))
-        
-        setEvents([...transformedEvents, ...storedTransformed])
-      } catch (err) {
-        console.error('저장된 이벤트 로드 실패:', err)
-        setEvents(transformedEvents)
-      }
+      const transformedEvents = uniqueEvents.map(transformDBEvent)
+      setEvents(transformedEvents)
     })
   }, [currentDate])
 
@@ -417,87 +374,86 @@ function CalendarPage() {
   }
 
   const handleSave = async () => {
+    if (isSaving) {
+      return // 이미 저장 중이면 중복 호출 방지
+    }
+
     if (!formData.title.trim()) {
       // eslint-disable-next-line no-alert
       alert('일정 제목을 입력해주세요.')
       return
     }
 
+    if (!isAuthenticated()) {
+      // eslint-disable-next-line no-alert
+      alert('로그인이 필요합니다.')
+      return
+    }
+
+    setIsSaving(true)
     try {
-      const newEvent = {
-        id: `event_${Date.now()}`,
+      const startDate = new Date(
+        modalSelectedDate.getFullYear(),
+        modalSelectedDate.getMonth(),
+        modalSelectedDate.getDate(),
+        formData.startTime.hour,
+        formData.startTime.minute
+      )
+      const endDate = new Date(
+        modalSelectedDate.getFullYear(),
+        modalSelectedDate.getMonth(),
+        modalSelectedDate.getDate(),
+        formData.endTime.hour,
+        formData.endTime.minute
+      )
+
+      const eventData = {
         title: formData.title,
-        participant: participants.join(', '),
-        startDate: new Date(
-          modalSelectedDate.getFullYear(),
-          modalSelectedDate.getMonth(),
-          modalSelectedDate.getDate(),
-          formData.startTime.hour,
-          formData.startTime.minute
-        ),
-        endDate: new Date(
-          modalSelectedDate.getFullYear(),
-          modalSelectedDate.getMonth(),
-          modalSelectedDate.getDate(),
-          formData.endTime.hour,
-          formData.endTime.minute
-        ),
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
         category: selectedCategory.id,
         color: selectedCategory.color,
-        memo: formData.memo,
-        notification: formData.notification
+        description: selectedCategory.id,
+        location: '',
+        participants: participants,
+        memo: formData.memo || '',
+        notification: formData.notification || ''
       }
 
-      const storedEvents = JSON.parse(localStorage.getItem('calendarEvents') || '[]')
-      storedEvents.push({
-        ...newEvent,
-        startDate: newEvent.startDate.toISOString(),
-        endDate: newEvent.endDate.toISOString()
-      })
-      localStorage.setItem('calendarEvents', JSON.stringify(storedEvents))
+      // DB에 이벤트 저장
+      const response = await calendarAPI.createEvent(eventData)
 
-      // 이벤트 목록 새로고침
-      const year = currentDate.getFullYear()
-      const month = currentDate.getMonth()
-      const startDate = new Date(year, month, 1)
-      const endDate = new Date(year, month + 1, 0)
-      
-      fetchCalendarEvents(startDate, endDate).then(googleEvents => {
-        const transformedEvents = googleEvents.map(transformGoogleEvent)
-        
-        try {
-          const stored = JSON.parse(localStorage.getItem('calendarEvents') || '[]')
-          const storedTransformed = stored
-            .filter(e => {
-              const eventDate = new Date(e.startDate)
-              return eventDate >= startDate && eventDate <= endDate
-            })
-            .map(e => ({
-              id: e.id,
-              title: e.title,
-              time: formatTime(new Date(e.startDate)),
-              startDate: new Date(e.startDate),
-              endDate: new Date(e.endDate),
-              category: e.category,
-              color: e.color,
-              description: e.category,
-              location: '',
-              participant: e.participant || '',
-              memo: e.memo || ''
-            }))
-            
-          setEvents([...transformedEvents, ...storedTransformed])
-        } catch (err) {
-          console.error('저장된 이벤트 로드 실패:', err)
+      if (response.data && response.data.success) {
+        // 모달 먼저 닫기
+        handleCloseModal()
+
+        // 이벤트 목록 새로고침 (약간의 지연을 두어 DB 반영 시간 확보)
+        setTimeout(async () => {
+          const year = currentDate.getFullYear()
+          const month = currentDate.getMonth()
+          const startDateRange = new Date(year, month, 1)
+          const endDateRange = new Date(year, month + 1, 0)
+          
+          const dbEvents = await fetchCalendarEvents(startDateRange, endDateRange)
+          // 중복 제거: id 기준으로 중복 제거
+          const uniqueEvents = dbEvents.reduce((acc, event) => {
+            const existingIndex = acc.findIndex(e => e.id === event.id)
+            if (existingIndex === -1) {
+              acc.push(event)
+            }
+            return acc
+          }, [])
+          
+          const transformedEvents = uniqueEvents.map(transformDBEvent)
           setEvents(transformedEvents)
-        }
-      })
-
-      handleCloseModal()
+        }, 200)
+      }
     } catch (err) {
       console.error('이벤트 생성 실패:', err)
       // eslint-disable-next-line no-alert
-      alert('일정 추가에 실패했습니다.')
+      alert('일정 추가에 실패했습니다: ' + (err.response?.data?.message || err.message))
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -953,11 +909,11 @@ function CalendarPage() {
 
             {/* 추가 버튼 */}
             <button 
-              className={`add-button ${formData.title.trim() ? 'add-button-active' : ''}`}
+              className={`add-button ${formData.title.trim() && !isSaving ? 'add-button-active' : ''}`}
               onClick={handleSave}
-              disabled={!formData.title.trim()}
+              disabled={!formData.title.trim() || isSaving}
             >
-              추가
+              {isSaving ? '저장 중...' : '추가'}
             </button>
           </div>
         </div>

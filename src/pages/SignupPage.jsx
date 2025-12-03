@@ -85,8 +85,13 @@ function SignupPage() {
   const handleContinue = (e) => {
     e.preventDefault()
     if (isUserIdValid && isPasswordValid && isConfirmPasswordValid) {
-      // 다음 단계로 이동 (추가 정보 입력 등)
-      navigate('/signup/info')
+      // 아이디와 비밀번호를 다음 페이지로 전달
+      navigate('/signup/info', { 
+        state: { 
+          username: userId,
+          password: password 
+        } 
+      })
     }
   }
 

@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { userAPI } from '../utils/api'
+import { isAuthenticated } from '../utils/auth'
 import './MyPage.css'
 
 // 명함 디자인 맵
@@ -38,63 +40,164 @@ function MyPage() {
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
   const [myCardDesign, setMyCardDesign] = useState('design-1')
+  const [myInfo, setMyInfo] = useState({
+    name: '',
+    position: '',
+    company: '',
+    phone: '',
+    email: '',
+    memo: '',
+  })
+  const [isLoading, setIsLoading] = useState(true)
   
-  // 내 정보 상태
-  const loadMyInfo = () => {
-    const savedInfo = localStorage.getItem('my-info');
-    if (savedInfo) {
-      return JSON.parse(savedInfo);
-    }
-    // 기본값
-    return {
-      name: "박상무",
-      position: "상무",
-      company: "한국프로축구연맹 영업본부",
-      phone: "010-1234-5678",
-      email: "sangmu.park@example.com",
-      memo: "",
-    };
-  };
+  // DB에서 사용자 정보 가져오기
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (!isAuthenticated()) {
+        // 로그인하지 않은 경우 localStorage에서 가져오기
+        const savedInfo = localStorage.getItem('my-info');
+        if (savedInfo) {
+          setMyInfo(JSON.parse(savedInfo));
+        } else {
+          setMyInfo({
+            name: "박상무",
+            position: "상무",
+            company: "한국프로축구연맹 영업본부",
+            phone: "010-1234-5678",
+            email: "sangmu.park@example.com",
+            memo: "",
+          });
+        }
+        setIsLoading(false);
+        return;
+      }
 
-  const [myInfo, setMyInfo] = useState(loadMyInfo())
+      try {
+        const response = await userAPI.getProfile();
+        if (response.data.success) {
+          const userData = response.data.data;
+          const savedInfo = localStorage.getItem('my-info');
+          const localInfo = savedInfo ? JSON.parse(savedInfo) : {};
+          
+          setMyInfo({
+            name: userData.name || localInfo.name || '',
+            position: userData.position || localInfo.position || '',
+            company: userData.company || localInfo.company || '',
+            phone: userData.phone || localInfo.phone || '',
+            email: userData.email || localInfo.email || '',
+            memo: localInfo.memo || '',
+          });
+          
+          // DB에서 디자인 정보 가져오기
+          if (userData.cardDesign) {
+            setMyCardDesign(userData.cardDesign);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch user info:', error);
+        // 에러 발생 시 localStorage에서 가져오기
+        const savedInfo = localStorage.getItem('my-info');
+        if (savedInfo) {
+          setMyInfo(JSON.parse(savedInfo));
+        }
+        const savedDesign = localStorage.getItem('my-card-design');
+        if (savedDesign) {
+          setMyCardDesign(savedDesign);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, [])
 
   // 최소 스와이프 거리 (픽셀)
   const minSwipeDistance = 300
 
-  // localStorage에서 내 명함 디자인 불러오기
+  // 디자인 변경 감지 (DB 업데이트 후)
   useEffect(() => {
-    const savedDesign = localStorage.getItem('my-card-design')
-    if (savedDesign) {
-      setMyCardDesign(savedDesign)
-    }
-  }, [])
-
-  // localStorage 변경 감지
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedDesign = localStorage.getItem('my-card-design')
-      if (savedDesign) {
-        setMyCardDesign(savedDesign)
+    const handleDesignChange = async () => {
+      if (isAuthenticated()) {
+        try {
+          const response = await userAPI.getProfile();
+          if (response.data.success && response.data.data.cardDesign) {
+            setMyCardDesign(response.data.data.cardDesign);
+          }
+        } catch (error) {
+          console.error('Failed to fetch card design:', error);
+        }
       }
-    }
-    window.addEventListener('storage', handleStorageChange)
-    // 같은 탭에서의 변경도 감지하기 위해 커스텀 이벤트 사용
-    window.addEventListener('myCardDesignChanged', handleStorageChange)
+    };
+    
+    window.addEventListener('myCardDesignChanged', handleDesignChange);
+    window.addEventListener('myInfoUpdated', handleDesignChange);
+    
     return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('myCardDesignChanged', handleStorageChange)
-    }
+      window.removeEventListener('myCardDesignChanged', handleDesignChange);
+      window.removeEventListener('myInfoUpdated', handleDesignChange);
+    };
   }, [])
 
   // 내 정보 업데이트 감지
   useEffect(() => {
-    const handleMyInfoUpdate = () => {
-      setMyInfo(loadMyInfo())
+    const handleMyInfoUpdate = async () => {
+      if (isAuthenticated()) {
+        try {
+          const response = await userAPI.getProfile();
+          if (response.data.success) {
+            const userData = response.data.data;
+            const savedInfo = localStorage.getItem('my-info');
+            const localInfo = savedInfo ? JSON.parse(savedInfo) : {};
+            
+            setMyInfo({
+              name: userData.name || localInfo.name || '',
+              position: userData.position || localInfo.position || '',
+              company: userData.company || localInfo.company || '',
+              phone: userData.phone || localInfo.phone || '',
+              email: userData.email || localInfo.email || '',
+              memo: localInfo.memo || '',
+            });
+          }
+        } catch (error) {
+          console.error('Failed to refresh user info:', error);
+        }
+      } else {
+        const savedInfo = localStorage.getItem('my-info');
+        if (savedInfo) {
+          setMyInfo(JSON.parse(savedInfo));
+        }
+      }
     }
     window.addEventListener('myInfoUpdated', handleMyInfoUpdate)
     // 페이지 포커스 시에도 업데이트
-    const handleFocus = () => {
-      setMyInfo(loadMyInfo())
+    const handleFocus = async () => {
+      if (isAuthenticated()) {
+        try {
+          const response = await userAPI.getProfile();
+          if (response.data.success) {
+            const userData = response.data.data;
+            const savedInfo = localStorage.getItem('my-info');
+            const localInfo = savedInfo ? JSON.parse(savedInfo) : {};
+            
+            setMyInfo({
+              name: userData.name || localInfo.name || '',
+              position: userData.position || localInfo.position || '',
+              company: userData.company || localInfo.company || '',
+              phone: userData.phone || localInfo.phone || '',
+              email: userData.email || localInfo.email || '',
+              memo: localInfo.memo || '',
+            });
+          }
+        } catch (error) {
+          console.error('Failed to refresh user info:', error);
+        }
+      } else {
+        const savedInfo = localStorage.getItem('my-info');
+        if (savedInfo) {
+          setMyInfo(JSON.parse(savedInfo));
+        }
+      }
     }
     window.addEventListener('focus', handleFocus)
     return () => {
@@ -277,6 +380,16 @@ function MyPage() {
 
   const handleBack = () => {
     navigate(-1)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="my-page">
+        <div className="my-page-background" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+          <p style={{ color: 'white' }}>로딩 중...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
