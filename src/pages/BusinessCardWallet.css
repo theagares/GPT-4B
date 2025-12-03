@@ -175,12 +175,14 @@
 .carousel-track {
   position: relative;
   width: 100%;
-  aspect-ratio: 1.9;
+  height: 0;
+  padding-bottom: 52.63%; /* 100% / 1.9 = 52.63% - 사파리 호환성을 위해 항상 사용 */
 }
 
 .carousel-card {
   position: absolute;
   width: 100%;
+  height: 100%;
   left: 0;
   top: 0;
   padding: 0;
@@ -191,8 +193,9 @@
 }
 
 .business-card-display {
+  position: relative;
   width: 100%;
-  aspect-ratio: 1.9;
+  height: 100%;
   background: linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%);
   border-radius: 20px;
   padding: 28px;
@@ -201,13 +204,15 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-sizing: border-box;
 }
 
 .card-display-content {
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 0;
 }
 
 .card-top-section {
@@ -310,12 +315,40 @@
 }
 
 @media (max-width: 480px) {
+  .carousel-container {
+    padding: 0 20px;
+  }
+  
   .carousel-nav-prev {
-    left: -18px;
+    left: 5px;
   }
   
   .carousel-nav-next {
-    right: -18px;
+    right: 5px;
+  }
+  
+  .carousel-wrapper {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .carousel-track {
+    max-width: 85%;
+    margin: 0 auto;
+    padding-bottom: 52.63%;
+  }
+  
+  .business-card-display {
+    padding: 24px;
+  }
+  
+  .card-display-content {
+    min-height: 0;
+  }
+  
+  .card-info-section {
+    padding-top: 16px;
   }
 }
 

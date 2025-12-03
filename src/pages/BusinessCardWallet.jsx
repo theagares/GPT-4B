@@ -110,7 +110,17 @@ function BusinessCardWallet() {
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [flippingCardId, setFlippingCardId] = useState(null)
   const [isGridView, setIsGridView] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 480)
   const cards = useCardStore((state) => state.cards)
+  
+  // 모바일 감지
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 480)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   // 검색 필터링
   const filteredCards = cards.filter(card => {
@@ -308,7 +318,7 @@ function BusinessCardWallet() {
                             key={card.id} 
                             className={`carousel-card ${isActive ? 'active' : ''} ${flippingCardId === card.id && isFlipping ? 'flipping' : ''}`}
                             style={{
-                              transform: `translateX(${offset * 85}%) scale(${isActive ? 1 : 0.7})`,
+                              transform: `translateX(${offset * 85}%) scale(${isActive ? (isMobile ? 0.85 : 1) : 0.7})`,
                               opacity: isActive ? 1 : 0.3,
                               filter: isActive ? 'blur(0)' : 'blur(3px)',
                               zIndex: isActive ? 10 : 5 - Math.abs(offset)
