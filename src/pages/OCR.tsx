@@ -1,3 +1,4 @@
+// pages/OCR.tsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import OCRCamera from "../components/OCRCamera/OCRCamera";
@@ -5,14 +6,18 @@ import { runOCR } from "../utils/ocr";
 import { useCardStore } from "../store/cardStore";
 import "./OCR.css";
 
-const imgClose = "https://www.figma.com/api/mcp/asset/6648b9d4-a842-4e72-bb51-ca84e67e9f31";
-const imgCameraIcon = "https://www.figma.com/api/mcp/asset/6efbcce4-972f-414d-afca-756ba17f83b4";
+const imgClose =
+  "https://www.figma.com/api/mcp/asset/6648b9d4-a842-4e72-bb51-ca84e67e9f31";
 
 // 모바일/웹 감지 함수
 const isMobileDevice = () => {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  ) || (window.matchMedia && window.matchMedia("(max-width: 768px)").matches);
+  return (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent,
+    ) ||
+    (window.matchMedia &&
+      window.matchMedia("(max-width: 768px)").matches)
+  );
 };
 
 // 카메라 지원 여부 확인
@@ -22,7 +27,7 @@ const hasCameraSupport = () => {
 
 const OCR = () => {
   const navigate = useNavigate();
-  const setPendingCard = useCardStore((state) => state.setPendingCard);
+  const setPendingCard = useCardStore(state => state.setPendingCard);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPermissionDialog, setShowPermissionDialog] = useState(false);
@@ -45,6 +50,7 @@ const OCR = () => {
       setIsProcessing(true);
       setError(null);
       const ocrResult = await runOCR(image);
+
       const pending = {
         id: crypto.randomUUID(),
         name: ocrResult.name ?? "이름 미확인",
@@ -55,6 +61,7 @@ const OCR = () => {
         memo: ocrResult.memo,
         image,
       };
+
       setPendingCard(pending);
       navigate("/confirm");
     } catch (err) {
@@ -75,40 +82,50 @@ const OCR = () => {
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     // 이미지 파일인지 확인
-    if (!file.type.startsWith('image/')) {
-      setError('이미지 파일만 업로드 가능합니다.');
+    if (!file.type.startsWith("image/")) {
+      setError("이미지 파일만 업로드 가능합니다.");
       return;
     }
 
     try {
       setIsProcessing(true);
       setError(null);
-      
-      // 파일을 base64로 변환
+
       const reader = new FileReader();
       reader.onloadend = async () => {
-        const imageDataUrl = reader.result as string;
-        const ocrResult = await runOCR(imageDataUrl);
-        const pending = {
-          id: crypto.randomUUID(),
-          name: ocrResult.name ?? "이름 미확인",
-          position: ocrResult.position,
-          company: ocrResult.company,
-          phone: ocrResult.phone,
-          email: ocrResult.email,
-          memo: ocrResult.memo,
-          image: imageDataUrl,
-        };
-        setPendingCard(pending);
-        navigate("/confirm");
+        try {
+          const imageDataUrl = reader.result as string;
+          const ocrResult = await runOCR(imageDataUrl);
+
+          const pending = {
+            id: crypto.randomUUID(),
+            name: ocrResult.name ?? "이름 미확인",
+            position: ocrResult.position,
+            company: ocrResult.company,
+            phone: ocrResult.phone,
+            email: ocrResult.email,
+            memo: ocrResult.memo,
+            image: imageDataUrl,
+          };
+
+          setPendingCard(pending);
+          navigate("/confirm");
+        } catch (e) {
+          console.error(e);
+          setError("OCR 분석에 실패했습니다. 다시 시도해 주세요.");
+        } finally {
+          setIsProcessing(false);
+        }
       };
       reader.onerror = () => {
-        setError('파일을 읽는 중 오류가 발생했습니다.');
+        setError("파일을 읽는 중 오류가 발생했습니다.");
         setIsProcessing(false);
       };
       reader.readAsDataURL(file);
@@ -123,14 +140,16 @@ const OCR = () => {
     return (
       <div className="ocr-page">
         <div className="ocr-container">
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            height: '100vh',
-            color: 'white',
-            fontSize: '16px'
-          }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100vh",
+              color: "white",
+              fontSize: "16px",
+            }}
+          >
             로딩 중...
           </div>
         </div>
@@ -145,7 +164,7 @@ const OCR = () => {
         <div className="ocr-header">
           <button
             className="ocr-back-button"
-            onClick={() => navigate("/business-cards")}
+            onClick={() => navigate(-1)}
             type="button"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -158,29 +177,31 @@ const OCR = () => {
               />
             </svg>
           </button>
+
           {useCamera && (
             <button
               className="ocr-flip-button"
               onClick={() => {
-                setCameraToggle((prev) => prev + 1);
+                setCameraToggle(prev => prev + 1);
               }}
               type="button"
             >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z"
-                stroke="white"
-                strokeWidth="2"
-              />
-              <path
-                d="M12 6V2M12 22V18M6 12H2M22 12H18"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20Z"
+                  stroke="white"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M12 6V2M12 22V18M6 12H2M22 12H18"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
           )}
+
           {!useCamera && (
             <button
               className="ocr-switch-button"
@@ -188,7 +209,7 @@ const OCR = () => {
                 if (hasCameraSupport()) {
                   setUseCamera(true);
                 } else {
-                  setError('이 브라우저는 카메라를 지원하지 않습니다.');
+                  setError("이 브라우저는 카메라를 지원하지 않습니다.");
                 }
               }}
               type="button"
@@ -212,9 +233,10 @@ const OCR = () => {
 
         {/* Title Section */}
         <div className="ocr-title-section">
-          <p className="ocr-step">Step 1.</p>
           <h1 className="ocr-title">명함을 촬영해주세요</h1>
-          <p className="ocr-subtitle">명함이 가이드 안에 들어오도록 조정해주세요</p>
+          <p className="ocr-subtitle">
+            명함이 가이드 안에 들어오도록 조정해주세요
+          </p>
         </div>
 
         {/* Camera Component or File Upload */}
@@ -234,9 +256,12 @@ const OCR = () => {
                 onChange={handleFileUpload}
                 disabled={isProcessing}
                 id="file-upload-input"
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
-              <label htmlFor="file-upload-input" className="ocr-file-upload-label">
+              <label
+                htmlFor="file-upload-input"
+                className="ocr-file-upload-label"
+              >
                 <div className="ocr-file-upload-icon">
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
                     <path
@@ -246,7 +271,9 @@ const OCR = () => {
                   </svg>
                 </div>
                 <p className="ocr-file-upload-text">명함 이미지 선택</p>
-                <p className="ocr-file-upload-hint">클릭하여 파일을 선택하세요</p>
+                <p className="ocr-file-upload-hint">
+                  클릭하여 파일을 선택하세요
+                </p>
               </label>
             </div>
             {isProcessing && (
@@ -258,16 +285,10 @@ const OCR = () => {
         )}
 
         {/* Guide Message */}
-        <div className="ocr-guide-message">
-          💡 명함을 수평으로 맞춰주세요
-        </div>
+        <div className="ocr-guide-message">💡 명함을 수평으로 맞춰주세요</div>
 
         {/* Error Message */}
-        {error && (
-          <div className="ocr-error-message">
-            {error}
-          </div>
-        )}
+        {error && <div className="ocr-error-message">{error}</div>}
       </div>
 
       {/* Camera Permission Dialog */}
@@ -282,18 +303,20 @@ const OCR = () => {
               <img src={imgClose} alt="닫기" />
             </button>
             <div className="permission-dialog-content">
-              <h2 className="permission-dialog-title">카메라를 허용해주세요</h2>
+              <h2 className="permission-dialog-title">
+                카메라를 허용해주세요
+              </h2>
               <p className="permission-dialog-description">
-                "설정 - gpt4b - 카메라"로 들어가서
+                &quot;설정 - gpt4b - 카메라&quot;로 들어가서
                 <br />
-                '허용'을 눌러주세요.
+                &apos;허용&apos;을 눌러주세요.
               </p>
             </div>
             <button
               className="permission-dialog-button"
               onClick={() => {
                 setShowPermissionDialog(false);
-                // 설정 페이지로 이동하거나 카메라 권한 다시 요청
+                // 여기서 다시 카메라 요청 로직 추가 가능
               }}
               type="button"
             >
@@ -307,4 +330,3 @@ const OCR = () => {
 };
 
 export default OCR;
-
