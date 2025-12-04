@@ -49,7 +49,27 @@ const OCR = () => {
     try {
       setIsProcessing(true);
       setError(null);
+      
+      // 이미지 유효성 검사
+      if (!image || image.trim() === "") {
+        throw new Error("이미지 데이터가 없습니다.");
+      }
+
       const ocrResult = await runOCR(image);
+
+      console.log("🎯 [OCR 페이지 - 캡처 결과 수신]");
+      console.log("📊 OCR 결과:", ocrResult);
+
+      // OCR 결과 유효성 검사
+      if (!ocrResult || (!ocrResult.name && !ocrResult.company && !ocrResult.email)) {
+        console.warn("⚠️ OCR 결과가 불완전합니다:", ocrResult);
+        console.warn("  - 이름:", ocrResult?.name || "없음");
+        console.warn("  - 회사:", ocrResult?.company || "없음");
+        console.warn("  - 이메일:", ocrResult?.email || "없음");
+        // 경고만 표시하고 계속 진행 (사용자가 수정할 수 있도록)
+      } else {
+        console.log("✅ OCR 결과 유효성 검사 통과");
+      }
 
       const pending = {
         id: crypto.randomUUID(),
@@ -65,8 +85,11 @@ const OCR = () => {
       setPendingCard(pending);
       navigate("/confirm");
     } catch (err) {
-      console.error(err);
-      setError("OCR 분석에 실패했습니다. 다시 시도해 주세요.");
+      console.error("OCR 처리 오류:", err);
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : "OCR 분석에 실패했습니다. 다시 시도해 주세요.";
+      setError(errorMessage);
     } finally {
       setIsProcessing(false);
     }
@@ -88,9 +111,16 @@ const OCR = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // 파일 크기 제한 (10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      setError("파일 크기는 10MB 이하여야 합니다.");
+      return;
+    }
+
     // 이미지 파일인지 확인
     if (!file.type.startsWith("image/")) {
-      setError("이미지 파일만 업로드 가능합니다.");
+      setError("이미지 파일만 업로드 가능합니다. (JPG, PNG, GIF 등)");
       return;
     }
 
@@ -99,10 +129,30 @@ const OCR = () => {
       setError(null);
 
       const reader = new FileReader();
+      
       reader.onloadend = async () => {
         try {
           const imageDataUrl = reader.result as string;
+          
+          if (!imageDataUrl) {
+            throw new Error("파일을 읽을 수 없습니다.");
+          }
+
           const ocrResult = await runOCR(imageDataUrl);
+
+          console.log("🎯 [OCR 페이지 - 파일 업로드 결과 수신]");
+          console.log("📊 OCR 결과:", ocrResult);
+
+          // OCR 결과 유효성 검사
+          if (!ocrResult || (!ocrResult.name && !ocrResult.company && !ocrResult.email)) {
+            console.warn("⚠️ OCR 결과가 불완전합니다:", ocrResult);
+            console.warn("  - 이름:", ocrResult?.name || "없음");
+            console.warn("  - 회사:", ocrResult?.company || "없음");
+            console.warn("  - 이메일:", ocrResult?.email || "없음");
+            // 경고만 표시하고 계속 진행
+          } else {
+            console.log("✅ OCR 결과 유효성 검사 통과");
+          }
 
           const pending = {
             id: crypto.randomUUID(),
@@ -118,21 +168,37 @@ const OCR = () => {
           setPendingCard(pending);
           navigate("/confirm");
         } catch (e) {
-          console.error(e);
-          setError("OCR 분석에 실패했습니다. 다시 시도해 주세요.");
+          console.error("OCR 처리 오류:", e);
+          const errorMessage = e instanceof Error 
+            ? e.message 
+            : "OCR 분석에 실패했습니다. 다시 시도해 주세요.";
+          setError(errorMessage);
         } finally {
           setIsProcessing(false);
         }
       };
+      
       reader.onerror = () => {
-        setError("파일을 읽는 중 오류가 발생했습니다.");
+        setError("파일을 읽는 중 오류가 발생했습니다. 파일이 손상되었을 수 있습니다.");
         setIsProcessing(false);
       };
+      
+      reader.onabort = () => {
+        setError("파일 읽기가 취소되었습니다.");
+        setIsProcessing(false);
+      };
+      
       reader.readAsDataURL(file);
     } catch (err) {
-      console.error(err);
-      setError("OCR 분석에 실패했습니다. 다시 시도해 주세요.");
+      console.error("파일 업로드 오류:", err);
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : "파일 업로드에 실패했습니다. 다시 시도해 주세요.";
+      setError(errorMessage);
       setIsProcessing(false);
+    } finally {
+      // input 초기화 (같은 파일을 다시 선택할 수 있도록)
+      event.target.value = "";
     }
   };
 
@@ -278,7 +344,9 @@ const OCR = () => {
             </div>
             {isProcessing && (
               <div className="ocr-processing">
+                <div className="ocr-processing-spinner"></div>
                 <p>OCR 분석 중...</p>
+                <p className="ocr-processing-hint">잠시만 기다려주세요</p>
               </div>
             )}
           </div>
