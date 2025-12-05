@@ -298,11 +298,18 @@
   display: flex;
   gap: 12px;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gift-recommendation-card.selected {
+  border: 2px solid #10b981;
+  box-shadow: 0px 2px 8px rgba(16, 185, 129, 0.2);
 }
 
 .gift-card-image {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
@@ -319,17 +326,29 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
+}
+
+.gift-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .gift-card-title {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #1f2937;
   margin: 0;
   line-height: 1.4;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .gift-card-description {
@@ -349,21 +368,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 4px;
+  margin-top: auto;
   width: 100%;
-  gap: 16px;
-}
-
-.gift-card-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
+  gap: 12px;
 }
 
 .gift-card-price {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: #1f2937;
 }
@@ -377,13 +389,13 @@
   font-size: 12px;
   font-weight: 500;
   color: #584cdc;
-  margin-left: auto;
+  text-decoration: underline;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .gift-card-detail-link:hover {
   opacity: 0.7;
-  text-decoration: underline;
 }
 
 /* Gift Card Category */
@@ -398,6 +410,7 @@
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin-top: 2px;
 }
 
 /* Gift Card Image Placeholder */
@@ -540,11 +553,11 @@
   transition: all 0.2s ease;
   white-space: nowrap;
   flex-shrink: 0;
+  min-width: 60px;
 }
 
 .gift-select-button:hover:not(:disabled) {
   background-color: #4a3fc0;
-  transform: translateY(-1px);
 }
 
 .gift-select-button:disabled {
@@ -555,11 +568,15 @@
 }
 
 .gift-select-button.selected {
-  background-color: #10b981;
+  background-color: #059669;
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .gift-select-button.selected:hover {
-  background-color: #059669;
+  background-color: #047857;
+  color: white;
 }
 
 

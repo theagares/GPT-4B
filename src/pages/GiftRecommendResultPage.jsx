@@ -369,7 +369,7 @@ function GiftRecommendResultPage() {
             {giftsToShow.length > 0 && giftsToShow[0].id !== 'fallback-1' ? (
               <div className="gift-recommendations">
                 {giftsToShow.map((gift, index) => (
-                  <div key={gift.id} className="gift-recommendation-card">
+                  <div key={gift.id} className={`gift-recommendation-card ${selectedGiftIndex === index ? 'selected' : ''}`}>
                     <div className="gift-card-image">
                       {gift.image ? (
                         <img 
@@ -386,7 +386,19 @@ function GiftRecommendResultPage() {
                       </div>
                     </div>
                     <div className="gift-card-content">
-                      <h3 className="gift-card-title">{gift.name}</h3>
+                      <div className="gift-card-header">
+                        <h3 className="gift-card-title">{gift.name}</h3>
+                        {gift.url && gift.url !== '#' ? (
+                          <a 
+                            href={gift.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="gift-card-detail-link"
+                          >
+                            상세 보기
+                          </a>
+                        ) : null}
+                      </div>
                       <p className="gift-card-category">
                         {gift.category}
                         {gift.brand && ` · ${gift.brand}`}
@@ -395,29 +407,13 @@ function GiftRecommendResultPage() {
                         <span className="gift-card-price">
                           ₩{Number(gift.price).toLocaleString()}
                         </span>
-                        <div className="gift-card-actions">
-                          {gift.url && gift.url !== '#' ? (
-                            <a 
-                              href={gift.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="gift-card-detail-link"
-                            >
-                              상세 보기
-                            </a>
-                          ) : (
-                            <span className="gift-card-source">
-                              {gift.source === 'naver' ? '네이버 쇼핑' : 'GPT-4b 추천'}
-                            </span>
-                          )}
-                          <button
-                            className={`gift-select-button ${selectedGiftIndex === index ? 'selected' : ''}`}
-                            onClick={() => handleSelectGift(gift, index)}
-                            disabled={selectedGiftIndex !== null || isSavingGift}
-                          >
-                            {selectedGiftIndex === index ? '선택됨' : '선택하기'}
-                          </button>
-                        </div>
+                        <button
+                          className={`gift-select-button ${selectedGiftIndex === index ? 'selected' : ''}`}
+                          onClick={() => handleSelectGift(gift, index)}
+                          disabled={selectedGiftIndex !== null || isSavingGift}
+                        >
+                          {selectedGiftIndex === index ? '선택됨' : '선택'}
+                        </button>
                       </div>
                     </div>
                   </div>
