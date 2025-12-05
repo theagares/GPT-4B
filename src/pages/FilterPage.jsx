@@ -15,30 +15,75 @@ function FilterPage() {
   const navigate = useNavigate()
   const location = useLocation()
   
-  // 이전 페이지에서 전달된 필터 상태 또는 기본값
-  const [selectedCategory, setSelectedCategory] = useState(
-    location.state?.category || '전체'
-  )
-  const [selectedPriceRange, setSelectedPriceRange] = useState(
-    location.state?.priceRange || '전체'
-  )
+  // 이전 페이지에서 전달된 필터 상태 또는 기본값 (배열로 변환)
+  const getInitialCategories = () => {
+    if (location.state?.category) {
+      if (Array.isArray(location.state.category)) {
+        return location.state.category
+      }
+      return location.state.category === '전체' ? [] : [location.state.category]
+    }
+    return []
+  }
+
+  const getInitialPriceRanges = () => {
+    if (location.state?.priceRange) {
+      if (Array.isArray(location.state.priceRange)) {
+        return location.state.priceRange
+      }
+      return location.state.priceRange === '전체' ? [] : [location.state.priceRange]
+    }
+    return []
+  }
+
+  const [selectedCategories, setSelectedCategories] = useState(getInitialCategories)
+  const [selectedPriceRanges, setSelectedPriceRanges] = useState(getInitialPriceRanges)
 
   const handleClose = () => {
     navigate(-1)
   }
 
   const handleReset = () => {
-    setSelectedCategory('전체')
-    setSelectedPriceRange('전체')
+    setSelectedCategories([])
+    setSelectedPriceRanges([])
+  }
+
+  const handleCategoryToggle = (category) => {
+    if (category === '전체') {
+      setSelectedCategories([])
+    } else {
+      setSelectedCategories(prev => {
+        if (prev.includes(category)) {
+          return prev.filter(c => c !== category)
+        } else {
+          return [...prev, category]
+        }
+      })
+    }
+  }
+
+  const handlePriceRangeToggle = (range) => {
+    if (range === '전체') {
+      setSelectedPriceRanges([])
+    } else {
+      setSelectedPriceRanges(prev => {
+        if (prev.includes(range)) {
+          return prev.filter(r => r !== range)
+        } else {
+          return [...prev, range]
+        }
+      })
+    }
   }
 
   const handleApply = () => {
     // 필터를 적용하고 이전 페이지로 돌아가기
-    // 상태는 나중에 전역 상태 관리나 URL 파라미터로 전달
+    // replace를 사용하여 필터 페이지를 히스토리에서 제거
     navigate('/popular-gifts', { 
+      replace: true,
       state: { 
-        category: selectedCategory,
-        priceRange: selectedPriceRange
+        category: selectedCategories,
+        priceRange: selectedPriceRanges
       }
     })
   }
@@ -73,15 +118,20 @@ function FilterPage() {
           <div className="filter-section">
             <h3 className="filter-section-title">카테고리</h3>
             <div className="category-buttons">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  className={`category-button ${selectedCategory === category ? 'selected' : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </button>
-              ))}
+              {categories.map((category) => {
+                const isSelected = category === '전체' 
+                  ? selectedCategories.length === 0
+                  : selectedCategories.includes(category)
+                return (
+                  <button
+                    key={category}
+                    className={`category-button ${isSelected ? 'selected' : ''}`}
+                    onClick={() => handleCategoryToggle(category)}
+                  >
+                    {category}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
@@ -89,15 +139,20 @@ function FilterPage() {
           <div className="filter-section">
             <h3 className="filter-section-title">가격대</h3>
             <div className="price-range-buttons">
-              {priceRanges.map((range) => (
-                <button
-                  key={range}
-                  className={`price-range-button ${selectedPriceRange === range ? 'selected' : ''}`}
-                  onClick={() => setSelectedPriceRange(range)}
-                >
-                  {range}
-                </button>
-              ))}
+              {priceRanges.map((range) => {
+                const isSelected = range === '전체'
+                  ? selectedPriceRanges.length === 0
+                  : selectedPriceRanges.includes(range)
+                return (
+                  <button
+                    key={range}
+                    className={`price-range-button ${isSelected ? 'selected' : ''}`}
+                    onClick={() => handlePriceRangeToggle(range)}
+                  >
+                    {range}
+                  </button>
+                )
+              })}
             </div>
           </div>
         </div>

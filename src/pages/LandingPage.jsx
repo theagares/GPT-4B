@@ -5,48 +5,44 @@ import { useCardStore } from '../store/cardStore'
 import { userAPI, calendarAPI } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
 import './LandingPage.css'
-const imgImageWithFallback = "https://www.figma.com/api/mcp/asset/e61c2b5d-68eb-409e-9b25-a90abd759a96"
-const imgImageWithFallback1 = "https://www.figma.com/api/mcp/asset/2fbadc50-65b5-4cb8-8a55-788f604b6dd8"
-const imgImageWithFallback2 = "https://www.figma.com/api/mcp/asset/a166d192-abaa-4496-bc6a-bd5336537959"
-const imgImageWithFallback3 = "https://www.figma.com/api/mcp/asset/33109928-c22e-44a9-be00-18c92d851a45"
 
-// 인기 선물 데이터 (랭킹 순으로 정렬)
+// 인기 선물 데이터 (GiftDetailPage와 동일한 데이터)
 const popularGifts = [
   {
     id: 1,
     rank: 1,
-    image: imgImageWithFallback,
+    image: "https://www.figma.com/api/mcp/asset/4b1421cd-2596-45d3-8139-9dcc9a7eb9f4",
     title: "프리미엄 와인 세트",
     category: "주류",
-    price: "150,000원",
+    price: "102,448원",
     popularity: "인기 95%"
   },
   {
     id: 2,
     rank: 2,
-    image: imgImageWithFallback1,
+    image: "https://www.figma.com/api/mcp/asset/50bcc4a5-6947-447b-acf5-712e3e638c4b",
     title: "명품 선물 세트",
     category: "고급 선물",
-    price: "300,000원",
-    popularity: "인기 92%"
+    price: "117,232원",
+    popularity: "인기 95%"
   },
   {
     id: 3,
     rank: 3,
-    image: imgImageWithFallback2,
+    image: "https://www.figma.com/api/mcp/asset/873df59d-ef1b-4164-9ec2-dc12ea7cc30a",
     title: "스페셜티 커피 세트",
     category: "식음료",
-    price: "80,000원",
-    popularity: "인기 88%"
+    price: "260,724원",
+    popularity: "인기 94%"
   },
   {
     id: 4,
     rank: 4,
-    image: imgImageWithFallback3,
+    image: "https://www.figma.com/api/mcp/asset/7f9cd4ef-8192-4282-8fdc-38a645494f85",
     title: "비즈니스 선물 세트",
-    category: "사무용품",
-    price: "120,000원",
-    popularity: "인기 85%"
+    category: "건강식품",
+    price: "110,203원",
+    popularity: "인기 94%"
   }
 ].sort((a, b) => a.rank - b.rank) // 랭킹 순으로 정렬
 .slice(0, 4) // 최대 4개까지만 표시
@@ -299,19 +295,18 @@ function LandingPage() {
   return (
     <div className="landing-page">
       <div className="landing-container">
-        {/* Header */}
-        <div className="landing-header">
-          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="header-logo" />
-          {userName && (
-            <span className="welcome-message">{userName}님 환영합니다!</span>
-          )}
-        </div>
-
         {/* AI Gift Recommendation Banner */}
         <div className="ai-banner">
+          {/* Header */}
+          <div className="landing-header">
+            <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="header-logo" />
+            {userName && (
+              <span className="welcome-message">{userName}님 환영합니다!</span>
+            )}
+          </div>
           <div className="banner-content">
             <div className="banner-text">
-              <p className="banner-subtitle">AI 맞춤형 선물 추천</p>
+              <p className="banner-subtitle">AI 맞춤형 선물 추천 서비스 GPT-4b</p>
               <p className="banner-title">상대방의 정보를 기반으로 최적의 선물을 찾아드립니다</p>
             </div>
           </div>
@@ -327,7 +322,12 @@ function LandingPage() {
 
           <div className="gift-cards-container">
             {popularGifts.map((gift) => (
-              <div key={gift.id} className="gift-card">
+              <div 
+                key={gift.id} 
+                className="gift-card"
+                onClick={() => navigate(`/popular-gifts/${gift.id}`)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="gift-card-image">
                   <img src={gift.image} alt={gift.title} />
                   <div className="rank-badge">#{gift.rank}</div>
@@ -353,7 +353,6 @@ function LandingPage() {
             {alerts.length > 0 ? (
               alerts.map((alert) => (
                 <div key={alert.id} className="alert-card">
-                  <div className="alert-icon">{alert.icon}</div>
                   <p className="alert-text">{alert.text}</p>
                   <button 
                     className="alert-button"
@@ -365,7 +364,8 @@ function LandingPage() {
               ))
             ) : (
               <div className="no-alerts">
-                <p>현재 알림이 없습니다.</p>
+                <p className="no-alerts-text">아직 등록된 일정이 없어요.</p>
+                <p className="no-alerts-text">'캘린더' 탭에서 일정을 등록해보세요!</p>
               </div>
             )}
           </div>

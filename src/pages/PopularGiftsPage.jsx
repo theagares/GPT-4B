@@ -11,10 +11,28 @@ function BackIcon() {
   )
 }
 
+function HomeIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 12L12 3L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M4 12V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9 22V16C9 15.4696 9.21071 14.9609 9.58579 14.5858C9.96086 14.2107 10.4696 14 11 14H13C13.5304 14 14.0391 14.2107 14.4142 14.5858C14.7893 14.9609 15 15.4696 15 16V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 function SortIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M4 6L8 10L12 6" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+function CloseIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 3L3 9M3 3L9 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
@@ -170,17 +188,25 @@ const gifts = [
 function PopularGiftsPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const [appliedCategory, setAppliedCategory] = useState('전체')
-  const [appliedPriceRange, setAppliedPriceRange] = useState('전체')
+  const [appliedCategories, setAppliedCategories] = useState([])
+  const [appliedPriceRanges, setAppliedPriceRanges] = useState([])
 
   // 필터 페이지에서 돌아올 때 필터 상태 적용
   useEffect(() => {
     if (location.state) {
-      if (location.state.category) {
-        setAppliedCategory(location.state.category)
+      if (location.state.category !== undefined) {
+        if (Array.isArray(location.state.category)) {
+          setAppliedCategories(location.state.category)
+        } else {
+          setAppliedCategories(location.state.category === '전체' ? [] : [location.state.category])
+        }
       }
-      if (location.state.priceRange) {
-        setAppliedPriceRange(location.state.priceRange)
+      if (location.state.priceRange !== undefined) {
+        if (Array.isArray(location.state.priceRange)) {
+          setAppliedPriceRanges(location.state.priceRange)
+        } else {
+          setAppliedPriceRanges(location.state.priceRange === '전체' ? [] : [location.state.priceRange])
+        }
       }
     }
   }, [location.state])
@@ -189,37 +215,55 @@ function PopularGiftsPage() {
     navigate(-1)
   }
 
+  const handleHome = () => {
+    navigate('/dashboard')
+  }
+
+  const handleRemoveCategory = (categoryToRemove) => {
+    setAppliedCategories(prev => prev.filter(c => c !== categoryToRemove))
+  }
+
+  const handleRemovePriceRange = (rangeToRemove) => {
+    setAppliedPriceRanges(prev => prev.filter(r => r !== rangeToRemove))
+  }
+
   // 가격 범위를 숫자로 변환하는 함수
   const getPriceRange = (priceRange) => {
     const priceStr = priceRange.replace(/[원,]/g, '')
     return parseInt(priceStr) || 0
   }
 
+  // 가격 범위가 해당 범위에 포함되는지 확인하는 함수
+  const isPriceInRange = (price, range) => {
+    switch (range) {
+      case '5만원 이하':
+        return price <= 50000
+      case '5만원 - 10만원':
+        return price > 50000 && price <= 100000
+      case '10만원 - 20만원':
+        return price > 100000 && price <= 200000
+      case '20만원 이상':
+        return price > 200000
+      default:
+        return false
+    }
+  }
+
   // 필터링된 선물 목록
   const filteredGifts = gifts.filter((gift) => {
-    // 카테고리 필터
-    if (appliedCategory !== '전체' && gift.category !== appliedCategory) {
-      return false
+    // 카테고리 필터 (여러 개 선택 가능)
+    if (appliedCategories.length > 0) {
+      if (!appliedCategories.includes(gift.category)) {
+        return false
+      }
     }
 
-    // 가격대 필터
-    if (appliedPriceRange !== '전체') {
+    // 가격대 필터 (여러 개 선택 가능)
+    if (appliedPriceRanges.length > 0) {
       const price = getPriceRange(gift.price)
-      switch (appliedPriceRange) {
-        case '5만원 이하':
-          if (price > 50000) return false
-          break
-        case '5만원 - 10만원':
-          if (price <= 50000 || price > 100000) return false
-          break
-        case '10만원 - 20만원':
-          if (price <= 100000 || price > 200000) return false
-          break
-        case '20만원 이상':
-          if (price <= 200000) return false
-          break
-        default:
-          break
+      const matchesAnyRange = appliedPriceRanges.some(range => isPriceInRange(price, range))
+      if (!matchesAnyRange) {
+        return false
       }
     }
 
@@ -237,28 +281,64 @@ function PopularGiftsPage() {
             </div>
           </button>
           <h1 className="page-title">인기 선물</h1>
-          <div className="header-spacer"></div>
+          <button className="home-button" onClick={handleHome}>
+            <HomeIcon />
+            <span className="home-button-text">홈으로</span>
+          </button>
         </div>
       </div>
 
-      {/* Sort and Filter Bar */}
+      {/* Filter Guide Text */}
+      <div className="filter-guide">
+        <p className="filter-guide-text">필터를 적용해서 원하는 선물을 구경해보아요</p>
+      </div>
+
+      {/* Filter Bar */}
       <div className="sort-filter-bar">
-        <button className="sort-button">
-          <span className="sort-text">인기순</span>
-          <span className="sort-icon"><SortIcon /></span>
-        </button>
         <Link 
           to="/popular-gifts/filter" 
           className="filter-button"
           state={{ 
-            category: appliedCategory,
-            priceRange: appliedPriceRange
+            category: appliedCategories,
+            priceRange: appliedPriceRanges
           }}
         >
           <span className="filter-icon"><FilterIcon /></span>
           <span className="filter-text">필터</span>
         </Link>
       </div>
+
+      {/* Applied Filters */}
+      {(appliedCategories.length > 0 || appliedPriceRanges.length > 0) && (
+        <div className="applied-filters">
+          {appliedCategories.map((category) => (
+            <div key={category} className="applied-filter-tag">
+              <span className="filter-tag-label">카테고리</span>
+              <span className="filter-tag-value">{category}</span>
+              <button 
+                className="filter-tag-remove"
+                onClick={() => handleRemoveCategory(category)}
+                aria-label={`${category} 필터 제거`}
+              >
+                <CloseIcon />
+              </button>
+            </div>
+          ))}
+          {appliedPriceRanges.map((range) => (
+            <div key={range} className="applied-filter-tag">
+              <span className="filter-tag-label">가격대</span>
+              <span className="filter-tag-value">{range}</span>
+              <button 
+                className="filter-tag-remove"
+                onClick={() => handleRemovePriceRange(range)}
+                aria-label={`${range} 필터 제거`}
+              >
+                <CloseIcon />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Gifts Grid */}
       <div className="gifts-container">
@@ -291,7 +371,6 @@ function PopularGiftsPage() {
                   <div className="gift-price" style={{ color: '#584cdc' }}>
                     {gift.price}
                   </div>
-                  <div className="gift-popularity">{gift.popularity}</div>
                 </div>
               </div>
             </Link>
@@ -303,4 +382,5 @@ function PopularGiftsPage() {
 }
 
 export default PopularGiftsPage
+
 

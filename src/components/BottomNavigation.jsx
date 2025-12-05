@@ -11,7 +11,7 @@ function MyIcon() {
   )
 }
 
-// 대시보드(집) 아이콘 SVG 컴포넌트
+// 홈(집) 아이콘 SVG 컴포넌트
 function HomeIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,7 +65,7 @@ function BottomNavigation() {
         className={`nav-item ${isActive('/dashboard') ? 'active' : ''}`}
       >
         <HomeIcon />
-        <span className="nav-label">대시보드</span>
+        <span className="nav-label">홈</span>
       </Link>
 
       <Link 
