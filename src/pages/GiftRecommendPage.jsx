@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { giftAPI } from '../utils/api'
 import './GiftRecommendPage.css'
 
 // 명함 디자인 맵
@@ -98,39 +99,43 @@ function GiftRecommendPage() {
     setIsProcessing(true)
     
     try {
-      // API 호출하여 persona embedding 문자열 생성
-      // gender는 백엔드에서 DB의 card.gender를 사용하므로 전달하지 않음
-      const { giftAPI } = await import('../utils/api.js')
-      const response = await giftAPI.recommend(
-        card.id,
-        additionalInfo,
-        '', // gender는 백엔드에서 DB의 card.gender를 사용
-        memos,
-        minPrice ? normalizePrice(minPrice) : undefined,
-        maxPrice ? normalizePrice(maxPrice) : undefined
-      )
+      // API 명세서에 맞게 요청 데이터 구성
+      const requestData = {
+        cardId: card?.id,
+        additionalInfo: additionalInfo || undefined,
+        gender: card?.gender || undefined,
+        memos: memos.length > 0 ? memos : undefined,
+        minPrice: minPrice ? normalizePrice(minPrice) : undefined,
+        maxPrice: maxPrice ? normalizePrice(maxPrice) : undefined,
+        includeNaver: true
+      }
+
+      console.log('Gift Recommend Request:', requestData)
       
-      if (response.data.success) {
-        // 성공 시 결과 페이지로 이동
+      const response = await giftAPI.recommend(requestData)
+      
+      console.log('Gift Recommend Response:', response.data)
+
+      if (response.data && response.data.success) {
+        // API 응답 데이터와 함께 결과 페이지로 이동
         navigate('/gift-recommend/result', { 
           state: { 
-            card, 
+            card,
             additionalInfo,
             memos,
-            gender: response.data.data.originalData?.gender || '',
-            personaString: response.data.data.personaString,
-            recommendedGifts: response.data.data.recommendedGifts || [],
-            rationaleCards: response.data.data.rationaleCards || [],
-            minPrice: minPrice ? normalizePrice(minPrice) : undefined,
-            maxPrice: maxPrice ? normalizePrice(maxPrice) : undefined
+            // API 응답 데이터
+            recommendedGifts: response.data.data?.recommendedGifts || [],
+            rationaleCards: response.data.data?.rationaleCards || [],
+            personaString: response.data.data?.personaString || ''
           } 
         })
       } else {
-        throw new Error(response.data.message || '선물 추천 요청에 실패했습니다.')
+        throw new Error(response.data?.message || '선물 추천에 실패했습니다.')
       }
     } catch (error) {
       console.error('Gift recommendation error:', error)
-      alert(error.response?.data?.message || error.message || '선물 추천 요청에 실패했습니다.')
+      const errorMessage = error.response?.data?.message || error.message || '선물 추천에 실패했습니다.'
+      alert(errorMessage)
       setIsProcessing(false)
     }
   }

@@ -1,42 +1,33 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { chatAPI } from '../utils/api'
 import './GiftRecommendResultPage.css'
 import { giftAPI, chatAPI } from '../utils/api.js'
 
-// 샘플 선물 데이터 (실제로는 API에서 가져와야 함)
-const sampleGifts = [
+// 기본 선물 데이터 (API 응답이 없을 경우 폴백)
+const fallbackGifts = [
   {
-    id: 1,
-    name: '프리미엄 골프 클럽 세트',
-    description: '최신 기술이 적용된 고급 골프 클럽',
-    price: '₩850,000',
-    image: 'https://www.figma.com/api/mcp/asset/e61c2b5d-68eb-409e-9b25-a90abd759a96',
-    category: '스포츠'
-  },
-  {
-    id: 2,
-    name: '프랑스 프리미엄 와인 세트',
-    description: '엄선된 보르도 와인 컬렉션',
-    price: '₩450,000',
-    image: 'https://www.figma.com/api/mcp/asset/2fbadc50-65b5-4cb8-8a55-788f604b6dd8',
-    category: '주류'
-  },
-  {
-    id: 3,
-    name: '명품 골프백 세트',
-    description: '프리미엄 소재의 고급 골프백',
-    price: '₩320,000',
-    image: 'https://www.figma.com/api/mcp/asset/a166d192-abaa-4496-bc6a-bd5336537959',
-    category: '스포츠'
+    id: 'fallback-1',
+    name: '추천 선물을 찾지 못했습니다',
+    price: '0',
+    image: '',
+    url: '#',
+    category: '없음',
+    brand: '',
+    source: 'fallback'
   }
 ]
 
 function GiftRecommendResultPage() {
   const navigate = useNavigate()
   const location = useLocation()
+  
+  // 기본 정보
   const card = location.state?.card
   const additionalInfo = location.state?.additionalInfo || ''
   const memos = location.state?.memos || []
+  
+  // API 응답 데이터
   const recommendedGifts = location.state?.recommendedGifts || []
   const rationaleCards = location.state?.rationaleCards || []
   const personaString = location.state?.personaString || ''
@@ -44,10 +35,11 @@ function GiftRecommendResultPage() {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [showRationale, setShowRationale] = useState(false)
-  const [selectedGiftIndex, setSelectedGiftIndex] = useState(null)
-  const [isSavingGift, setIsSavingGift] = useState(false)
-  const [isSavingChat, setIsSavingChat] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef(null)
+  
+  // 실제 표시할 선물 데이터 (API 응답 또는 폴백)
+  const giftsToShow = recommendedGifts.length > 0 ? recommendedGifts : fallbackGifts
 
   const handleBack = () => {
     navigate(-1)
@@ -67,17 +59,51 @@ function GiftRecommendResultPage() {
     scrollToBottom()
   }, [messages])
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      // 사용자 메시지 추가
-      setMessages([...messages, { type: 'user', text: message.trim() }])
+  const handleSendMessage = async () => {
+    if (message.trim() && !isLoading) {
+      const userMessage = message.trim()
       setMessage('')
+      setIsLoading(true)
       
-      // TODO: AI 응답 받기 (실제로는 API 호출)
-      // 임시로 AI 응답 추가
-      setTimeout(() => {
-        setMessages(prev => [...prev, { type: 'ai', text: '감사합니다. 추가로 도움이 필요하시면 말씀해주세요.' }])
-      }, 500)
+      // 사용자 메시지 추가
+      setMessages(prev => [...prev, { type: 'user', text: userMessage }])
+      
+      try {
+        // 실제 Chat API 호출
+        const response = await chatAPI.sendMessage(userMessage, 'gpt', null)
+        
+        if (response.data && response.data.success) {
+          const chat = response.data.data
+          
+          if (chat && chat.messages) {
+            let chatMessages = chat.messages
+            if (typeof chatMessages === 'string') {
+              chatMessages = JSON.parse(chatMessages)
+            }
+            
+            if (Array.isArray(chatMessages)) {
+              const assistantMessages = chatMessages.filter(msg => msg && msg.role === 'assistant')
+              if (assistantMessages.length > 0) {
+                const lastAssistantMessage = assistantMessages[assistantMessages.length - 1]
+                setMessages(prev => [...prev, { 
+                  type: 'ai', 
+                  text: lastAssistantMessage.content || '응답을 받지 못했습니다.' 
+                }])
+              }
+            }
+          }
+        } else {
+          throw new Error('응답을 받지 못했습니다.')
+        }
+      } catch (error) {
+        console.error('Chat API Error:', error)
+        setMessages(prev => [...prev, { 
+          type: 'ai', 
+          text: '죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.' 
+        }])
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -190,6 +216,51 @@ function GiftRecommendResultPage() {
     ? `${userName} ${userCompany} ${userPosition}`
     : `${userName}님을 위한 선물추천`
 
+  // 추천 rationale 데이터 (API 응답 또는 기본값)
+  const rationaleData = rationaleCards.length > 0 
+    ? rationaleCards.map((card, index) => ({
+        id: card.id || index + 1,
+        title: card.title || '추천 이유',
+        icon: getIconForCategory(card.title),
+        description: card.description || ''
+      }))
+    : [
+        {
+          id: 1,
+          title: '맞춤 추천',
+          icon: '🎁',
+          description: '입력하신 정보를 바탕으로 선물을 추천해드립니다.'
+        }
+      ]
+  
+  // 카테고리에 따른 아이콘 매핑
+  function getIconForCategory(title) {
+    if (!title) return '🎁'
+    const iconMap = {
+      '스포츠': '⛳',
+      '레저': '🏃',
+      '골프': '⛳',
+      '와인': '🍷',
+      '주류': '🍾',
+      '식품': '🍽️',
+      '뷰티': '💄',
+      '패션': '👔',
+      '전자': '📱',
+      '가전': '🏠',
+      '도서': '📚',
+      '문화': '🎭',
+      '여행': '✈️',
+      '비즈니스': '💼',
+      '생일': '🎂',
+      '기념일': '💝'
+    }
+    
+    for (const [key, icon] of Object.entries(iconMap)) {
+      if (title.includes(key)) return icon
+    }
+    return '🎁'
+  }
+
   // 관심사 추출 (메모나 추가 정보에서)
   const interests = memos.length > 0 
     ? memos.join(', ')
@@ -280,97 +351,60 @@ function GiftRecommendResultPage() {
           {/* Gift Recommendations */}
           <div className="message-bubble ai-message">
             <p>{userName}님의 관심사를 고려하여 다음 선물들을 추천드립니다:</p>
-            <div className="gift-recommendations">
-              {recommendedGifts.length > 0 ? (
-                recommendedGifts.map((gift, index) => {
-                  const metadata = gift.metadata || {};
-                  const giftName = metadata.name || metadata.product_name || '이름 없음';
-                  const giftPrice = metadata.price ? `₩${parseInt(metadata.price).toLocaleString()}` : '가격 정보 없음';
-                  const giftImage = metadata.image || '';
-                  const giftCategory = metadata.category || '카테고리 없음';
-                  const giftUrl = metadata.url || '#';
-                  
-                  const isSelected = selectedGiftIndex === index
-                  const isDisabled = selectedGiftIndex !== null && selectedGiftIndex !== index
-                  
-                  return (
-                    <div 
-                      key={gift.id || index} 
-                      className={`gift-recommendation-card ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}`}
-                    >
-                      {isSelected && (
-                        <div className="gift-selected-badge">
-                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="10" cy="10" r="10" fill="#10b981"/>
-                            <path d="M6 10L9 13L14 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </div>
-                      )}
-                      {giftImage && (
-                        <div className="gift-card-image">
-                          <img src={giftImage} alt={giftName} onError={(e) => { e.target.style.display = 'none'; }} />
-                          {isSelected && <div className="gift-image-overlay"></div>}
-                        </div>
-                      )}
-                      <div className="gift-card-content">
-                        <div className="gift-card-header">
-                          <h3 className="gift-card-title">{giftName}</h3>
-                          <span className="gift-card-category">{giftCategory}</span>
-                        </div>
-                        <div className="gift-card-bottom">
-                          <span className="gift-card-price">{giftPrice}</span>
+            {giftsToShow.length > 0 && giftsToShow[0].id !== 'fallback-1' ? (
+              <div className="gift-recommendations">
+                {giftsToShow.map((gift) => (
+                  <div key={gift.id} className="gift-recommendation-card">
+                    <div className="gift-card-image">
+                      {gift.image ? (
+                        <img 
+                          src={gift.image} 
+                          alt={gift.name}
+                          onError={(e) => {
+                            e.target.style.display = 'none'
+                            e.target.nextSibling.style.display = 'flex'
+                          }}
+                        />
+                      ) : null}
+                      <div className="gift-card-image-placeholder" style={{ display: gift.image ? 'none' : 'flex' }}>
+                        🎁
+                      </div>
+                    </div>
+                    <div className="gift-card-content">
+                      <h3 className="gift-card-title">{gift.name}</h3>
+                      <p className="gift-card-category">
+                        {gift.category}
+                        {gift.brand && ` · ${gift.brand}`}
+                      </p>
+                      <div className="gift-card-bottom">
+                        <span className="gift-card-price">
+                          ₩{Number(gift.price).toLocaleString()}
+                        </span>
+                        {gift.url && gift.url !== '#' ? (
                           <a 
-                            href={giftUrl} 
+                            href={gift.url} 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="gift-card-detail-link"
-                            onClick={(e) => e.stopPropagation()}
                           >
                             상세 보기
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M4.5 2L8.5 6L4.5 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
                           </a>
-                        </div>
-                        <button
-                          className={`gift-select-button ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}`}
-                          onClick={() => handleSelectGift(gift, index)}
-                          disabled={isDisabled || isSavingGift}
-                        >
-                          {isSavingGift && isSelected ? (
-                            <>
-                              <svg className="spinner" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="32" strokeDashoffset="32">
-                                  <animate attributeName="stroke-dasharray" dur="1.5s" values="0 32;16 16;0 32;0 32" repeatCount="indefinite"/>
-                                  <animate attributeName="stroke-dashoffset" dur="1.5s" values="0;-16;-32;-32" repeatCount="indefinite"/>
-                                </circle>
-                              </svg>
-                              <span>저장 중...</span>
-                            </>
-                          ) : isSelected ? (
-                            <>
-                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                              <span>선택됨</span>
-                            </>
-                          ) : (
-                            <>
-                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8 3V13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                              </svg>
-                              <span>선택하기</span>
-                            </>
-                          )}
-                        </button>
+                        ) : (
+                          <span className="gift-card-source">
+                            {gift.source === 'naver' ? '네이버 쇼핑' : 'GPT-4b 추천'}
+                          </span>
+                        )}
                       </div>
                     </div>
-                  );
-                })
-              ) : (
-                <p>추천된 선물이 없습니다.</p>
-              )}
-            </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="no-gifts-message">
+                <p>😢 조건에 맞는 선물을 찾지 못했습니다.</p>
+                <p>검색 조건을 변경해서 다시 시도해보세요.</p>
+              </div>
+            )}
           </div>
 
           {/* Follow-up Question */}
@@ -384,6 +418,11 @@ function GiftRecommendResultPage() {
               <p>{msg.text}</p>
             </div>
           ))}
+          {isLoading && (
+            <div className="message-bubble ai-message">
+              <p>답변을 생성하고 있습니다...</p>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
 
@@ -405,7 +444,7 @@ function GiftRecommendResultPage() {
           <button 
             className="send-button"
             onClick={handleSendMessage}
-            disabled={!message.trim()}
+            disabled={!message.trim() || isLoading}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

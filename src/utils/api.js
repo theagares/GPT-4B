@@ -34,15 +34,15 @@ api.interceptors.response.use(
   },
   (error) => {
     // JSON 파싱 오류 처리
-    if (error.message && error.message.includes('JSON')) {
-      console.error('JSON parsing error:', error);
+    if (error.message && error.message.includes("JSON")) {
+      console.error("JSON parsing error:", error);
       return Promise.reject({
         ...error,
         response: {
           ...error.response,
           data: {
             success: false,
-            message: '서버 응답을 처리하는 중 오류가 발생했습니다.',
+            message: "서버 응답을 처리하는 중 오류가 발생했습니다.",
           },
         },
       });
@@ -125,6 +125,7 @@ export const calendarAPI = {
 
 // Gift API
 export const giftAPI = {
+  // 기존 CRUD API
   getAll: (params = {}) => api.get("/gifts", { params }),
 
   getById: (id) => api.get(`/gifts/${id}`),
@@ -135,8 +136,24 @@ export const giftAPI = {
 
   delete: (id) => api.delete(`/gifts/${id}`),
 
-  recommend: (cardId, additionalInfo, gender = '', memos = [], minPrice, maxPrice) =>
-    api.post("/gifts/recommend", { cardId, additionalInfo, gender, memos, minPrice, maxPrice }),
+  // ⭐ 통합 검색 API (ChromaDB + 네이버 쇼핑)
+  // { query, rank, gender, memo, addMemo, minPrice, maxPrice }
+  // minPrice, maxPrice는 만원 단위
+  search: (searchData) => api.post("/gifts/search", searchData),
+
+  // ⭐ 명함 기반 추천 API
+  // { cardId, additionalInfo, gender, memos, minPrice, maxPrice, includeNaver }
+  // minPrice, maxPrice는 만원 단위
+  recommend: (recommendData) => api.post("/gifts/recommend", recommendData),
+
+  // ⭐ 네이버 쇼핑 단독 검색 API (POST)
+  // { query, display, sort, minPrice, maxPrice }
+  // minPrice, maxPrice는 원 단위
+  naverSearch: (searchData) => api.post("/gifts/naver", searchData),
+
+  // ⭐ 네이버 쇼핑 단독 검색 API (GET)
+  // ?q=검색어&display=3&sort=sim&minPrice=30000&maxPrice=100000
+  naverSearchGet: (params) => api.get("/gifts/naver", { params }),
 };
 
 // Chat API

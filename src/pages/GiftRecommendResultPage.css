@@ -376,6 +376,69 @@
 
 .gift-card-detail-link:hover {
   opacity: 0.7;
+  text-decoration: underline;
+}
+
+/* Gift Card Category */
+.gift-card-category {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Gift Card Image Placeholder */
+.gift-card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  background-color: #f3f4f6;
+}
+
+/* Gift Card Source Badge */
+.gift-card-source {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* No Gifts Message */
+.no-gifts-message {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.no-gifts-message p {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #991b1b;
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
+.no-gifts-message p:first-child {
+  font-size: 16px;
+  font-weight: 500;
 }
 
 /* Input Bar */
