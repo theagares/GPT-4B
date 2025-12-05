@@ -39,7 +39,7 @@ function LLMPage() {
   }, [messages])
 
   const handleBack = () => {
-    navigate(-1)
+    navigate('/dashboard')
   }
 
   const handleSendMessage = async () => {

@@ -35,6 +35,9 @@ function GiftRecommendResultPage() {
   const [messages, setMessages] = useState([])
   const [showRationale, setShowRationale] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedGiftIndex, setSelectedGiftIndex] = useState(null)
+  const [isSavingGift, setIsSavingGift] = useState(false)
+  const [isSavingChat, setIsSavingChat] = useState(false)
   const messagesEndRef = useRef(null)
   
   // 실제 표시할 선물 데이터 (API 응답 또는 폴백)
@@ -125,11 +128,13 @@ function GiftRecommendResultPage() {
     setSelectedGiftIndex(index)
 
     try {
+      // 선물 정보 추출 (metadata 또는 직접 속성)
       const metadata = gift.metadata || {}
-      const giftName = metadata.name || metadata.product_name || '이름 없음'
-      const giftPrice = metadata.price ? parseInt(metadata.price) : null
-      const giftImage = metadata.image || ''
-      const giftCategory = metadata.category || '카테고리 없음'
+      const giftName = gift.name || metadata.name || metadata.product_name || '이름 없음'
+      const giftPrice = gift.price ? parseInt(gift.price) : (metadata.price ? parseInt(metadata.price) : null)
+      const giftImage = gift.image || metadata.image || ''
+      const giftCategory = gift.category || metadata.category || '카테고리 없음'
+      const giftUrl = gift.url || metadata.url || ''
       
       // 선물 정보를 DB에 저장
       await giftAPI.create({
@@ -173,12 +178,12 @@ function GiftRecommendResultPage() {
         },
         {
           role: 'assistant',
-          content: `${userName}님의 관심사를 고려하여 다음 선물들을 추천드립니다:\n\n${recommendedGifts.map((gift, idx) => {
-            const meta = gift.metadata || {};
-            const name = meta.name || meta.product_name || `선물 ${idx + 1}`;
-            const price = meta.price ? `₩${parseInt(meta.price).toLocaleString()}` : '가격 정보 없음';
-            return `${idx + 1}. ${name} (${price})`;
-          }).join('\n')}`,
+          content: `${userName}님의 관심사를 고려하여 다음 선물들을 추천드립니다:\n\n${giftsToShow.map((gift, idx) => {
+            const name = gift.name || (gift.metadata?.name || gift.metadata?.product_name) || `선물 ${idx + 1}`;
+            const price = gift.price ? `₩${Number(gift.price).toLocaleString()}` : (gift.metadata?.price ? `₩${parseInt(gift.metadata.price).toLocaleString()}` : '가격 정보 없음');
+            const category = gift.category || gift.metadata?.category || '';
+            return `${idx + 1}. ${name}\n${category ? `${category}\n` : ''}${price}`;
+          }).join('\n\n')}`,
           timestamp: new Date().toISOString()
         },
         {
@@ -192,6 +197,17 @@ function GiftRecommendResultPage() {
           timestamp: new Date().toISOString()
         }
       ]
+
+      // 추가 대화 내역이 있으면 포함
+      if (messages.length > 0) {
+        messages.forEach(msg => {
+          chatMessages.push({
+            role: msg.type === 'user' ? 'user' : 'assistant',
+            content: msg.text,
+            timestamp: new Date().toISOString()
+          })
+        })
+      }
 
       // Chat 생성
       await chatAPI.createHistory(
@@ -352,7 +368,7 @@ function GiftRecommendResultPage() {
             <p>{userName}님의 관심사를 고려하여 다음 선물들을 추천드립니다:</p>
             {giftsToShow.length > 0 && giftsToShow[0].id !== 'fallback-1' ? (
               <div className="gift-recommendations">
-                {giftsToShow.map((gift) => (
+                {giftsToShow.map((gift, index) => (
                   <div key={gift.id} className="gift-recommendation-card">
                     <div className="gift-card-image">
                       {gift.image ? (
@@ -379,20 +395,29 @@ function GiftRecommendResultPage() {
                         <span className="gift-card-price">
                           ₩{Number(gift.price).toLocaleString()}
                         </span>
-                        {gift.url && gift.url !== '#' ? (
-                          <a 
-                            href={gift.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="gift-card-detail-link"
+                        <div className="gift-card-actions">
+                          {gift.url && gift.url !== '#' ? (
+                            <a 
+                              href={gift.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="gift-card-detail-link"
+                            >
+                              상세 보기
+                            </a>
+                          ) : (
+                            <span className="gift-card-source">
+                              {gift.source === 'naver' ? '네이버 쇼핑' : 'GPT-4b 추천'}
+                            </span>
+                          )}
+                          <button
+                            className={`gift-select-button ${selectedGiftIndex === index ? 'selected' : ''}`}
+                            onClick={() => handleSelectGift(gift, index)}
+                            disabled={selectedGiftIndex !== null || isSavingGift}
                           >
-                            상세 보기
-                          </a>
-                        ) : (
-                          <span className="gift-card-source">
-                            {gift.source === 'naver' ? '네이버 쇼핑' : 'GPT-4b 추천'}
-                          </span>
-                        )}
+                            {selectedGiftIndex === index ? '선택됨' : '선택하기'}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>

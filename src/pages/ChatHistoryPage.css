@@ -129,3 +129,12 @@
   flex-shrink: 0;
 }
 
+.chat-loading,
+.chat-empty {
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+}
+

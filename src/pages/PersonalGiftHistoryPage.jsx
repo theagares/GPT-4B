@@ -92,13 +92,39 @@ function PersonalGiftHistoryPage() {
   }, [])
 
   // 날짜를 YYYY.MM.DD 형식으로 변환
+  // 날짜를 YYYY.MM.DD 형식으로 변환 (시간대 문제 해결)
   const formatDate = (dateString) => {
     if (!dateString) return ''
-    const date = new Date(dateString)
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    return `${year}.${month}.${day}`
+    
+    try {
+      let date = new Date(dateString)
+      
+      // 유효한 날짜인지 확인
+      if (isNaN(date.getTime())) {
+        console.error('Invalid date:', dateString)
+        return ''
+      }
+      
+      // 서버에서 UTC 시간으로 보내는 경우를 대비해 한국 시간(UTC+9)으로 변환
+      // MySQL DATETIME은 시간대 정보가 없으므로 UTC로 가정하고 변환
+      // 시간대 정보가 없는 경우 (예: "2024-01-15 10:30:00")
+      if (!dateString.includes('Z') && !dateString.includes('+') && !dateString.match(/[+-]\d{2}:\d{2}$/)) {
+        // UTC로 파싱된 시간을 한국 시간으로 변환 (9시간 추가)
+        const utcTime = date.getTime()
+        const koreaOffset = 9 * 60 * 60 * 1000 // 9시간을 밀리초로
+        date = new Date(utcTime + koreaOffset)
+      }
+      // 시간대 정보가 있는 경우 (예: "2024-01-15T10:30:00Z" 또는 "2024-01-15T10:30:00+09:00")
+      // new Date()가 자동으로 로컬 시간으로 변환하므로 그대로 사용
+      
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      return `${year}.${month}.${day}`
+    } catch (error) {
+      console.error('Error formatting date:', error, dateString)
+      return ''
+    }
   }
 
   // 가격을 원화 형식으로 변환
