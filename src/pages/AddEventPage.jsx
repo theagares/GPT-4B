@@ -259,7 +259,13 @@ function AddEventPage() {
       const response = await calendarAPI.createEvent(eventData)
 
       if (response.data && response.data.success) {
-        navigate('/calendar')
+        // 일정 추가 후 일정 상세 페이지로 이동
+        const createdEventId = response.data.data.id || response.data.data.eventId
+        if (createdEventId) {
+          navigate(`/calendar/event/${createdEventId}`)
+        } else {
+          navigate('/calendar')
+        }
       } else {
         throw new Error('Failed to create event')
       }
