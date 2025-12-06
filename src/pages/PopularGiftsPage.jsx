@@ -45,7 +45,7 @@ function FilterIcon() {
   )
 }
 
-const imgImageWithFallback = "https://shop-phinf.pstatic.net/20241026_151/17299254937003uih3_JPEG/6412801823777166_1731722875.jpg?type=m450"
+const imgImageWithFallback = "https://www.figma.com/api/mcp/asset/4b1421cd-2596-45d3-8139-9dcc9a7eb9f4"
 
 const imgImageWithFallback1 = "https://www.figma.com/api/mcp/asset/50bcc4a5-6947-447b-acf5-712e3e638c4b"
 
@@ -61,184 +61,135 @@ const imgImageWithFallback6 = "https://www.figma.com/api/mcp/asset/e3a18e2b-144f
 
 const imgImageWithFallback7 = "https://www.figma.com/api/mcp/asset/3bb8aa71-ab6b-4714-9a37-8fa65b2067b0"
 
-// 선물 데이터 포맷:
-// {
-//   id: number,                    // 고유 ID
-//   rank: string,                  // 순위 (예: '#1')
-//   image: string,                 // 이미지 URL
-//   category: string,              // 카테고리 (예: '건강식품', '과일' 등)
-//   categoryColor: string,         // 카테고리 색상 (예: '#584cdc')
-//   name: string,                 // 상품명
-//   price: string,                // 가격 (예: '102,448원')
-//   popularity: string,           // 인기도 (예: '인기 95%')
-//   url: string                   // 상품 URL (외부 링크)
-// }
-
 // 선물 데이터
 const gifts = [
   {
     id: 1,
     rank: '#1',
-    image: "https://shop-phinf.pstatic.net/20241026_151/17299254937003uih3_JPEG/6412801823777166_1731722875.jpg?type=m450",
-    category: '캔들디퓨저',
+    image: imgImageWithFallback,
+    category: '주류',
     categoryColor: '#584cdc',
-    name: '명품 고급 호텔 대형 백화점 대용량 실내 디퓨저 거실 현관 사무실 방향제 집들이 선물세트',
-    price: '42000원',
-    popularity: '인기 95%',
-    url: 'https://m.shopping.naver.com/gift/products/4856091300'
+    name: '프리미엄 와인 세트',
+    price: '102,448원',
+    popularity: '인기 95%'
   },
   {
     id: 2,
     rank: '#2',
-    image: "https://shop-phinf.pstatic.net/20250806_115/1754462546764Npyyg_JPEG/86041343686824065_896651263.jpg?type=m450",
-    category: '한우',
+    image: imgImageWithFallback1,
+    category: '고급 선물',
     categoryColor: '#584cdc',
-    name: '[선물세트] 1++ 프리미엄 등급 한우 선물세트 / 등심600g + 부채살200g + 살치100g / 스킨포장 선물포장 명절 추석 설날 [원산지:국산]',
-    price: '110,000원',
-    popularity: '인기 95%',
-    url: 'https://shopping.naver.com/gift/products/12210479933'
+    name: '명품 선물 세트',
+    price: '245,247원',
+    popularity: '인기 95%'
   },
   {
     id: 3,
     rank: '#3',
-    image: "https://shop-phinf.pstatic.net/20250723_284/1753258518569xPQGb_JPEG/91339375597969581_1547240416.jpg?type=m450",
-    category: '건강식품',
+    image: imgImageWithFallback2,
+    category: '식음료',
     categoryColor: '#584cdc',
-    name: '고려은단 퓨어 밀크씨슬 180정, 1개 (6개월분) [원산지:상품 상세페이지 참조]',
-    price: '24,900원',
-    popularity: '인기 94%',
-    url: 'https://shopping.naver.com/gift/products/11243018665'
+    name: '스페셜티 커피 세트',
+    price: '260,724원',
+    popularity: '인기 94%'
   },
   {
     id: 4,
     rank: '#4',
-    image: "https://shop-phinf.pstatic.net/20250328_105/1743139211350t11HM_PNG/33910072260525099_1890313163.png?type=m450",
-    category: '과일',
+    image: imgImageWithFallback3,
+    category: '건강식품',
     categoryColor: '#584cdc',
-    name: '과일바구니 명절 추석선물세트 이바지 예단 상견례 승진축하 수원 분당 용인 [원산지:국산]',
-    price: '56,000원',
-    popularity: '인기 94%',
-    url: 'https://shopping.naver.com/gift/products/11648536781'
+    name: '비즈니스 선물 세트',
+    price: '110,203원',
+    popularity: '인기 94%'
   },
   {
     id: 5,
     rank: '#5',
-    image: "https://shop-phinf.pstatic.net/20251114_240/1763101191530LmtpF_JPEG/17276444317271649_441517793.jpg?type=m450",
-    category: '디지털가전',
-    categoryColor: '#584cdc',
-    name: '돌체구스토 네오 카페 캡슐 커피머신 + 네오 캡슐보관함 + 스타벅스 시그니처 데비 텀블러 473ml 증정',
-    price: '119,000원',
-    popularity: '인기 93%',
-    url: 'https://m.shopping.naver.com/gift/products/12179079303'
+    image: imgImageWithFallback4,
+    category: '과일',
+    categoryColor: '#9810fa',
+    name: '프리미엄 홍삼 세트',
+    price: '66,421원',
+    popularity: '인기 93%'
   },
   {
     id: 6,
     rank: '#6',
-    image: "https://shop-phinf.pstatic.net/20230119_47/1674111558304qqR0n_JPEG/75247457015103059_77735274.jpg?type=m450",
-    category: '음향기기',
+    image: imgImageWithFallback5,
+    category: '차/티',
     categoryColor: '#9810fa',
-    name: '[최다상품평] 브리츠 오픈형 골전도 블루투스 이어폰 운동 런닝 스포츠 헤드셋',
-    price: '56,900원',
-    popularity: '인기 93%',
-    url: 'https://m.shopping.naver.com/gift/products/6684309238'
+    name: '제철 과일 선물 세트',
+    price: '290,328원',
+    popularity: '인기 93%'
   },
   {
     id: 7,
     rank: '#7',
-    image: "https://shop-phinf.pstatic.net/20241213_117/1734076313354p9m8d_JPEG/7767483454986497_227997381.jpg?type=m450",
-    category: '레저자동차',
+    image: imgImageWithFallback6,
+    category: '간식',
     categoryColor: '#9810fa',
-    name: '벤딕트 차량용 청소기 에어건 자동차 무선 휴대용 강력 진공 실버 라이닝 퓨어 기본 패키지',
-    price: '84,900원',
-    popularity: '인기 92%',
-    url: 'https://m.shopping.naver.com/gift/products/11200977471'
+    name: '프리미엄 티 컬렉션',
+    price: '215,087원',
+    popularity: '인기 92%'
   },
   {
     id: 8,
     rank: '#8',
-    image: "https://shop-phinf.pstatic.net/20250922_268/17585361690853nnGa_PNG/74761483913672527_1901241473.png?type=m450",
-    category: '캔들디퓨저',
+    image: imgImageWithFallback7,
+    category: '생활용품',
     categoryColor: '#9810fa',
-    name: '헤트라스 데이지 스폐셜 기프트 에디션 (디퓨저 + 멀티스프레이 + 핸드크림 + 샤쉐)',
-    price: '33,800원',
-    popularity: '인기 92%',
-    url: 'https://m.shopping.naver.com/gift/products/12444712685'
+    name: '수제 과자 세트',
+    price: '81,604원',
+    popularity: '인기 92%'
   },
   {
     id: 9,
     rank: '#9',
-    image: "https://shop-phinf.pstatic.net/20250802_186/1754129749182lFqMw_JPEG/24656604022154122_1337111811.jpg?type=m450",
-    category: '꽃배달',
+    image: imgImageWithFallback,
+    category: '화장품',
     categoryColor: '#9810fa',
-    name: '꽃바구니 꽃배달 생화 축하 기념일 승진',
-    price: '62,000원',
-    popularity: '인기 91%',
-    url: 'https://shopping.naver.com/gift/products/12192547166'
+    name: '디퓨저 세트',
+    price: '71,926원',
+    popularity: '인기 91%'
   },
   {
     id: 10,
     rank: '#10',
-    image: "https://shop-phinf.pstatic.net/20250409_247/1744187908641PPg39_JPEG/77005172543257430_1266592123.jpg?type=m450",
-    category: 'e쿠폰',
+    image: imgImageWithFallback1,
+    category: '문구',
     categoryColor: '#9810fa',
-    name: '신세계 상품권 100,000원(10만원) [신세계백화점교환]',
-    price: '100,000원',
-    popularity: '인기 91%',
-    url: 'https://shopping.naver.com/gift/products/11783851059'
+    name: '스킨케어 세트',
+    price: '97,155원',
+    popularity: '인기 91%'
   },
   {
     id: 11,
     rank: '#11',
-    image: "https://shop-phinf.pstatic.net/20241005_29/1728120365916ng0wA_JPEG/11752739719423557_122627157.jpg?type=m450",
-    category: '과일',
+    image: imgImageWithFallback,
+    category: '주방용품',
     categoryColor: '#9810fa',
-    name: '고당도 상주 포도 거봉 캠벨포도 샤인머스켓 제철과일 [원산지:국산(경상북도 상주시)]',
-    price: '29,0900원',
-    popularity: '인기 90%',
-    url: 'https://shopping.naver.com/gift/products/5829571407'
+    name: '프리미엄 와인 세트',
+    price: '70,526원',
+    popularity: '인기 90%'
   },
   {
     id: 12,
     rank: '#12',
-    image: "https://shop-phinf.pstatic.net/20251203_300/1764720450679Jj8ex_PNG/98197001714380648_1945778379.png?type=m450",
-    category: '건강식품',
+    image: imgImageWithFallback1,
+    category: '주류',
     categoryColor: '#9810fa',
-    name: '뉴트리원 프리미엄 알부민 골드 마시는 고함량 난백 실크 14개입, 6개 [원산지:상세설명에 표시]',
-    price: '126,000원',
-    popularity: '인기 90%',
-    url: 'https://shopping.naver.com/gift/products/12427109598'
+    name: '명품 선물 세트',
+    price: '236,115원',
+    popularity: '인기 90%'
   }
 ]
-
-// 카테고리 순서 정의
-const categoryOrder = ['건강식품', '과일', '꽃배달', '도서', '디지털가전', '레저자동차', '리빙생활', '바디케어', '뷰티', '식품', '음향기기', '이벤트파티', '유아동', '패션', '한우', '캔들디퓨저', '카페디저트', 'e쿠폰']
-
-// 가격대 순서 정의
-const priceRangeOrder = ['5만원 이하', '5만원 - 10만원', '10만원 - 20만원', '20만원 이상']
 
 function PopularGiftsPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [appliedCategories, setAppliedCategories] = useState([])
   const [appliedPriceRanges, setAppliedPriceRanges] = useState([])
-  
-  // 카테고리를 지정된 순서로 정렬
-  const sortedAppliedCategories = [...appliedCategories].sort((a, b) => {
-    const indexA = categoryOrder.indexOf(a)
-    const indexB = categoryOrder.indexOf(b)
-    if (indexA === -1) return 1
-    if (indexB === -1) return -1
-    return indexA - indexB
-  })
-  
-  // 가격대를 가격 순서로 정렬
-  const sortedAppliedPriceRanges = [...appliedPriceRanges].sort((a, b) => {
-    const indexA = priceRangeOrder.indexOf(a)
-    const indexB = priceRangeOrder.indexOf(b)
-    if (indexA === -1) return 1
-    if (indexB === -1) return -1
-    return indexA - indexB
-  })
 
   // 필터 페이지에서 돌아올 때 필터 상태 적용
   useEffect(() => {
@@ -363,7 +314,7 @@ function PopularGiftsPage() {
                 <span className="filter-tag-label">카테고리</span>
               </div>
               <div className="filter-items-scroll">
-                {sortedAppliedCategories.map((category) => (
+                {appliedCategories.map((category) => (
                   <div key={category} className="applied-filter-tag category-item-tag">
                     <span className="filter-tag-value">{category}</span>
                     <button 
@@ -385,7 +336,7 @@ function PopularGiftsPage() {
                 <span className="filter-tag-label">가격대</span>
               </div>
               <div className="filter-items-scroll">
-                {sortedAppliedPriceRanges.map((range) => (
+                {appliedPriceRanges.map((range) => (
                   <div key={range} className="applied-filter-tag price-item-tag">
                     <span className="filter-tag-value">{range}</span>
                     <button 
@@ -407,11 +358,9 @@ function PopularGiftsPage() {
       <div className="gifts-container">
         <div className="gifts-grid">
           {filteredGifts.map((gift) => (
-            <a 
+            <Link 
               key={gift.id} 
-              href={gift.url}
-              target="_blank"
-              rel="noopener noreferrer"
+              to={`/popular-gifts/${gift.id}`}
               className="gift-item-link"
             >
               <div className="gift-item">
@@ -438,7 +387,7 @@ function PopularGiftsPage() {
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

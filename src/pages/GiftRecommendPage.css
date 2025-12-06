@@ -179,6 +179,17 @@
   font-weight: 600;
   color: #1f2937;
   margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.section-subtitle {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #6b7280;
 }
 
 .memos-list {
@@ -309,8 +320,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 8px;
+  flex-wrap: nowrap;
 }
 
 .price-input-group {
@@ -318,7 +330,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-width: 140px;
+  max-width: 100px;
   width: 100%;
 }
 
@@ -348,9 +360,11 @@
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   background: white;
-  padding: 0 16px;
+  padding: 0 12px;
   transition: border-color 0.2s;
-  min-height: 48px;
+  min-height: 40px;
+  width: 100px;
+  flex-shrink: 0;
 }
 
 .price-input-wrapper:focus-within {
@@ -361,7 +375,7 @@
   flex: 1;
   border: none;
   outline: none;
-  padding: 14px 0;
+  padding: 10px 0;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 16px;
   font-weight: 500;
@@ -385,14 +399,22 @@
   flex-shrink: 0;
 }
 
+.price-label-inline {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .price-separator {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 20px;
   font-weight: 500;
   color: #6b7280;
   flex-shrink: 0;
-  align-self: center;
-  margin-top: 24px;
+  white-space: nowrap;
 }
 
 .price-range-hint {

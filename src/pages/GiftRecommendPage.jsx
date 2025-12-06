@@ -76,6 +76,10 @@ function GiftRecommendPage() {
     // 숫자만 입력 허용
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
       setMinPrice(value)
+      // 실시간으로 1 이하 값이 입력되면 1로 자동 변경
+      if (value !== '' && parseFloat(value) < 1) {
+        setMinPrice('1')
+      }
     }
   }
 
@@ -88,7 +92,10 @@ function GiftRecommendPage() {
   }
 
   const handleMinPriceBlur = () => {
-    if (minPrice !== '') {
+    // 최소값이 비어있거나 1 이하이면 1로 설정 (필수 입력)
+    if (minPrice === '' || parseFloat(minPrice) < 1 || isNaN(parseFloat(minPrice))) {
+      setMinPrice('1')
+    } else {
       const normalized = normalizePrice(minPrice)
       setMinPrice(normalized.toString())
     }
@@ -102,16 +109,25 @@ function GiftRecommendPage() {
   }
 
   const handleGetRecommendation = async () => {
+    // 최소 가격 입력 검증
+    if (minPrice === '' || isNaN(parseFloat(minPrice)) || parseFloat(minPrice) < 1) {
+      alert('최소 가격을 입력해주세요.(1 이상)')
+      return
+    }
+    
     setIsProcessing(true)
     
     try {
+      // 최소값이 비어있거나 1 이하이면 1로 설정 (필수 입력)
+      const finalMinPrice = normalizePrice(minPrice)
+      
       // API 명세서에 맞게 요청 데이터 구성
       const requestData = {
         cardId: card?.id,
         additionalInfo: additionalInfo || undefined,
         gender: card?.gender || undefined,
         memos: memos.length > 0 ? memos : undefined,
-        minPrice: minPrice ? normalizePrice(minPrice) : undefined,
+        minPrice: finalMinPrice,
         maxPrice: maxPrice ? normalizePrice(maxPrice) : undefined,
         includeNaver: true
       }
@@ -233,7 +249,7 @@ function GiftRecommendPage() {
           <h2 className="section-title">추가 정보 입력</h2>
           <textarea
             className="additional-info-textarea"
-            placeholder="취향, 취미, 무슨날 등등.. 선물추천에 도움이 되는 힌트를 입력할수있어요"
+            placeholder="상대방의 취미, 취향 등 추천에 도움이 될 만한 힌트"
             value={additionalInfo}
             onChange={(e) => setAdditionalInfo(e.target.value)}
           />
@@ -241,43 +257,42 @@ function GiftRecommendPage() {
 
         {/* Price Range Section */}
         <div className="price-range-section">
-          <h2 className="section-title">선물 가격 범위</h2>
+          <h2 className="section-title">
+            선물 가격 범위
+            <span className="section-subtitle">1만원~20만원 사이의 선물을 추천해드립니다</span>
+          </h2>
           <div className="price-range-container">
-            <div className="price-input-group">
-              <label className="price-label">최소 가격</label>
-              <div className="price-input-wrapper">
-                <input
-                  type="text"
-                  className="price-input"
-                  placeholder="1"
-                  value={minPrice}
-                  onChange={handleMinPriceChange}
-                  onBlur={handleMinPriceBlur}
-                  min="1"
-                  max="20"
-                />
-                <span className="price-unit">만원</span>
-              </div>
+            <label className="price-label-inline">최소 <span style={{ color: '#ef4444' }}>*</span></label>
+            <div className="price-input-wrapper">
+              <input
+                type="text"
+                className="price-input"
+                placeholder="1"
+                value={minPrice}
+                onChange={handleMinPriceChange}
+                onBlur={handleMinPriceBlur}
+                min="1"
+                max="20"
+                required
+              />
+              <span className="price-unit">만원</span>
             </div>
-            <div className="price-separator">~</div>
-            <div className="price-input-group">
-              <label className="price-label">최대 가격</label>
-              <div className="price-input-wrapper">
-                <input
-                  type="text"
-                  className="price-input"
-                  placeholder="20"
-                  value={maxPrice}
-                  onChange={handleMaxPriceChange}
-                  onBlur={handleMaxPriceBlur}
-                  min="1"
-                  max="20"
-                />
-                <span className="price-unit">만원</span>
-              </div>
+            <span className="price-separator">~</span>
+            <label className="price-label-inline">최대</label>
+            <div className="price-input-wrapper">
+              <input
+                type="text"
+                className="price-input"
+                placeholder="20"
+                value={maxPrice}
+                onChange={handleMaxPriceChange}
+                onBlur={handleMaxPriceBlur}
+                min="1"
+                max="20"
+              />
+              <span className="price-unit">만원</span>
             </div>
           </div>
-          <p className="price-range-hint">가격 범위는 1만원 ~ 20만원 사이입니다</p>
         </div>
 
         {/* Get Recommendation Button */}
