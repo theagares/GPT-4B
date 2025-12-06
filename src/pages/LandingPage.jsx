@@ -324,7 +324,7 @@ function LandingPage() {
         </div>
           <div className="banner-content">
             <div className="banner-text">
-              <p className="banner-subtitle">AI 맞춤형 선물 추천 서비스 GPT-4b</p>
+              <p className="banner-subtitle">AI 맞춤형 비즈니스 선물 추천 서비스 GPT-4b</p>
               <p className="banner-title">상대방의 정보를 기반으로 최적의 선물을 찾아드립니다</p>
             </div>
           </div>

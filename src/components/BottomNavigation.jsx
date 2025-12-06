@@ -89,7 +89,7 @@ function BottomNavigation() {
         <div className="ai-icon-wrapper">
           <img src="/assets/gpt_4b_logo_white.png" alt="GPT-4b" className="ai-logo" />
         </div>
-        <span className="nav-label ai-label">AI 추천</span>
+        <span className="nav-label ai-label">선물 추천</span>
       </Link>
 
       <Link 
