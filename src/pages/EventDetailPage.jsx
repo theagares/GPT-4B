@@ -269,14 +269,7 @@ function EventDetailPage() {
           setIsEditing(false)
           setShowNotificationDropdown(false)
           
-          // 업데이트된 이벤트의 날짜로 캘린더 이동
-          const updatedStartDate = new Date(response.data.data.startDate)
-          navigate('/calendar', { 
-            state: { 
-              selectedDate: updatedStartDate,
-              refreshEvents: true
-            } 
-          })
+          // 편집 모드 종료 후 일정 상세 페이지에 머물기 (캘린더로 이동하지 않음)
           return
         } else {
           throw new Error('일정 업데이트에 실패했습니다.')
@@ -496,128 +489,6 @@ function EventDetailPage() {
 
               />
 
-              <div className="participant-edit-section">
-
-                <div className="participant-input-wrapper">
-
-                  <input
-
-                    type="text"
-
-                    className="edit-input participant-input"
-
-                    value={participantInput}
-
-                    onChange={(e) => setParticipantInput(e.target.value)}
-
-                    onKeyPress={(e) => {
-
-                      if (e.key === 'Enter' && participantInput.trim()) {
-
-                        const participants = formData.participant ? formData.participant.split(', ') : []
-
-                        if (!participants.includes(participantInput.trim())) {
-
-                          handleInputChange('participant', participants.length > 0 
-
-                            ? `${formData.participant}, ${participantInput.trim()}` 
-
-                            : participantInput.trim())
-
-                        }
-
-                        setParticipantInput('')
-
-                      }
-
-                    }}
-
-                    placeholder="참석자 추가"
-
-                  />
-
-                  <button
-
-                    type="button"
-
-                    className="participant-add-button"
-
-                    onClick={() => {
-
-                      if (participantInput.trim()) {
-
-                        const participants = formData.participant ? formData.participant.split(', ') : []
-
-                        if (!participants.includes(participantInput.trim())) {
-
-                          handleInputChange('participant', participants.length > 0 
-
-                            ? `${formData.participant}, ${participantInput.trim()}` 
-
-                            : participantInput.trim())
-
-                        }
-
-                        setParticipantInput('')
-
-                      }
-
-                    }}
-
-                    style={{ backgroundColor: participantInput.trim() ? '#584cdc' : 'transparent' }}
-
-                  >
-
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-                      <path d="M8 3V13M3 8H13" stroke={participantInput.trim() ? "white" : "#6a7282"} strokeWidth="2" strokeLinecap="round"/>
-
-                    </svg>
-
-                  </button>
-
-                </div>
-
-                {formData.participant && (
-
-                  <div className="participants-list">
-
-                    {formData.participant.split(', ').map((p, index) => (
-
-                      <div key={index} className="participant-tag">
-
-                        <span>{p}</span>
-
-                        <button
-
-                          type="button"
-
-                          className="participant-remove"
-
-                          onClick={() => {
-
-                            const participants = formData.participant.split(', ')
-
-                            handleInputChange('participant', participants.filter((_, i) => i !== index).join(', '))
-
-                          }}
-
-                        >
-
-                          ×
-
-                        </button>
-
-                      </div>
-
-                    ))}
-
-                  </div>
-
-                )}
-
-              </div>
-
               <div className="date-time-info">
 
                 <button 
@@ -669,23 +540,7 @@ function EventDetailPage() {
             <>
 
               <div className="event-title-row">
-
                 <h4 className="event-title">{event.title}</h4>
-
-                {(event.participants && event.participants.length > 0) || event.participant ? (
-                  <div className="participant-info">
-                    <PersonIcon />
-                    <span>
-                      {event.participants && Array.isArray(event.participants) && event.participants.length > 0
-                        ? event.participants.join(', ')
-                        : (event.participants && typeof event.participants === 'string' && event.participants.trim() !== ''
-                          ? event.participants
-                          : (event.participant || ''))}
-                    </span>
-
-                  </div>
-                ) : null}
-
               </div>
 
               <p className="date-info">{formatDateForDisplay(event.startDate)}</p>
@@ -824,6 +679,90 @@ function EventDetailPage() {
 
       </div>
 
+      {/* 참석자 섹션 */}
+      <div className="participant-section-detail">
+        <div className="section-header">
+          <h3 className="section-title">참석자</h3>
+        </div>
+
+        {isEditing ? (
+          <div className="participant-edit-wrapper">
+            <div className="participant-input-container">
+              <input
+                type="text"
+                className="participant-edit-input"
+                value={participantInput}
+                onChange={(e) => setParticipantInput(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && participantInput.trim()) {
+                    const participants = formData.participant ? formData.participant.split(', ') : []
+                    if (!participants.includes(participantInput.trim())) {
+                      handleInputChange('participant', participants.length > 0 
+                        ? `${formData.participant}, ${participantInput.trim()}` 
+                        : participantInput.trim())
+                    }
+                    setParticipantInput('')
+                  }
+                }}
+                placeholder="참석자 추가"
+              />
+              <button
+                type="button"
+                className="participant-add-button"
+                onClick={() => {
+                  if (participantInput.trim()) {
+                    const participants = formData.participant ? formData.participant.split(', ') : []
+                    if (!participants.includes(participantInput.trim())) {
+                      handleInputChange('participant', participants.length > 0 
+                        ? `${formData.participant}, ${participantInput.trim()}` 
+                        : participantInput.trim())
+                    }
+                    setParticipantInput('')
+                  }
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 3V13M3 8H13" stroke="#584cdc" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
+            </div>
+            {formData.participant && (
+              <div className="participants-display">
+                {formData.participant.split(', ').map((p, index) => (
+                  <div key={index} className="participant-item">
+                    <span>{p.trim()}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="participant-content">
+            {(() => {
+              const participants = event.participants && Array.isArray(event.participants) && event.participants.length > 0
+                ? event.participants
+                : (event.participants && typeof event.participants === 'string' && event.participants.trim() !== ''
+                  ? event.participants.split(', ').filter(p => p.trim())
+                  : (event.participant && event.participant.trim() !== ''
+                    ? event.participant.split(', ').filter(p => p.trim())
+                    : []))
+              
+              return participants.length > 0 ? (
+                <div className="participants-display">
+                  {participants.map((participant, index) => (
+                    <div key={index} className="participant-item">
+                      <span>{participant.trim()}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>참석자가 없습니다.</p>
+              )
+            })()}
+          </div>
+        )}
+      </div>
+
       {/* 메모 섹션 */}
 
       <div className="memo-section">
@@ -859,39 +798,6 @@ function EventDetailPage() {
         )}
 
       </div>
-
-      {/* 참석자 섹션 - 읽기 모드에서만 표시 */}
-      {!isEditing && (
-        <div className="participant-section-detail">
-          <div className="section-header">
-            <h3 className="section-title">참석자</h3>
-          </div>
-          <div className="participant-content">
-            {(() => {
-              const participants = event.participants && Array.isArray(event.participants) && event.participants.length > 0
-                ? event.participants
-                : (event.participants && typeof event.participants === 'string' && event.participants.trim() !== ''
-                  ? event.participants.split(', ').filter(p => p.trim())
-                  : (event.participant && event.participant.trim() !== ''
-                    ? event.participant.split(', ').filter(p => p.trim())
-                    : []))
-              
-              return participants.length > 0 ? (
-                <div className="participants-display">
-                  {participants.map((participant, index) => (
-                    <div key={index} className="participant-item">
-                      <PersonIcon />
-                      <span>{participant.trim()}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>참석자가 없습니다.</p>
-              )
-            })()}
-          </div>
-        </div>
-      )}
 
       {/* 알림 섹션 */}
 

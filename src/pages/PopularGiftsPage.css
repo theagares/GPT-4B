@@ -293,18 +293,18 @@
 
 .filter-tag-label {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   color: #6a7282;
-  line-height: 14px;
+  line-height: 18px;
 }
 
 .filter-tag-value {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   color: #584cdc;
-  line-height: 14px;
+  line-height: 18px;
 }
 
 .filter-tag-remove {

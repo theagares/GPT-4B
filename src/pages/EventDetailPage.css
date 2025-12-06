@@ -140,7 +140,8 @@
 /* 섹션 공통 스타일 */
 .meeting-info-section,
 .memo-section,
-.notification-section {
+.notification-section,
+.participant-section-detail {
   margin: 0;
   margin-top: 20px;
   padding: 0 18px;
@@ -287,20 +288,43 @@
   font-size: 12.161px;
 }
 
-.participant-edit-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.participant-edit-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  margin-top: 3px;
 }
 
-.participant-input-wrapper {
+.participant-input-container {
   display: flex;
   align-items: center;
   gap: 8px;
+  background: #eeeeee;
+  border-radius: 8.687px;
+  padding: 10.424px 18px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-.participant-input-wrapper .participant-input {
+.participant-edit-input {
   flex: 1;
+  border: none;
+  background: transparent;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12.161px;
+  font-weight: 400;
+  color: #0a0a0a;
+  line-height: 17.373px;
+  letter-spacing: -0.1306px;
+  outline: none;
+  padding: 0;
+}
+
+.participant-edit-input::placeholder {
+  color: #6a7282;
 }
 
 .participant-add-button {
@@ -314,10 +338,16 @@
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
+  background: transparent;
 }
 
 .participant-add-button:hover {
   opacity: 0.8;
+}
+
+.participant-add-button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .participants-list {
@@ -439,6 +469,67 @@
   text-overflow: ellipsis;
 }
 
+/* 참석자 섹션 */
+.participant-content {
+  margin-top: 3px;
+}
+
+.participants-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.participant-item {
+  background: #f2f1ff;
+  border: 1px solid #584cdc;
+  border-radius: 100px;
+  padding: 6px 12px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #584cdc;
+  line-height: 20px;
+  letter-spacing: -0.1504px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.participant-remove-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #584cdc;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+
+.participant-remove-btn:hover {
+  opacity: 0.7;
+}
+
+.participant-remove-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.participant-content p {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  color: #6a7282;
+  margin: 0;
+}
+
 /* 메모 섹션 */
 .memo-content {
   background: #eeeeee;
@@ -476,7 +567,7 @@
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 12.161px;
   color: #0a0a0a;
-  background: white;
+  background: #eeeeee;
   resize: none;
   margin: 0;
   margin-top: 3px;

@@ -6,46 +6,64 @@ import { userAPI, calendarAPI } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
 import './LandingPage.css'
 
-// 인기 선물 데이터 (GiftDetailPage와 동일한 데이터)
+// 인기 선물 데이터 (PopularGiftsPage와 동일한 데이터, 상위 5개만 표시)
 const popularGifts = [
   {
     id: 1,
-    rank: 1,
-    image: "https://www.figma.com/api/mcp/asset/4b1421cd-2596-45d3-8139-9dcc9a7eb9f4",
-    title: "프리미엄 와인 세트",
-    category: "주류",
-    price: "102,448원",
-    popularity: "인기 95%"
+    rank: '#1',
+    image: "https://shop-phinf.pstatic.net/20241026_151/17299254937003uih3_JPEG/6412801823777166_1731722875.jpg?type=m450",
+    category: '캔들디퓨저',
+    categoryColor: '#584cdc',
+    name: '명품 고급 호텔 대형 백화점 대용량 실내 디퓨저 거실 현관 사무실 방향제 집들이 선물세트',
+    price: '42000원',
+    popularity: '인기 95%',
+    url: 'https://m.shopping.naver.com/gift/products/4856091300'
   },
   {
     id: 2,
-    rank: 2,
-    image: "https://www.figma.com/api/mcp/asset/50bcc4a5-6947-447b-acf5-712e3e638c4b",
-    title: "명품 선물 세트",
-    category: "고급 선물",
-    price: "117,232원",
-    popularity: "인기 95%"
+    rank: '#2',
+    image: "https://shop-phinf.pstatic.net/20250806_115/1754462546764Npyyg_JPEG/86041343686824065_896651263.jpg?type=m450",
+    category: '한우',
+    categoryColor: '#584cdc',
+    name: '[선물세트] 1++ 프리미엄 등급 한우 선물세트 / 등심600g + 부채살200g + 살치100g / 스킨포장 선물포장 명절 추석 설날 [원산지:국산]',
+    price: '110,000원',
+    popularity: '인기 95%',
+    url: 'https://shopping.naver.com/gift/products/12210479933'
   },
   {
     id: 3,
-    rank: 3,
-    image: "https://www.figma.com/api/mcp/asset/873df59d-ef1b-4164-9ec2-dc12ea7cc30a",
-    title: "스페셜티 커피 세트",
-    category: "식음료",
-    price: "260,724원",
-    popularity: "인기 94%"
+    rank: '#3',
+    image: "https://shop-phinf.pstatic.net/20250723_284/1753258518569xPQGb_JPEG/91339375597969581_1547240416.jpg?type=m450",
+    category: '건강식품',
+    categoryColor: '#584cdc',
+    name: '고려은단 퓨어 밀크씨슬 180정, 1개 (6개월분) [원산지:상품 상세페이지 참조]',
+    price: '24,900원',
+    popularity: '인기 94%',
+    url: 'https://shopping.naver.com/gift/products/11243018665'
   },
   {
     id: 4,
-    rank: 4,
-    image: "https://www.figma.com/api/mcp/asset/7f9cd4ef-8192-4282-8fdc-38a645494f85",
-    title: "비즈니스 선물 세트",
-    category: "건강식품",
-    price: "110,203원",
-    popularity: "인기 94%"
+    rank: '#4',
+    image: "https://shop-phinf.pstatic.net/20250328_105/1743139211350t11HM_PNG/33910072260525099_1890313163.png?type=m450",
+    category: '과일',
+    categoryColor: '#584cdc',
+    name: '과일바구니 명절 추석선물세트 이바지 예단 상견례 승진축하 수원 분당 용인 [원산지:국산]',
+    price: '56,000원',
+    popularity: '인기 94%',
+    url: 'https://shopping.naver.com/gift/products/11648536781'
+  },
+  {
+    id: 5,
+    rank: '#5',
+    image: "https://shop-phinf.pstatic.net/20251114_240/1763101191530LmtpF_JPEG/17276444317271649_441517793.jpg?type=m450",
+    category: '디지털가전',
+    categoryColor: '#584cdc',
+    name: '돌체구스토 네오 카페 캡슐 커피머신 + 네오 캡슐보관함 + 스타벅스 시그니처 데비 텀블러 473ml 증정',
+    price: '119,000원',
+    popularity: '인기 93%',
+    url: 'https://m.shopping.naver.com/gift/products/12179079303'
   }
-].sort((a, b) => a.rank - b.rank) // 랭킹 순으로 정렬
-.slice(0, 4) // 최대 4개까지만 표시
+]
 
 function LandingPage() {
   const navigate = useNavigate()
@@ -322,24 +340,26 @@ function LandingPage() {
 
           <div className="gift-cards-container">
             {popularGifts.map((gift) => (
-              <div 
+              <a 
                 key={gift.id} 
+                href={gift.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="gift-card"
-                onClick={() => navigate(`/popular-gifts/${gift.id}`)}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}
               >
                 <div className="gift-card-image">
-                  <img src={gift.image} alt={gift.title} />
-                  <div className="rank-badge">#{gift.rank}</div>
+                  <img src={gift.image} alt={gift.name} />
+                  <div className="rank-badge">{gift.rank}</div>
                 </div>
                 <div className="gift-card-content">
                   <div className="category-badge">{gift.category}</div>
-                  <h3 className="gift-card-title">{gift.title}</h3>
+                  <h3 className="gift-card-title">{gift.name}</h3>
                   <div className="gift-card-price">
                     <span className="price">{gift.price}</span>
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
 
