@@ -163,14 +163,21 @@ function BusinessCardWallet() {
     fetchUserName()
   }, [])
 
-  // location.state에서 isGridView 확인 및 설정
+  // location.state에서 isGridView 확인 및 설정, refresh 확인
   useEffect(() => {
     if (location.state?.isGridView) {
       setIsGridView(true)
       // state 초기화 (뒤로가기 시 다시 열리지 않도록)
       navigate(location.pathname, { replace: true, state: {} })
     }
-  }, [location.state, location.pathname, navigate])
+    
+    // 명함 수정 후 새로고침
+    if (location.state?.refresh && isAuthenticated()) {
+      fetchCards()
+      // state 초기화
+      navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, [location.state, location.pathname, navigate, fetchCards])
   
   // 명함 목록 가져오기 (검색어가 변경될 때마다)
   useEffect(() => {
@@ -698,6 +705,14 @@ function CardDetailModal({ card, onClose }) {
   const navigate = useNavigate()
   const deleteCard = useCardStore((state) => state.deleteCard)
   
+  // null이나 빈 값을 "-"로 표시하는 헬퍼 함수
+  const displayValue = (value) => {
+    if (value === null || value === undefined || value === '' || (typeof value === 'string' && value.trim() === '')) {
+      return '-'
+    }
+    return value
+  }
+  
   useEffect(() => {
     if (!card) {
       setGiftHistoryCount(0)
@@ -825,17 +840,17 @@ function CardDetailModal({ card, onClose }) {
         >
           {/* 우측 상단 연락처 정보 */}
           <div className="modal-profile-contact">
-            {card.phone && <p className="modal-profile-phone">{card.phone}</p>}
-            {card.email && <p className="modal-profile-email">{card.email}</p>}
+            {displayValue(card.phone) !== '-' && <p className="modal-profile-phone">{displayValue(card.phone)}</p>}
+            {displayValue(card.email) !== '-' && <p className="modal-profile-email">{displayValue(card.email)}</p>}
           </div>
 
           {/* 상단 소속 정보 */}
-          {card.company && <p className="modal-profile-company">{card.company}</p>}
+          {displayValue(card.company) !== '-' && <p className="modal-profile-company">{displayValue(card.company)}</p>}
 
           <div className="modal-profile-section">
             <div className="modal-profile-left">
               <div className="modal-profile-info">
-                {card.position && <p className="modal-profile-position">{card.position}</p>}
+                {displayValue(card.position) !== '-' && <p className="modal-profile-position">{displayValue(card.position)}</p>}
                 <h2 className="modal-profile-name">
                   {card.name}
                 </h2>
@@ -876,43 +891,35 @@ function CardDetailModal({ card, onClose }) {
           <h3 className="modal-info-title">명함 정보</h3>
           <div className="modal-info-card">
             {/* Phone Number */}
-            {card.phone && (
-              <>
-                <div className="modal-info-row">
-                  <span className="info-icon">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M14.6667 11.28V13.28C14.6667 13.68 14.3467 14 13.9467 14C6.26667 14 0 7.73333 0 0.0533333C0 -0.346667 0.32 -0.666667 0.72 -0.666667H2.72C3.12 -0.666667 3.44 -0.346667 3.44 0.0533333C3.44 0.72 3.52 1.36 3.65333 1.97333C3.76 2.26667 3.73333 2.61333 3.52 2.85333L2.42667 3.94667C3.22667 5.70667 4.29333 6.77333 6.05333 7.57333L7.14667 6.48C7.38667 6.26667 7.73333 6.24 8.02667 6.34667C8.64 6.48 9.28 6.56 9.94667 6.56C10.3467 6.56 10.6667 6.88 10.6667 7.28V9.28C10.6667 9.68 10.3467 10 9.94667 10H14.6667Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </span>
-                  <div className="info-content">
-                    <span className="info-label">전화번호</span>
-                    <span className="info-value">{card.phone}</span>
-                  </div>
-                  <button className="info-action-button" onClick={handleCall}>전화</button>
-                </div>
-                <div className="info-divider"></div>
-              </>
-            )}
+            <div className="modal-info-row">
+              <span className="info-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14.6667 11.28V13.28C14.6667 13.68 14.3467 14 13.9467 14C6.26667 14 0 7.73333 0 0.0533333C0 -0.346667 0.32 -0.666667 0.72 -0.666667H2.72C3.12 -0.666667 3.44 -0.346667 3.44 0.0533333C3.44 0.72 3.52 1.36 3.65333 1.97333C3.76 2.26667 3.73333 2.61333 3.52 2.85333L2.42667 3.94667C3.22667 5.70667 4.29333 6.77333 6.05333 7.57333L7.14667 6.48C7.38667 6.26667 7.73333 6.24 8.02667 6.34667C8.64 6.48 9.28 6.56 9.94667 6.56C10.3467 6.56 10.6667 6.88 10.6667 7.28V9.28C10.6667 9.68 10.3467 10 9.94667 10H14.6667Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+              <div className="info-content">
+                <span className="info-label">전화번호</span>
+                <span className="info-value">{displayValue(card.phone)}</span>
+              </div>
+              {displayValue(card.phone) !== '-' && <button className="info-action-button" onClick={handleCall}>전화</button>}
+            </div>
+            <div className="info-divider"></div>
 
             {/* Email */}
-            {card.email && (
-              <>
-                <div className="modal-info-row">
-                  <span className="info-icon">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2.66667 2.66667H13.3333C14.0667 2.66667 14.6667 3.26667 14.6667 4V12C14.6667 12.7333 14.0667 13.3333 13.3333 13.3333H2.66667C1.93333 13.3333 1.33333 12.7333 1.33333 12V4C1.33333 3.26667 1.93333 2.66667 2.66667 2.66667Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M14.6667 4L8 8.66667L1.33333 4" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </span>
-                  <div className="info-content">
-                    <span className="info-label">이메일</span>
-                    <span className="info-value">{card.email}</span>
-                  </div>
-                  <button className="info-action-button" onClick={handleEmail}>메일</button>
-                </div>
-                <div className="info-divider"></div>
-              </>
-            )}
+            <div className="modal-info-row">
+              <span className="info-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2.66667 2.66667H13.3333C14.0667 2.66667 14.6667 3.26667 14.6667 4V12C14.6667 12.7333 14.0667 13.3333 13.3333 13.3333H2.66667C1.93333 13.3333 1.33333 12.7333 1.33333 12V4C1.33333 3.26667 1.93333 2.66667 2.66667 2.66667Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M14.6667 4L8 8.66667L1.33333 4" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+              <div className="info-content">
+                <span className="info-label">이메일</span>
+                <span className="info-value">{displayValue(card.email)}</span>
+              </div>
+              {displayValue(card.email) !== '-' && <button className="info-action-button" onClick={handleEmail}>메일</button>}
+            </div>
+            <div className="info-divider"></div>
 
             {/* Gender/Position/Department */}
             <div className="modal-info-row">
@@ -929,8 +936,8 @@ function CardDetailModal({ card, onClose }) {
                   {(() => {
                     const genderDisplay = card.gender === '남성' ? 'M' : card.gender === '여성' ? 'F' : '-';
                     const parts = [genderDisplay];
-                    if (card.company) parts.push(card.company);
-                    if (card.position) parts.push(card.position);
+                    parts.push(displayValue(card.company));
+                    parts.push(displayValue(card.position));
                     return parts.join(' / ');
                   })()}
                 </span>
@@ -951,7 +958,7 @@ function CardDetailModal({ card, onClose }) {
               </span>
               <div className="info-content">
                 <span className="info-label">메모</span>
-                <span className="info-value">{card.memo && card.memo.trim() !== '' ? card.memo : '-'}</span>
+                <span className="info-value">{displayValue(card.memo)}</span>
               </div>
             </div>
           </div>

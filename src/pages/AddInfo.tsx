@@ -63,6 +63,8 @@ const AddInfo = () => {
         
         // 빈 문자열을 null로 변환하여 DB에 null로 저장되도록 함
         // 모든 필드를 명시적으로 처리하여 빈 값도 null로 저장되도록 함
+        // undefined도 명시적으로 null로 변환하여 필드 삭제가 반영되도록 함
+        // cleanField는 undefined나 빈 문자열을 null로 변환하므로, 항상 호출하여 null로 저장되도록 함
         const cleanCardData: any = {
           name: updatedCard.name,
           position: cleanField(updatedCard.position),
@@ -77,7 +79,7 @@ const AddInfo = () => {
         };
         
         await updateCard(updatedCard.id, cleanCardData);
-        navigate("/business-cards", { state: { refreshCards: true, openCardId: updatedCard.id } });
+        navigate("/business-cards", { state: { refresh: true, openCardId: updatedCard.id } });
       } else {
         // 새 명함 추가인 경우 (DB에 저장)
         await addCard(updatedCard);

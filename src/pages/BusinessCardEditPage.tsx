@@ -11,16 +11,22 @@ const BusinessCardEditPage = () => {
   // location.state에서 card 정보 가져오기
   const card = (location.state as { card?: BusinessCard } | undefined)?.card;
 
-  const handleSubmit = (updatedCard: BusinessCard) => {
+  const handleSubmit = async (updatedCard: BusinessCard) => {
     if (!card?.id) {
       // card 정보가 없으면 명함 목록으로 이동
       navigate("/business-cards");
       return;
     }
     
-    // 명함 정보 업데이트
-    updateCard(card.id, updatedCard);
-    navigate("/business-cards");
+    try {
+      // 명함 정보 업데이트 (await로 완료 대기)
+      await updateCard(card.id, updatedCard);
+      // 업데이트 완료 후 명함 목록으로 이동
+      navigate("/business-cards", { state: { refresh: true } });
+    } catch (error) {
+      console.error('Failed to update card:', error);
+      alert('명함 수정 중 오류가 발생했습니다.');
+    }
   };
 
   const handleBack = () => {

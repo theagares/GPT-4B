@@ -188,6 +188,7 @@ export const useCardStore = create<CardState>((set, get) => ({
         
         // 선택적 필드들은 updates 객체에 포함되어 있으면 처리 (빈 문자열 포함)
         // 빈 문자열이면 null로 변환하여 명시적으로 저장
+        // design과 isFavorite는 updates에 포함된 경우에만 처리 (다른 필드와 분리)
         if ('position' in updates || updates.position !== undefined) {
           cleanUpdates.position = cleanField(updates.position);
         }
@@ -209,6 +210,7 @@ export const useCardStore = create<CardState>((set, get) => ({
         if ('image' in updates || updates.image !== undefined) {
           cleanUpdates.image = cleanField(updates.image);
         }
+        // design은 항상 값이 있어야 하므로 null이 될 수 없음
         if ('design' in updates || updates.design !== undefined) {
           cleanUpdates.design = updates.design || 'design-1';
         }
@@ -239,6 +241,8 @@ export const useCardStore = create<CardState>((set, get) => ({
               (card.id === id || String(card.id) === String(id)) ? formattedCard : card
             ),
           }));
+          // 명함 수정 후 목록을 새로고침하여 변경사항 반영
+          get().fetchCards();
         }
       } catch (error) {
         console.error('Failed to update card:', error);

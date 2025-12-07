@@ -57,20 +57,29 @@ const CardForm = ({
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (!formValues.name) {
+    // 이름만 필수: 이름이 없거나 공백만 있으면 저장 불가
+    if (!formValues.name || formValues.name.trim() === "") {
       alert("이름을 입력해주세요.");
       return;
     }
+    
+    // 빈 문자열을 null로 변환하는 헬퍼 함수 (삭제된 필드를 명시적으로 null로 표시)
+    const cleanField = (value: any): string | null => {
+      if (value === undefined || value === null) return null;
+      const trimmed = String(value).trim();
+      return trimmed !== '' ? trimmed : null;
+    };
+    
     onSubmit({
       id: formValues.id ?? generateUUID(),
       name: formValues.name,
-      position: formValues.position,
-      company: formValues.company,
-      phone: formValues.phone,
-      email: formValues.email,
-      gender: formValues.gender,
-      memo: formValues.memo,
-      image: formValues.image,
+      position: cleanField(formValues.position),
+      company: cleanField(formValues.company),
+      phone: cleanField(formValues.phone),
+      email: cleanField(formValues.email),
+      gender: cleanField(formValues.gender),
+      memo: cleanField(formValues.memo),
+      image: cleanField(formValues.image),
       design: formValues.design || initialValues?.design || 'design-1',
       isFavorite: formValues.isFavorite || initialValues?.isFavorite || false,
     });
