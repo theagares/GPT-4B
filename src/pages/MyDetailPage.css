@@ -22,7 +22,7 @@
 .detail-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 8px 0;
   height: 56px;
   position: relative;
@@ -268,13 +268,13 @@
   min-width: auto;
   height: auto;
   padding: 0;
-  margin-left: 8px;
+  margin-left: 0;
   background: none;
   border: none;
   border-radius: 0;
   color: #666;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: color 0.2s;

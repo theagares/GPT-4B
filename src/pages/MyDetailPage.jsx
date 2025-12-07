@@ -307,6 +307,9 @@ function MyDetailPage() {
       <div className="my-detail-background">
         {/* 헤더 */}
         <div className="detail-header">
+          <button className="logout-button-top" onClick={handleLogout}>
+            로그아웃
+          </button>
         </div>
 
         {/* 상단 텍스트 */}
@@ -416,13 +419,6 @@ function MyDetailPage() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* 로그아웃 버튼 */}
-        <div className="logout-section-bottom">
-          <button className="logout-button-bottom" onClick={handleLogout}>
-            로그아웃
-          </button>
         </div>
 
       </div>
