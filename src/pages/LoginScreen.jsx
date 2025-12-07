@@ -117,7 +117,7 @@ function LoginScreen() {
         </form>
 
         <div className="login-links">
-          <Link to="/forgot-password" className="forgot-link">
+          <Link to="/404" className="forgot-link">
             아이디 / 비밀번호 찾기
           </Link>
           <Link to="/signup" className="signup-link">
