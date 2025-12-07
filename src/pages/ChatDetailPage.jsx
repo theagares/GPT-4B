@@ -165,6 +165,19 @@ function ChatDetailPage() {
     return Object.keys(info).length > 0 ? info : null
   }
 
+  // 선택된 선물 이름 찾기 (모든 메시지에서)
+  const getSelectedGiftName = () => {
+    for (const msg of messages) {
+      if (msg.text.includes('선택한 선물:') && msg.type === 'user') {
+        const match = msg.text.match(/선택한 선물:\s*([^(]+)\s*\(/)
+        if (match) {
+          return match[1].trim()
+        }
+      }
+    }
+    return null
+  }
+
   // 메시지 렌더링
   const renderMessage = (msg, index) => {
     // 인사 메시지
@@ -204,6 +217,7 @@ function ChatDetailPage() {
     const gifts = parseGiftRecommendationMessage(msg.text)
     if (gifts && msg.text.includes('관심사를 고려하여 다음 선물들을 추천드립니다')) {
       const userName = userInfo?.name || '사용자'
+      const selectedGiftName = getSelectedGiftName() // 선택된 선물 이름 가져오기
       return (
         <div key={index} className="message-bubble ai-message">
           <div className="gift-recommendation-header">
@@ -215,9 +229,11 @@ function ChatDetailPage() {
             <p>GPT-4b의 선물 추천</p>
           </div>
           <p className="gift-recommendation-subtitle">{userName}님의 관심사를 고려하여 다음 선물들을 추천드립니다:</p>
-          <div className="gift-recommendations">
-            {gifts.map((gift, giftIndex) => (
-              <div key={giftIndex} className="gift-item-wrapper">
+          <div className={`gift-recommendations ${selectedGiftName ? 'has-selection' : ''}`}>
+            {gifts.map((gift, giftIndex) => {
+              const isSelected = selectedGiftName && gift.name.trim() === selectedGiftName.trim()
+              return (
+              <div key={giftIndex} className={`gift-item-wrapper ${isSelected ? 'selected-gift' : ''}`}>
                 <div className="gift-recommendation-card">
                   <div className="gift-card-image">
                     {gift.image ? (
@@ -252,7 +268,8 @@ function ChatDetailPage() {
                   </div>
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )

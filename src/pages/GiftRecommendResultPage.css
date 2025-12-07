@@ -348,7 +348,7 @@
 
 .gift-item-wrapper.selected {
   border: 2px solid #10b981;
-  box-shadow: 0px 2px 8px rgba(16, 185, 129, 0.2);
+  box-shadow: 0px 4px 12px rgba(16, 185, 129, 0.4);
 }
 
 .gift-item-wrapper.disabled {

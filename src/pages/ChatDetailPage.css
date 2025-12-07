@@ -125,3 +125,15 @@
   color: #ef4444;
 }
 
+/* 선택된 선물 초록색 테두리 */
+.gift-item-wrapper.selected-gift {
+  border: 2px solid #10b981 !important;
+  box-shadow: 0px 4px 12px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* 선택된 선물이 있을 때, 선택하지 않은 선물 회색 효과 */
+.gift-recommendations.has-selection .gift-item-wrapper:not(.selected-gift) {
+  opacity: 0.6;
+  filter: grayscale(0.2);
+}
+
