@@ -98,12 +98,18 @@ function GiftRecommendPage() {
     setMemos(memos.filter((_, i) => i !== index))
   }
 
-  // 가격 범위 값 정규화 (1 미만은 1로, 20 이상은 20으로)
-  const normalizePrice = (value) => {
+  // 최소 가격 값 정규화 (1 미만은 1로)
+  const normalizeMinPrice = (value) => {
     const numValue = parseFloat(value)
     if (isNaN(numValue)) return ''
     if (numValue < 1) return 1
-    if (numValue > 20) return 20
+    return Math.round(numValue)
+  }
+
+  // 최대 가격 값 정규화 (제한 없음, 숫자만 반올림)
+  const normalizeMaxPrice = (value) => {
+    const numValue = parseFloat(value)
+    if (isNaN(numValue)) return ''
     return Math.round(numValue)
   }
 
@@ -132,14 +138,14 @@ function GiftRecommendPage() {
     if (minPrice === '' || parseFloat(minPrice) < 1 || isNaN(parseFloat(minPrice))) {
       setMinPrice('1')
     } else {
-      const normalized = normalizePrice(minPrice)
+      const normalized = normalizeMinPrice(minPrice)
       setMinPrice(normalized.toString())
     }
   }
 
   const handleMaxPriceBlur = () => {
     if (maxPrice !== '') {
-      const normalized = normalizePrice(maxPrice)
+      const normalized = normalizeMaxPrice(maxPrice)
       setMaxPrice(normalized.toString())
     }
   }
@@ -155,7 +161,7 @@ function GiftRecommendPage() {
     
     try {
       // 최소값이 비어있거나 1 이하이면 1로 설정 (필수 입력)
-      const finalMinPrice = normalizePrice(minPrice)
+      const finalMinPrice = normalizeMinPrice(minPrice)
       
       // API 명세서에 맞게 요청 데이터 구성
       const requestData = {
@@ -164,7 +170,7 @@ function GiftRecommendPage() {
         gender: card?.gender || undefined,
         memos: memos.length > 0 ? memos : undefined,
         minPrice: finalMinPrice,
-        maxPrice: maxPrice ? normalizePrice(maxPrice) : undefined,
+        maxPrice: maxPrice ? normalizeMaxPrice(maxPrice) : undefined,
         includeNaver: true
       }
 
@@ -330,7 +336,6 @@ function GiftRecommendPage() {
                   onChange={handleMaxPriceChange}
                   onBlur={handleMaxPriceBlur}
                   min="1"
-                  max="20"
                 />
                 <span className="price-unit">만원</span>
               </div>
