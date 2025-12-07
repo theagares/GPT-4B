@@ -54,22 +54,30 @@ const AddInfo = () => {
       
       // 기존 명함 수정인 경우 (id가 있고 이미 저장된 명함인 경우)
       if (updatedCard.id && getCardById(updatedCard.id)) {
-        // 빈 문자열을 null로 변환하여 DB에 null로 저장되도록 함 (성별은 항상 포함)
+        // 빈 문자열을 null로 변환하는 헬퍼 함수
+        const cleanField = (value: any): string | null => {
+          if (value === undefined || value === null) return null;
+          const trimmed = String(value).trim();
+          return trimmed !== '' ? trimmed : null;
+        };
+        
+        // 빈 문자열을 null로 변환하여 DB에 null로 저장되도록 함
+        // 모든 필드를 명시적으로 처리하여 빈 값도 null로 저장되도록 함
         const cleanCardData: any = {
           name: updatedCard.name,
-          position: updatedCard.position && updatedCard.position.trim() !== '' ? updatedCard.position : null,
-          company: updatedCard.company && updatedCard.company.trim() !== '' ? updatedCard.company : null,
-          phone: updatedCard.phone && updatedCard.phone.trim() !== '' ? updatedCard.phone : null,
-          email: updatedCard.email && updatedCard.email.trim() !== '' ? updatedCard.email : null,
-          gender: updatedCard.gender && updatedCard.gender.trim() !== '' ? updatedCard.gender.trim() : null, // 빈 문자열이면 null로 명시적으로 설정
-          memo: updatedCard.memo && updatedCard.memo.trim() !== '' ? updatedCard.memo : null,
-          image: updatedCard.image && updatedCard.image.trim() !== '' ? updatedCard.image : null,
+          position: cleanField(updatedCard.position),
+          company: cleanField(updatedCard.company),
+          phone: cleanField(updatedCard.phone),
+          email: cleanField(updatedCard.email),
+          gender: cleanField(updatedCard.gender),
+          memo: cleanField(updatedCard.memo),
+          image: cleanField(updatedCard.image),
           design: updatedCard.design || draft?.design || 'design-1',
           isFavorite: updatedCard.isFavorite || false,
         };
         
         await updateCard(updatedCard.id, cleanCardData);
-        navigate("/business-cards");
+        navigate("/business-cards", { state: { refreshCards: true, openCardId: updatedCard.id } });
       } else {
         // 새 명함 추가인 경우 (DB에 저장)
         await addCard(updatedCard);
@@ -85,11 +93,14 @@ const AddInfo = () => {
   const handleComplete = async () => {
     if (!card) return;
 
-    // 메모 및 성별 업데이트
+    // 메모 및 성별 업데이트 - 빈 문자열인 경우 명시적으로 처리
+    const trimmedMemo = memo.trim();
+    const trimmedGender = gender.trim();
+    
     const updatedCard: BusinessCard = {
       ...card,
-      gender: gender.trim() || undefined,
-      memo: memo.trim() || undefined,
+      gender: trimmedGender !== '' ? trimmedGender : undefined,
+      memo: trimmedMemo !== '' ? trimmedMemo : undefined,
     };
 
     try {
@@ -101,22 +112,28 @@ const AddInfo = () => {
         // DB에서 반환된 실제 카드 ID 사용
         navigate("/business-cards", { state: { openCardId: savedCard.id } });
       } else if (card.id && getCardById(card.id)) {
-        // 기존 명함 수정인 경우
-        // 빈 문자열을 null로 변환하여 DB에 null로 저장되도록 함 (성별은 항상 포함)
+        // 빈 문자열을 null로 변환하는 헬퍼 함수
+        const cleanField = (value: any): string | null => {
+          if (value === undefined || value === null) return null;
+          const trimmed = String(value).trim();
+          return trimmed !== '' ? trimmed : null;
+        };
+        
+        // 기존 명함 수정인 경우 - 빈 문자열을 null로 변환하여 DB에 null로 저장되도록 함
         const cleanCardData: any = {
           name: updatedCard.name,
-          position: updatedCard.position && updatedCard.position.trim() !== '' ? updatedCard.position : null,
-          company: updatedCard.company && updatedCard.company.trim() !== '' ? updatedCard.company : null,
-          phone: updatedCard.phone && updatedCard.phone.trim() !== '' ? updatedCard.phone : null,
-          email: updatedCard.email && updatedCard.email.trim() !== '' ? updatedCard.email : null,
-          gender: gender.trim() !== '' ? gender.trim() : null, // 빈 문자열이면 null로 명시적으로 설정
-          memo: updatedCard.memo && updatedCard.memo.trim() !== '' ? updatedCard.memo : null,
-          image: updatedCard.image && updatedCard.image.trim() !== '' ? updatedCard.image : null,
+          position: cleanField(updatedCard.position),
+          company: cleanField(updatedCard.company),
+          phone: cleanField(updatedCard.phone),
+          email: cleanField(updatedCard.email),
+          gender: cleanField(trimmedGender),
+          memo: cleanField(trimmedMemo),
+          image: cleanField(updatedCard.image),
           design: updatedCard.design || card.design || 'design-1',
           isFavorite: updatedCard.isFavorite || false,
         };
         await updateCard(card.id, cleanCardData);
-        navigate("/business-cards");
+        navigate("/business-cards", { state: { refreshCards: true, openCardId: card.id } });
       } else {
         // 새 명함 추가인 경우
         await addCard(updatedCard);

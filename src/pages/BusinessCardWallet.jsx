@@ -134,6 +134,21 @@ function BusinessCardWallet() {
       fetchCards();
     }
   }, []) // 빈 배열로 한 번만 실행
+  
+  // 페이지 포커스 시 카드 목록 새로고침
+  useEffect(() => {
+    const handleFocus = () => {
+      if (isAuthenticated()) {
+        fetchCards();
+      }
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [fetchCards])
 
   // 검색 필터링 (서버 측 검색을 사용하므로 클라이언트 측 필터링은 선택적)
   // 서버에서 이미 검색된 결과를 받으므로 필터링 불필요
@@ -146,27 +161,39 @@ function BusinessCardWallet() {
     ? filteredCards.find(card => card.id === selectedCardId) || currentCard
     : currentCard
 
-  // location.state에서 openCardId 또는 selectCardId를 확인하고 처리
+  // location.state에서 openCardId, selectCardId, refreshCards를 확인하고 처리
   useEffect(() => {
     const openCardId = location.state?.openCardId
     const selectCardId = location.state?.selectCardId
+    const refreshCards = location.state?.refreshCards
+    
+    // refreshCards가 있으면 카드 목록 새로고침
+    if (refreshCards) {
+      if (isAuthenticated()) {
+        fetchCards();
+      }
+    }
     
     if (filteredCards.length > 0) {
-      // openCardId가 있으면 모달 열기
+      // openCardId가 있으면 모달 열기 (refreshCards 후에도 처리)
       if (openCardId) {
-        const cardIndex = filteredCards.findIndex(card => card.id === openCardId)
-        if (cardIndex !== -1) {
-          setCurrentIndex(cardIndex)
-          setSelectedCardId(openCardId)
-          // 부드러운 모달 열기 애니메이션
-          requestAnimationFrame(() => {
+        // refreshCards가 있으면 카드 새로고침 후 약간의 지연을 두고 처리
+        const delay = refreshCards ? 300 : 0;
+        setTimeout(() => {
+          const cardIndex = filteredCards.findIndex(card => card.id === openCardId)
+          if (cardIndex !== -1) {
+            setCurrentIndex(cardIndex)
+            setSelectedCardId(openCardId)
+            // 부드러운 모달 열기 애니메이션
             requestAnimationFrame(() => {
-              setShowDetailModal(true)
+              requestAnimationFrame(() => {
+                setShowDetailModal(true)
+              })
             })
-          })
+          }
           // state 초기화 (뒤로가기 시 다시 열리지 않도록)
           navigate(location.pathname, { replace: true, state: {} })
-        }
+        }, delay)
       }
       // selectCardId가 있으면 해당 명함으로 인덱스만 변경
       else if (selectCardId) {
@@ -178,8 +205,12 @@ function BusinessCardWallet() {
           navigate(location.pathname, { replace: true, state: {} })
         }
       }
+      // refreshCards만 있고 openCardId가 없으면 state만 초기화
+      else if (refreshCards) {
+        navigate(location.pathname, { replace: true, state: {} })
+      }
     }
-  }, [location.state, filteredCards, navigate, location.pathname])
+  }, [location.state, filteredCards, navigate, location.pathname, fetchCards, isAuthenticated])
 
   const handlePrev = () => {
     if (filteredCards.length > 0) {
@@ -504,11 +535,9 @@ function BusinessCardWallet() {
 
 // Card Detail Modal Component
 function CardDetailModal({ card, onClose }) {
-  const [memo, setMemo] = useState(card.memo || '')
   const [giftHistoryCount, setGiftHistoryCount] = useState(0)
   const [isLoadingGifts, setIsLoadingGifts] = useState(false)
   const navigate = useNavigate()
-  const updateCard = useCardStore((state) => state.updateCard)
   const deleteCard = useCardStore((state) => state.deleteCard)
   
   useEffect(() => {
@@ -553,10 +582,6 @@ function CardDetailModal({ card, onClose }) {
     
     loadGiftHistoryCount()
   }, [card])
-
-  const handleSaveMemo = () => {
-    updateCard(card.id, { memo })
-  }
 
   const handleCustomize = () => {
     navigate('/customize', { state: { card } })
@@ -764,15 +789,9 @@ function CardDetailModal({ card, onClose }) {
                   <path d="M10 9H9H8" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </span>
-              <div className="info-content info-content-memo">
+              <div className="info-content">
                 <span className="info-label">메모</span>
-                <textarea
-                  className="modal-memo-input"
-                  value={memo}
-                  onChange={(e) => setMemo(e.target.value)}
-                  onBlur={handleSaveMemo}
-                  placeholder="메모를 입력하세요"
-                />
+                <span className="info-value">{card.memo && card.memo.trim() !== '' ? card.memo : '-'}</span>
               </div>
             </div>
           </div>

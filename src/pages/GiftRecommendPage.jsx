@@ -263,36 +263,36 @@ function GiftRecommendPage() {
           </h2>
           <div className="price-range-container">
             <label className="price-label-inline">최소 <span style={{ color: '#ef4444' }}>*</span></label>
-            <div className="price-input-wrapper">
-              <input
-                type="text"
-                className="price-input"
-                placeholder="1"
-                value={minPrice}
-                onChange={handleMinPriceChange}
-                onBlur={handleMinPriceBlur}
-                min="1"
-                max="20"
+              <div className="price-input-wrapper">
+                <input
+                  type="text"
+                  className="price-input"
+                  placeholder="1"
+                  value={minPrice}
+                  onChange={handleMinPriceChange}
+                  onBlur={handleMinPriceBlur}
+                  min="1"
+                  max="20"
                 required
-              />
-              <span className="price-unit">만원</span>
+                />
+                <span className="price-unit">만원</span>
             </div>
             <span className="price-separator">~</span>
             <label className="price-label-inline">최대</label>
-            <div className="price-input-wrapper">
-              <input
-                type="text"
-                className="price-input"
-                placeholder="20"
-                value={maxPrice}
-                onChange={handleMaxPriceChange}
-                onBlur={handleMaxPriceBlur}
-                min="1"
-                max="20"
-              />
-              <span className="price-unit">만원</span>
+              <div className="price-input-wrapper">
+                <input
+                  type="text"
+                  className="price-input"
+                  placeholder="20"
+                  value={maxPrice}
+                  onChange={handleMaxPriceChange}
+                  onBlur={handleMaxPriceBlur}
+                  min="1"
+                  max="20"
+                />
+                <span className="price-unit">만원</span>
+              </div>
             </div>
-          </div>
         </div>
 
         {/* Get Recommendation Button */}

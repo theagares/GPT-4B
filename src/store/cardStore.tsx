@@ -169,19 +169,51 @@ export const useCardStore = create<CardState>((set, get) => ({
   updateCard: async (id, updates) => {
     if (isAuthenticated()) {
       try {
-        // 빈 문자열을 null로 변환하여 DB에 null로 저장되도록 함 (성별은 항상 포함)
-        const cleanUpdates: any = {
-          name: updates.name,
-          position: updates.position && String(updates.position).trim() !== '' ? String(updates.position).trim() : null,
-          company: updates.company && String(updates.company).trim() !== '' ? String(updates.company).trim() : null,
-          phone: updates.phone && String(updates.phone).trim() !== '' ? String(updates.phone).trim() : null,
-          email: updates.email && String(updates.email).trim() !== '' ? String(updates.email).trim() : null,
-          gender: updates.gender !== undefined ? (String(updates.gender).trim() !== '' ? String(updates.gender).trim() : null) : undefined, // null로 명시적으로 설정하여 필드 업데이트
-          memo: updates.memo && String(updates.memo).trim() !== '' ? String(updates.memo).trim() : null,
-          image: updates.image && String(updates.image).trim() !== '' ? String(updates.image).trim() : null,
-          design: updates.design || 'design-1',
-          isFavorite: updates.isFavorite || false,
+        // 빈 문자열을 null로 변환하는 헬퍼 함수
+        const cleanField = (value: any): string | null => {
+          if (value === undefined || value === null) return null;
+          const trimmed = String(value).trim();
+          return trimmed !== '' ? trimmed : null;
         };
+        
+        // 빈 문자열을 null로 변환하여 DB에 null로 저장되도록 함
+        // updates 객체에 포함된 모든 필드를 처리하여 빈 값도 null로 저장되도록 함
+        const cleanUpdates: any = {};
+        
+        // name은 필수이므로 항상 포함
+        if (updates.name !== undefined) {
+          cleanUpdates.name = updates.name;
+        }
+        
+        // 선택적 필드들은 updates 객체에 포함되어 있으면 처리 (빈 문자열 포함)
+        // 빈 문자열이면 null로 변환하여 명시적으로 저장
+        if ('position' in updates || updates.position !== undefined) {
+          cleanUpdates.position = cleanField(updates.position);
+        }
+        if ('company' in updates || updates.company !== undefined) {
+          cleanUpdates.company = cleanField(updates.company);
+        }
+        if ('phone' in updates || updates.phone !== undefined) {
+          cleanUpdates.phone = cleanField(updates.phone);
+        }
+        if ('email' in updates || updates.email !== undefined) {
+          cleanUpdates.email = cleanField(updates.email);
+        }
+        if ('gender' in updates || updates.gender !== undefined) {
+          cleanUpdates.gender = cleanField(updates.gender);
+        }
+        if ('memo' in updates || updates.memo !== undefined) {
+          cleanUpdates.memo = cleanField(updates.memo);
+        }
+        if ('image' in updates || updates.image !== undefined) {
+          cleanUpdates.image = cleanField(updates.image);
+        }
+        if ('design' in updates || updates.design !== undefined) {
+          cleanUpdates.design = updates.design || 'design-1';
+        }
+        if ('isFavorite' in updates || updates.isFavorite !== undefined) {
+          cleanUpdates.isFavorite = updates.isFavorite || false;
+        }
         
         const response = await cardAPI.update(id, cleanUpdates);
         if (response.data.success) {

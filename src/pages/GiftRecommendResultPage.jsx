@@ -381,8 +381,8 @@ function GiftRecommendResultPage() {
                 <p className="completion-subtitle">"추천 내역"에 선물 추천 내용이 저장됩니다.</p>
                 <div className="completion-links">
                   <button className="completion-home-button" onClick={handleGoHome}>홈으로 가기</button>
-                </div>
-              </div>
+          </div>
+            </div>
             </div>
           )}
 
