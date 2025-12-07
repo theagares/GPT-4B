@@ -1,8 +1,97 @@
 import axios from "axios";
 
 // API 기본 URL 설정
-// 개발 환경에서는 프록시를 사용하므로 상대 경로 사용
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+// 우선순위:
+// 1. 환경 변수 VITE_API_BASE_URL (명시적 설정) - 단, localhost는 내부 IP로 변환
+// 2. 내부 IP 접속 시: 현재 호스트의 3000 포트 사용
+// 3. 기본값: /api (프록시 사용)
+function getApiBaseUrl() {
+  console.log("🔍 [API URL 설정 시작]");
+  console.log("  - window.location.hostname:", window.location.hostname);
+  console.log("  - window.location.href:", window.location.href);
+
+  const hostname = window.location.hostname;
+  const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+
+  // 환경 변수 확인
+  const envApiUrl = import.meta.env.VITE_API_BASE_URL;
+  console.log("  - VITE_API_BASE_URL:", envApiUrl || "(없음)");
+
+  // 환경 변수가 있으면 localhost를 현재 hostname으로 치환
+  if (envApiUrl) {
+    let apiUrl = envApiUrl;
+    // 환경 변수에 localhost가 포함되어 있고, 실제 접속은 내부 IP인 경우
+    if (envApiUrl.includes("localhost") && !isLocalhost) {
+      apiUrl = envApiUrl.replace(/localhost/g, hostname);
+      console.log("⚠️ 환경 변수의 localhost를 현재 hostname으로 치환");
+      console.log("  원본:", envApiUrl);
+      console.log("  치환:", apiUrl);
+    } else if (!isLocalhost) {
+      // 환경 변수에 localhost가 없어도, 실제 접속이 내부 IP면 hostname으로 치환
+      // 예: http://127.0.0.1:3000 → http://172.16.131.101:3000
+      if (envApiUrl.includes("127.0.0.1")) {
+        apiUrl = envApiUrl.replace(/127\.0\.0\.1/g, hostname);
+        console.log("⚠️ 환경 변수의 127.0.0.1을 현재 hostname으로 치환");
+        console.log("  원본:", envApiUrl);
+        console.log("  치환:", apiUrl);
+      } else {
+        console.log("✅ 환경 변수 사용:", envApiUrl);
+      }
+    } else {
+      console.log("✅ 환경 변수 사용:", envApiUrl);
+    }
+    return apiUrl;
+  }
+
+  // 내부 IP 범위 체크
+  // - 192.168.0.0 ~ 192.168.255.255
+  // - 10.0.0.0 ~ 10.255.255.255
+  // - 172.16.0.0 ~ 172.31.255.255
+  const is192 = /^192\.168\./.test(hostname);
+  const is10 = /^10\./.test(hostname);
+  const is172 = /^172\.(1[6-9]|2[0-9]|3[01])\./.test(hostname);
+  const isInternalIP = is192 || is10 || is172;
+
+  // IP 주소 형식인지 확인 (숫자.숫자.숫자.숫자)
+  const isIPFormat = /^\d+\.\d+\.\d+\.\d+$/.test(hostname);
+
+  console.log("📊 [판단 정보]");
+  console.log("  - isLocalhost:", isLocalhost);
+  console.log("  - is192:", is192);
+  console.log("  - is10:", is10);
+  console.log("  - is172:", is172);
+  console.log("  - isInternalIP:", isInternalIP);
+  console.log("  - isIPFormat:", isIPFormat);
+
+  // localhost가 아니고, 내부 IP이거나 IP 형식이면 3000 포트 사용
+  if (!isLocalhost && (isInternalIP || isIPFormat)) {
+    // 내부 IP로 접속한 경우: 같은 호스트의 3000 포트 사용
+    const apiUrl = `http://${hostname}:3000`;
+    console.log("✅ 내부 IP/IP 형식 감지 → API URL:", apiUrl);
+    return apiUrl;
+  }
+
+  // 기본값: 프록시 사용 (Vite 개발 서버의 프록시 설정)
+  // 단, localhost가 아닌 경우 프록시가 작동하지 않으므로 직접 URL 사용
+  if (!isLocalhost) {
+    const apiUrl = `http://${hostname}:3000`;
+    console.log("⚠️ localhost가 아니므로 직접 URL 사용:", apiUrl);
+    return apiUrl;
+  }
+
+  console.log("⚠️ 기본값 사용 (프록시): /api");
+  return "/api";
+}
+
+const API_BASE_URL = getApiBaseUrl();
+
+// 최종 설정 로그
+console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+console.log("🎯 [최종 API 설정]");
+console.log("  Base URL:", API_BASE_URL);
+console.log("  Hostname:", window.location.hostname);
+console.log("  Full URL:", window.location.href);
+console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
 // axios 인스턴스 생성
 const api = axios.create({
@@ -16,6 +105,14 @@ const api = axios.create({
 // 요청 인터셉터: 토큰 자동 추가
 api.interceptors.request.use(
   (config) => {
+    // API 요청 로그
+    console.log("📤 [API 요청]", {
+      method: config.method?.toUpperCase(),
+      url: config.url,
+      baseURL: config.baseURL,
+      fullURL: `${config.baseURL}${config.url}`,
+    });
+
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -23,6 +120,7 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.error("❌ [API 요청 에러]", error);
     return Promise.reject(error);
   }
 );
@@ -30,9 +128,22 @@ api.interceptors.request.use(
 // 응답 인터셉터: 에러 처리
 api.interceptors.response.use(
   (response) => {
+    console.log("✅ [API 응답 성공]", {
+      status: response.status,
+      url: response.config.url,
+    });
     return response;
   },
   (error) => {
+    console.error("❌ [API 응답 에러]", {
+      status: error.response?.status,
+      message: error.message,
+      url: error.config?.url,
+      baseURL: error.config?.baseURL,
+      fullURL: error.config
+        ? `${error.config.baseURL}${error.config.url}`
+        : "N/A",
+    });
     // JSON 파싱 오류 처리
     if (error.message && error.message.includes("JSON")) {
       console.error("JSON parsing error:", error);
