@@ -11,12 +11,52 @@
 
 .wallet-container {
   padding: 24px;
+  padding-top: 116px;
   max-width: 405px;
   margin: 0 auto;
 }
 
+/* Fixed Page Header */
+.wallet-page-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 405px;
+  margin: 0 auto;
+  background-color: white;
+  z-index: 100;
+  padding: 56px 24px 20px 24px;
+}
+
+.wallet-page-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.wallet-page-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.wallet-page-header-subtitle {
+  font-size: 11px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.4;
+}
+
 /* Header Section */
 .wallet-header {
+  margin-top: -12px;
   margin-bottom: 12px;
 }
 
@@ -39,10 +79,28 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
 }
 
 .header-instruction p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.header-subtitle {
+  font-size: 11px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0;
   line-height: 1.4;
 }
@@ -193,7 +251,6 @@
 .business-card-display {
   width: 100%;
   aspect-ratio: 1.6;
-  background: linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%);
   border-radius: 20px;
   padding: 28px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25),
@@ -201,6 +258,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 }
 
 .card-display-content {
@@ -208,6 +266,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 }
 
 .card-top-section {
@@ -217,11 +276,39 @@
 }
 
 .card-company {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.7);
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0;
+}
+
+.card-heart-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: white;
+  transition: transform 0.2s;
+}
+
+.card-heart-button:hover {
+  transform: scale(1.1);
+}
+
+.card-heart-button:active {
+  transform: scale(0.9);
+}
+
+.card-heart-button svg {
+  width: 26px;
+  height: 26px;
+  filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 .card-info-section {
@@ -230,30 +317,38 @@
   align-items: flex-end;
   margin-top: auto;
   padding-top: 24px;
+  transform: translateY(2px);
 }
 
 .card-name {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   color: white;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  margin: 0 0 1px 0;
+  margin: 1px 0 0 0;
 }
 
 .card-position {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.7);
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0;
 }
 
+.card-bottom-section {
+  position: absolute;
+  bottom: 57px;
+  right: -28px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .card-contact {
-  text-align: right;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-top: 12px;
+  align-items: flex-end;
 }
 
 .card-phone {
@@ -262,6 +357,7 @@
   color: rgba(255, 255, 255, 0.6);
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0;
+  text-align: right;
 }
 
 .card-email {
@@ -270,6 +366,8 @@
   color: rgba(255, 255, 255, 0.6);
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0;
+  text-align: right;
+  transform: translateY(1px);
 }
 
 .carousel-nav-btn {
@@ -395,7 +493,7 @@
 
 .grid-business-card {
   width: 100%;
-  aspect-ratio: 1.6;
+  aspect-ratio: 1.85;
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25),
@@ -411,10 +509,19 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+}
+
+.grid-card-top {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  min-height: fit-content;
 }
 
 .grid-card-company {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.7);
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
@@ -422,6 +529,41 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  padding-right: 28px;
+}
+
+.grid-card-heart-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transition: transform 0.2s;
+  z-index: 1;
+  margin: 0;
+}
+
+.grid-card-heart-button:hover {
+  transform: scale(1.1);
+}
+
+.grid-card-heart-button:active {
+  transform: scale(0.9);
+}
+
+.grid-card-heart-button svg {
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 .grid-card-info {
@@ -433,7 +575,7 @@
 }
 
 .grid-card-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: white;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
@@ -444,7 +586,7 @@
 }
 
 .grid-card-position {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.7);
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
@@ -469,6 +611,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.grid-card-email {
+  transform: translateY(1px);
 }
 
 /* View All Button */
@@ -573,14 +719,28 @@
 /* Grid view usage count */
 .usage-count-grid {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 700;
   color: #1f2937;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
 }
 
 .usage-count-number-grid {
   color: #584cdc;
-  font-weight: 600;
+  font-weight: 700;
+}
+
+/* Usage indicator below grid */
+.usage-indicator-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* Footer in grid view - reduce top margin */
+.wallet-footer.grid-view-footer {
+  margin-top: 0px;
 }
 
 .footer-text {
@@ -590,6 +750,11 @@
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   text-align: center;
   margin: 16px 0 2px 0;
+}
+
+/* Footer text in grid view - reduce top margin */
+.wallet-footer.grid-view-footer .footer-text {
+  margin: 4px 0 2px 0;
 }
 
 .upgrade-link {
@@ -858,12 +1023,13 @@
 }
 
 .modal-profile-section {
+  position: absolute;
+  bottom: 16px;
+  left: 24px;
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  flex: 1;
-  width: 100%;
-  margin-top: 0px;
+  width: auto;
 }
 
 .modal-profile-left {
@@ -902,15 +1068,15 @@
 .modal-profile-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
   flex: 1;
 }
 
 .modal-profile-name {
   font-size: 26px;
-  font-weight: 400;
+  font-weight: 600;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  margin: 8px 0 0 0;
+  margin: 0;
   padding: 0;
   color: white;
   line-height: 28px;
@@ -921,7 +1087,7 @@
   font-size: 14px;
   font-weight: 400;
   color: white;
-  margin: 0;
+  margin: 0 0 2px 0;
   line-height: 18px;
 }
 
@@ -1114,13 +1280,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
+  overflow: visible;
 }
 
 .info-icon svg {
-  width: 100%;
-  height: 100%;
+  width: 16px;
+  height: 16px;
+  overflow: visible;
 }
 
 .info-content {

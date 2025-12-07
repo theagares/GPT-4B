@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
-import { giftAPI } from '../utils/api'
+import { giftAPI, userAPI } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
 import './BusinessCardWallet.css'
 
@@ -32,6 +32,22 @@ function CameraIcon() {
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 4H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       <circle cx="12" cy="13" r="4" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+// 하트 아이콘 SVG 컴포넌트
+function HeartIcon({ filled = false }) {
+  if (filled) {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#ef4444" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.5783 8.50903 2.9987 7.05 2.9987C5.59096 2.9987 4.19169 3.5783 3.16 4.61C2.1283 5.6417 1.54871 7.04097 1.54871 8.5C1.54871 9.95903 2.1283 11.3583 3.16 12.39L4.22 13.45L12 21.23L19.78 13.45L20.84 12.39C21.351 11.8792 21.7564 11.2728 22.0329 10.6054C22.3095 9.93789 22.4518 9.22248 22.4518 8.5C22.4518 7.77752 22.3095 7.0621 22.0329 6.39464C21.7564 5.72718 21.351 5.12075 20.84 4.61Z" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    )
+  }
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.5783 8.50903 2.9987 7.05 2.9987C5.59096 2.9987 4.19169 3.5783 3.16 4.61C2.1283 5.6417 1.54871 7.04097 1.54871 8.5C1.54871 9.95903 2.1283 11.3583 3.16 12.39L4.22 13.45L12 21.23L19.78 13.45L20.84 12.39C21.351 11.8792 21.7564 11.2728 22.0329 10.6054C22.3095 9.93789 22.4518 9.22248 22.4518 8.5C22.4518 7.77752 22.3095 7.0621 22.0329 6.39464C21.7564 5.72718 21.351 5.12075 20.84 4.61Z" stroke="rgba(255, 255, 255, 0.8)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
@@ -84,12 +100,12 @@ const allGiftHistory = [
 
 // 명함 디자인 맵
 const cardDesigns = {
-  'design-1': 'linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%)',
-  'design-2': 'linear-gradient(147.99deg, rgba(59, 130, 246, 1) 0%, rgba(37, 99, 235, 1) 100%)',
-  'design-3': 'linear-gradient(147.99deg, rgba(16, 185, 129, 1) 0%, rgba(5, 150, 105, 1) 100%)',
-  'design-4': 'linear-gradient(147.99deg, rgba(236, 72, 153, 1) 0%, rgba(219, 39, 119, 1) 100%)',
-  'design-5': 'linear-gradient(147.99deg, rgba(249, 115, 22, 1) 0%, rgba(234, 88, 12, 1) 100%)',
-  'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
+  'design-1': 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 40%, transparent 70%), linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%)',
+  'design-2': 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 40%, transparent 70%), linear-gradient(147.99deg, rgba(59, 130, 246, 1) 0%, rgba(37, 99, 235, 1) 100%)',
+  'design-3': 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 40%, transparent 70%), linear-gradient(147.99deg, rgba(16, 185, 129, 1) 0%, rgba(5, 150, 105, 1) 100%)',
+  'design-4': 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 40%, transparent 70%), linear-gradient(147.99deg, rgba(244, 90, 170, 1) 0%, rgba(230, 55, 135, 1) 100%)',
+  'design-5': 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 40%, transparent 70%), linear-gradient(147.99deg, rgba(249, 115, 22, 1) 0%, rgba(234, 88, 12, 1) 100%)',
+  'design-6': 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 40%, transparent 70%), linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
 }
 
 // 페이지 배경색 맵 (명함 색상에 맞춘 연한 배경)
@@ -112,10 +128,41 @@ function BusinessCardWallet() {
   const [flippingCardId, setFlippingCardId] = useState(null)
   const [isGridView, setIsGridView] = useState(location.state?.isGridView || false)
   const [selectedCardId, setSelectedCardId] = useState(null)
+  const [userName, setUserName] = useState('')
   const cards = useCardStore((state) => state.cards)
   const fetchCards = useCardStore((state) => state.fetchCards)
+  const updateCard = useCardStore((state) => state.updateCard)
   const isLoading = useCardStore((state) => state.isLoading)
   
+  // DB에서 로그인한 유저의 이름 가져오기
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (isAuthenticated()) {
+        try {
+          const response = await userAPI.getProfile()
+          if (response.data.success && response.data.data.name) {
+            setUserName(response.data.data.name)
+          }
+        } catch (error) {
+          console.error('Failed to fetch user name:', error)
+          // 에러 발생 시 localStorage에서 가져오기 (fallback)
+          const name = localStorage.getItem('userName')
+          if (name) {
+            setUserName(name)
+          }
+        }
+      } else {
+        // 로그인하지 않은 경우 localStorage에서 가져오기
+        const name = localStorage.getItem('userName')
+        if (name) {
+          setUserName(name)
+        }
+      }
+    }
+
+    fetchUserName()
+  }, [])
+
   // location.state에서 isGridView 확인 및 설정
   useEffect(() => {
     if (location.state?.isGridView) {
@@ -159,9 +206,74 @@ function BusinessCardWallet() {
     };
   }, [fetchCards])
 
+  // 명함 정렬 함수 (하트 우선 → 가나다순)
+  const sortCards = (cards) => {
+    const isKorean = (char) => {
+      if (!char) return false
+      const code = char.charCodeAt(0)
+      return code >= 0xAC00 && code <= 0xD7A3 // 한글 유니코드 범위
+    }
+
+    const isEnglish = (char) => {
+      if (!char) return false
+      const code = char.charCodeAt(0)
+      return (code >= 0x0041 && code <= 0x005A) || // A-Z
+             (code >= 0x0061 && code <= 0x007A)    // a-z
+    }
+
+    const getLanguageType = (name) => {
+      if (!name || name.length === 0) return 'other'
+      const firstChar = name.charAt(0)
+      if (isKorean(firstChar)) return 'korean'
+      if (isEnglish(firstChar)) return 'english'
+      return 'other'
+    }
+
+    return [...cards].sort((a, b) => {
+      // 하트 우선 정렬
+      const favoriteA = a.isFavorite ? 1 : 0
+      const favoriteB = b.isFavorite ? 1 : 0
+      if (favoriteA !== favoriteB) {
+        return favoriteB - favoriteA // 하트가 있는 것이 앞에
+      }
+
+      // 같은 하트 상태일 때만 가나다순 정렬
+      const nameA = a.name || ''
+      const nameB = b.name || ''
+      
+      if (!nameA && !nameB) return 0
+      if (!nameA) return 1
+      if (!nameB) return -1
+
+      const langA = getLanguageType(nameA)
+      const langB = getLanguageType(nameB)
+
+      // 한글과 영어 구분: 한글이 먼저, 그 다음 영어, 마지막 기타
+      if (langA === 'korean' && langB !== 'korean') return -1
+      if (langA !== 'korean' && langB === 'korean') return 1
+
+      if (langA === 'english' && langB !== 'english' && langB !== 'korean') return -1
+      if (langA !== 'english' && langA !== 'korean' && langB === 'english') return 1
+
+      // 둘 다 한글일 때
+      if (langA === 'korean' && langB === 'korean') {
+        return nameA.localeCompare(nameB, 'ko')
+      }
+      
+      // 둘 다 영어일 때 (대소문자 무시)
+      if (langA === 'english' && langB === 'english') {
+        return nameA.localeCompare(nameB, 'en', { sensitivity: 'base' })
+      }
+
+      // 기타 경우 (숫자, 특수문자 등)
+      return nameA.localeCompare(nameB, 'ko')
+    })
+  }
+
   // 검색 필터링 (서버 측 검색을 사용하므로 클라이언트 측 필터링은 선택적)
   // 서버에서 이미 검색된 결과를 받으므로 필터링 불필요
-  const filteredCards = cards
+  // 정렬만 적용
+  const filteredCards = useMemo(() => sortCards(cards), [cards])
 
   const currentCard = filteredCards[currentIndex] || filteredCards[0]
   
@@ -300,19 +412,36 @@ function BusinessCardWallet() {
     }
   }
 
+  const handleToggleFavorite = async (e, cardId) => {
+    e.stopPropagation() // 카드 클릭 이벤트 방지
+    
+    const card = cards.find(c => c.id === cardId || String(c.id) === String(cardId))
+    if (!card) return
+    
+    const newFavoriteStatus = !card.isFavorite
+    
+    try {
+      await updateCard(cardId, { isFavorite: newFavoriteStatus })
+      // 카드 목록 새로고침하여 정렬 반영
+      if (isAuthenticated()) {
+        await fetchCards(searchQuery)
+      }
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error)
+    }
+  }
+
   return (
     <div className="business-card-wallet">
-      <div className="wallet-container">
-        {/* Header Section */}
-        <div className="wallet-header">
-          <div className="header-content">
-            <div className="header-instruction">
-              <p>명함을 찾아서</p>
-              <p>내용을 수정할 수 있어요</p>
-            </div>
-          </div>
+      {/* Fixed Header */}
+      <div className="wallet-page-header">
+        <div className="wallet-page-header-content">
+          <p className="wallet-page-header-title">{userName ? `${userName}님의 명함집` : '명함집'}</p>
+          <p className="wallet-page-header-subtitle">명함을 등록하거나 세부 내용을 수정할 수 있어요</p>
         </div>
+      </div>
 
+      <div className="wallet-container">
         {/* Search Section */}
         <div className="search-section">
           <div className="search-wrapper">
@@ -367,18 +496,12 @@ function BusinessCardWallet() {
         </div>
 
         {/* Usage Count and Guide - Below action buttons */}
-        <div className={`usage-and-guide-container ${isGridView ? 'grid-view-container' : ''}`}>
-          {!isGridView && (
+        {!isGridView && (
+          <div className="usage-and-guide-container">
             <div className="card-guide">
               <p className="card-guide-text">명함을 눌러 상세 정보 확인</p>
             </div>
-          )}
-          <div className="usage-indicator-top">
-            {isGridView ? (
-              <span className="usage-count-grid">
-                <span className="usage-count-number-grid">{cards.length}</span> / 200
-              </span>
-            ) : (
+            <div className="usage-indicator-top">
               <span className="usage-count-carousel">
                 {filteredCards.length > 0 ? (
                   <>
@@ -390,9 +513,9 @@ function BusinessCardWallet() {
                   </>
                 )}
               </span>
-            )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Business Card Display */}
         {isLoading ? (
@@ -446,15 +569,24 @@ function BusinessCardWallet() {
                               <div className="card-display-content">
                                 <div className="card-top-section">
                                   {card.company && <p className="card-company">{card.company}</p>}
-                                  <div className="card-contact">
-                                    {card.phone && <p className="card-phone">{card.phone}</p>}
-                                    {card.email && <p className="card-email">{card.email}</p>}
-                                  </div>
+                                  <button
+                                    className="card-heart-button"
+                                    onClick={(e) => handleToggleFavorite(e, card.id)}
+                                    aria-label={card.isFavorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+                                  >
+                                    <HeartIcon filled={card.isFavorite || false} />
+                                  </button>
                                 </div>
                                 <div className="card-info-section">
                                   <div>
-                                    <h3 className="card-name">{card.name}</h3>
                                     {card.position && <p className="card-position">{card.position}</p>}
+                                    <h3 className="card-name">{card.name}</h3>
+                                  </div>
+                                </div>
+                                <div className="card-bottom-section">
+                                  <div className="card-contact">
+                                    {card.phone && <p className="card-phone">{card.phone}</p>}
+                                    {card.email && <p className="card-email">{card.email}</p>}
                                   </div>
                                 </div>
                               </div>
@@ -477,34 +609,51 @@ function BusinessCardWallet() {
                 </div>
               </>
             ) : (
-              <div className="cards-grid">
-                {filteredCards.map((card) => (
-                  <div
-                    key={card.id}
-                    className="grid-card-item"
-                    onClick={() => handleCardClick(card.id)}
-                  >
-                    <div 
-                      className="grid-business-card"
-                      style={{
-                        background: card.design && cardDesigns[card.design] 
-                          ? cardDesigns[card.design] 
-                          : cardDesigns['design-1']
-                      }}
+              <>
+                <div className="cards-grid">
+                  {filteredCards.map((card) => (
+                    <div
+                      key={card.id}
+                      className="grid-card-item"
+                      onClick={() => handleCardClick(card.id)}
                     >
-                      <div className="grid-card-content">
-                        {card.company && <p className="grid-card-company">{card.company}</p>}
-                        {card.position && <p className="grid-card-position">{card.position}</p>}
-                        <div className="grid-card-info">
-                          <div>
-                            <h3 className="grid-card-name">{card.name}</h3>
+                      <div 
+                        className="grid-business-card"
+                        style={{
+                          background: card.design && cardDesigns[card.design] 
+                            ? cardDesigns[card.design] 
+                            : cardDesigns['design-1']
+                        }}
+                      >
+                        <div className="grid-card-content">
+                          <div className="grid-card-top">
+                            {card.company && <p className="grid-card-company">{card.company}</p>}
+                            <button
+                              className="grid-card-heart-button"
+                              onClick={(e) => handleToggleFavorite(e, card.id)}
+                              aria-label={card.isFavorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+                            >
+                              <HeartIcon filled={card.isFavorite || false} />
+                            </button>
+                          </div>
+                          {card.position && <p className="grid-card-position">{card.position}</p>}
+                          <div className="grid-card-info">
+                            <div>
+                              <h3 className="grid-card-name">{card.name}</h3>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+                {/* Usage Count - Below grid for grid view */}
+                <div className="usage-indicator-bottom">
+                  <span className="usage-count-grid">
+                    <span className="usage-count-number-grid">{cards.length}</span> / 200
+                  </span>
+                </div>
+              </>
             )}
           </div>
         ) : (
@@ -514,7 +663,7 @@ function BusinessCardWallet() {
         )}
 
         {/* Footer Message */}
-        <div className="wallet-footer">
+        <div className={`wallet-footer ${isGridView ? 'grid-view-footer' : ''}`}>
           <p className="footer-text">더 많은 명함을 관리할 수 있어요</p>
           <a 
             href="#" 
@@ -680,10 +829,12 @@ function CardDetailModal({ card, onClose }) {
             {card.email && <p className="modal-profile-email">{card.email}</p>}
           </div>
 
+          {/* 상단 소속 정보 */}
+          {card.company && <p className="modal-profile-company">{card.company}</p>}
+
           <div className="modal-profile-section">
             <div className="modal-profile-left">
               <div className="modal-profile-info">
-                {card.company && <p className="modal-profile-company">{card.company}</p>}
                 {card.position && <p className="modal-profile-position">{card.position}</p>}
                 <h2 className="modal-profile-name">
                   {card.name}

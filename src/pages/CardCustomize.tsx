@@ -33,7 +33,7 @@ const cardDesigns: CardDesign[] = [
   {
     id: "design-4",
     name: "로즈",
-    gradient: "linear-gradient(147.99deg, rgba(236, 72, 153, 1) 0%, rgba(219, 39, 119, 1) 100%)",
+    gradient: "linear-gradient(147.99deg, rgba(244, 90, 170, 1) 0%, rgba(230, 55, 135, 1) 100%)",
     preview: "rose",
   },
   {
