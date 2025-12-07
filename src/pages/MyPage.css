@@ -257,7 +257,7 @@
 /* 스와이프 업 안내 버튼 */
 .swipe-up-button {
   position: absolute;
-  bottom: 240px;
+  bottom: 180px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;

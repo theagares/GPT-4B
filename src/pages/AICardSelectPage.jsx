@@ -118,15 +118,10 @@ function AICardSelectPage() {
                     key={card.id}
                     className="card-item"
                     onClick={() => handleCardSelect(card)}
-                    style={{
-                      background: card.design && cardDesigns[card.design]
-                        ? cardDesigns[card.design]
-                        : cardDesigns['design-1']
-                    }}
                   >
                     <div className="card-item-content">
                       <div className="card-item-company">
-                        {card.company || '회사 정보 없음'}
+                        {card.company || '소속 정보 없음'}
                       </div>
                       <div className="card-item-position">
                         {card.position || '직급 정보 없음'}

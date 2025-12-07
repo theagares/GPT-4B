@@ -207,6 +207,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background-color: white;
+  border: 1px solid #584cdc;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -228,7 +230,7 @@
 .card-item-company {
   font-size: 9px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: #584cdc;
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
   line-height: 1.2;
   margin-bottom: 0;
@@ -237,7 +239,7 @@
 .card-item-position {
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  color: #584cdc;
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
   line-height: 1.2;
   margin-top: 0;
@@ -246,7 +248,7 @@
 .card-item-name {
   font-size: 16px;
   font-weight: 700;
-  color: white;
+  color: #584cdc;
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
   line-height: 1.2;
   margin-top: 1px;

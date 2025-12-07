@@ -218,6 +218,14 @@ function AddEventPage() {
       return
     }
 
+    // 시간 검증
+    const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+    const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+    if (endTotal <= startTotal) {
+      alert('종료 시간은 시작 시간보다 늦어야 합니다.')
+      return
+    }
+
     if (!isAuthenticated()) {
       alert('로그인이 필요합니다.')
       navigate('/login')
@@ -430,12 +438,26 @@ function AddEventPage() {
         <div className="date-display">
           {formatDateForDisplay(selectedDate)}
         </div>
-        <button
-          className="time-display"
-          onClick={() => setShowTimePicker(!showTimePicker)}
-        >
-          {formatTimeForDisplay(formData.startTime, formData.endTime)}
-        </button>
+        <div className="time-display-wrapper">
+          <button
+            className={`time-display ${(() => {
+              const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+              const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+              return endTotal <= startTotal ? 'time-display-error' : ''
+            })()}`}
+            onClick={() => setShowTimePicker(!showTimePicker)}
+          >
+            {formatTimeForDisplay(formData.startTime, formData.endTime)}
+          </button>
+          {(() => {
+            const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+            const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+            if (endTotal <= startTotal) {
+              return <p className="time-error-message-inline">종료 시간은 시작 시간보다 늦어야 합니다.</p>
+            }
+            return null
+          })()}
+        </div>
       </div>
 
       {/* 시간 선택기 */}
@@ -470,7 +492,11 @@ function AddEventPage() {
                 max="23"
                 value={formData.endTime.hour}
                 onChange={(e) => handleTimeChange('endTime', 'hour', e.target.value)}
-                className="time-input"
+                className={`time-input ${(() => {
+                  const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+                  const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+                  return endTotal <= startTotal ? 'time-input-error' : ''
+                })()}`}
               />
               <span>:</span>
               <input
@@ -479,12 +505,39 @@ function AddEventPage() {
                 max="59"
                 value={formData.endTime.minute}
                 onChange={(e) => handleTimeChange('endTime', 'minute', e.target.value)}
-                className="time-input"
+                className={`time-input ${(() => {
+                  const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+                  const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+                  return endTotal <= startTotal ? 'time-input-error' : ''
+                })()}`}
               />
             </div>
+            {(() => {
+              const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+              const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+              if (endTotal <= startTotal) {
+                return <p className="time-error-message">종료 시간은 시작 시간보다 늦어야 합니다.</p>
+              }
+              return null
+            })()}
             <button
-              className="time-picker-close"
-              onClick={() => setShowTimePicker(false)}
+              className={`time-picker-close ${(() => {
+                const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+                const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+                return endTotal <= startTotal ? 'disabled' : ''
+              })()}`}
+              onClick={() => {
+                const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+                const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+                if (endTotal > startTotal) {
+                  setShowTimePicker(false)
+                }
+              }}
+              disabled={(() => {
+                const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+                const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+                return endTotal <= startTotal
+              })()}
             >
               확인
             </button>
@@ -536,9 +589,17 @@ function AddEventPage() {
 
       {/* 추가 버튼 */}
       <button 
-        className="add-button" 
+        className={`add-button ${(() => {
+          const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+          const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+          return (endTotal <= startTotal) ? 'disabled' : ''
+        })()}`}
         onClick={handleSave}
-        disabled={isSaving || !formData.title.trim()}
+        disabled={isSaving || !formData.title.trim() || (() => {
+          const startTotal = formData.startTime.hour * 60 + formData.startTime.minute
+          const endTotal = formData.endTime.hour * 60 + formData.endTime.minute
+          return endTotal <= startTotal
+        })()}
       >
         {isSaving ? '저장 중...' : '추가'}
       </button>

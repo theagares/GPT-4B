@@ -869,6 +869,18 @@
   opacity: 0.9;
 }
 
+.time-picker-close.disabled,
+.time-picker-close:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.time-picker-close.disabled:hover,
+.time-picker-close:disabled:hover {
+  opacity: 0.6;
+}
+
 .time-inputs {
   display: flex;
   align-items: center;
@@ -890,6 +902,22 @@
 
 .time-input:focus {
   border-color: #584cdc;
+}
+
+.time-input-error {
+  border-color: #ef4444 !important;
+}
+
+.time-input-error:focus {
+  border-color: #ef4444 !important;
+}
+
+.time-error-message {
+  color: #ef4444;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  margin: -16px 0 16px 0;
+  padding-left: 4px;
 }
 
 

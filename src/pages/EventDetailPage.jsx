@@ -1124,7 +1124,11 @@ function EventDetailPage() {
 
                 }}
 
-                className="time-input"
+                className={`time-input ${(() => {
+                  const startDate = formData.startDate || event.startDate
+                  const endDate = formData.endDate || event.endDate
+                  return endDate <= startDate ? 'time-input-error' : ''
+                })()}`}
 
               />
 
@@ -1152,17 +1156,45 @@ function EventDetailPage() {
 
                 }}
 
-                className="time-input"
+                className={`time-input ${(() => {
+                  const startDate = formData.startDate || event.startDate
+                  const endDate = formData.endDate || event.endDate
+                  return endDate <= startDate ? 'time-input-error' : ''
+                })()}`}
 
               />
 
             </div>
+            {(() => {
+              const startDate = formData.startDate || event.startDate
+              const endDate = formData.endDate || event.endDate
+              if (endDate <= startDate) {
+                return <p className="time-error-message">종료 시간은 시작 시간보다 늦어야 합니다.</p>
+              }
+              return null
+            })()}
 
             <button
 
-              className="time-picker-close"
+              className={`time-picker-close ${(() => {
+                const startDate = formData.startDate || event.startDate
+                const endDate = formData.endDate || event.endDate
+                return endDate <= startDate ? 'disabled' : ''
+              })()}`}
 
-              onClick={() => setShowTimePicker(false)}
+              onClick={() => {
+                const startDate = formData.startDate || event.startDate
+                const endDate = formData.endDate || event.endDate
+                if (endDate > startDate) {
+                  setShowTimePicker(false)
+                }
+              }}
+
+              disabled={(() => {
+                const startDate = formData.startDate || event.startDate
+                const endDate = formData.endDate || event.endDate
+                return endDate <= startDate
+              })()}
 
             >
 
