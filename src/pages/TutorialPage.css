@@ -127,11 +127,17 @@
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: #999;
+  color: #fff;
+  z-index: 1;
 }
 
 .tutorial-image-placeholder.hidden {
   display: none;
+}
+
+.tutorial-image-placeholder p {
+  margin: 4px 0;
+  color: #fff;
 }
 
 .placeholder-path {

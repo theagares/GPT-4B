@@ -109,7 +109,18 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
+  align-items: flex-start;
+}
+
+.input-group .input-wrapper {
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.input-group .input-wrapper + p {
+  margin-top: 2px !important;
 }
 
 .input-label {
@@ -117,6 +128,7 @@
   font-weight: 600;
   color: #252525;
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  margin-bottom: 8px;
 }
 
 .input-wrapper {
@@ -124,6 +136,10 @@
   width: 100%;
   display: flex;
   align-items: center;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 .signup-input {
@@ -137,6 +153,8 @@
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
   color: #252525;
   transition: all 0.2s;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .signup-input::placeholder {
@@ -172,20 +190,43 @@
   pointer-events: none;
 }
 
+.input-group .input-wrapper + p.error-message,
+.input-group .input-wrapper + p.input-hint {
+  margin: 0 !important;
+  margin-top: 2px !important;
+  padding: 0 !important;
+  padding-left: 0 !important;
+  text-align: left;
+}
+
 .error-message {
   font-size: 12px;
   color: #EA4335;
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
-  margin: 0;
-  padding-left: 4px;
+  margin: 0 !important;
+  margin-top: 2px !important;
+  margin-left: 0 !important;
+  padding: 0 !important;
+  padding-left: 0 !important;
+  line-height: 1.4;
+  min-height: 16px;
+  display: block;
+  text-align: left;
 }
 
 .input-hint {
   font-size: 12px;
   color: rgba(37, 37, 37, 0.5);
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
-  margin: 0;
-  padding-left: 4px;
+  margin: 0 !important;
+  margin-top: 2px !important;
+  margin-left: 0 !important;
+  padding: 0 !important;
+  padding-left: 0 !important;
+  line-height: 1.4;
+  min-height: 16px;
+  display: block;
+  text-align: left;
 }
 
 .continue-button {

@@ -296,8 +296,8 @@ function TutorialPage() {
               }}
             />
             <div className="tutorial-image-placeholder hidden">
-              <p style={{ color: '#fff' }}>튜토리얼 이미지 {currentStep + 1}</p>
-              <p className="placeholder-path" style={{ color: '#ccc' }}>{currentTutorial.image}</p>
+              <p style={{ color: '#fff' }}>튜토리얼 이미지 {showTutorial60 ? '6-0' : (showIntermediateImage ? '4-1' : currentStep + 1)}</p>
+              <p className="placeholder-path" style={{ color: '#ccc' }}>{showTutorial60 ? '/assets/tutorial/tutorial-6-0.png' : (intermediateImage || currentTutorial.image)}</p>
             </div>
           </div>
         </div>

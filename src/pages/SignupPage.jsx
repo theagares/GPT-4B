@@ -143,11 +143,9 @@ function SignupPage() {
                 </div>
               )}
             </div>
-            {userIdError ? (
-              <p className="error-message">{userIdError}</p>
-            ) : (
-              <p className="input-hint">아이디는 4자 이상의 영문 또는 영문+숫자 조합이어야 합니다</p>
-            )}
+            <p className={userIdError ? 'error-message' : 'input-hint'}>
+              {userIdError || '아이디는 4자 이상의 영문 또는 영문+숫자 조합이어야 합니다'}
+            </p>
           </div>
 
           <div className="input-group">
@@ -166,11 +164,9 @@ function SignupPage() {
                 </div>
               )}
             </div>
-            {passwordError ? (
-              <p className="error-message">{passwordError}</p>
-            ) : (
-              <p className="input-hint">비밀번호는 6자 이상이어야 합니다</p>
-            )}
+            <p className={passwordError ? 'error-message' : 'input-hint'}>
+              {passwordError || '비밀번호는 6자 이상이어야 합니다'}
+            </p>
           </div>
 
           <div className="input-group">
@@ -189,9 +185,9 @@ function SignupPage() {
                 </div>
               )}
             </div>
-            {confirmPasswordError && (
-              <p className="error-message">{confirmPasswordError}</p>
-            )}
+            <p className={confirmPasswordError ? 'error-message' : 'input-hint'}>
+              {confirmPasswordError || ''}
+            </p>
           </div>
 
           <button 
