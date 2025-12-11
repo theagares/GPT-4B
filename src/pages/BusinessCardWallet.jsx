@@ -134,6 +134,13 @@ function BusinessCardWallet() {
   const updateCard = useCardStore((state) => state.updateCard)
   const isLoading = useCardStore((state) => state.isLoading)
   
+  // 터치 스와이프 관련 상태
+  const [touchStart, setTouchStart] = useState(null)
+  const [touchEnd, setTouchEnd] = useState(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragOffset, setDragOffset] = useState(0)
+  const minSwipeDistance = 50
+  
   // DB에서 로그인한 유저의 이름 가져오기
   useEffect(() => {
     const fetchUserName = async () => {
@@ -357,6 +364,122 @@ function BusinessCardWallet() {
     }
   }
 
+  // 터치 시작
+  const onTouchStart = (e) => {
+    if (isGridView) return
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+    setIsDragging(true)
+    setDragOffset(0)
+  }
+
+  // 터치 이동
+  const onTouchMove = (e) => {
+    if (isGridView || !touchStart) return
+    e.preventDefault() // 스크롤 방지
+    const currentX = e.targetTouches[0].clientX
+    setTouchEnd(currentX)
+    // 왼쪽으로 드래그하면 음수 (다음 카드 보임), 오른쪽으로 드래그하면 양수 (이전 카드 보임)
+    const distance = touchStart - currentX
+    setDragOffset(distance)
+  }
+
+  // 터치 종료
+  const onTouchEnd = () => {
+    if (isGridView || !touchStart || !touchEnd) {
+      setIsDragging(false)
+      setDragOffset(0)
+      return
+    }
+    
+    // 왼쪽으로 스와이프하면 다음 카드, 오른쪽으로 스와이프하면 이전 카드
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      handleNext()
+    } else if (isRightSwipe) {
+      handlePrev()
+    }
+    
+    setIsDragging(false)
+    setDragOffset(0)
+    setTouchStart(null)
+    setTouchEnd(null)
+  }
+
+  // 마우스 드래그 지원 (데스크톱)
+  const onMouseDown = (e) => {
+    if (isGridView) return
+    e.preventDefault()
+    setTouchStart(e.clientX)
+    setIsDragging(true)
+    setDragOffset(0)
+  }
+
+  const onMouseMove = (e) => {
+    if (isGridView || !touchStart || !isDragging) return
+    e.preventDefault()
+    const currentX = e.clientX
+    setTouchEnd(currentX)
+    // 왼쪽으로 드래그하면 음수 (다음 카드 보임), 오른쪽으로 드래그하면 양수 (이전 카드 보임)
+    const distance = touchStart - currentX
+    setDragOffset(distance)
+  }
+
+  const onMouseUp = () => {
+    if (isGridView || !touchStart || !touchEnd) {
+      setIsDragging(false)
+      setDragOffset(0)
+      setTouchStart(null)
+      setTouchEnd(null)
+      return
+    }
+    
+    // 왼쪽으로 스와이프하면 다음 카드, 오른쪽으로 스와이프하면 이전 카드
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      handleNext()
+    } else if (isRightSwipe) {
+      handlePrev()
+    }
+    
+    setIsDragging(false)
+    setDragOffset(0)
+    setTouchStart(null)
+    setTouchEnd(null)
+  }
+
+  // 전역 마우스 이벤트 리스너 (드래그 중 마우스가 요소 밖으로 나갔을 때)
+  useEffect(() => {
+    if (isDragging && touchStart !== null) {
+      const handleGlobalMouseMove = (e) => {
+        if (isGridView || !touchStart) return
+        const currentX = e.clientX
+        setTouchEnd(currentX)
+        // 왼쪽으로 드래그하면 음수 (다음 카드 보임), 오른쪽으로 드래그하면 양수 (이전 카드 보임)
+        const distance = touchStart - currentX
+        setDragOffset(distance)
+      }
+
+      const handleGlobalMouseUp = () => {
+        onMouseUp()
+      }
+
+      document.addEventListener('mousemove', handleGlobalMouseMove)
+      document.addEventListener('mouseup', handleGlobalMouseUp)
+
+      return () => {
+        document.removeEventListener('mousemove', handleGlobalMouseMove)
+        document.removeEventListener('mouseup', handleGlobalMouseUp)
+      }
+    }
+  }, [isDragging, touchStart, isGridView])
+
   const handleConfirmCard = () => {
     if (currentCard) {
       handleCardClick(currentCard.id)
@@ -564,7 +687,17 @@ function BusinessCardWallet() {
                     </svg>
                   </button>
 
-                  <div className="carousel-wrapper">
+                  <div 
+                    className="carousel-wrapper"
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                    onMouseDown={onMouseDown}
+                    onMouseMove={onMouseMove}
+                    onMouseUp={onMouseUp}
+                    onMouseLeave={onMouseUp}
+                    style={{ touchAction: 'pan-y', userSelect: 'none' }}
+                  >
                     <div className="carousel-track">
                       {filteredCards.map((card, index) => {
                         const offset = index - currentIndex
@@ -573,17 +706,33 @@ function BusinessCardWallet() {
                         
                         if (!isVisible) return null
                         
+                        // 드래그 중일 때는 실시간 오프셋 적용
+                        let dragTransform = 0
+                        if (isDragging && isActive && dragOffset !== 0) {
+                          // 드래그 거리를 퍼센트로 변환 (카드 너비의 85% 기준)
+                          // 왼쪽으로 드래그하면 (dragOffset > 0) 다음 카드가 보이도록 현재 카드는 왼쪽으로 이동 (음수)
+                          // 오른쪽으로 드래그하면 (dragOffset < 0) 이전 카드가 보이도록 현재 카드는 오른쪽으로 이동 (양수)
+                          const cardWidthPercent = 85
+                          dragTransform = -(dragOffset / (window.innerWidth * 0.85)) * cardWidthPercent
+                        }
+                        
                         return (
                           <div 
                             key={card.id} 
-                            className={`carousel-card ${isActive ? 'active' : ''} ${flippingCardId === card.id && isFlipping ? 'flipping' : ''}`}
+                            className={`carousel-card ${isActive ? 'active' : ''} ${flippingCardId === card.id && isFlipping ? 'flipping' : ''} ${isDragging && isActive ? 'dragging' : ''}`}
                             style={{
-                              transform: `translateX(${offset * 85}%) scale(${isActive ? 1 : 0.7})`,
-                              opacity: isActive ? 1 : 0.3,
-                              filter: isActive ? 'blur(0)' : 'blur(3px)',
-                              zIndex: isActive ? 10 : 5 - Math.abs(offset)
+                              transform: `translateX(calc(${offset * 85}% + ${dragTransform}%)) scale(${isActive ? 1 : 0.7})`,
+                              opacity: isActive ? Math.max(0.3, 1 - Math.abs(dragOffset) / 200) : 0.3,
+                              filter: isActive ? (Math.abs(dragOffset) > 50 ? 'blur(2px)' : 'blur(0)') : 'blur(3px)',
+                              zIndex: isActive ? 10 : 5 - Math.abs(offset),
+                              transition: isDragging && isActive ? 'none' : 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, filter 0.4s ease'
                             }}
-                            onClick={() => handleCardClick(card.id)}
+                            onClick={(e) => {
+                              // 드래그 중이 아닐 때만 클릭 처리
+                              if (!isDragging && Math.abs(dragOffset) < 10) {
+                                handleCardClick(card.id)
+                              }
+                            }}
                           >
                             <div 
                               className="business-card-display"

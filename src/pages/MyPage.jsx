@@ -48,10 +48,11 @@ function MyPage() {
   const cardRef = useRef(null)
   const [isAnimating, setIsAnimating] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0, time: 0 })
   const [dragCurrent, setDragCurrent] = useState({ x: 0, y: 0 })
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
+  const [touchStartTime, setTouchStartTime] = useState(null)
   const [myCardDesign, setMyCardDesign] = useState('design-1')
   const [myInfo, setMyInfo] = useState({
     name: '',
@@ -125,8 +126,10 @@ function MyPage() {
     fetchUserInfo();
   }, [])
 
-  // 최소 스와이프 거리 (픽셀)
-  const minSwipeDistance = 300
+  // 최소 스와이프 거리 (픽셀) - 적당히 스와이프하면 완료되도록 낮춤
+  const minSwipeDistance = 100
+  // 빠른 스와이프를 위한 최소 거리 (속도 고려)
+  const minFastSwipeDistance = 50
 
   // 디자인 변경 감지 (DB 업데이트 후)
   useEffect(() => {
@@ -269,7 +272,7 @@ function MyPage() {
     if (isAnimating) return
     e.stopPropagation() // 클릭 이벤트 전파 방지
     setIsDragging(false) // 초기값을 false로 설정
-    setDragStart({ x: e.clientX, y: e.clientY })
+    setDragStart({ x: e.clientX, y: e.clientY, time: Date.now() })
     setDragCurrent({ x: e.clientX, y: e.clientY })
   }
 
@@ -295,6 +298,14 @@ function MyPage() {
           card.style.transition = 'none'
           card.style.transform = `translateY(${-moveY}px) rotate(0deg)`
           card.style.opacity = Math.max(0, 1 - moveY / 200)
+          
+          // 일정 거리 이상 이동하면 자동으로 완료 (150px 이상)
+          if (moveY > 150) {
+            handleSwipeUp()
+            setIsDragging(false)
+            setDragStart({ x: 0, y: 0, time: 0 })
+            setDragCurrent({ x: 0, y: 0 })
+          }
         }
       }
     }
@@ -306,9 +317,15 @@ function MyPage() {
     e.stopPropagation() // 클릭 이벤트 전파 방지
     
     const deltaY = dragStart.y - dragCurrent.y
+    const timeElapsed = dragStart.time ? Date.now() - dragStart.time : 0
+    const velocity = timeElapsed > 0 ? Math.abs(deltaY) / timeElapsed : 0 // px/ms
     
     if (isDragging) {
-      if (deltaY > minSwipeDistance) {
+      // 빠른 스와이프인 경우 (속도가 0.5px/ms 이상) 더 적은 거리로도 완료
+      const isFastSwipe = velocity > 0.5
+      const requiredDistance = isFastSwipe ? minFastSwipeDistance : minSwipeDistance
+      
+      if (deltaY > requiredDistance) {
         handleSwipeUp()
       } else {
         // 드래그 거리가 부족하면 원래 위치로 복귀
@@ -322,7 +339,7 @@ function MyPage() {
     }
     
     setIsDragging(false)
-    setDragStart({ x: 0, y: 0 })
+    setDragStart({ x: 0, y: 0, time: 0 })
     setDragCurrent({ x: 0, y: 0 })
   }
 
@@ -331,6 +348,7 @@ function MyPage() {
     if (isAnimating) return
     setTouchEnd(null)
     setTouchStart(e.touches[0].clientY)
+    setTouchStartTime(Date.now())
     setIsDragging(false) // 초기값을 false로 설정
   }
 
@@ -358,6 +376,15 @@ function MyPage() {
             card.style.transition = 'none'
             card.style.transform = `translateY(${-moveY}px) rotate(0deg)`
             card.style.opacity = Math.max(0, 1 - moveY / 200)
+            
+            // 일정 거리 이상 이동하면 자동으로 완료 (150px 이상)
+            if (moveY > 150) {
+              handleSwipeUp()
+              setIsDragging(false)
+              setTouchStart(null)
+              setTouchEnd(null)
+              setTouchStartTime(null)
+            }
           }
         }
       }
@@ -369,7 +396,13 @@ function MyPage() {
     if (!touchStart || !touchEnd || isAnimating) return
     
     const distance = touchStart - touchEnd
-    const isUpSwipe = distance > minSwipeDistance
+    const timeElapsed = touchStartTime ? Date.now() - touchStartTime : 0
+    const velocity = timeElapsed > 0 ? Math.abs(distance) / timeElapsed : 0 // px/ms
+    
+    // 빠른 스와이프인 경우 (속도가 0.5px/ms 이상) 더 적은 거리로도 완료
+    const isFastSwipe = velocity > 0.5
+    const requiredDistance = isFastSwipe ? minFastSwipeDistance : minSwipeDistance
+    const isUpSwipe = distance > requiredDistance
 
     if (isUpSwipe) {
       handleSwipeUp()
@@ -386,6 +419,7 @@ function MyPage() {
     setIsDragging(false)
     setTouchStart(null)
     setTouchEnd(null)
+    setTouchStartTime(null)
   }
 
   // 전역 마우스 이벤트 리스너
@@ -405,6 +439,14 @@ function MyPage() {
           card.style.transition = 'none'
           card.style.transform = `translateY(${-deltaY}px) rotate(0deg)`
           card.style.opacity = Math.max(0, 1 - deltaY / 200)
+          
+          // 일정 거리 이상 이동하면 자동으로 완료 (150px 이상)
+          if (deltaY > 150) {
+            handleSwipeUp()
+            setIsDragging(false)
+            setDragStart({ x: 0, y: 0, time: 0 })
+            setDragCurrent({ x: 0, y: 0 })
+          }
         }
       }
     }
@@ -413,8 +455,14 @@ function MyPage() {
       if (!isDragging || isAnimating) return
       
       const deltaY = dragStart.y - dragCurrent.y
+      const timeElapsed = dragStart.time ? Date.now() - dragStart.time : 0
+      const velocity = timeElapsed > 0 ? Math.abs(deltaY) / timeElapsed : 0 // px/ms
       
-      if (deltaY > minSwipeDistance) {
+      // 빠른 스와이프인 경우 (속도가 0.5px/ms 이상) 더 적은 거리로도 완료
+      const isFastSwipe = velocity > 0.5
+      const requiredDistance = isFastSwipe ? minFastSwipeDistance : minSwipeDistance
+      
+      if (deltaY > requiredDistance) {
         handleSwipeUp()
       } else {
         // 드래그 거리가 부족하면 원래 위치로 복귀
@@ -427,7 +475,7 @@ function MyPage() {
       }
       
       setIsDragging(false)
-      setDragStart({ x: 0, y: 0 })
+      setDragStart({ x: 0, y: 0, time: 0 })
       setDragCurrent({ x: 0, y: 0 })
     }
     

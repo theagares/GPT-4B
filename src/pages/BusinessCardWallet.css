@@ -228,6 +228,8 @@
   overflow: visible;
   position: relative;
   height: auto;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .carousel-track {
@@ -246,6 +248,13 @@
               opacity 0.4s ease, 
               filter 0.4s ease;
   transform-origin: center center;
+  will-change: transform;
+  touch-action: pan-y;
+}
+
+.carousel-card.dragging {
+  transition: none;
+  cursor: grabbing;
 }
 
 .business-card-display {
