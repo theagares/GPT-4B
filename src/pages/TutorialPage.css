@@ -1,0 +1,225 @@
+.tutorial-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #19153E;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.tutorial-container {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 상단 환영 메시지 */
+.tutorial-welcome-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.tutorial-welcome-title {
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+}
+
+.tutorial-title-glow {
+  text-shadow: 
+    0 0 8px rgba(255, 255, 255, 0.25),
+    0 0 16px rgba(255, 255, 255, 0.15),
+    0 0 24px rgba(255, 255, 255, 0.08);
+}
+
+.tutorial-welcome-subtitle {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 400;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+  padding: 0 20px;
+  word-break: keep-all;
+}
+
+/* 단계 표시 */
+.tutorial-step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.step-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.step-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.step-dot.active {
+  width: 20px;
+  border-radius: 3px;
+  background-color: #ffffff;
+}
+
+.step-dot.completed {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* 메인 콘텐츠 */
+.tutorial-content {
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  margin: 20px 0;
+}
+
+.tutorial-title {
+  display: none; /* 상단 환영 텍스트로 대체 */
+}
+
+.tutorial-image-container {
+  width: 100%;
+  max-width: 85%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: 0 auto;
+}
+
+.tutorial-image {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0;
+  display: block;
+}
+
+.tutorial-image-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #999;
+}
+
+.tutorial-image-placeholder.hidden {
+  display: none;
+}
+
+.placeholder-path {
+  font-size: 12px;
+  margin-top: 8px;
+  color: #ccc;
+}
+
+.tutorial-description {
+  display: none; /* 이미지에 이미 포함되어 있음 */
+}
+
+/* 네비게이션 */
+.tutorial-navigation {
+  width: 100%;
+  max-width: 430px;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.nav-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.prev-button {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+}
+
+.prev-button:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.prev-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.next-button {
+  background: #ffffff;
+  color: #2d3748;
+}
+
+.next-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+.next-button:active {
+  transform: translateY(0);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .tutorial-page {
+    padding: 20px 15px 15px;
+  }
+
+  .tutorial-welcome-title {
+    font-size: 22px;
+  }
+
+  .tutorial-welcome-subtitle {
+    font-size: 12px;
+    padding: 0 15px;
+  }
+
+  .tutorial-image-container {
+    max-width: 100%;
+  }
+}
+
+/* 모바일 터치 최적화 */
+@media (hover: none) and (pointer: coarse) {
+  .nav-button {
+    min-height: 32px;
+  }
+}
+

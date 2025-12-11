@@ -5,6 +5,7 @@ import SignupPage from './pages/SignupPage'
 import SignupInfoPage from './pages/SignupInfoPage'
 import SignupFormPage from './pages/SignupFormPage'
 import WelcomePage from './pages/WelcomePage'
+import TutorialPage from './pages/TutorialPage'
 import LLMPage from './pages/LLMPage'
 import ChatHistoryPage from './pages/ChatHistoryPage'
 import ChatDetailPage from './pages/ChatDetailPage'
@@ -48,6 +49,7 @@ function App() {
         <Route path="/signup/info" element={<SignupInfoPage />} />
         <Route path="/signup/form" element={<SignupFormPage />} />
         <Route path="/welcome" element={<WelcomePage />} />
+        <Route path="/tutorial" element={<TutorialPage />} />
         <Route path="/llm" element={<LLMPage />} />
         <Route path="/ai-card-select" element={<AICardSelectPage />} />
         <Route path="/chat-history" element={<ChatHistoryPage />} />

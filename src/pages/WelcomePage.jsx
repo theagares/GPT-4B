@@ -6,9 +6,9 @@ function WelcomePage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // 2초 후 대시보드로 이동
+    // 2초 후 튜토리얼 페이지로 이동
     const timer = setTimeout(() => {
-      navigate('/dashboard', { state: { showCardCompleteModal: true } })
+      navigate('/tutorial')
     }, 2000)
 
     return () => clearTimeout(timer)
