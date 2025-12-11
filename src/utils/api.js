@@ -20,9 +20,12 @@ function getApiBaseUrl() {
   // 환경 변수가 있으면 localhost를 현재 hostname으로 치환
   if (envApiUrl) {
     let apiUrl = envApiUrl;
+    const protocol = window.location.protocol;
+    
     // 환경 변수에 localhost가 포함되어 있고, 실제 접속은 내부 IP인 경우
     if (envApiUrl.includes("localhost") && !isLocalhost) {
-      apiUrl = envApiUrl.replace(/localhost/g, hostname);
+      // 프로토콜도 현재 프로토콜로 변경
+      apiUrl = envApiUrl.replace(/https?:\/\//, `${protocol}//`).replace(/localhost/g, hostname);
       console.log("⚠️ 환경 변수의 localhost를 현재 hostname으로 치환");
       console.log("  원본:", envApiUrl);
       console.log("  치환:", apiUrl);
@@ -30,16 +33,30 @@ function getApiBaseUrl() {
       // 환경 변수에 localhost가 없어도, 실제 접속이 내부 IP면 hostname으로 치환
       // 예: http://127.0.0.1:3000 → http://172.16.131.101:3000
       if (envApiUrl.includes("127.0.0.1")) {
-        apiUrl = envApiUrl.replace(/127\.0\.0\.1/g, hostname);
+        apiUrl = envApiUrl.replace(/https?:\/\//, `${protocol}//`).replace(/127\.0\.0\.1/g, hostname);
         console.log("⚠️ 환경 변수의 127.0.0.1을 현재 hostname으로 치환");
         console.log("  원본:", envApiUrl);
         console.log("  치환:", apiUrl);
       } else {
-        console.log("✅ 환경 변수 사용:", envApiUrl);
+        // 프로토콜만 현재 프로토콜로 변경
+        if (!envApiUrl.startsWith(protocol)) {
+          apiUrl = envApiUrl.replace(/^https?:\/\//, `${protocol}//`);
+        }
+        console.log("✅ 환경 변수 사용:", apiUrl);
       }
     } else {
       console.log("✅ 환경 변수 사용:", envApiUrl);
     }
+    
+    // 환경 변수 URL이 /api로 끝나지 않으면 추가
+    if (!apiUrl.endsWith('/api') && !apiUrl.endsWith('/api/')) {
+      // 포트 번호 뒤에 /api가 없으면 추가
+      if (!apiUrl.match(/:\d+\/api/)) {
+        apiUrl = apiUrl.replace(/\/$/, '') + '/api';
+        console.log("⚠️ 환경 변수 URL에 /api 경로 추가:", apiUrl);
+      }
+    }
+    
     return apiUrl;
   }
 
@@ -65,8 +82,9 @@ function getApiBaseUrl() {
 
   // localhost가 아니고, 내부 IP이거나 IP 형식이면 3000 포트 사용
   if (!isLocalhost && (isInternalIP || isIPFormat)) {
-    // 내부 IP로 접속한 경우: 같은 호스트의 3000 포트 사용
-    const apiUrl = `http://${hostname}:3000`;
+    // 내부 IP로 접속한 경우: 같은 호스트의 3000 포트 + /api 경로 사용
+    const protocol = window.location.protocol;
+    const apiUrl = `${protocol}//${hostname}:3000/api`;
     console.log("✅ 내부 IP/IP 형식 감지 → API URL:", apiUrl);
     return apiUrl;
   }
@@ -74,7 +92,9 @@ function getApiBaseUrl() {
   // 기본값: 프록시 사용 (Vite 개발 서버의 프록시 설정)
   // 단, localhost가 아닌 경우 프록시가 작동하지 않으므로 직접 URL 사용
   if (!isLocalhost) {
-    const apiUrl = `http://${hostname}:3000`;
+    // 네트워크 접속 시: 현재 프로토콜과 호스트를 사용하되 백엔드 포트(3000) + /api 경로 사용
+    const protocol = window.location.protocol;
+    const apiUrl = `${protocol}//${hostname}:3000/api`;
     console.log("⚠️ localhost가 아니므로 직접 URL 사용:", apiUrl);
     return apiUrl;
   }
