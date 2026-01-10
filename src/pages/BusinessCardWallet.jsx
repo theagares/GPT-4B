@@ -889,6 +889,8 @@ function CardDetailModal({ card, onClose }) {
   const [isRebuilding, setIsRebuilding] = useState(false)
   const [expandedEvidence, setExpandedEvidence] = useState({})
   const [activeTab, setActiveTab] = useState('info') // 'info' or 'preferences'
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
   const navigate = useNavigate()
   const deleteCard = useCardStore((state) => state.deleteCard)
   
@@ -976,6 +978,14 @@ function CardDetailModal({ card, onClose }) {
     if (!card || !isAuthenticated() || isRebuilding) return
 
     setIsRebuilding(true)
+    setToastMessage('프로필 갱신이 시작되었습니다. 시간이 소요될 수 있으니 다른 작업을 하셔도 됩니다.')
+    setShowToast(true)
+    
+    // 3초 후 토스트 메시지 숨김
+    setTimeout(() => {
+      setShowToast(false)
+    }, 3000)
+
     try {
       const cardId = typeof card.id === 'string' ? parseInt(card.id, 10) : card.id
       if (isNaN(cardId)) {
@@ -1006,6 +1016,19 @@ function CardDetailModal({ card, onClose }) {
 
   const handleCustomize = () => {
     navigate('/customize', { state: { card } })
+  }
+
+  // 근거 메모 클릭 시 해당 메모로 이동
+  const handleEvidenceClick = (evidenceText) => {
+    // 텍스트가 너무 길면 적당히 잘라서 검색어로 사용하거나 전체 사용
+    // 여기서는 전체 텍스트 사용
+    navigate(`/memo?businessCardId=${card.id}`, { 
+      state: { 
+        returnToModal: true,
+        cardId: card.id,
+        initialSearchQuery: evidenceText.replace(/^"|"$/g, '') // 따옴표 제거
+      } 
+    })
   }
 
   const handleDelete = () => {
@@ -1141,7 +1164,12 @@ function CardDetailModal({ card, onClose }) {
           </button>
           <button
             type="button"
-            onClick={() => navigate(`/memo?businessCardId=${card.id}`)}
+            onClick={() => navigate(`/memo?businessCardId=${card.id}`, { 
+              state: { 
+                returnToModal: true,
+                cardId: card.id 
+              } 
+            })}
             className="action-btn action-btn-primary modal-memo-button"
           >
             <svg className="memo-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1283,8 +1311,17 @@ function CardDetailModal({ card, onClose }) {
                             </button>
                             <div className="preference-chip-evidence">
                               {item.evidence.map((ev, evIndex) => (
-                                <div key={evIndex} className="preference-evidence-item">
-                                  "{ev}"
+                                <div 
+                                  key={evIndex} 
+                                  className="preference-evidence-item"
+                                  onClick={() => handleEvidenceClick(ev)}
+                                  title="클릭하여 메모 보기"
+                                >
+                                  <span className="preference-evidence-text">"{ev}"</span>
+                                  <svg className="preference-evidence-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
                                 </div>
                               ))}
                             </div>
@@ -1328,8 +1365,17 @@ function CardDetailModal({ card, onClose }) {
                             </button>
                             <div className="preference-chip-evidence">
                               {item.evidence.map((ev, evIndex) => (
-                                <div key={evIndex} className="preference-evidence-item">
-                                  "{ev}"
+                                <div 
+                                  key={evIndex} 
+                                  className="preference-evidence-item"
+                                  onClick={() => handleEvidenceClick(ev)}
+                                  title="클릭하여 메모 보기"
+                                >
+                                  <span className="preference-evidence-text">"{ev}"</span>
+                                  <svg className="preference-evidence-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
                                 </div>
                               ))}
                             </div>
@@ -1371,8 +1417,17 @@ function CardDetailModal({ card, onClose }) {
                             </button>
                             <div className="preference-chip-evidence">
                               {item.evidence.map((ev, evIndex) => (
-                                <div key={evIndex} className="preference-evidence-item">
-                                  "{ev}"
+                                <div 
+                                  key={evIndex} 
+                                  className="preference-evidence-item"
+                                  onClick={() => handleEvidenceClick(ev)}
+                                  title="클릭하여 메모 보기"
+                                >
+                                  <span className="preference-evidence-text">"{ev}"</span>
+                                  <svg className="preference-evidence-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
                                 </div>
                               ))}
                             </div>
@@ -1396,6 +1451,13 @@ function CardDetailModal({ card, onClose }) {
         </div>
         )}
       </div>
+
+      {showToast && (
+        <div className="rebuild-toast-message">
+          <div className="rebuild-loading-spinner"></div>
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { memoAPI } from '../utils/api'
 import { isAuthenticated, getUser } from '../utils/auth'
@@ -37,6 +37,7 @@ function SearchIcon() {
 
 function MemoPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams] = useSearchParams()
   const businessCardId = searchParams.get('businessCardId') || searchParams.get('cardId')
   const [memos, setMemos] = useState([])
@@ -50,6 +51,14 @@ function MemoPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const user = getUser()
   const fetchCards = useCardStore((state) => state.fetchCards)
+  
+  // 초기 검색어 설정 (다른 페이지에서 넘어온 경우)
+  useEffect(() => {
+    if (location.state?.initialSearchQuery) {
+      setSearchQuery(location.state.initialSearchQuery)
+      // state 초기화는 하지 않음 (뒤로가기 등의 동작을 위해 유지하거나, 필요시 location state clear)
+    }
+  }, [location.state])
   const card = businessCardId ? useCardStore((state) => state.getCardById(businessCardId)) : null
 
   // Memo 목록 가져오기
@@ -218,7 +227,18 @@ function MemoPage() {
 
   // 뒤로 가기 핸들러
   const handleBack = () => {
-    navigate(-1)
+    // 명함 상세 모달에서 온 경우, 명함 상세 모달로 복귀
+    if (location.state?.returnToModal && location.state?.cardId) {
+      // 명함집 페이지로 이동하면서 해당 카드의 모달을 열기 위한 state 전달
+      navigate('/business-cards', { 
+        state: { 
+          openCardId: location.state.cardId 
+        } 
+      })
+    } else {
+      // 일반적인 경우: 브라우저 히스토리로 뒤로가기
+      navigate(-1)
+    }
   }
 
   // 명함 디자인에 따른 헤더 배경색 가져오기
