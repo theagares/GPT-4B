@@ -449,7 +449,7 @@ function LandingPage() {
         // 선호도 프로필 조회
         let preferenceProfile = null
         try {
-          const prefResponse = await api.get(`/preference/card/${card.id}`)
+          const prefResponse = await api.get(`/profile/${card.id}/preferences`)
           if (prefResponse.data.success) {
             preferenceProfile = prefResponse.data.data
           }
@@ -571,7 +571,7 @@ function LandingPage() {
           // 선호도 프로필 조회
           let preferenceProfile = null
           try {
-            const prefResponse = await api.get(`/preference/card/${cardId}`)
+            const prefResponse = await api.get(`/profile/${cardId}/preferences`)
             if (prefResponse.data.success) {
               preferenceProfile = prefResponse.data.data
             }
