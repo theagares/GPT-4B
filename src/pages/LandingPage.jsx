@@ -382,16 +382,13 @@ function LandingPage() {
         if (response.data && response.data.success) {
           const events = response.data.data || []
           
-          // 5분 이내에 시작하고, linked_card_ids가 있는 이벤트만 필터링
+          // 5분 이내에 시작하고, linkedCardIds가 있는 이벤트만 필터링
           const upcomingEvents = events.filter(event => {
             const eventStart = new Date(event.startDate)
             const diffMinutes = (eventStart - now) / (1000 * 60)
             
-            // linked_card_ids가 null이 아니고 빈값이 아닌 경우만 표시
-            const hasLinkedCard = event.linked_card_ids !== null && 
-                                  event.linked_card_ids !== undefined && 
-                                  event.linked_card_ids !== '' &&
-                                  event.linked_card_ids !== 'null'
+            // linkedCardIds 배열이 있고 비어있지 않은 경우
+            const hasLinkedCard = event.linkedCardIds && event.linkedCardIds.length > 0
             
             return diffMinutes > 0 && diffMinutes <= 5 && hasLinkedCard
           })
@@ -407,7 +404,7 @@ function LandingPage() {
             backgroundColor: '#584cdc',
             category: event.category || '기타',
             participants: event.participants,
-            linkedCardIds: event.linked_card_ids
+            linkedCardIds: event.linkedCardIds
           }))
 
           setUpcomingAlerts(upcomingAlertList)
@@ -494,17 +491,13 @@ function LandingPage() {
             
             // 이벤트가 끝났고, 아직 팝업을 보여주지 않은 경우
             if (eventEnd <= now && !processedEndedEvents.has(event.id)) {
-              // linked_card_ids 확인 (null이 아니면 명함이 연결됨)
-              const hasLinkedCard = event.linked_card_ids !== null && 
-                                    event.linked_card_ids !== undefined && 
-                                    event.linked_card_ids !== '' &&
-                                    event.linked_card_ids !== 'null'
+              // linkedCardIds 확인 (배열이 있고 비어있지 않은지)
+              const hasLinkedCard = event.linkedCardIds && event.linkedCardIds.length > 0
               
-              // 첫 번째 카드 ID 추출 (콤마로 구분된 경우)
+              // 첫 번째 카드 ID 추출
               let linkedCardId = null
               if (hasLinkedCard) {
-                const ids = String(event.linked_card_ids).split(',')
-                linkedCardId = ids[0]?.trim()
+                linkedCardId = event.linkedCardIds[0]
               }
               
               setEndedEventInfo({
@@ -555,12 +548,15 @@ function LandingPage() {
     setLoadingCardInfo(true)
     setShowCardInfoModal(true)
     
-    // linked_card_ids가 있으면 직접 사용
-    const linkedCardIds = alert.linkedCardIds || alert.event?.linked_card_ids
+    // linkedCardIds가 있으면 직접 사용 (배열)
+    const linkedCardIds = alert.linkedCardIds || alert.event?.linkedCardIds
     
-    if (linkedCardIds && linkedCardIds !== '' && linkedCardIds !== 'null') {
-      // linked_card_ids로 직접 명함 정보 조회
-      const cardId = String(linkedCardIds).split(',')[0]?.trim()
+    // linkedCardIds가 배열이고 비어있지 않은 경우
+    const hasLinkedCards = Array.isArray(linkedCardIds) && linkedCardIds.length > 0
+    
+    if (hasLinkedCards) {
+      // linkedCardIds에서 첫 번째 카드 ID 추출
+      const cardId = linkedCardIds[0]
       
       try {
         // 명함 정보 조회
@@ -592,7 +588,7 @@ function LandingPage() {
         setSelectedCardInfo({ notFound: true, eventTitle: alert.event?.title })
       }
     } else {
-      // linked_card_ids가 없으면 참여자 이름으로 검색 (기존 방식)
+      // linkedCardIds가 없으면 참여자 이름으로 검색 (기존 방식)
       let participants = alert.event?.participants || alert.participants
       if (typeof participants === 'string') {
         participants = participants.split(',').map(p => p.trim()).filter(p => p)
