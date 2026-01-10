@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
-import { userAPI, calendarAPI } from '../utils/api'
+import { userAPI, calendarAPI, cardAPI } from '../utils/api'
 import { isAuthenticated, getUser } from '../utils/auth'
+import api from '../utils/api'
 import './LandingPage.css'
 
 // 인기 선물 데이터 (PopularGiftsPage와 동일한 데이터, 상위 5개만 표시)
@@ -123,6 +124,19 @@ function LandingPage() {
   }
 
   const [alerts, setAlerts] = useState([])
+  
+  // 5분 전 알람 관련 state
+  const [upcomingAlerts, setUpcomingAlerts] = useState([])
+  
+  // 명함 정보 모달 관련 state
+  const [showCardInfoModal, setShowCardInfoModal] = useState(false)
+  const [selectedCardInfo, setSelectedCardInfo] = useState(null)
+  const [loadingCardInfo, setLoadingCardInfo] = useState(false)
+  
+  // 스케줄 종료 팝업 관련 state
+  const [showEndedEventPopup, setShowEndedEventPopup] = useState(false)
+  const [endedEventInfo, setEndedEventInfo] = useState(null)
+  const [processedEndedEvents, setProcessedEndedEvents] = useState(new Set())
 
   // 알림 시간 계산 함수
   const calculateNotificationTime = (eventStartDate, notificationSetting) => {
@@ -347,6 +361,266 @@ function LandingPage() {
     return () => clearInterval(interval)
   }, [])
 
+  // 5분 전 알람 체크 (알림 설정 여부와 상관없이)
+  useEffect(() => {
+    const checkUpcomingEvents = async () => {
+      if (!isAuthenticated()) {
+        setUpcomingAlerts([])
+        return
+      }
+
+      try {
+        const now = new Date()
+        // 5분 후까지의 시간 범위
+        const fiveMinutesLater = new Date(now.getTime() + 5 * 60 * 1000)
+
+        const response = await calendarAPI.getEvents(
+          now.toISOString(),
+          fiveMinutesLater.toISOString()
+        )
+
+        if (response.data && response.data.success) {
+          const events = response.data.data || []
+          
+          // 5분 이내에 시작하고, linked_card_ids가 있는 이벤트만 필터링
+          const upcomingEvents = events.filter(event => {
+            const eventStart = new Date(event.startDate)
+            const diffMinutes = (eventStart - now) / (1000 * 60)
+            
+            // linked_card_ids가 null이 아니고 빈값이 아닌 경우만 표시
+            const hasLinkedCard = event.linked_card_ids !== null && 
+                                  event.linked_card_ids !== undefined && 
+                                  event.linked_card_ids !== '' &&
+                                  event.linked_card_ids !== 'null'
+            
+            return diffMinutes > 0 && diffMinutes <= 5 && hasLinkedCard
+          })
+
+          // 알림 생성
+          const upcomingAlertList = upcomingEvents.map(event => ({
+            id: `upcoming-${event.id}`,
+            eventId: event.id,
+            icon: '⏰',
+            text: `${event.title} 일정이 5분 후에 시작합니다!`,
+            event: event,
+            type: 'upcoming',
+            backgroundColor: '#584cdc',
+            category: event.category || '기타',
+            participants: event.participants,
+            linkedCardIds: event.linked_card_ids
+          }))
+
+          setUpcomingAlerts(upcomingAlertList)
+        }
+      } catch (error) {
+        console.error('Failed to fetch upcoming events:', error)
+        setUpcomingAlerts([])
+      }
+    }
+
+    checkUpcomingEvents()
+    
+    // 30초마다 체크
+    const interval = setInterval(checkUpcomingEvents, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // 참여자의 명함 정보 조회
+  const fetchParticipantCardInfo = async (participantName) => {
+    if (!participantName || !isAuthenticated()) return null
+    
+    try {
+      // 명함 검색
+      const response = await cardAPI.getAll({ search: participantName, limit: 1 })
+      if (response.data.success && response.data.data.length > 0) {
+        const card = response.data.data[0]
+        
+        // 메모 조회
+        let memos = []
+        try {
+          const memoResponse = await api.get(`/memo/card/${card.id}`)
+          if (memoResponse.data.success) {
+            memos = memoResponse.data.data || []
+          }
+        } catch (e) {
+          console.log('No memos found')
+        }
+        
+        // 선호도 프로필 조회
+        let preferenceProfile = null
+        try {
+          const prefResponse = await api.get(`/preference/card/${card.id}`)
+          if (prefResponse.data.success) {
+            preferenceProfile = prefResponse.data.data
+          }
+        } catch (e) {
+          console.log('No preference profile found')
+        }
+        
+        return {
+          ...card,
+          memos,
+          preferenceProfile
+        }
+      }
+      return null
+    } catch (error) {
+      console.error('Failed to fetch card info:', error)
+      return null
+    }
+  }
+
+  // 스케줄 종료 시점 체크 (linked_card_ids 여부에 따른 팝업)
+  useEffect(() => {
+    const checkEndedEvents = async () => {
+      if (!isAuthenticated()) return
+
+      try {
+        const now = new Date()
+        // 최근 5분 이내에 끝난 이벤트 확인
+        const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000)
+
+        const response = await calendarAPI.getEvents(
+          fiveMinutesAgo.toISOString(),
+          now.toISOString()
+        )
+
+        if (response.data && response.data.success) {
+          const events = response.data.data || []
+          
+          // 이미 끝난 이벤트 중 아직 처리하지 않은 것
+          for (const event of events) {
+            const eventEnd = new Date(event.endDate)
+            
+            // 이벤트가 끝났고, 아직 팝업을 보여주지 않은 경우
+            if (eventEnd <= now && !processedEndedEvents.has(event.id)) {
+              // linked_card_ids 확인 (null이 아니면 명함이 연결됨)
+              const hasLinkedCard = event.linked_card_ids !== null && 
+                                    event.linked_card_ids !== undefined && 
+                                    event.linked_card_ids !== '' &&
+                                    event.linked_card_ids !== 'null'
+              
+              // 첫 번째 카드 ID 추출 (콤마로 구분된 경우)
+              let linkedCardId = null
+              if (hasLinkedCard) {
+                const ids = String(event.linked_card_ids).split(',')
+                linkedCardId = ids[0]?.trim()
+              }
+              
+              setEndedEventInfo({
+                ...event,
+                hasLinkedCard,
+                linkedCardId
+              })
+              setShowEndedEventPopup(true)
+              
+              // 처리 완료 표시
+              setProcessedEndedEvents(prev => new Set([...prev, event.id]))
+              break // 한 번에 하나의 팝업만
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to check ended events:', error)
+      }
+    }
+
+    checkEndedEvents()
+    
+    // 30초마다 체크
+    const interval = setInterval(checkEndedEvents, 30000)
+    return () => clearInterval(interval)
+  }, [processedEndedEvents])
+
+  // 스케줄 종료 팝업 - "예" 버튼 클릭
+  const handleEndedEventYes = () => {
+    setShowEndedEventPopup(false)
+    
+    if (endedEventInfo?.hasLinkedCard && endedEventInfo?.linkedCardId) {
+      // 명함이 있으면 → 명함 상세 페이지로 이동 (메모 작성)
+      navigate(`/cards/${endedEventInfo.linkedCardId}`)
+    } else {
+      // 명함이 없으면 → 명함 등록 페이지로 이동
+      navigate('/manual-add')
+    }
+  }
+
+  // 스케줄 종료 팝업 - "아니요" 버튼 클릭
+  const handleEndedEventNo = () => {
+    setShowEndedEventPopup(false)
+  }
+
+  // 명함 정보 보기 버튼 클릭 - 선호도 프로필 팝업 표시
+  const handleShowCardInfo = async (alert) => {
+    setLoadingCardInfo(true)
+    setShowCardInfoModal(true)
+    
+    // linked_card_ids가 있으면 직접 사용
+    const linkedCardIds = alert.linkedCardIds || alert.event?.linked_card_ids
+    
+    if (linkedCardIds && linkedCardIds !== '' && linkedCardIds !== 'null') {
+      // linked_card_ids로 직접 명함 정보 조회
+      const cardId = String(linkedCardIds).split(',')[0]?.trim()
+      
+      try {
+        // 명함 정보 조회
+        const cardResponse = await cardAPI.getById(cardId)
+        if (cardResponse.data.success && cardResponse.data.data) {
+          const card = cardResponse.data.data
+          
+          // 선호도 프로필 조회
+          let preferenceProfile = null
+          try {
+            const prefResponse = await api.get(`/preference/card/${cardId}`)
+            if (prefResponse.data.success) {
+              preferenceProfile = prefResponse.data.data
+            }
+          } catch (e) {
+            console.log('No preference profile found')
+          }
+          
+          setSelectedCardInfo({
+            ...card,
+            preferenceProfile,
+            eventTitle: alert.event?.title
+          })
+        } else {
+          setSelectedCardInfo({ notFound: true, eventTitle: alert.event?.title })
+        }
+      } catch (error) {
+        console.error('Failed to fetch card info:', error)
+        setSelectedCardInfo({ notFound: true, eventTitle: alert.event?.title })
+      }
+    } else {
+      // linked_card_ids가 없으면 참여자 이름으로 검색 (기존 방식)
+      let participants = alert.event?.participants || alert.participants
+      if (typeof participants === 'string') {
+        participants = participants.split(',').map(p => p.trim()).filter(p => p)
+      }
+      
+      if (participants && participants.length > 0) {
+        const cardInfo = await fetchParticipantCardInfo(participants[0])
+        if (cardInfo && cardInfo.id) {
+          setSelectedCardInfo({
+            ...cardInfo,
+            eventTitle: alert.event?.title,
+            allParticipants: participants
+          })
+        } else {
+          setSelectedCardInfo({
+            name: participants[0],
+            notFound: true,
+            eventTitle: alert.event?.title,
+            allParticipants: participants
+          })
+        }
+      } else {
+        setSelectedCardInfo({ noParticipants: true })
+      }
+    }
+    setLoadingCardInfo(false)
+  }
+
   // 알림 텍스트에서 이름 추출 함수
   const extractNameFromAlert = (alertText) => {
     // "최하늘 님과..." 또는 "강지민 님의..." 형식에서 이름 추출
@@ -437,6 +711,34 @@ function LandingPage() {
           <button className="view-all-button" onClick={() => navigate('/popular-gifts')}>전체보기</button>
         </div>
 
+        {/* 5분 전 알람 섹션 (알림 설정과 상관없이) */}
+        {upcomingAlerts.length > 0 && (
+          <div className="upcoming-alerts-section">
+            <h2 className="alerts-title">⏰ 곧 시작하는 일정</h2>
+            <div className="alerts-list">
+              {upcomingAlerts.map((alert) => (
+                <div 
+                  key={alert.id} 
+                  className="alert-card upcoming-alert"
+                  style={{ backgroundColor: '#584cdc' }}
+                >
+                  <p className="alert-text" style={{ color: 'white' }}>
+                    {alert.text}
+                  </p>
+                  {alert.participants && (
+                    <button 
+                      className="alert-button alert-button-full"
+                      onClick={() => handleShowCardInfo(alert)}
+                    >
+                      상대방 정보 보기
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Important Alerts Section */}
         <div className="alerts-section">
           <h2 className="alerts-title">중요 알림</h2>
@@ -444,6 +746,7 @@ function LandingPage() {
             {alerts.length > 0 ? (
               alerts.map((alert) => {
                 const isMeeting = alert.category === '미팅'
+                const hasParticipants = alert.event?.participants
                 return (
                   <div 
                     key={alert.id} 
@@ -458,21 +761,23 @@ function LandingPage() {
                     >
                       {alert.text}
                     </p>
-                  <button 
-                    className="alert-button"
-                    onClick={() => handleViewAlert(alert)}
-                  >
-                    보기
-                  </button>
+                    {hasParticipants && (
+                      <button 
+                        className="alert-button alert-button-full"
+                        onClick={() => handleShowCardInfo(alert)}
+                      >
+                        상대방 정보 보기
+                      </button>
+                    )}
                 </div>
                 )
               })
-            ) : (
+            ) : upcomingAlerts.length === 0 ? (
               <div className="no-alerts">
                 <p className="no-alerts-text">아직 등록된 일정이 없어요.</p>
                 <p className="no-alerts-text">'캘린더' 탭에서 일정을 등록해보세요!</p>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
@@ -499,6 +804,158 @@ function LandingPage() {
                 onClick={handleCloseModal}
               >
                 괜찮아요
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 선호도 프로필 팝업 모달 */}
+      {showCardInfoModal && (
+        <div className="card-info-modal-overlay" onClick={() => setShowCardInfoModal(false)}>
+          <div className="card-info-modal preference-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="card-info-header">
+              <h3 className="card-info-title">💡 상대방 선호도 프로필</h3>
+              <button 
+                className="card-info-close"
+                onClick={() => setShowCardInfoModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+            
+            {loadingCardInfo ? (
+              <div className="card-info-loading">선호도 정보를 불러오는 중...</div>
+            ) : selectedCardInfo?.noParticipants ? (
+              <div className="card-info-empty">참여자 정보가 없습니다.</div>
+            ) : selectedCardInfo?.notFound ? (
+              <div className="card-info-content">
+                <div className="card-info-person-header">
+                  <span className="card-info-name">{selectedCardInfo.name}</span>
+                </div>
+                <p className="card-info-not-found">명함에 등록되지 않은 참여자입니다.<br/>명함을 등록하면 선호도 프로필을 확인할 수 있어요!</p>
+              </div>
+            ) : selectedCardInfo ? (
+              <div className="card-info-content">
+                {/* 참여자 기본 정보 */}
+                <div className="card-info-person-header">
+                  <span className="card-info-name">{selectedCardInfo.name}</span>
+                  <span className="card-info-detail">
+                    {selectedCardInfo.company && selectedCardInfo.company}
+                    {selectedCardInfo.position && ` · ${selectedCardInfo.position}`}
+                  </span>
+                </div>
+                
+                {/* 선호도 프로필 - 메인 */}
+                {selectedCardInfo.preferenceProfile ? (
+                  <div className="preference-profile-main">
+                    {/* 좋아하는 것 */}
+                    {selectedCardInfo.preferenceProfile.likes && (
+                      <div className="pref-section pref-likes">
+                        <div className="pref-section-header">
+                          <span className="pref-icon">👍</span>
+                          <span className="pref-title">좋아하는 것</span>
+                        </div>
+                        <div className="pref-tags">
+                          {(() => {
+                            try {
+                              const likes = JSON.parse(selectedCardInfo.preferenceProfile.likes)
+                              return Array.isArray(likes) ? likes.map((item, idx) => (
+                                <span key={idx} className="pref-tag pref-tag-like">{item}</span>
+                              )) : <span className="pref-tag pref-tag-like">{selectedCardInfo.preferenceProfile.likes}</span>
+                            } catch {
+                              return <span className="pref-tag pref-tag-like">{selectedCardInfo.preferenceProfile.likes}</span>
+                            }
+                          })()}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* 싫어하는 것 */}
+                    {selectedCardInfo.preferenceProfile.dislikes && (
+                      <div className="pref-section pref-dislikes">
+                        <div className="pref-section-header">
+                          <span className="pref-icon">👎</span>
+                          <span className="pref-title">싫어하는 것</span>
+                        </div>
+                        <div className="pref-tags">
+                          {(() => {
+                            try {
+                              const dislikes = JSON.parse(selectedCardInfo.preferenceProfile.dislikes)
+                              return Array.isArray(dislikes) ? dislikes.map((item, idx) => (
+                                <span key={idx} className="pref-tag pref-tag-dislike">{item}</span>
+                              )) : <span className="pref-tag pref-tag-dislike">{selectedCardInfo.preferenceProfile.dislikes}</span>
+                            } catch {
+                              return <span className="pref-tag pref-tag-dislike">{selectedCardInfo.preferenceProfile.dislikes}</span>
+                            }
+                          })()}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* 불확실한 것 */}
+                    {selectedCardInfo.preferenceProfile.uncertain && (
+                      <div className="pref-section pref-uncertain">
+                        <div className="pref-section-header">
+                          <span className="pref-icon">🤔</span>
+                          <span className="pref-title">불확실한 것</span>
+                        </div>
+                        <div className="pref-tags">
+                          {(() => {
+                            try {
+                              const uncertain = JSON.parse(selectedCardInfo.preferenceProfile.uncertain)
+                              return Array.isArray(uncertain) ? uncertain.map((item, idx) => (
+                                <span key={idx} className="pref-tag pref-tag-uncertain">{item}</span>
+                              )) : <span className="pref-tag pref-tag-uncertain">{selectedCardInfo.preferenceProfile.uncertain}</span>
+                            } catch {
+                              return <span className="pref-tag pref-tag-uncertain">{selectedCardInfo.preferenceProfile.uncertain}</span>
+                            }
+                          })()}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="no-preference-profile">
+                    <p>아직 선호도 프로필이 없어요.</p>
+                    <p className="no-pref-hint">대화 내용을 메모로 남기면<br/>AI가 선호도를 분석해드려요!</p>
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
+
+      {/* 스케줄 종료 팝업 */}
+      {showEndedEventPopup && endedEventInfo && (
+        <div className="ended-event-popup-overlay">
+          <div className="ended-event-popup">
+            <div className="ended-event-popup-icon">
+              {endedEventInfo.hasLinkedCard ? '📝' : '📇'}
+            </div>
+            <h3 className="ended-event-popup-title">
+              {endedEventInfo.title}
+            </h3>
+            <p className="ended-event-popup-subtitle">일정이 종료되었어요</p>
+            <p className="ended-event-popup-message">
+              {endedEventInfo.hasLinkedCard 
+                ? '상대방에 대한 사소한 정보라도\n메모로 남겨봐요!'
+                : '오늘 만난 상대방의 정보를\n명함으로 등록해봐요!'
+              }
+            </p>
+            <div className="ended-event-popup-buttons">
+              <button 
+                className="ended-event-btn ended-event-btn-primary"
+                onClick={handleEndedEventYes}
+              >
+                {endedEventInfo.hasLinkedCard ? '메모 작성하기' : '명함 등록하기'}
+              </button>
+              <button 
+                className="ended-event-btn ended-event-btn-secondary"
+                onClick={handleEndedEventNo}
+              >
+                다음에 할게요
               </button>
             </div>
           </div>

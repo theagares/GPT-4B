@@ -1125,5 +1125,72 @@
   transform: scale(0.98);
 }
 
+/* 참여자 자동완성 드롭다운 */
+.participant-section-wrapper {
+  position: relative;
+}
 
+.contact-suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
 
+.contact-suggestion-item {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background 0.15s ease;
+}
+
+.contact-suggestion-item:hover {
+  background: #f3f4f6;
+}
+
+.contact-suggestion-item:first-child {
+  border-radius: 12px 12px 0 0;
+}
+
+.contact-suggestion-item:last-child {
+  border-radius: 0 0 12px 12px;
+}
+
+.contact-suggestion-item:only-child {
+  border-radius: 12px;
+}
+
+.contact-suggestion-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.contact-suggestion-info {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* 명함에서 추가된 참여자 태그 스타일 */
+.participant-tag.from-card {
+  background: linear-gradient(135deg, #584cdc15 0%, #6366f115 100%);
+  border: 1px solid #584cdc30;
+}
+
+.participant-card-badge {
+  font-size: 12px;
+  margin-left: 2px;
+}

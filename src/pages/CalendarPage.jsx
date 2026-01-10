@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
-import { calendarAPI } from '../utils/api'
+import { calendarAPI, cardAPI } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
 import './CalendarPage.css'
 
@@ -105,6 +105,12 @@ function CalendarPage() {
   const [participants, setParticipants] = useState([])
   const [participantInput, setParticipantInput] = useState('')
   const [modalSelectedDate, setModalSelectedDate] = useState(new Date())
+  
+  // 참여자 자동완성 관련 state
+  const [contactSuggestions, setContactSuggestions] = useState([])
+  const [showContactSuggestions, setShowContactSuggestions] = useState(false)
+  const [linkedCardIds, setLinkedCardIds] = useState([])
+  const participantDropdownRef = useRef(null)
   
   const [formData, setFormData] = useState({
     title: '',
@@ -361,26 +367,125 @@ function CalendarPage() {
     setSelectedCategory(CATEGORIES[0])
     setParticipants([])
     setParticipantInput('')
+    setLinkedCardIds([])
+    setContactSuggestions([])
+    setShowContactSuggestions(false)
     setModalSelectedDate(selectedDate)
     setModalPosition(0)
   }
 
+  // 참여자 자동완성 검색 (명함에서 검색)
+  const fetchContactSuggestions = useCallback(async (searchText) => {
+    if (!searchText.trim() || !isAuthenticated()) {
+      setContactSuggestions([])
+      setShowContactSuggestions(false)
+      return
+    }
+    
+    try {
+      // 명함 목록에서 검색
+      const response = await cardAPI.getAll({ search: searchText, limit: 10 })
+      if (response.data.success) {
+        const contacts = (response.data.data || []).map(card => ({
+          id: card.id,
+          name: card.name,
+          company: card.company,
+          position: card.position,
+          displayText: `${card.name}${card.company ? ` (${card.company})` : ''}${card.position ? ` - ${card.position}` : ''}`
+        }))
+        setContactSuggestions(contacts)
+        setShowContactSuggestions(contacts.length > 0)
+      }
+    } catch (err) {
+      console.error('Failed to fetch contact suggestions:', err)
+      setContactSuggestions([])
+    }
+  }, [])
+
+  // 참여자 입력 변경 시 자동완성 검색
+  const handleParticipantInputChange = (e) => {
+    const value = e.target.value
+    setParticipantInput(value)
+    
+    // 1글자 이상 입력 시 검색
+    if (value.trim().length >= 1) {
+      fetchContactSuggestions(value)
+    } else {
+      setContactSuggestions([])
+      setShowContactSuggestions(false)
+    }
+  }
+
+  // 자동완성 항목 선택
+  const handleSelectContact = (contact) => {
+    // 이미 추가된 참여자인지 확인
+    const alreadyAdded = participants.some(p => p.id === contact.id)
+    if (!alreadyAdded) {
+      setParticipants([...participants, {
+        id: contact.id,
+        name: contact.name,
+        company: contact.company,
+        position: contact.position,
+        isFromCard: true
+      }])
+      setLinkedCardIds([...linkedCardIds, contact.id])
+    }
+    setParticipantInput('')
+    setContactSuggestions([])
+    setShowContactSuggestions(false)
+  }
+
   const handleAddParticipant = () => {
     if (participantInput.trim()) {
-      setParticipants([...participants, participantInput.trim()])
+      // 명함에 없는 직접 입력 참여자
+      setParticipants([...participants, {
+        name: participantInput.trim(),
+        isFromCard: false
+      }])
       setParticipantInput('')
+      setContactSuggestions([])
+      setShowContactSuggestions(false)
     }
   }
 
   const handleRemoveParticipant = (index) => {
+    const removedParticipant = participants[index]
     setParticipants(participants.filter((_, i) => i !== index))
+    
+    // 명함에서 온 참여자면 linkedCardIds에서도 제거
+    if (removedParticipant.isFromCard && removedParticipant.id) {
+      setLinkedCardIds(linkedCardIds.filter(id => id !== removedParticipant.id))
+    }
   }
 
   const handleParticipantKeyPress = (e) => {
     if (e.key === 'Enter') {
-      handleAddParticipant()
+      e.preventDefault()
+      // 자동완성 목록이 있으면 첫 번째 항목 선택
+      if (showContactSuggestions && contactSuggestions.length > 0) {
+        handleSelectContact(contactSuggestions[0])
+      } else {
+        handleAddParticipant()
+      }
     }
   }
+
+  // 참여자 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutsideParticipant = (event) => {
+      if (participantDropdownRef.current && !participantDropdownRef.current.contains(event.target)) {
+        setShowContactSuggestions(false)
+      }
+    }
+
+    if (showContactSuggestions) {
+      document.addEventListener('mousedown', handleClickOutsideParticipant)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutsideParticipant)
+    }
+  }, [showContactSuggestions])
 
   const formatDateForDisplay = (date) => {
     const year = date.getFullYear()
@@ -485,6 +590,9 @@ function CalendarPage() {
         0
       )
 
+      // participants 배열에서 이름만 추출
+      const participantNames = participants.map(p => typeof p === 'string' ? p : p.name)
+      
       const eventData = {
         title: formData.title,
         startDate: toMySQLDateTime(startDate),
@@ -493,9 +601,10 @@ function CalendarPage() {
         color: selectedCategory.color,
         description: selectedCategory.id,
         location: '',
-        participants: participants,
+        participants: participantNames,
         memo: formData.memo || '',
-        notification: formData.notification || ''
+        notification: formData.notification || '',
+        linkedCardIds: linkedCardIds.length > 0 ? linkedCardIds : null
       }
 
       // DB에 이벤트 저장
@@ -762,33 +871,60 @@ function CalendarPage() {
             </div>
 
             {/* 참여자 추가 */}
-            <div className="participant-section-wrapper">
+            <div className="participant-section-wrapper" ref={participantDropdownRef}>
               <label className="participant-label">참여자</label>
               <div className="participant-section">
                 <input
                   type="text"
                   className="participant-input"
-                  placeholder="참여자 추가"
+                  placeholder="이름으로 명함 검색 또는 직접 입력"
                   value={participantInput}
-                  onChange={(e) => setParticipantInput(e.target.value)}
+                  onChange={handleParticipantInputChange}
                   onKeyPress={handleParticipantKeyPress}
+                  onFocus={() => {
+                    if (participantInput.trim().length >= 1) {
+                      fetchContactSuggestions(participantInput)
+                    }
+                  }}
                 />
                 <button 
                   className={`participant-button ${participantInput.trim() ? 'active' : ''}`}
                   onClick={handleAddParticipant}
                   disabled={!participantInput.trim()}
+                  title="명함에 없는 참여자 직접 추가"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 </button>
               </div>
+              {/* 자동완성 드롭다운 */}
+              {showContactSuggestions && contactSuggestions.length > 0 && (
+                <div className="contact-suggestions-dropdown">
+                  {contactSuggestions.map((contact) => (
+                    <button
+                      key={contact.id}
+                      className="contact-suggestion-item"
+                      onClick={() => handleSelectContact(contact)}
+                    >
+                      <div className="contact-suggestion-name">{contact.name}</div>
+                      <div className="contact-suggestion-info">
+                        {contact.company && <span>{contact.company}</span>}
+                        {contact.position && <span> · {contact.position}</span>}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             {participants.length > 0 && (
               <div className="participants-list">
                 {participants.map((participant, index) => (
-                  <div key={index} className="participant-tag">
-                    <span>{participant}</span>
+                  <div key={index} className={`participant-tag ${participant.isFromCard ? 'from-card' : ''}`}>
+                    <span>{typeof participant === 'string' ? participant : participant.name}</span>
+                    {participant.isFromCard && (
+                      <span className="participant-card-badge" title="명함에서 추가됨">📇</span>
+                    )}
                     <button 
                       className="participant-remove"
                       onClick={() => handleRemoveParticipant(index)}
