@@ -746,7 +746,6 @@ function LandingPage() {
             {alerts.length > 0 ? (
               alerts.map((alert) => {
                 const isMeeting = alert.category === '미팅'
-                const hasParticipants = alert.event?.participants
                 return (
                   <div 
                     key={alert.id} 
@@ -761,14 +760,12 @@ function LandingPage() {
                     >
                       {alert.text}
                     </p>
-                    {hasParticipants && (
-                      <button 
-                        className="alert-button alert-button-full"
-                        onClick={() => handleShowCardInfo(alert)}
-                      >
-                        상대방 정보 보기
-                      </button>
-                    )}
+                    <button 
+                      className="alert-button"
+                      onClick={() => handleViewAlert(alert)}
+                    >
+                      일정 보기
+                    </button>
                 </div>
                 )
               })
