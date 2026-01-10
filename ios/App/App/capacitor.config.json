@@ -1,0 +1,11 @@
+{
+	"appId": "com.gpt4b.app",
+	"appName": "GPT-4B",
+	"webDir": "dist",
+	"ios": {
+		"contentInset": "always",
+		"scrollEnabled": true,
+		"allowsLinkPreview": false
+	},
+	"packageClassList": []
+}

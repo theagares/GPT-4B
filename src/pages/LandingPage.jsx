@@ -856,14 +856,25 @@ function LandingPage() {
                         </div>
                         <div className="pref-tags">
                           {(() => {
-                            try {
-                              const likes = JSON.parse(selectedCardInfo.preferenceProfile.likes)
-                              return Array.isArray(likes) ? likes.map((item, idx) => (
-                                <span key={idx} className="pref-tag pref-tag-like">{item}</span>
-                              )) : <span className="pref-tag pref-tag-like">{selectedCardInfo.preferenceProfile.likes}</span>
-                            } catch {
-                              return <span className="pref-tag pref-tag-like">{selectedCardInfo.preferenceProfile.likes}</span>
+                            const rawLikes = selectedCardInfo.preferenceProfile.likes
+                            let likes = rawLikes
+                            // 문자열이면 파싱 시도
+                            if (typeof rawLikes === 'string') {
+                              try {
+                                likes = JSON.parse(rawLikes)
+                              } catch {
+                                return <span className="pref-tag pref-tag-like">{rawLikes}</span>
+                              }
                             }
+                            // 배열이면 map
+                            if (Array.isArray(likes)) {
+                              return likes.map((item, idx) => (
+                                <span key={idx} className="pref-tag pref-tag-like">
+                                  {typeof item === 'object' && item !== null ? item.item : String(item)}
+                                </span>
+                              ))
+                            }
+                            return <span className="pref-tag pref-tag-like">{String(rawLikes)}</span>
                           })()}
                         </div>
                       </div>
@@ -878,14 +889,23 @@ function LandingPage() {
                         </div>
                         <div className="pref-tags">
                           {(() => {
-                            try {
-                              const dislikes = JSON.parse(selectedCardInfo.preferenceProfile.dislikes)
-                              return Array.isArray(dislikes) ? dislikes.map((item, idx) => (
-                                <span key={idx} className="pref-tag pref-tag-dislike">{item}</span>
-                              )) : <span className="pref-tag pref-tag-dislike">{selectedCardInfo.preferenceProfile.dislikes}</span>
-                            } catch {
-                              return <span className="pref-tag pref-tag-dislike">{selectedCardInfo.preferenceProfile.dislikes}</span>
+                            const rawDislikes = selectedCardInfo.preferenceProfile.dislikes
+                            let dislikes = rawDislikes
+                            if (typeof rawDislikes === 'string') {
+                              try {
+                                dislikes = JSON.parse(rawDislikes)
+                              } catch {
+                                return <span className="pref-tag pref-tag-dislike">{rawDislikes}</span>
+                              }
                             }
+                            if (Array.isArray(dislikes)) {
+                              return dislikes.map((item, idx) => (
+                                <span key={idx} className="pref-tag pref-tag-dislike">
+                                  {typeof item === 'object' && item !== null ? item.item : String(item)}
+                                </span>
+                              ))
+                            }
+                            return <span className="pref-tag pref-tag-dislike">{String(rawDislikes)}</span>
                           })()}
                         </div>
                       </div>
@@ -900,14 +920,23 @@ function LandingPage() {
                         </div>
                         <div className="pref-tags">
                           {(() => {
-                            try {
-                              const uncertain = JSON.parse(selectedCardInfo.preferenceProfile.uncertain)
-                              return Array.isArray(uncertain) ? uncertain.map((item, idx) => (
-                                <span key={idx} className="pref-tag pref-tag-uncertain">{item}</span>
-                              )) : <span className="pref-tag pref-tag-uncertain">{selectedCardInfo.preferenceProfile.uncertain}</span>
-                            } catch {
-                              return <span className="pref-tag pref-tag-uncertain">{selectedCardInfo.preferenceProfile.uncertain}</span>
+                            const rawUncertain = selectedCardInfo.preferenceProfile.uncertain
+                            let uncertain = rawUncertain
+                            if (typeof rawUncertain === 'string') {
+                              try {
+                                uncertain = JSON.parse(rawUncertain)
+                              } catch {
+                                return <span className="pref-tag pref-tag-uncertain">{rawUncertain}</span>
+                              }
                             }
+                            if (Array.isArray(uncertain)) {
+                              return uncertain.map((item, idx) => (
+                                <span key={idx} className="pref-tag pref-tag-uncertain">
+                                  {typeof item === 'object' && item !== null ? item.item : String(item)}
+                                </span>
+                              ))
+                            }
+                            return <span className="pref-tag pref-tag-uncertain">{String(rawUncertain)}</span>
                           })()}
                         </div>
                       </div>
