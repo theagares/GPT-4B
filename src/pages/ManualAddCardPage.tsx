@@ -1,20 +1,32 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CardForm from "../components/CardForm/CardForm";
+import MemoPromptModal from "../components/MemoPromptModal/MemoPromptModal";
 import { BusinessCard, useCardStore } from "../store/cardStore";
 import "./ManualAddCardPage.css";
 
 const ManualAddCardPage = () => {
   const navigate = useNavigate();
   const addCard = useCardStore((state) => state.addCard);
+  const [showMemoPrompt, setShowMemoPrompt] = useState(false);
+  const [savedCard, setSavedCard] = useState<BusinessCard | null>(null);
 
   const handleSubmit = async (card: BusinessCard) => {
     try {
       // 새 명함 추가 (DB에 저장)
-      const savedCard = await addCard(card);
-      navigate("/business-cards", { state: { openCardId: savedCard.id } });
+      const saved = await addCard(card);
+      setSavedCard(saved);
+      setShowMemoPrompt(true);
     } catch (error) {
       console.error('Failed to save card:', error);
       alert('명함 저장에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowMemoPrompt(false);
+    if (savedCard) {
+      navigate("/business-cards", { state: { openCardId: savedCard.id } });
     }
   };
 
@@ -45,6 +57,13 @@ const ManualAddCardPage = () => {
 
         <CardForm onSubmit={handleSubmit} hideMemo={true} />
       </div>
+      {showMemoPrompt && savedCard && (
+        <MemoPromptModal
+          cardName={savedCard.name}
+          cardId={savedCard.id}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };

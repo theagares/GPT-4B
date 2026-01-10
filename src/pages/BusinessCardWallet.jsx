@@ -888,6 +888,7 @@ function CardDetailModal({ card, onClose }) {
   const [isLoadingPreferences, setIsLoadingPreferences] = useState(false)
   const [isRebuilding, setIsRebuilding] = useState(false)
   const [expandedEvidence, setExpandedEvidence] = useState({})
+  const [activeTab, setActiveTab] = useState('info') // 'info' or 'preferences'
   const navigate = useNavigate()
   const deleteCard = useCardStore((state) => state.deleteCard)
   
@@ -1114,16 +1115,20 @@ function CardDetailModal({ card, onClose }) {
           </button>
         </div>
 
-        {/* Gift Action Buttons */}
-        <div className="modal-gift-actions">
+        {/* Action Buttons */}
+        <div className="modal-action-buttons">
           <button className="modal-gift-card-button" onClick={handleGiftHistory}>
             <div className="gift-card-content-wrapper">
               <div className="gift-card-info">
                 <div className="gift-card-label-row">
                   <svg className="gift-card-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 2L3 5V11C3 11.5523 3.44772 12 4 12H12C12.5523 12 13 11.5523 13 11V5L8 2Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M3 5L8 8L13 5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M8 2V8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <rect x="3" y="6" width="10" height="8" rx="0.5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M3 8L8 11L13 8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M8 11V14" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5.5 4.5L5.5 8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M10.5 4.5L10.5 8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5.5 4.5L8 2.5L10.5 4.5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <circle cx="8" cy="5.5" r="0.8" fill="#0a0a0a"/>
                   </svg>
                   <span className="gift-card-label">선물 이력</span>
                 </div>
@@ -1134,11 +1139,43 @@ function CardDetailModal({ card, onClose }) {
               </svg>
             </div>
           </button>
+          <button
+            type="button"
+            onClick={() => navigate(`/memo?businessCardId=${card.id}`)}
+            className="action-btn action-btn-primary modal-memo-button"
+          >
+            <svg className="memo-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 3H13C13.5523 3 14 3.44772 14 4V12C14 12.5523 13.5523 13 13 13H3C2.44772 13 2 12.5523 2 12V4C2 3.44772 2.44772 3 3 3Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M5 6H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M5 9H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            메모
+          </button>
+        </div>
+
+        {/* Tab Selection */}
+        <div className="modal-tab-container">
+          <div className="modal-tab-wrapper">
+            <button
+              type="button"
+              className={`modal-tab-button ${activeTab === 'info' ? 'active' : ''}`}
+              onClick={() => setActiveTab('info')}
+            >
+              명함 정보
+            </button>
+            <button
+              type="button"
+              className={`modal-tab-button ${activeTab === 'preferences' ? 'active' : ''}`}
+              onClick={() => setActiveTab('preferences')}
+            >
+              선호도 프로필
+            </button>
+          </div>
         </div>
 
         {/* Business Card Information Section */}
+        {activeTab === 'info' && (
         <div className="modal-info-section">
-          <h3 className="modal-info-title">명함 정보</h3>
           <div className="modal-info-card">
             {/* Phone Number */}
             <div className="modal-info-row">
@@ -1175,9 +1212,8 @@ function CardDetailModal({ card, onClose }) {
             <div className="modal-info-row">
               <span className="info-icon">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 3H13C13.5523 3 14 3.44772 14 4V12C14 12.5523 13.5523 13 13 13H3C2.44772 13 2 12.5523 2 12V4C2 3.44772 2.44772 3 3 3Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M5 6H11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M5 9H9" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="8" cy="5" r="2.5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M3 14C3 11 5 10 8 10C11 10 13 11 13 14" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </span>
               <div className="info-content">
@@ -1193,26 +1229,14 @@ function CardDetailModal({ card, onClose }) {
                 </span>
               </div>
             </div>
-            <div className="info-divider"></div>
-
-            {/* Memo Page Button */}
-            <div style={{ padding: '12px 20px' }}>
-              <button
-                type="button"
-                onClick={() => navigate(`/memo?businessCardId=${card.id}`)}
-                className="action-btn action-btn-primary"
-                style={{ width: '100%' }}
-              >
-                메모 페이지로 이동
-              </button>
-            </div>
           </div>
         </div>
+        )}
 
         {/* Preferences Section */}
+        {activeTab === 'preferences' && (
         <div className="modal-preferences-section">
           <div className="modal-preferences-header">
-            <h3 className="modal-preferences-title">선호도 프로필</h3>
             <button
               type="button"
               onClick={handleRebuildPreferences}
@@ -1231,29 +1255,39 @@ function CardDetailModal({ card, onClose }) {
               {preferences.likes && preferences.likes.length > 0 && (
                 <div className="modal-preferences-category">
                   <h4 className="modal-preferences-category-title">
-                    <span className="preference-like-icon">👍</span> 좋아함
+                    <span className="preference-like-icon">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="10" r="8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <circle cx="7" cy="8" r="1" fill="#0a0a0a"/>
+                        <circle cx="13" cy="8" r="1" fill="#0a0a0a"/>
+                        <path d="M6 13C6 13 7.5 15 10 15C12.5 15 14 13 14 13" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </span> 좋아함
                   </h4>
                   <div className="modal-preferences-chips">
                     {preferences.likes.map((item, index) => (
                       <div key={`like-${index}`} className="preference-chip preference-chip-like">
                         <span className="preference-chip-item">{item.item}</span>
                         {item.evidence && item.evidence.length > 0 && (
-                          <button
-                            type="button"
-                            className="preference-chip-evidence-toggle"
-                            onClick={() => toggleEvidence('like', index)}
-                            title="증거 보기"
-                          >
-                            ℹ️
-                          </button>
-                        )}
-                        {expandedEvidence[`like-${index}`] && item.evidence && (
-                          <div className="preference-chip-evidence">
-                            {item.evidence.map((ev, evIndex) => (
-                              <div key={evIndex} className="preference-evidence-item">
-                                "{ev}"
-                              </div>
-                            ))}
+                          <div className="preference-chip-evidence-wrapper">
+                            <button
+                              type="button"
+                              className="preference-chip-evidence-toggle"
+                              title="증거 보기"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="8" cy="8" r="6" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M8 5V6" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M8 8V11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </button>
+                            <div className="preference-chip-evidence">
+                              {item.evidence.map((ev, evIndex) => (
+                                <div key={evIndex} className="preference-evidence-item">
+                                  "{ev}"
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -1266,29 +1300,39 @@ function CardDetailModal({ card, onClose }) {
               {preferences.dislikes && preferences.dislikes.length > 0 && (
                 <div className="modal-preferences-category">
                   <h4 className="modal-preferences-category-title">
-                    <span className="preference-dislike-icon">👎</span> 싫어함
+                    <span className="preference-dislike-icon">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="10" r="8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <circle cx="7" cy="8" r="1" fill="#0a0a0a"/>
+                        <circle cx="13" cy="8" r="1" fill="#0a0a0a"/>
+                        <path d="M6 13C6 13 7.5 11 10 11C12.5 11 14 13 14 13" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </span> 싫어함
                   </h4>
                   <div className="modal-preferences-chips">
                     {preferences.dislikes.map((item, index) => (
                       <div key={`dislike-${index}`} className="preference-chip preference-chip-dislike">
                         <span className="preference-chip-item">{item.item}</span>
                         {item.evidence && item.evidence.length > 0 && (
-                          <button
-                            type="button"
-                            className="preference-chip-evidence-toggle"
-                            onClick={() => toggleEvidence('dislike', index)}
-                            title="증거 보기"
-                          >
-                            ℹ️
-                          </button>
-                        )}
-                        {expandedEvidence[`dislike-${index}`] && item.evidence && (
-                          <div className="preference-chip-evidence">
-                            {item.evidence.map((ev, evIndex) => (
-                              <div key={evIndex} className="preference-evidence-item">
-                                "{ev}"
-                              </div>
-                            ))}
+                          <div className="preference-chip-evidence-wrapper">
+                            <button
+                              type="button"
+                              className="preference-chip-evidence-toggle"
+                              title="증거 보기"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="8" cy="8" r="6" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M8 5V6" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M8 8V11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </button>
+                            <div className="preference-chip-evidence">
+                              {item.evidence.map((ev, evIndex) => (
+                                <div key={evIndex} className="preference-evidence-item">
+                                  "{ev}"
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -1301,29 +1345,37 @@ function CardDetailModal({ card, onClose }) {
               {preferences.uncertain && preferences.uncertain.length > 0 && (
                 <div className="modal-preferences-category">
                   <h4 className="modal-preferences-category-title">
-                    <span className="preference-uncertain-icon">❓</span> 불확실
+                    <span className="preference-uncertain-icon">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 3.5C7 2.5 7.5 1.5 8.5 1.5C9.5 1.5 10 2 10 3C10 4 9.5 4.5 9 5C8.5 5.5 8 6 8 7V8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <circle cx="9" cy="12" r="1" fill="#0a0a0a"/>
+                      </svg>
+                    </span> 불확실
                   </h4>
                   <div className="modal-preferences-chips">
                     {preferences.uncertain.map((item, index) => (
                       <div key={`uncertain-${index}`} className="preference-chip preference-chip-uncertain">
                         <span className="preference-chip-item">{item.item}</span>
                         {item.evidence && item.evidence.length > 0 && (
-                          <button
-                            type="button"
-                            className="preference-chip-evidence-toggle"
-                            onClick={() => toggleEvidence('uncertain', index)}
-                            title="증거 보기"
-                          >
-                            ℹ️
-                          </button>
-                        )}
-                        {expandedEvidence[`uncertain-${index}`] && item.evidence && (
-                          <div className="preference-chip-evidence">
-                            {item.evidence.map((ev, evIndex) => (
-                              <div key={evIndex} className="preference-evidence-item">
-                                "{ev}"
-                              </div>
-                            ))}
+                          <div className="preference-chip-evidence-wrapper">
+                            <button
+                              type="button"
+                              className="preference-chip-evidence-toggle"
+                              title="증거 보기"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="8" cy="8" r="6" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M8 5V6" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M8 8V11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </button>
+                            <div className="preference-chip-evidence">
+                              {item.evidence.map((ev, evIndex) => (
+                                <div key={evIndex} className="preference-evidence-item">
+                                  "{ev}"
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -1342,6 +1394,7 @@ function CardDetailModal({ card, onClose }) {
             </div>
           )}
         </div>
+        )}
       </div>
     </div>
   )

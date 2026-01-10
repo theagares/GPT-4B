@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BusinessCard, useCardStore } from "../store/cardStore";
 import CardForm from "../components/CardForm/CardForm";
+import MemoPromptModal from "../components/MemoPromptModal/MemoPromptModal";
 import "./AddInfo.css";
 
 // 명함 디자인 맵
@@ -24,17 +25,47 @@ const AddInfo = () => {
   const pendingCard = useCardStore((state) => state.pendingCard);
   
   // location.state에서 card 정보 가져오기
-  const cardFromState = (location.state as { card?: BusinessCard; fromOCR?: boolean } | undefined)?.card;
-  const fromOCR = (location.state as { fromOCR?: boolean } | undefined)?.fromOCR;
-  const draft = (location.state as { draft?: BusinessCard } | undefined)?.draft;
+  const locationState = location.state as { card?: BusinessCard; fromOCR?: boolean; draft?: BusinessCard } | null | undefined;
+  const cardFromState = locationState?.card;
+  const fromOCR = locationState?.fromOCR;
+  const draft = locationState?.draft;
 
-  // OCR에서 온 경우 pendingCard 사용, 아니면 state의 card 또는 draft 사용
-  const card = fromOCR ? pendingCard : (cardFromState || draft);
+  // card를 state로 관리하여 동적으로 업데이트
+  const [currentCard, setCurrentCard] = useState<BusinessCard | null | undefined>(() => {
+    // 초기값: state의 card 우선, 없으면 pendingCard 또는 draft
+    return cardFromState || (fromOCR ? pendingCard : draft);
+  });
   
   // draft가 있고 fromOCR가 아닌 경우 = 수정하기 버튼으로 온 경우
   const isEditMode = draft && !fromOCR;
 
+  // card 정보 업데이트
+  useEffect(() => {
+    if (cardFromState) {
+      setCurrentCard(cardFromState);
+    } else if (!fromOCR && draft) {
+      setCurrentCard(draft);
+    } else if (fromOCR && pendingCard) {
+      setCurrentCard(pendingCard);
+    } else if (!fromOCR && !draft) {
+      // OCR이 아니고 draft도 없으면 card가 없을 수 있음 (에러 페이지로)
+      setCurrentCard(null);
+    }
+  }, [cardFromState, fromOCR, pendingCard, draft]);
+
+  const card = currentCard;
   const [gender, setGender] = useState(card?.gender || '');
+  const [showMemoPrompt, setShowMemoPrompt] = useState(false);
+  const [savedCard, setSavedCard] = useState<BusinessCard | null>(null);
+
+  // gender 상태를 card가 변경될 때 업데이트
+  useEffect(() => {
+    if (card?.gender) {
+      setGender(card.gender);
+    } else {
+      setGender('');
+    }
+  }, [card?.gender]);
 
   // 명함 디자인 색상 가져오기
   const cardDesign = card?.design || 'design-1';
@@ -81,13 +112,15 @@ const AddInfo = () => {
         };
         
         await updateCard(cardWithoutMemo.id, cleanCardData);
+        setPendingCard(null);
         navigate("/business-cards", { state: { refresh: true, openCardId: cardWithoutMemo.id } });
       } else {
         // 새 명함 추가인 경우 (DB에 저장)
-        const savedCard = await addCard(cardWithoutMemo);
-        navigate("/business-cards", { state: { openCardId: savedCard.id } });
+        const saved = await addCard(cardWithoutMemo);
+        setSavedCard(saved);
+        setShowMemoPrompt(true);
+        // 모달이 닫힌 후에 pendingCard를 초기화하도록 이동
       }
-      setPendingCard(null);
     } catch (error) {
       console.error('Failed to save card:', error);
       alert('명함 저장에 실패했습니다. 다시 시도해주세요.');
@@ -110,12 +143,12 @@ const AddInfo = () => {
 
     try {
       // 명함 저장
-      if (fromOCR && pendingCard) {
+      if (fromOCR && card) {
         // OCR에서 온 경우 새 명함 추가 (DB에 저장)
-        const savedCard = await addCard(updatedCard);
-        setPendingCard(null);
-        // DB에서 반환된 실제 카드 ID 사용
-        navigate("/business-cards", { state: { openCardId: savedCard.id } });
+        const saved = await addCard(updatedCard);
+        setSavedCard(saved);
+        setShowMemoPrompt(true);
+        // 모달이 닫힌 후에 pendingCard를 초기화하도록 이동
       } else if (card.id && getCardById(card.id)) {
         // 빈 문자열을 null로 변환하는 헬퍼 함수
         const cleanField = (value: any): string | null => {
@@ -140,8 +173,9 @@ const AddInfo = () => {
         navigate("/business-cards", { state: { refreshCards: true, openCardId: card.id } });
       } else {
         // 새 명함 추가인 경우
-        await addCard(updatedCard);
-        navigate("/business-cards");
+        const saved = await addCard(updatedCard);
+        setSavedCard(saved);
+        setShowMemoPrompt(true);
       }
     } catch (error) {
       console.error('Failed to save card:', error);
@@ -180,16 +214,49 @@ const AddInfo = () => {
           </div>
           <CardForm initialValues={draft} onSubmit={handleFormSubmit} hideMemo={true} />
         </div>
+        {showMemoPrompt && savedCard && (
+          <MemoPromptModal
+            cardName={savedCard.name}
+            cardId={savedCard.id}
+            onClose={() => {
+              setShowMemoPrompt(false);
+              // 모달이 닫힐 때 pendingCard 초기화
+              setPendingCard(null);
+              navigate("/business-cards", { state: { openCardId: savedCard.id } });
+            }}
+          />
+        )}
       </div>
     );
   }
+
+  // card가 없을 때 처리
+  useEffect(() => {
+    if (!card) {
+      if (fromOCR) {
+        // OCR에서 온 경우 Confirm 페이지로 리다이렉트
+        navigate("/confirm");
+      } else if (!draft) {
+        // draft도 없으면 뒤로가기
+        navigate(-1);
+      }
+    }
+  }, [card, fromOCR, draft, navigate]);
 
   if (!card) {
     return (
       <div className="add-info-page">
         <div className="add-info-container">
-          <p>명함 정보가 없습니다.</p>
-          <button onClick={() => navigate(-1)}>뒤로가기</button>
+          <div className="add-info-loading" style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            minHeight: '100vh',
+            color: '#6b7280',
+            fontSize: '14px'
+          }}>
+            명함 정보를 불러오는 중...
+          </div>
         </div>
       </div>
     );
@@ -263,6 +330,18 @@ const AddInfo = () => {
           </button>
         </div>
       </div>
+      {showMemoPrompt && savedCard && (
+        <MemoPromptModal
+          cardName={savedCard.name}
+          cardId={savedCard.id}
+          onClose={() => {
+            setShowMemoPrompt(false);
+            // 모달이 닫힐 때 pendingCard 초기화
+            setPendingCard(null);
+            navigate("/business-cards", { state: { openCardId: savedCard.id } });
+          }}
+        />
+      )}
     </div>
   );
 };
