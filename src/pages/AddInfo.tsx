@@ -34,7 +34,6 @@ const AddInfo = () => {
   // draft가 있고 fromOCR가 아닌 경우 = 수정하기 버튼으로 온 경우
   const isEditMode = draft && !fromOCR;
 
-  const [memo, setMemo] = useState(card?.memo || '');
   const [gender, setGender] = useState(card?.gender || '');
 
   // 명함 디자인 색상 가져오기
@@ -44,16 +43,20 @@ const AddInfo = () => {
   // 수정 폼 제출 핸들러 (CardForm에서 사용)
   const handleFormSubmit = async (updatedCard: BusinessCard) => {
     try {
+      // 메모 필드 제거 (AddInfo 페이지에서는 메모를 사용하지 않음)
+      const cardWithoutMemo = { ...updatedCard };
+      delete cardWithoutMemo.memo;
+
       // draft가 pendingCard인 경우 (Confirm에서 수정하기로 온 경우)
       if (draft?.id && draft.id === pendingCard?.id) {
         // pendingCard 업데이트
-        setPendingCard(updatedCard);
+        setPendingCard(cardWithoutMemo);
         navigate("/confirm");
         return;
       }
       
       // 기존 명함 수정인 경우 (id가 있고 이미 저장된 명함인 경우)
-      if (updatedCard.id && getCardById(updatedCard.id)) {
+      if (cardWithoutMemo.id && getCardById(cardWithoutMemo.id)) {
         // 빈 문자열을 null로 변환하는 헬퍼 함수
         const cleanField = (value: any): string | null => {
           if (value === undefined || value === null) return null;
@@ -66,23 +69,22 @@ const AddInfo = () => {
         // undefined도 명시적으로 null로 변환하여 필드 삭제가 반영되도록 함
         // cleanField는 undefined나 빈 문자열을 null로 변환하므로, 항상 호출하여 null로 저장되도록 함
         const cleanCardData: any = {
-          name: updatedCard.name,
-          position: cleanField(updatedCard.position),
-          company: cleanField(updatedCard.company),
-          phone: cleanField(updatedCard.phone),
-          email: cleanField(updatedCard.email),
-          gender: cleanField(updatedCard.gender),
-          memo: cleanField(updatedCard.memo),
-          image: cleanField(updatedCard.image),
-          design: updatedCard.design || draft?.design || 'design-1',
-          isFavorite: updatedCard.isFavorite || false,
+          name: cardWithoutMemo.name,
+          position: cleanField(cardWithoutMemo.position),
+          company: cleanField(cardWithoutMemo.company),
+          phone: cleanField(cardWithoutMemo.phone),
+          email: cleanField(cardWithoutMemo.email),
+          gender: cleanField(cardWithoutMemo.gender),
+          image: cleanField(cardWithoutMemo.image),
+          design: cardWithoutMemo.design || draft?.design || 'design-1',
+          isFavorite: cardWithoutMemo.isFavorite || false,
         };
         
-        await updateCard(updatedCard.id, cleanCardData);
-        navigate("/business-cards", { state: { refresh: true, openCardId: updatedCard.id } });
+        await updateCard(cardWithoutMemo.id, cleanCardData);
+        navigate("/business-cards", { state: { refresh: true, openCardId: cardWithoutMemo.id } });
       } else {
         // 새 명함 추가인 경우 (DB에 저장)
-        const savedCard = await addCard(updatedCard);
+        const savedCard = await addCard(cardWithoutMemo);
         navigate("/business-cards", { state: { openCardId: savedCard.id } });
       }
       setPendingCard(null);
@@ -95,14 +97,15 @@ const AddInfo = () => {
   const handleComplete = async () => {
     if (!card) return;
 
-    // 메모 및 성별 업데이트 - 빈 문자열인 경우 명시적으로 처리
-    const trimmedMemo = memo.trim();
+    // 성별 업데이트 - 빈 문자열인 경우 명시적으로 처리
     const trimmedGender = gender.trim();
     
+    // 메모 필드 제거
+    const { memo, ...cardWithoutMemo } = card;
+    
     const updatedCard: BusinessCard = {
-      ...card,
+      ...cardWithoutMemo,
       gender: trimmedGender !== '' ? trimmedGender : undefined,
-      memo: trimmedMemo !== '' ? trimmedMemo : undefined,
     };
 
     try {
@@ -129,7 +132,6 @@ const AddInfo = () => {
           phone: cleanField(updatedCard.phone),
           email: cleanField(updatedCard.email),
           gender: cleanField(trimmedGender),
-          memo: cleanField(trimmedMemo),
           image: cleanField(updatedCard.image),
           design: updatedCard.design || card.design || 'design-1',
           isFavorite: updatedCard.isFavorite || false,
@@ -176,7 +178,7 @@ const AddInfo = () => {
               잘못된 정보가 있다면 올바르게 수정할 수 있어요.
             </p>
           </div>
-          <CardForm initialValues={draft} onSubmit={handleFormSubmit} />
+          <CardForm initialValues={draft} onSubmit={handleFormSubmit} hideMemo={true} />
         </div>
       </div>
     );
@@ -245,20 +247,6 @@ const AddInfo = () => {
             <option value="남성">남성</option>
             <option value="여성">여성</option>
           </select>
-        </div>
-
-        {/* Memo Section */}
-        <div className="add-info-memo-section">
-          <h2 className="add-info-memo-title">메모</h2>
-          <textarea
-            className="add-info-memo-textarea"
-            placeholder="추가로 저장하고 싶은 내용을 입력하세요"
-            value={memo}
-            onChange={(e) => setMemo(e.target.value)}
-          />
-          <p className="add-info-memo-example">
-            예: 12월이 생일이심, 영업부장님 소개로 만남
-          </p>
         </div>
 
         {/* Complete Button */}

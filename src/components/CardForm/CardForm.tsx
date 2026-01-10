@@ -40,12 +40,14 @@ type CardFormProps = {
   initialValues?: Partial<BusinessCard>;
   onSubmit: (values: BusinessCard) => void;
   isSubmitting?: boolean;
+  hideMemo?: boolean;
 };
 
 const CardForm = ({
   initialValues,
   onSubmit,
   isSubmitting = false,
+  hideMemo = false,
 }: CardFormProps) => {
   const [formValues, setFormValues] = useState<Partial<BusinessCard>>(
     initialValues ?? {},
@@ -78,17 +80,20 @@ const CardForm = ({
       phone: cleanField(formValues.phone),
       email: cleanField(formValues.email),
       gender: cleanField(formValues.gender),
-      memo: cleanField(formValues.memo),
+      memo: hideMemo ? null : cleanField(formValues.memo),
       image: cleanField(formValues.image),
       design: formValues.design || initialValues?.design || 'design-1',
       isFavorite: formValues.isFavorite || initialValues?.isFavorite || false,
     });
   };
 
+  // hideMemo가 true이면 memo 필드를 제외한 필드만 표시
+  const displayFields = hideMemo ? fields.filter((field) => field.name !== 'memo') : fields;
+
   return (
     <div className="card-form-container">
       <form className="card-form" onSubmit={handleSubmit}>
-        {fields.map((field) => (
+        {displayFields.map((field) => (
           <div key={field.name as string} className="card-form-field">
             <label className="card-form-label">
               {field.label}

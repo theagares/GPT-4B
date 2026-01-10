@@ -320,4 +320,12 @@ export const memoAPI = {
   delete: (id) => api.delete(`/memo/${id}`),
 };
 
+// Preference Profile API
+export const preferenceAPI = {
+  getPreferences: (businessCardId) => api.get(`/profile/${businessCardId}/preferences`),
+
+  rebuildPreferences: (businessCardId, limit = 50) => 
+    api.post(`/profile/${businessCardId}/preferences/rebuild`, { limit }),
+};
+
 export default api;

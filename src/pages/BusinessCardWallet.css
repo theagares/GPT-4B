@@ -1441,6 +1441,175 @@
   color: #9ca3af;
 }
 
+/* Preferences Section */
+.modal-preferences-section {
+  margin: 8px 20px 20px 20px;
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.modal-preferences-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-preferences-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.modal-rebuild-button {
+  padding: 6px 12px;
+  background-color: #584cdc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-rebuild-button:hover:not(:disabled) {
+  background-color: #4a3fc0;
+}
+
+.modal-rebuild-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modal-preferences-loading,
+.modal-preferences-empty {
+  text-align: center;
+  padding: 32px;
+  color: #6b7280;
+  font-size: 14px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.modal-preferences-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-preferences-category {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-preferences-category-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preference-like-icon,
+.preference-dislike-icon,
+.preference-uncertain-icon {
+  font-size: 16px;
+}
+
+.modal-preferences-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preference-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  position: relative;
+  cursor: default;
+}
+
+.preference-chip-like {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+}
+
+.preference-chip-dislike {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.preference-chip-uncertain {
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+}
+
+.preference-chip-item {
+  flex: 1;
+}
+
+.preference-chip-evidence-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.preference-chip-evidence-toggle:hover {
+  opacity: 1;
+}
+
+.preference-chip-evidence {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  padding: 8px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.preference-evidence-item {
+  font-size: 12px;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  padding: 4px 0;
+  line-height: 1.4;
+}
+
+.preference-evidence-item:not(:last-child) {
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
 /* Edit Button - Bottom right of card */
 .modal-edit-button {
   position: absolute;

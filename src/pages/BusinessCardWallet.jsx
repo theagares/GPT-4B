@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
-import { giftAPI, userAPI } from '../utils/api'
+import { giftAPI, userAPI, preferenceAPI } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
 import './BusinessCardWallet.css'
 
@@ -884,6 +884,10 @@ function BusinessCardWallet() {
 function CardDetailModal({ card, onClose }) {
   const [giftHistoryCount, setGiftHistoryCount] = useState(0)
   const [isLoadingGifts, setIsLoadingGifts] = useState(false)
+  const [preferences, setPreferences] = useState({ likes: [], dislikes: [], uncertain: [] })
+  const [isLoadingPreferences, setIsLoadingPreferences] = useState(false)
+  const [isRebuilding, setIsRebuilding] = useState(false)
+  const [expandedEvidence, setExpandedEvidence] = useState({})
   const navigate = useNavigate()
   const deleteCard = useCardStore((state) => state.deleteCard)
   
@@ -936,7 +940,68 @@ function CardDetailModal({ card, onClose }) {
     }
     
     loadGiftHistoryCount()
+    loadPreferences()
   }, [card])
+
+  // Load preferences
+  const loadPreferences = async () => {
+    if (!card || !isAuthenticated()) {
+      setPreferences({ likes: [], dislikes: [], uncertain: [] })
+      return
+    }
+
+    setIsLoadingPreferences(true)
+    try {
+      const cardId = typeof card.id === 'string' ? parseInt(card.id, 10) : card.id
+      if (isNaN(cardId)) {
+        setPreferences({ likes: [], dislikes: [], uncertain: [] })
+        return
+      }
+
+      const response = await preferenceAPI.getPreferences(cardId)
+      if (response.data && response.data.success) {
+        setPreferences(response.data.data || { likes: [], dislikes: [], uncertain: [] })
+      }
+    } catch (error) {
+      console.error('Failed to load preferences:', error)
+      setPreferences({ likes: [], dislikes: [], uncertain: [] })
+    } finally {
+      setIsLoadingPreferences(false)
+    }
+  }
+
+  // Rebuild preferences
+  const handleRebuildPreferences = async () => {
+    if (!card || !isAuthenticated() || isRebuilding) return
+
+    setIsRebuilding(true)
+    try {
+      const cardId = typeof card.id === 'string' ? parseInt(card.id, 10) : card.id
+      if (isNaN(cardId)) {
+        alert('Invalid card ID')
+        return
+      }
+
+      const response = await preferenceAPI.rebuildPreferences(cardId, 50)
+      if (response.data && response.data.success) {
+        setPreferences(response.data.data || { likes: [], dislikes: [], uncertain: [] })
+      }
+    } catch (error) {
+      console.error('Failed to rebuild preferences:', error)
+      alert('프로필 갱신에 실패했습니다: ' + (error.response?.data?.message || error.message))
+    } finally {
+      setIsRebuilding(false)
+    }
+  }
+
+  // Toggle evidence expansion
+  const toggleEvidence = (category, index) => {
+    const key = `${category}-${index}`
+    setExpandedEvidence(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }))
+  }
 
   const handleCustomize = () => {
     navigate('/customize', { state: { card } })
@@ -1142,6 +1207,140 @@ function CardDetailModal({ card, onClose }) {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Preferences Section */}
+        <div className="modal-preferences-section">
+          <div className="modal-preferences-header">
+            <h3 className="modal-preferences-title">선호도 프로필</h3>
+            <button
+              type="button"
+              onClick={handleRebuildPreferences}
+              disabled={isRebuilding}
+              className="modal-rebuild-button"
+            >
+              {isRebuilding ? '갱신 중...' : '프로필 갱신'}
+            </button>
+          </div>
+
+          {isLoadingPreferences ? (
+            <div className="modal-preferences-loading">선호도를 불러오는 중...</div>
+          ) : (
+            <div className="modal-preferences-content">
+              {/* Likes */}
+              {preferences.likes && preferences.likes.length > 0 && (
+                <div className="modal-preferences-category">
+                  <h4 className="modal-preferences-category-title">
+                    <span className="preference-like-icon">👍</span> 좋아함
+                  </h4>
+                  <div className="modal-preferences-chips">
+                    {preferences.likes.map((item, index) => (
+                      <div key={`like-${index}`} className="preference-chip preference-chip-like">
+                        <span className="preference-chip-item">{item.item}</span>
+                        {item.evidence && item.evidence.length > 0 && (
+                          <button
+                            type="button"
+                            className="preference-chip-evidence-toggle"
+                            onClick={() => toggleEvidence('like', index)}
+                            title="증거 보기"
+                          >
+                            ℹ️
+                          </button>
+                        )}
+                        {expandedEvidence[`like-${index}`] && item.evidence && (
+                          <div className="preference-chip-evidence">
+                            {item.evidence.map((ev, evIndex) => (
+                              <div key={evIndex} className="preference-evidence-item">
+                                "{ev}"
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Dislikes */}
+              {preferences.dislikes && preferences.dislikes.length > 0 && (
+                <div className="modal-preferences-category">
+                  <h4 className="modal-preferences-category-title">
+                    <span className="preference-dislike-icon">👎</span> 싫어함
+                  </h4>
+                  <div className="modal-preferences-chips">
+                    {preferences.dislikes.map((item, index) => (
+                      <div key={`dislike-${index}`} className="preference-chip preference-chip-dislike">
+                        <span className="preference-chip-item">{item.item}</span>
+                        {item.evidence && item.evidence.length > 0 && (
+                          <button
+                            type="button"
+                            className="preference-chip-evidence-toggle"
+                            onClick={() => toggleEvidence('dislike', index)}
+                            title="증거 보기"
+                          >
+                            ℹ️
+                          </button>
+                        )}
+                        {expandedEvidence[`dislike-${index}`] && item.evidence && (
+                          <div className="preference-chip-evidence">
+                            {item.evidence.map((ev, evIndex) => (
+                              <div key={evIndex} className="preference-evidence-item">
+                                "{ev}"
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Uncertain */}
+              {preferences.uncertain && preferences.uncertain.length > 0 && (
+                <div className="modal-preferences-category">
+                  <h4 className="modal-preferences-category-title">
+                    <span className="preference-uncertain-icon">❓</span> 불확실
+                  </h4>
+                  <div className="modal-preferences-chips">
+                    {preferences.uncertain.map((item, index) => (
+                      <div key={`uncertain-${index}`} className="preference-chip preference-chip-uncertain">
+                        <span className="preference-chip-item">{item.item}</span>
+                        {item.evidence && item.evidence.length > 0 && (
+                          <button
+                            type="button"
+                            className="preference-chip-evidence-toggle"
+                            onClick={() => toggleEvidence('uncertain', index)}
+                            title="증거 보기"
+                          >
+                            ℹ️
+                          </button>
+                        )}
+                        {expandedEvidence[`uncertain-${index}`] && item.evidence && (
+                          <div className="preference-chip-evidence">
+                            {item.evidence.map((ev, evIndex) => (
+                              <div key={evIndex} className="preference-evidence-item">
+                                "{ev}"
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {(!preferences.likes || preferences.likes.length === 0) &&
+               (!preferences.dislikes || preferences.dislikes.length === 0) &&
+               (!preferences.uncertain || preferences.uncertain.length === 0) && (
+                <div className="modal-preferences-empty">
+                  선호도 정보가 없습니다. 메모를 작성한 후 "프로필 갱신" 버튼을 눌러주세요.
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

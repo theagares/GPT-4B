@@ -43,7 +43,7 @@ const ManualAddCardPage = () => {
           </p>
         </div>
 
-        <CardForm onSubmit={handleSubmit} />
+        <CardForm onSubmit={handleSubmit} hideMemo={true} />
       </div>
     </div>
   );
