@@ -36,6 +36,7 @@ import CardCustomize from './pages/CardCustomize'
 import UpgradePage from './pages/UpgradePage'
 import EditMyInfoPage from './pages/EditMyInfoPage'
 import NotFoundPage from './pages/NotFoundPage'
+import MemoPage from './pages/MemoPage'
 import './App.css'
 
 function App() {
@@ -71,6 +72,7 @@ function App() {
         <Route path="/my/detail" element={<MyDetailPage />} />
         <Route path="/my/edit" element={<EditMyInfoPage />} />
         <Route path="/my/gift-history" element={<PersonalGiftHistoryPage />} />
+        <Route path="/memo" element={<MemoPage />} />
         <Route path="/card/gift-history" element={<CardGiftHistoryPage />} />
         <Route path="/business-card/gift-history" element={<BusinessCardGiftHistoryPage />} />
         <Route path="/gift-recommend" element={<GiftRecommendPage />} />

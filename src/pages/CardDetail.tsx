@@ -39,7 +39,13 @@ const CardDetail = () => {
         <InfoRow label="직함" value={card.position} />
         <InfoRow label="전화" value={card.phone} />
         <InfoRow label="이메일" value={card.email} />
-        <InfoRow label="메모" value={card.memo} />
+        <button
+          type="button"
+          onClick={() => navigate(`/memo?businessCardId=${card.id}`)}
+          className="mt-3 w-full rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+        >
+          메모 페이지로 이동
+        </button>
       </section>
       <div className="grid grid-cols-2 gap-3">
         <button

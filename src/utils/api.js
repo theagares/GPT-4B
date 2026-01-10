@@ -309,4 +309,15 @@ export const userAPI = {
   updateProfile: (profileData) => api.put("/users/profile", profileData),
 };
 
+// Memo API
+export const memoAPI = {
+  getByBusinessCardId: (businessCardId) => api.get(`/memo/business-card/${businessCardId}`),
+
+  create: (memoData) => api.post("/memo", memoData),
+
+  update: (id, content) => api.put(`/memo/${id}`, { content }),
+
+  delete: (id) => api.delete(`/memo/${id}`),
+};
+
 export default api;
