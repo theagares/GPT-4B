@@ -723,8 +723,13 @@ function LandingPage() {
                   </p>
                   {alert.participants && (
                     <button 
+                      type="button"
                       className="alert-button alert-button-full"
-                      onClick={() => handleShowCardInfo(alert)}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleShowCardInfo(alert)
+                      }}
                     >
                       상대방 정보 보기
                     </button>
