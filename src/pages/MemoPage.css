@@ -1,53 +1,115 @@
 .memo-page {
-  min-height: 100vh;
-  background-color: #f5f5f5;
-  padding-bottom: 80px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  overflow: hidden;
+  position: relative;
 }
 
-.logo-header {
+/* 헤더 영역 */
+.memo-header {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 100;
   background-color: #fff;
   padding: 16px;
+  padding-top: 48px;
+  padding-bottom: 12px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.memo-logo {
-  height: 32px;
+.memo-back-button {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #fff;
+  transition: background-color 0.2s;
+  z-index: 101;
 }
 
-.memo-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 16px;
+.memo-back-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-.memo-card-info {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.memo-back-button:active {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
-.memo-card-title {
-  font-size: 12px;
-  font-weight: 500;
-  color: #999;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.memo-header-info {
+  text-align: center;
+  margin-top: -8px;
 }
 
 .memo-card-name {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 4px;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.memo-card-position {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
 }
 
 .memo-card-company {
   font-size: 14px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+}
+
+.memo-header-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  flex-wrap: wrap;
+}
+
+.memo-header-details p {
+  margin: 0;
+  display: inline;
+}
+
+.memo-header-separator {
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 4px;
+}
+
+.memo-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px;
+  padding-top: 24px;
+  padding-bottom: 80px; /* BottomNavigation 공간 확보 */
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+}
+
+.memo-input-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: #333;
+  text-align: center;
+  padding: 0;
 }
 
 .memo-input-section {
@@ -55,19 +117,40 @@
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 }
 
 .memo-input {
   width: 100%;
   border: 1px solid #e0e0e0;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 12px;
   font-size: 16px;
   font-family: inherit;
   resize: vertical;
   margin-bottom: 12px;
   box-sizing: border-box;
+}
+
+.memo-input::placeholder {
+  color: #999;
+  font-size: 14px;
+}
+
+.memo-input::-webkit-input-placeholder {
+  color: #999;
+  font-size: 14px;
+}
+
+.memo-input::-moz-placeholder {
+  color: #999;
+  opacity: 1;
+  font-size: 14px;
+}
+
+.memo-input:-ms-input-placeholder {
+  color: #999;
+  font-size: 14px;
 }
 
 .memo-input:focus {
@@ -78,10 +161,10 @@
 .memo-create-btn {
   width: 100%;
   padding: 12px;
-  background-color: #e0e0e0;
-  color: #666;
+  background-color: #e8e6f5;
+  color: #999;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 16px;
   font-weight: 500;
   cursor: not-allowed;
@@ -101,15 +184,96 @@
 .memo-list-section {
   background-color: #fff;
   border-radius: 8px;
+  padding: 0;
+  box-shadow: none;
+}
+
+.memo-list-header {
+  position: sticky;
+  top: -25px;
+  z-index: 10;
+  background-color: #fff;
   padding: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding-top: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #fff;
+  margin-left: -16px;
+  margin-right: -16px;
+  margin-top: -24px;
 }
 
 .memo-list-title {
   font-size: 20px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin: 0 0 16px 0;
   color: #333;
+  text-align: center;
+}
+
+.memo-list-content {
+  padding: 16px;
+  padding-top: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.memo-search-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.memo-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.memo-search-input {
+  width: 100%;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 16px 10px 40px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  color: #333;
+  transition: all 0.2s;
+}
+
+.memo-search-input:focus {
+  outline: none;
+  border: none;
+  background-color: #e5e5e5;
+}
+
+.memo-search-input::placeholder {
+  color: #ccc;
+  font-size: 14px;
+}
+
+.memo-search-input::-webkit-input-placeholder {
+  color: #ccc;
+  font-size: 14px;
+}
+
+.memo-search-input::-moz-placeholder {
+  color: #ccc;
+  opacity: 1;
+  font-size: 14px;
+}
+
+.memo-search-input:-ms-input-placeholder {
+  color: #ccc;
+  font-size: 14px;
 }
 
 .memo-loading,
@@ -132,17 +296,27 @@
 }
 
 .memo-item {
-  border: 1px solid #e0e0e0;
+  position: relative;
+  border: none;
   border-radius: 8px;
   padding: 16px;
-  background-color: #fafafa;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
 }
 
 .memo-content {
   font-size: 15px;
   line-height: 1.6;
   color: #333;
-  margin-bottom: 12px;
+  margin-top: 0;
+  padding: 12px;
+  border: 1px solid #584cdc;
+  border-radius: 8px;
+  background-color: #fff;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -151,8 +325,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 12px;
-  border-top: 1px solid #e0e0e0;
+  padding-bottom: 0;
+  border-bottom: none;
+  margin-bottom: 0;
+  width: 100%;
 }
 
 .memo-date {
@@ -162,7 +338,7 @@
 
 .memo-actions {
   display: flex;
-  gap: 8px;
+  gap: 16px;
 }
 
 .memo-edit-btn,
@@ -188,29 +364,33 @@
 }
 
 .memo-delete-btn {
-  background-color: #e53935;
+  background-color: rgba(229, 57, 53, 0.7);
   color: #fff;
 }
 
 .memo-delete-btn:hover {
-  background-color: #c62828;
+  background-color: rgba(229, 57, 53, 0.85);
 }
 
 .memo-edit-mode {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
 }
 
 .memo-edit-input {
   width: 100%;
   border: 1px solid #584cdc;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 12px;
   font-size: 15px;
+  line-height: 1.6;
   font-family: inherit;
   resize: vertical;
   box-sizing: border-box;
+  min-height: 80px;
+  background-color: #fff;
 }
 
 .memo-edit-input:focus {
@@ -220,7 +400,7 @@
 
 .memo-edit-actions {
   display: flex;
-  gap: 8px;
+  gap: 16px;
   justify-content: flex-end;
 }
 
@@ -240,4 +420,92 @@
 
 .memo-cancel-btn:hover {
   background-color: #d0d0d0;
+}
+
+/* 삭제 확인 모달 오버레이 */
+.memo-delete-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  border-radius: 8px;
+  animation: fadeIn 0.2s ease-in-out;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.memo-delete-modal {
+  background: none;
+  border: none;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.memo-delete-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.memo-delete-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+  max-width: 280px;
+}
+
+.memo-delete-no-btn,
+.memo-delete-yes-btn {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.memo-delete-no-btn {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.memo-delete-no-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.memo-delete-yes-btn {
+  background-color: #584cdc;
+  color: #fff;
+}
+
+.memo-delete-yes-btn:hover {
+  background-color: #4a3fc0;
 }

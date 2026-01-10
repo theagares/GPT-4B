@@ -6,6 +6,35 @@ import { isAuthenticated, getUser } from '../utils/auth'
 import { useCardStore } from '../store/cardStore'
 import './MemoPage.css'
 
+// 명함 디자인별 배경색 맵 (CardCustomize.tsx와 동일한 그라데이션 사용)
+const cardDesigns = {
+  'design-1': 'linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%)',
+  'design-2': 'linear-gradient(147.99deg, rgba(59, 130, 246, 1) 0%, rgba(37, 99, 235, 1) 100%)',
+  'design-3': 'linear-gradient(147.99deg, rgba(16, 185, 129, 1) 0%, rgba(5, 150, 105, 1) 100%)',
+  'design-4': 'linear-gradient(147.99deg, rgba(244, 90, 170, 1) 0%, rgba(230, 55, 135, 1) 100%)',
+  'design-5': 'linear-gradient(147.99deg, rgba(249, 115, 22, 1) 0%, rgba(234, 88, 12, 1) 100%)',
+  'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
+}
+
+// 뒤로가기 아이콘 SVG 컴포넌트
+function BackIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+// 돋보기 아이콘 SVG 컴포넌트
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="#999" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M19 19L14.65 14.65" stroke="#999" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 function MemoPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -17,7 +46,10 @@ function MemoPage() {
   const [isCreating, setIsCreating] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [editContent, setEditContent] = useState('')
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
   const user = getUser()
+  const fetchCards = useCardStore((state) => state.fetchCards)
   const card = businessCardId ? useCardStore((state) => state.getCardById(businessCardId)) : null
 
   // Memo 목록 가져오기
@@ -58,8 +90,13 @@ function MemoPage() {
       return
     }
 
-    fetchMemos()
-  }, [businessCardId, user?.id])
+    // 카드 목록을 먼저 가져와서 명함 정보를 표시할 수 있도록 함
+    const loadData = async () => {
+      await fetchCards()
+      await fetchMemos()
+    }
+    loadData()
+  }, [businessCardId, user?.id, fetchCards])
 
   // 메모 생성
   const handleCreate = async () => {
@@ -137,40 +174,88 @@ function MemoPage() {
     }
   }
 
-  // 메모 삭제
-  const handleDelete = async (id) => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) {
-      return
-    }
+  // 메모 삭제 확인 모달 열기
+  const handleDelete = (id) => {
+    setDeleteConfirmId(id)
+  }
+
+  // 삭제 확인 모달 닫기
+  const handleDeleteCancel = () => {
+    setDeleteConfirmId(null)
+  }
+
+  // 메모 삭제 실행
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirmId) return
 
     try {
-      const response = await memoAPI.delete(id)
+      const response = await memoAPI.delete(deleteConfirmId)
 
       if (response.data.success) {
+        setDeleteConfirmId(null)
         await fetchMemos()
       }
     } catch (err) {
       console.error('Failed to delete memo:', err)
       // eslint-disable-next-line no-alert
       alert('메모 삭제에 실패했습니다: ' + (err.response?.data?.message || err.message))
+      setDeleteConfirmId(null)
     }
   }
 
-  // 날짜 포맷팅
+  // 날짜 포맷팅 (UTC+9, 9시간 추가)
   const formatDate = (dateString) => {
     const date = new Date(dateString)
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const hours = String(date.getHours()).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
+    // 9시간(9 * 60 * 60 * 1000 밀리초) 추가
+    const adjustedDate = new Date(date.getTime() + 9 * 60 * 60 * 1000)
+    const year = adjustedDate.getFullYear()
+    const month = String(adjustedDate.getMonth() + 1).padStart(2, '0')
+    const day = String(adjustedDate.getDate()).padStart(2, '0')
+    const hours = String(adjustedDate.getHours()).padStart(2, '0')
+    const minutes = String(adjustedDate.getMinutes()).padStart(2, '0')
     return `${year}-${month}-${day} ${hours}:${minutes}`
   }
 
+  // 뒤로 가기 핸들러
+  const handleBack = () => {
+    navigate(-1)
+  }
+
+  // 명함 디자인에 따른 헤더 배경색 가져오기
+  const getHeaderBackground = () => {
+    if (!card || !card.design) return 'linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%)'
+    return cardDesigns[card.design] || cardDesigns['design-1']
+  }
+
+  // 검색어로 메모 필터링
+  const filteredMemos = searchQuery.trim()
+    ? memos.filter((memo) =>
+        memo.content.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : memos
+
   return (
     <div className="memo-page">
-      <div className="logo-header">
-        <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="memo-logo" />
+      {/* 헤더 영역 */}
+      <div 
+        className="memo-header" 
+        style={{ background: getHeaderBackground() }}
+      >
+        <button className="memo-back-button" onClick={handleBack}>
+          <BackIcon />
+        </button>
+        {businessCardId && card && (
+          <div className="memo-header-info">
+            <p className="memo-card-name">{card.name || '이름 없음'}</p>
+            {(card.position || card.company) && (
+              <div className="memo-header-details">
+                {card.company && <p className="memo-card-company">{card.company}</p>}
+                {card.company && card.position && <span className="memo-header-separator">·</span>}
+                {card.position && <p className="memo-card-position">{card.position}</p>}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="memo-container">
@@ -179,17 +264,10 @@ function MemoPage() {
             명함 ID가 필요합니다. 명함 상세 페이지에서 접근해주세요.
           </div>
         )}
-        {businessCardId && card && (
-          <div className="memo-card-info">
-            <h3 className="memo-card-title">현재 명함</h3>
-            <p className="memo-card-name">{card.name || '이름 없음'}</p>
-            {card.company && <p className="memo-card-company">{card.company}</p>}
-          </div>
-        )}
         <div className="memo-input-section">
           <textarea
             className="memo-input"
-            placeholder="메모를 입력하세요..."
+            placeholder={card && card.name ? `${card.name}님에 대한 메모를 입력하세요` : '메모를 입력하세요...'}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={4}
@@ -204,14 +282,29 @@ function MemoPage() {
         </div>
 
         <div className="memo-list-section">
-          <h2 className="memo-list-title">메모 목록</h2>
-          {loading ? (
-            <div className="memo-loading">메모를 불러오는 중...</div>
-          ) : error ? (
-            <div className="memo-error">{error}</div>
-          ) : memos.length > 0 ? (
-            <div className="memo-list">
-              {memos.map((memo) => (
+          <div className="memo-list-header">
+            <h2 className="memo-list-title">메모 목록</h2>
+            <div className="memo-search-wrapper">
+              <div className="memo-search-icon">
+                <SearchIcon />
+              </div>
+              <input
+                type="text"
+                className="memo-search-input"
+                placeholder="메모 검색"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="memo-list-content">
+            {loading ? (
+              <div className="memo-loading">메모를 불러오는 중...</div>
+            ) : error ? (
+              <div className="memo-error">{error}</div>
+            ) : filteredMemos.length > 0 ? (
+              <div className="memo-list">
+                {filteredMemos.map((memo) => (
                 <div key={memo.id} className="memo-item">
                   {editingId === memo.id ? (
                     <div className="memo-edit-mode">
@@ -238,7 +331,6 @@ function MemoPage() {
                     </div>
                   ) : (
                     <>
-                      <div className="memo-content">{memo.content}</div>
                       <div className="memo-footer">
                         <div className="memo-date">{formatDate(memo.updated_at)}</div>
                         <div className="memo-actions">
@@ -256,14 +348,35 @@ function MemoPage() {
                           </button>
                         </div>
                       </div>
+                      <div className="memo-content">{memo.content}</div>
+                      {deleteConfirmId === memo.id && (
+                        <div className="memo-delete-overlay" onClick={handleDeleteCancel}>
+                          <div className="memo-delete-modal" onClick={(e) => e.stopPropagation()}>
+                            <p className="memo-delete-text">
+                              이 메모를 삭제하시겠습니까?
+                            </p>
+                            <div className="memo-delete-buttons">
+                              <button className="memo-delete-yes-btn" onClick={handleDeleteConfirm}>
+                                예
+                              </button>
+                              <button className="memo-delete-no-btn" onClick={handleDeleteCancel}>
+                                아니오
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
               ))}
-            </div>
-          ) : (
-            <div className="memo-empty">등록된 메모가 없습니다.</div>
-          )}
+              </div>
+            ) : searchQuery.trim() ? (
+              <div className="memo-empty">검색 결과가 없습니다.</div>
+            ) : (
+              <div className="memo-empty">등록된 메모가 없습니다.</div>
+            )}
+          </div>
         </div>
       </div>
 
