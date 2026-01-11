@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
@@ -1053,6 +1053,51 @@ function CardDetailModal({ card, onClose }) {
     })
   }
 
+  // 툴팁 위치 조정 함수
+  const adjustTooltipPosition = (event) => {
+    const wrapper = event.currentTarget
+    const tooltip = wrapper.querySelector('.preference-chip-evidence')
+    if (!tooltip) return
+
+    // CSS :hover가 적용된 후 위치 계산
+    requestAnimationFrame(() => {
+      const wrapperRect = wrapper.getBoundingClientRect()
+      const tooltipRect = tooltip.getBoundingClientRect()
+      const modal = wrapper.closest('.card-detail-modal')
+      
+      if (!modal) return
+      
+      const modalRect = modal.getBoundingClientRect()
+      const padding = 16 // 모달 끝에서 여백
+      
+      // 툴팁이 중앙 정렬되었을 때의 위치
+      const tooltipCenterX = wrapperRect.left + wrapperRect.width / 2
+      const tooltipLeft = tooltipCenterX - tooltipRect.width / 2
+      const tooltipRight = tooltipCenterX + tooltipRect.width / 2
+      
+      let transformX = 0
+      
+      // 오른쪽 끝을 넘어가면 왼쪽으로 이동
+      if (tooltipRight > modalRect.right - padding) {
+        const overflow = tooltipRight - (modalRect.right - padding)
+        transformX = -overflow
+      }
+      
+      // 왼쪽 끝을 넘어가면 오른쪽으로 이동
+      if (tooltipLeft < modalRect.left + padding) {
+        const overflow = (modalRect.left + padding) - tooltipLeft
+        transformX = overflow
+      }
+      
+      // 위치 적용
+      if (transformX !== 0) {
+        tooltip.style.transform = `translate(calc(-50% + ${transformX}px), 0)`
+      } else {
+        tooltip.style.transform = 'translate(-50%, 0)'
+      }
+    })
+  }
+
   const handleDelete = () => {
     if (window.confirm(`${card.name}님의 명함을 삭제하시겠습니까?`)) {
       deleteCard(card.id)
@@ -1319,7 +1364,10 @@ function CardDetailModal({ card, onClose }) {
                       <div key={`like-${index}`} className="preference-chip preference-chip-like">
                         <span className="preference-chip-item">{item.item}</span>
                         {item.evidence && item.evidence.length > 0 && (
-                          <div className="preference-chip-evidence-wrapper">
+                          <div 
+                            className="preference-chip-evidence-wrapper"
+                            onMouseEnter={adjustTooltipPosition}
+                          >
                             <button
                               type="button"
                               className="preference-chip-evidence-toggle"
@@ -1373,7 +1421,10 @@ function CardDetailModal({ card, onClose }) {
                       <div key={`dislike-${index}`} className="preference-chip preference-chip-dislike">
                         <span className="preference-chip-item">{item.item}</span>
                         {item.evidence && item.evidence.length > 0 && (
-                          <div className="preference-chip-evidence-wrapper">
+                          <div 
+                            className="preference-chip-evidence-wrapper"
+                            onMouseEnter={adjustTooltipPosition}
+                          >
                             <button
                               type="button"
                               className="preference-chip-evidence-toggle"
@@ -1425,7 +1476,10 @@ function CardDetailModal({ card, onClose }) {
                       <div key={`uncertain-${index}`} className="preference-chip preference-chip-uncertain">
                         <span className="preference-chip-item">{item.item}</span>
                         {item.evidence && item.evidence.length > 0 && (
-                          <div className="preference-chip-evidence-wrapper">
+                          <div 
+                            className="preference-chip-evidence-wrapper"
+                            onMouseEnter={adjustTooltipPosition}
+                          >
                             <button
                               type="button"
                               className="preference-chip-evidence-toggle"
