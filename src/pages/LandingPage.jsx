@@ -100,6 +100,32 @@ function FrownIcon() {
   )
 }
 
+// 명함 아이콘 SVG 컴포넌트
+function BusinessCardIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="4" width="24" height="16" rx="2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      {/* 왼쪽: 사람 아이콘 */}
+      <circle cx="8" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+      <path d="M5 17C5 15.5 6.5 14 8 14C9.5 14 11 15.5 11 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* 오른쪽: 가로줄 두 줄 */}
+      <path d="M16 12.5H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M16 15.5H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+// 펜과 종이 아이콘 SVG 컴포넌트
+function PenPaperIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 2H6C5.44772 2 5 2.44772 5 3V21C5 21.5523 5.44772 22 6 22H18C18.5523 22 19 21.5523 19 21V8L14 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M14 2V8H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9 15L11 17L15 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 // 물음표 아이콘 SVG 컴포넌트
 function QuestionIcon() {
   return (
@@ -1463,11 +1489,13 @@ function LandingPage() {
               {/* 명함 등록하기 섹션 */}
               <div className="ended-event-section">
                 <div className="ended-event-section-header">
-                  <span className="ended-event-section-icon">📇</span>
+                  <div className="ended-event-section-icon">
+                    <BusinessCardIcon />
+                  </div>
                   <h4 className="ended-event-section-title">명함 등록하기</h4>
                 </div>
                 <p className="ended-event-section-description">
-                  오늘 만난 상대방의 정보를<br />명함으로 등록해봐요
+                  오늘 만난 분의 정보를<br />명함으로 등록해보세요
                 </p>
                 <div className="ended-event-participants-list">
                   {endedEventInfo.participantsList && endedEventInfo.participantsList
@@ -1497,11 +1525,13 @@ function LandingPage() {
               {/* 메모 작성하기 섹션 */}
               <div className="ended-event-section">
                 <div className="ended-event-section-header">
-                  <span className="ended-event-section-icon">📝</span>
+                  <div className="ended-event-section-icon">
+                    <PenPaperIcon />
+                  </div>
                   <h4 className="ended-event-section-title">메모 작성하기</h4>
                 </div>
                 <p className="ended-event-section-description">
-                  상대방에 대한 사소한 정보라도<br />메모로 남겨봐요
+                  상대방의 사소한 정보라도<br />메모로 남겨보세요
                 </p>
                 <div className="ended-event-participants-list">
                   {endedEventInfo.participantsList && endedEventInfo.participantsList
