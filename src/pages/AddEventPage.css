@@ -229,7 +229,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 15px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -240,8 +240,8 @@
   background: var(--input-bg-color);
   border: none;
   border-bottom: 0.667px solid rgba(0, 0, 0, 0);
-  border-radius: 0;
-  padding: 4px 0;
+  border-radius: 10px;
+  padding: 4px 12px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 15px;
   font-weight: 400;
@@ -252,7 +252,7 @@
 
 .event-title-input::placeholder {
   color: #717182;
-  opacity: 0.19;
+  opacity: 1;
 }
 
 .category-dropdown-wrapper {
@@ -331,7 +331,7 @@
   gap: 12px;
   background: var(--input-bg-color);
   border-radius: 10px;
-  padding: 10px 16px;
+  padding: 6px 16px;
   margin-bottom: 12px;
   width: 100%;
   box-sizing: border-box;
@@ -339,13 +339,13 @@
 
 .participant-input {
   flex: 1;
-  height: 36px;
+  height: 28px;
   background: transparent;
   border: none;
   border-radius: 8px;
-  padding: 4px 0;
+  padding: 2px 0;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: #717182;
   letter-spacing: -0.3125px;
@@ -357,8 +357,8 @@
 }
 
 .participant-button {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -552,6 +552,14 @@
   box-sizing: border-box;
 }
 
+.memo-label {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0a0a0a;
+  margin-bottom: 8px;
+}
+
 .memo-input {
   width: 100%;
   min-height: 80px;
@@ -629,19 +637,30 @@
   position: relative;
 }
 
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-direction: row;
+}
+
 .notification-label {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: #0a0a0a;
-  margin-bottom: 8px;
-  display: block;
+  display: inline-block;
   text-align: left;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.notification-dropdown-wrapper {
+.notification-edit-wrapper-inline {
   position: relative;
-  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }
 
 .notification-button {
@@ -649,19 +668,29 @@
   background: var(--input-bg-color);
   border: none;
   border-radius: 10px;
-  height: 45px;
+  height: auto;
+  min-height: 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 6px 16px;
   cursor: pointer;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: #717182;
   line-height: 20px;
   letter-spacing: -0.3125px;
   box-sizing: border-box;
+}
+
+.notification-edit-wrapper-inline .notification-button {
+  width: auto;
+  min-width: 100px;
+  height: auto;
+  padding: 6px 12px;
+  font-size: 12.161px;
+  line-height: 16px;
 }
 
 .notification-button:hover {

@@ -23,6 +23,34 @@ function PersonIcon() {
   )
 }
 
+// 참석자 배지용 선형 사람 아이콘 SVG 컴포넌트
+function PersonBadgeIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+// 취소 아이콘 SVG 컴포넌트
+function CancelIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+// 저장(체크) 아이콘 SVG 컴포넌트
+function SaveIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 // 날짜 포맷팅 함수
 
 const formatDateForDisplay = (date) => {
@@ -248,7 +276,7 @@ function EventDetailPage() {
                 startDate: eventData.startDate,
                 endDate: eventData.endDate,
                 memo: eventData.memo || '',
-                notification: eventData.notification || ''
+                notification: eventData.notification || '1일 전'
               })
               if (showLoading) setLoading(false)
               return
@@ -718,7 +746,7 @@ function EventDetailPage() {
 
         memo: event.memo || '',
 
-        notification: event.notification || ''
+        notification: event.notification || '1일 전'
 
       })
 
@@ -1152,7 +1180,9 @@ function EventDetailPage() {
                   <div key={index} className={`participant-item ${participant.isFromCard ? 'from-card' : ''}`}>
                     <span>{typeof participant === 'string' ? participant : participant.name}</span>
                     {participant.isFromCard && (
-                      <span className="participant-card-badge" title="명함에서 추가됨">📇</span>
+                      <span className="participant-card-badge" title="명함에서 추가됨">
+                        <PersonBadgeIcon />
+                      </span>
                     )}
                     <button
                       type="button"
@@ -1194,7 +1224,9 @@ function EventDetailPage() {
                       >
                         <span>{participantName.trim()}</span>
                         {isFromCard && (
-                          <span className="participant-card-badge" title="명함에서 추가됨">📇</span>
+                          <span className="participant-card-badge" title="명함에서 추가됨">
+                            <PersonBadgeIcon />
+                          </span>
                         )}
                       </button>
                     )
@@ -1214,7 +1246,7 @@ function EventDetailPage() {
 
         <div className="section-header">
 
-          <h3 className="section-title">메모</h3>
+          <h3 className="section-title">일정 메모</h3>
 
         </div>
 
@@ -1236,7 +1268,7 @@ function EventDetailPage() {
 
           <div className="memo-content">
 
-            <p>{event.memo || '메모가 없습니다.'}</p>
+            <p className={!event.memo ? 'memo-placeholder' : ''}>{event.memo || '메모가 없습니다'}</p>
 
           </div>
 
@@ -1252,93 +1284,83 @@ function EventDetailPage() {
 
           <h3 className="section-title">알림</h3>
 
+          {isEditing ? (
+            <div className="notification-edit-wrapper-inline">
+              <button 
+
+                className={`notification-button ${showNotificationDropdown ? 'dropdown-open' : ''}`}
+
+                onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
+
+              >
+
+                <span>{formData.notification || '1일 전'}</span>
+
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                  <path d="M4 6L8 10L12 6" stroke="#6a7282" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+
+                </svg>
+
+              </button>
+
+              {showNotificationDropdown && (
+
+                <div className="notification-dropdown">
+
+                  <div className="notification-dropdown-header">
+
+                    <h4>이벤트 시간</h4>
+
+                  </div>
+
+                  <div className="notification-options">
+
+                    {['없음', '5분 전', '10분 전', '15분 전', '30분 전', '1시간 전', '2시간 전', '1일 전', '2일 전', '1주 전'].map((option) => (
+
+                      <button
+
+                        key={option}
+
+                        className={`notification-option ${formData.notification === option ? 'selected' : ''}`}
+
+                        onClick={() => {
+
+                          handleInputChange('notification', option === '없음' ? '' : option)
+
+                          setShowNotificationDropdown(false)
+
+                        }}
+
+                      >
+
+                        {option}
+
+                        {formData.notification === option && (
+
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                            <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+
+                          </svg>
+
+                        )}
+
+                      </button>
+
+                    ))}
+
+                  </div>
+
+                </div>
+
+              )}
+            </div>
+          ) : (
+            <span className="notification-text">{event.notification || ''}</span>
+          )}
+
         </div>
-
-        {isEditing ? (
-
-          <div className="notification-edit-wrapper">
-
-            <button 
-
-              className={`notification-button ${showNotificationDropdown ? 'dropdown-open' : ''}`}
-
-              onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
-
-            >
-
-              <span>{formData.notification || '없음'}</span>
-
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-                <path d="M4 6L8 10L12 6" stroke="#6a7282" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-
-              </svg>
-
-            </button>
-
-            {showNotificationDropdown && (
-
-              <div className="notification-dropdown">
-
-                <div className="notification-dropdown-header">
-
-                  <h4>이벤트 시간</h4>
-
-                </div>
-
-                <div className="notification-options">
-
-                  {['없음', '5분 전', '10분 전', '15분 전', '30분 전', '1시간 전', '2시간 전', '1일 전', '2일 전', '1주 전'].map((option) => (
-
-                    <button
-
-                      key={option}
-
-                      className={`notification-option ${formData.notification === option ? 'selected' : ''}`}
-
-                      onClick={() => {
-
-                        handleInputChange('notification', option === '없음' ? '' : option)
-
-                        setShowNotificationDropdown(false)
-
-                      }}
-
-                    >
-
-                      {option}
-
-                      {formData.notification === option && (
-
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-                          <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-
-                        </svg>
-
-                      )}
-
-                    </button>
-
-                  ))}
-
-                </div>
-
-              </div>
-
-            )}
-
-          </div>
-
-        ) : (
-
-          <div className="notification-content">
-
-            <p>{event.notification || '알림이 설정되지 않았습니다'}</p>
-
-          </div>
-
-        )}
 
       </div>
 

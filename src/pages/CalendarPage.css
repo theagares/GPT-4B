@@ -12,22 +12,47 @@
   border-radius: 40px;
   overflow-y: auto;
   padding-bottom: 100px;
+  padding-top: 30px;
   position: relative;
   margin: 0 auto;
 }
 
-/* 로고 헤더 */
-.logo-header {
-  position: absolute;
-  top: 20px;
-  left: 42px;
-  z-index: 10;
+/* 캘린더 페이지 헤더 */
+.calendar-page-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 393px;
+  margin: 0 auto;
+  background-color: white;
+  z-index: 100;
+  padding: 56px 24px 20px 24px;
 }
 
-.calendar-logo {
-  width: 21px;
-  height: 21px;
-  object-fit: cover;
+.calendar-page-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.calendar-page-header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.calendar-page-header-subtitle {
+  font-size: 11px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* 일정 추가 버튼 헤더 */
@@ -75,7 +100,7 @@
 .calendar-component {
   background: white;
   border-radius: 8px;
-  box-shadow: 2px 16px 19px 0px rgba(0, 0, 0, 0.09);
+  box-shadow: 0px 16px 19px 0px rgba(0, 0, 0, 0.09);
   padding: 24px;
   margin: 0 42px 24px 42px;
   display: flex;

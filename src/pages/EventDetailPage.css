@@ -117,11 +117,16 @@
 
 .cancel-button,
 .save-button {
-  background: transparent;
+  min-width: 60px;
+  height: 28px;
   border: none;
   cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: 6px 14px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -130,11 +135,22 @@
 }
 
 .cancel-button {
+  background: #f3f4f6;
   color: #6a7282;
 }
 
+.cancel-button:hover {
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
 .save-button {
-  color: #584cdc;
+  background: #584cdc;
+  color: white;
+}
+
+.save-button:hover {
+  background: #4a3fc0;
 }
 
 /* 섹션 공통 스타일 */
@@ -147,6 +163,14 @@
   padding: 0 18px;
   width: 100%;
   box-sizing: border-box;
+}
+
+.meeting-info-section {
+  margin-top: 10px;
+}
+
+.memo-section {
+  margin-top: 40px;
 }
 
 .section-header {
@@ -302,7 +326,7 @@
   gap: 8px;
   background: #eeeeee;
   border-radius: 8.687px;
-  padding: 10.424px 18px;
+  padding: 6px 18px;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -328,8 +352,8 @@
 }
 
 .participant-add-button {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border: none;
   border-radius: 8px;
   display: flex;
@@ -483,7 +507,7 @@
 
 .participant-item {
   background: #f2f1ff;
-  border: 1px solid #584cdc;
+  border: none;
   border-radius: 100px;
   padding: 6px 12px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
@@ -531,18 +555,23 @@
 }
 
 /* 메모 섹션 */
+.memo-section .section-header {
+  margin-bottom: 0;
+}
+
 .memo-content {
   background: #eeeeee;
   border-radius: 8.687px;
   padding: 10.424px 18px;
   min-height: 86.867px;
   margin: 0;
-  margin-top: 3px;
+  margin-top: 0;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
   display: block;
+  border: none;
 }
 
 .memo-content p {
@@ -553,6 +582,10 @@
   line-height: 17.373px;
   letter-spacing: -0.1306px;
   margin: 0;
+}
+
+.memo-content p.memo-placeholder {
+  color: #9ca3af;
 }
 
 .memo-textarea {
@@ -570,7 +603,7 @@
   background: #eeeeee;
   resize: none;
   margin: 0;
-  margin-top: 3px;
+  margin-top: 0;
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -589,20 +622,27 @@
   position: relative;
 }
 
+.notification-section .section-header {
+  justify-content: space-between;
+  width: calc(100% + 36px);
+  margin-left: -18px;
+  padding-left: 18px;
+  padding-right: 18px;
+  box-sizing: border-box;
+  align-items: baseline;
+}
+
 .notification-content {
-  background: #eeeeee;
-  border-radius: 8.687px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin: 0;
   margin-top: 3px;
-  padding: 0 18px;
+  padding: 0;
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .notification-edit-wrapper {
@@ -610,6 +650,13 @@
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
+}
+
+.notification-edit-wrapper-inline {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }
 
 .notification-button {
@@ -633,6 +680,15 @@
   line-height: 17.373px;
   letter-spacing: -0.1306px;
   box-sizing: border-box;
+}
+
+.notification-edit-wrapper-inline .notification-button {
+  width: auto;
+  min-width: 100px;
+  height: auto;
+  padding: 6px 12px;
+  font-size: 12.161px;
+  line-height: 16px;
 }
 
 .notification-button:hover {
@@ -659,6 +715,13 @@
   min-width: 200px;
   max-width: 280px;
   overflow: hidden;
+}
+
+.notification-edit-wrapper-inline .notification-dropdown {
+  top: 100%;
+  bottom: auto;
+  margin-top: 8px;
+  margin-bottom: 0;
 }
 
 .notification-dropdown-header {
@@ -707,15 +770,31 @@
   font-weight: 500;
 }
 
-.notification-content p {
+.notification-content p.notification-text {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 12.161px;
-  font-weight: 500;
+  font-weight: 400;
   color: #0a0a0a;
   line-height: 17.373px;
   letter-spacing: -0.1306px;
   margin: 0;
-  text-align: center;
+  text-align: left;
+}
+
+.notification-section .section-header .notification-text {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12.161px;
+  font-weight: 400;
+  color: #0a0a0a;
+  line-height: 16px;
+  letter-spacing: -0.1306px;
+  margin: 0;
+  margin-top: -1px;
+  text-align: right;
+  margin-left: auto;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 /* 삭제 버튼 */
@@ -991,12 +1070,20 @@
   margin-left: 4px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  color: #584cdc;
+}
+
+.participant-card-badge svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 /* 참여자 버튼 스타일 */
 .participant-item-button {
   background: #f2f1ff;
-  border: 1px solid #584cdc;
+  border: none;
   border-radius: 100px;
   padding: 6px 12px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;

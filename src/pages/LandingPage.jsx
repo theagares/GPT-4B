@@ -7,6 +7,16 @@ import { isAuthenticated, getUser } from '../utils/auth'
 import api from '../utils/api'
 import './LandingPage.css'
 
+// 명함 디자인별 배경색 맵 (MemoPage.jsx와 동일한 그라데이션 사용)
+const cardDesigns = {
+  'design-1': 'linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%)',
+  'design-2': 'linear-gradient(147.99deg, rgba(59, 130, 246, 1) 0%, rgba(37, 99, 235, 1) 100%)',
+  'design-3': 'linear-gradient(147.99deg, rgba(16, 185, 129, 1) 0%, rgba(5, 150, 105, 1) 100%)',
+  'design-4': 'linear-gradient(147.99deg, rgba(244, 90, 170, 1) 0%, rgba(230, 55, 135, 1) 100%)',
+  'design-5': 'linear-gradient(147.99deg, rgba(249, 115, 22, 1) 0%, rgba(234, 88, 12, 1) 100%)',
+  'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
+}
+
 // 인기 선물 데이터 (PopularGiftsPage와 동일한 데이터, 상위 5개만 표시)
 const popularGifts = [
   {
@@ -65,6 +75,41 @@ const popularGifts = [
     url: 'https://m.shopping.naver.com/gift/products/12179079303'
   }
 ]
+
+// 웃는 표정 아이콘 SVG 컴포넌트
+function SmileIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+      <path d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="9" cy="9" r="1" fill="currentColor"/>
+      <circle cx="15" cy="9" r="1" fill="currentColor"/>
+    </svg>
+  )
+}
+
+// 싫은 표정 아이콘 SVG 컴포넌트
+function FrownIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+      <path d="M8 15C8 15 9.5 13 12 13C14.5 13 16 15 16 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="9" cy="9" r="1" fill="currentColor"/>
+      <circle cx="15" cy="9" r="1" fill="currentColor"/>
+    </svg>
+  )
+}
+
+// 물음표 아이콘 SVG 컴포넌트
+function QuestionIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+      <path d="M9 9C9 7.34315 10.3431 6 12 6C13.6569 6 15 7.34315 15 9C15 10.6569 13.6569 12 12 12V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="12" cy="17" r="1" fill="currentColor"/>
+    </svg>
+  )
+}
 
 function LandingPage() {
   const navigate = useNavigate()
@@ -290,11 +335,16 @@ function LandingPage() {
     if (participantsList && participantsList.length > 0) {
       if (participantsList.length === 1) {
         participantText = `${participantsList[0]} 님과의`
-      } else {
-        // 여러 명일 때: "김승준, 장서진 님과의" 형식
+      } else if (participantsList.length === 2) {
+        // 2명일 때: "김승준, 장서진 님과의" 형식
         const names = participantsList.slice(0, -1).join(', ')
         const lastName = participantsList[participantsList.length - 1]
         participantText = `${names}, ${lastName} 님과의`
+      } else {
+        // 3명 이상일 때: "OO님, OO님 외 n명과의" 형식
+        const firstTwo = participantsList.slice(0, 2).join('님, ') + '님'
+        const remainingCount = participantsList.length - 2
+        participantText = `${firstTwo} 외 ${remainingCount}명과의`
       }
     }
 
@@ -476,7 +526,7 @@ function LandingPage() {
     
     // 이미 지난 일정인 경우
     if (diffTime <= 0) {
-      return '지금 시작합니다!'
+      return '지금 시작됩니다!'
     }
 
     // 남은 시간 계산
@@ -489,18 +539,18 @@ function LandingPage() {
     // 시간과 분을 함께 표시
     if (diffHours > 0) {
       if (remainingMinutes > 0) {
-        timeText = `${diffHours}시간 ${remainingMinutes}분 후에 시작합니다!`
+        timeText = `${diffHours}시간 ${remainingMinutes}분 후에 시작됩니다!`
       } else {
-        timeText = `${diffHours}시간 후에 시작합니다!`
+        timeText = `${diffHours}시간 후에 시작됩니다!`
       }
     }
     // 분 단위로 표시
     else if (diffMinutes > 0) {
-      timeText = `${diffMinutes}분 후에 시작합니다!`
+      timeText = `${diffMinutes}분 후에 시작됩니다!`
     }
     // 지금
     else {
-      timeText = '지금 시작합니다!'
+      timeText = '지금 시작됩니다!'
     }
 
     return timeText
@@ -1071,7 +1121,7 @@ function LandingPage() {
         {/* 5분 전 알람 섹션 (알림 설정과 상관없이) */}
         {upcomingAlerts.length > 0 && (
           <div className="upcoming-alerts-section">
-            <h2 className="alerts-title">⏰ 곧 시작하는 일정</h2>
+            <h2 className="alerts-title">곧 시작하는 일정</h2>
             <div className="alerts-list">
               {upcomingAlerts.map((alert) => (
                 <div 
@@ -1103,7 +1153,7 @@ function LandingPage() {
 
         {/* Important Alerts Section */}
         <div className="alerts-section">
-          <h2 className="alerts-title">중요 알림</h2>
+          <h2 className="alerts-title">일정 알림</h2>
           <div className="alerts-list">
             {alerts.length > 0 ? (
               alerts.map((alert) => {
@@ -1174,7 +1224,7 @@ function LandingPage() {
         <div className="card-info-modal-overlay" onClick={() => setShowCardInfoModal(false)}>
           <div className="card-info-modal preference-modal" onClick={(e) => e.stopPropagation()}>
             <div className="card-info-header">
-              <h3 className="card-info-title">💡 상대방 선호도 프로필</h3>
+              <h3 className="card-info-title">상대방 선호도 프로필</h3>
               <button 
                 className="card-info-close"
                 onClick={() => setShowCardInfoModal(false)}
@@ -1189,7 +1239,15 @@ function LandingPage() {
               <div className="card-info-empty">참여자 정보가 없습니다.</div>
             ) : selectedCardInfo?.notFound ? (
               <div className="card-info-content">
-                <div className="card-info-person-header">
+                <div 
+                  className="card-info-person-header"
+                  style={{
+                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(249, 250, 251, 1) 100%)',
+                    border: '1px solid #000000',
+                    borderRadius: '12px',
+                    padding: '16px'
+                  }}
+                >
                   <span className="card-info-name">{selectedCardInfo.name}</span>
                 </div>
                 <div className="no-memo-message">
@@ -1202,9 +1260,19 @@ function LandingPage() {
             ) : selectedCardInfo ? (
               <div className="card-info-content">
                 {/* 참여자 기본 정보 */}
-                <div className="card-info-person-header">
-                  <span className="card-info-name">{selectedCardInfo.name}</span>
-                  <span className="card-info-detail">
+                <div 
+                  className="card-info-person-header"
+                  style={{
+                    background: selectedCardInfo.design && cardDesigns[selectedCardInfo.design]
+                      ? cardDesigns[selectedCardInfo.design]
+                      : cardDesigns['design-1'],
+                    borderRadius: '12px',
+                    padding: '16px',
+                    color: 'white'
+                  }}
+                >
+                  <span className="card-info-name" style={{ color: 'white' }}>{selectedCardInfo.name}</span>
+                  <span className="card-info-detail" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
                     {selectedCardInfo.company && selectedCardInfo.company}
                     {selectedCardInfo.position && ` · ${selectedCardInfo.position}`}
                   </span>
@@ -1224,7 +1292,7 @@ function LandingPage() {
                     {selectedCardInfo.preferenceProfile.likes && (
                       <div className="pref-section pref-likes">
                         <div className="pref-section-header">
-                          <span className="pref-icon">👍</span>
+                          <span className="pref-icon"><SmileIcon /></span>
                           <span className="pref-title">좋아하는 것</span>
                         </div>
                         <div className="pref-tags">
@@ -1257,7 +1325,7 @@ function LandingPage() {
                     {selectedCardInfo.preferenceProfile.dislikes && (
                       <div className="pref-section pref-dislikes">
                         <div className="pref-section-header">
-                          <span className="pref-icon">👎</span>
+                          <span className="pref-icon"><FrownIcon /></span>
                           <span className="pref-title">싫어하는 것</span>
                         </div>
                         <div className="pref-tags">
@@ -1288,7 +1356,7 @@ function LandingPage() {
                     {selectedCardInfo.preferenceProfile.uncertain && (
                       <div className="pref-section pref-uncertain">
                         <div className="pref-section-header">
-                          <span className="pref-icon">🤔</span>
+                          <span className="pref-icon"><QuestionIcon /></span>
                           <span className="pref-title">불확실한 것</span>
                         </div>
                         <div className="pref-tags">

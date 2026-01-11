@@ -734,8 +734,12 @@ function CalendarPage() {
 
   return (
     <div className="calendar-page">
-      <div className="logo-header">
-        <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="calendar-logo" />
+      {/* Header */}
+      <div className="calendar-page-header">
+        <div className="calendar-page-header-content">
+          <p className="calendar-page-header-title">캘린더</p>
+          <p className="calendar-page-header-subtitle">일정을 추가하고 수정하며 스케줄을 관리하세요</p>
+        </div>
       </div>
 
       <div className="calendar-component">

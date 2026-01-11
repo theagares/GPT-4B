@@ -78,7 +78,7 @@ function AddEventPage() {
     startTime: { hour: 9, minute: 0 },
     endTime: { hour: 10, minute: 0 },
     memo: '',
-    notification: ''
+    notification: '1일 전'
   })
   const [participants, setParticipants] = useState([])
   const [participantInput, setParticipantInput] = useState('')
@@ -581,9 +581,10 @@ function AddEventPage() {
 
       {/* 메모 입력 */}
       <div className="memo-section">
+        <label className="memo-label">일정 메모</label>
         <textarea
           className="memo-input"
-          placeholder="메모, URL 또는 첨부 파일 추가"
+          placeholder="일정 관련 메모를 입력하세요"
           value={formData.memo}
           onChange={(e) => handleInputChange('memo', e.target.value)}
         />
@@ -591,33 +592,35 @@ function AddEventPage() {
 
       {/* 알림 설정 */}
       <div className="notification-section">
-        <div className="notification-label">알림</div>
-        <div className="notification-dropdown-wrapper">
-          <button
-            className={`notification-button ${showNotificationDropdown ? 'dropdown-open' : ''}`}
-            onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
-            type="button"
-          >
-            <span>{formData.notification || '없음'}</span>
-            <DropdownIcon />
-          </button>
-          {showNotificationDropdown && (
-            <div className="notification-dropdown">
-              {['없음', '5분 전', '10분 전', '15분 전', '30분 전', '1시간 전', '2시간 전', '1일 전', '2일 전', '1주 전'].map((option) => (
-                <button
-                  key={option}
-                  className={`notification-option ${formData.notification === option ? 'selected' : ''}`}
-                  onClick={() => {
-                    handleInputChange('notification', option === '없음' ? '' : option)
-                    setShowNotificationDropdown(false)
-                  }}
-                  type="button"
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          )}
+        <div className="notification-header">
+          <div className="notification-label">알림</div>
+          <div className="notification-edit-wrapper-inline">
+            <button
+              className={`notification-button ${showNotificationDropdown ? 'dropdown-open' : ''}`}
+              onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
+              type="button"
+            >
+              <span>{formData.notification || '1일 전'}</span>
+              <DropdownIcon />
+            </button>
+            {showNotificationDropdown && (
+              <div className="notification-dropdown">
+                {['없음', '5분 전', '10분 전', '15분 전', '30분 전', '1시간 전', '2시간 전', '1일 전', '2일 전', '1주 전'].map((option) => (
+                  <button
+                    key={option}
+                    className={`notification-option ${formData.notification === option ? 'selected' : ''}`}
+                    onClick={() => {
+                      handleInputChange('notification', option === '없음' ? '' : option)
+                      setShowNotificationDropdown(false)
+                    }}
+                    type="button"
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
