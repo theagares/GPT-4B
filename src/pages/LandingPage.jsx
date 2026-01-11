@@ -847,38 +847,36 @@ function LandingPage() {
     }
     
     if (participants && participants.length > 0) {
-      // 모든 참여자 처리 (linkedCardIds와 관계없이 참여자 이름 기준으로 처리)
-      // 참여자 이름으로 명함 검색이 더 정확함
+      // 모든 참여자 처리 - linkedCardIds가 있는 경우만 명함 조회
       const cardInfoPromises = participants.map(async (participantName) => {
-        // 먼저 linkedCardIds에서 해당 참여자 이름과 일치하는 명함 찾기 시도
-        let matchedCard = null
-        
-        if (hasLinkedCards) {
-          // linkedCardIds로 명함 정보 가져오기 시도
-          for (const cardId of linkedCardIds) {
-            if (!cardId) continue
-            
-            try {
-              const cardResponse = await cardAPI.getById(cardId)
-              if (cardResponse.data.success && cardResponse.data.data) {
-                const card = cardResponse.data.data
-                // 명함 이름과 참여자 이름이 일치하는지 확인
-                if (card.name === participantName) {
-                  matchedCard = card
-                  break
-                }
-              }
-            } catch (e) {
-              // 무시하고 계속
-            }
+        // linkedCardIds가 없으면 명함이 없는 것으로 처리
+        if (!hasLinkedCards) {
+          return {
+            name: participantName,
+            notFound: true,
+            eventTitle: alert.event?.title
           }
         }
         
-        // linkedCardIds에서 찾지 못했으면 이름으로 검색
-        if (!matchedCard) {
-          const cardInfo = await fetchParticipantCardInfo(participantName)
-          if (cardInfo && cardInfo.id) {
-            matchedCard = cardInfo
+        // linkedCardIds에서 해당 참여자 이름과 일치하는 명함 찾기
+        let matchedCard = null
+        
+        // linkedCardIds로 명함 정보 가져오기 시도
+        for (const cardId of linkedCardIds) {
+          if (!cardId) continue
+          
+          try {
+            const cardResponse = await cardAPI.getById(cardId)
+            if (cardResponse.data.success && cardResponse.data.data) {
+              const card = cardResponse.data.data
+              // 명함 이름과 참여자 이름이 일치하는지 확인
+              if (card.name === participantName) {
+                matchedCard = card
+                break
+              }
+            }
+          } catch (e) {
+            // 무시하고 계속
           }
         }
         
@@ -917,7 +915,7 @@ function LandingPage() {
             eventTitle: alert.event?.title
           }
         } else {
-          // 명함을 찾지 못한 경우
+          // linkedCardIds에 해당 참여자의 명함이 없는 경우
           return {
             name: participantName,
             notFound: true,
