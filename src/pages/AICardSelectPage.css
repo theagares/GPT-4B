@@ -35,15 +35,18 @@
 }
 
 .ai-card-select-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 32px 20px 16px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 393px;
+  margin: 0 auto;
   background-color: white;
-  flex-shrink: 0;
-  z-index: 1;
-  min-height: 70px;
-  position: relative;
+  z-index: 100;
+  padding: 56px 24px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .back-button {
@@ -56,7 +59,8 @@
   justify-content: center;
   padding-top: 2px;
   position: absolute;
-  left: 20px;
+  left: 24px;
+  top: 56px;
 }
 
 .back-button:hover {
@@ -72,57 +76,67 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  right: 20px;
-  top: calc(50% - 1px);
-  transform: translateY(-50%);
+  right: 24px;
+  top: 25px;
   font-size: 14px;
   font-weight: 500;
   color: #584cdc;
-  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
 }
 
 .history-button:hover {
   opacity: 0.7;
 }
 
-.header-title-section {
-  flex: 1;
+.ai-card-select-header-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding-top: 2px;
+  gap: 4px;
 }
 
-.page-title {
+.ai-card-select-header-title {
   font-size: 18px;
   font-weight: 600;
-  color: #252525;
-  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.ai-card-select-header-subtitle {
+  font-size: 11px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  line-height: 1.4;
   text-align: center;
 }
 
 
 .card-list-container {
   flex: 1;
-  padding: 0px 16px 20px 16px;
+  padding-top: 180px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 20px;
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
-  padding-bottom: 20px;
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 0;
 }
 
-.ai-card-select-search-bar {
+.ai-card-select-header .ai-card-select-search-bar {
   position: relative;
   width: 100%;
-  margin-bottom: 12px;
-  margin-top: 12px;
+  margin: 0;
 }
 
 .ai-card-select-search-icon-wrapper {

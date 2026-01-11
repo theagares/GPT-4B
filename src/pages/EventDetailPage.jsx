@@ -855,8 +855,6 @@ function EventDetailPage() {
             <BackIcon />
           </span>
 
-          <span>뒤로</span>
-
         </button>
 
         <h2 className="page-title">일정 상세</h2>

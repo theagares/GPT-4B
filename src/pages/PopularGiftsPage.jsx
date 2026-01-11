@@ -321,20 +321,17 @@ function PopularGiftsPage() {
 
   return (
     <div className="popular-gifts-page">
-      {/* Header */}
+      {/* Fixed Header */}
       <div className="page-header">
-        <button className="home-button" onClick={handleHome}>
-          <HomeIcon />
-          <span className="home-button-text">홈으로</span>
-        </button>
-        <div className="header-content">
-          <h1 className="page-title">인기 선물</h1>
-          <div className="header-spacer"></div>
-        </div>
-        
-        {/* Filter Guide Text */}
-        <div className="filter-guide">
-          <p className="filter-guide-text">필터를 적용해서 원하는 선물을 구경해보아요</p>
+        <div className="header-top">
+          <button className="home-button" onClick={handleHome}>
+            <HomeIcon />
+            <span className="home-button-text">홈으로</span>
+          </button>
+          <div className="header-title-section">
+            <h1 className="page-title">인기 선물</h1>
+            <p className="page-subtitle">필터를 적용해서 원하는 선물을 구경해보세요</p>
+          </div>
         </div>
 
         {/* Filter Bar */}
@@ -353,9 +350,11 @@ function PopularGiftsPage() {
         </div>
       </div>
 
-      {/* Applied Filters */}
-      {(appliedCategories.length > 0 || appliedPriceRanges.length > 0) && (
-        <div className="applied-filters">
+      {/* Content Container */}
+      <div className="page-content">
+        {/* Applied Filters */}
+        {(appliedCategories.length > 0 || appliedPriceRanges.length > 0) && (
+          <div className="applied-filters">
           {/* 카테고리 필터들 - 첫 번째 줄 */}
           {appliedCategories.length > 0 && (
             <div className="filter-row">
@@ -400,11 +399,11 @@ function PopularGiftsPage() {
               </div>
             </div>
           )}
-        </div>
-      )}
+          </div>
+        )}
 
-      {/* Gifts Grid */}
-      <div className="gifts-container">
+        {/* Gifts Grid */}
+        <div className="gifts-container">
         <div className="gifts-grid">
           {filteredGifts.map((gift) => (
             <a 
@@ -441,6 +440,7 @@ function PopularGiftsPage() {
             </a>
           ))}
         </div>
+      </div>
       </div>
     </div>
   )

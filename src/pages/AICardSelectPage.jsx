@@ -190,12 +190,26 @@ function AICardSelectPage() {
               <path d="M15 18L9 12L15 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <div className="header-title-section">
-            <h1 className="page-title">선물 추천</h1>
-          </div>
           <button className="history-button" onClick={handleHistoryClick}>
             추천 내역
           </button>
+          <div className="ai-card-select-header-content">
+            <h1 className="ai-card-select-header-title">선물 추천</h1>
+            <p className="ai-card-select-header-subtitle">명함을 눌러 선물 추천 대상을 선택할 수 있어요</p>
+          </div>
+          {/* Search Bar */}
+          <div className="ai-card-select-search-bar">
+            <div className="ai-card-select-search-icon-wrapper">
+              <SearchIcon />
+            </div>
+            <input
+              type="text"
+              className="ai-card-select-search-input"
+              placeholder="명함 검색 (이름, 회사, 직급)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Card List */}
@@ -210,20 +224,6 @@ function AICardSelectPage() {
             </div>
           ) : (
             <>
-              <p className="card-selection-guide">명함을 눌러 선물 추천 대상을 선택할 수 있어요</p>
-              {/* Search Bar */}
-              <div className="ai-card-select-search-bar">
-                <div className="ai-card-select-search-icon-wrapper">
-                  <SearchIcon />
-                </div>
-                <input
-                  type="text"
-                  className="ai-card-select-search-input"
-                  placeholder="명함 검색 (이름, 회사, 직급)"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
               {filteredCards.length === 0 ? (
                 <div className="empty-state">
                   <p>검색 결과가 없습니다.</p>

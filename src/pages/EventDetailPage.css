@@ -35,7 +35,7 @@
 
 .back-button {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 0px;
   background: transparent;
   border: none;
@@ -57,7 +57,11 @@
 }
 
 .back-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: transparent;
+}
+
+.back-button > span:last-child {
+  margin-top: 2px;
 }
 
 .back-icon {
