@@ -327,8 +327,11 @@ function BusinessCardWallet() {
               })
             })
           }
-          // state 초기화 (뒤로가기 시 다시 열리지 않도록)
-          navigate(location.pathname, { replace: true, state: {} })
+          // returnToEventDetail이 있으면 state를 유지 (모달 닫을 때 일정 상세로 돌아가기 위해)
+          // 없으면 state 초기화
+          if (!location.state?.returnToEventDetail) {
+            navigate(location.pathname, { replace: true, state: {} })
+          }
         }, delay)
       }
       // selectCardId가 있으면 해당 명함으로 인덱스만 변경
@@ -528,6 +531,25 @@ function BusinessCardWallet() {
   }
 
   const handleCloseModal = () => {
+    // 일정 상세에서 온 경우 일정 상세로 돌아가기
+    if (location.state?.returnToEventDetail && location.state?.eventId) {
+      const modalElement = document.querySelector('.card-detail-modal')
+      if (modalElement) {
+        modalElement.style.animation = 'slideDownModal 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+        const overlayElement = document.querySelector('.card-detail-modal-overlay')
+        if (overlayElement) {
+          overlayElement.style.animation = 'fadeOutOverlay 0.3s ease-out forwards'
+        }
+      }
+      setTimeout(() => {
+        setShowDetailModal(false)
+        setFlippingCardId(null)
+        setSelectedCardId(null)
+        navigate(`/calendar/event/${location.state.eventId}`)
+      }, 300)
+      return
+    }
+    
     // 모달 닫기 애니메이션을 위해 약간의 지연
     const modalElement = document.querySelector('.card-detail-modal')
     if (modalElement) {

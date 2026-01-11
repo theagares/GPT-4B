@@ -227,9 +227,24 @@ function MemoPage() {
 
   // 뒤로 가기 핸들러
   const handleBack = () => {
-    // 명함 상세 모달에서 온 경우, 명함 상세 모달로 복귀
-    if (location.state?.returnToModal && location.state?.cardId) {
-      // 명함집 페이지로 이동하면서 해당 카드의 모달을 열기 위한 state 전달
+    // 스케줄 종료 팝업에서 온 경우, dashboard로 돌아가면서 팝업 복원
+    if (location.state?.returnToEndedPopup && location.state?.popupState) {
+      navigate('/dashboard', { 
+        state: { 
+          returnToEndedPopup: true,
+          popupState: location.state.popupState
+        } 
+      })
+    } else if (location.state?.returnToDashboard && location.state?.popupState) {
+      // dashboard에서 팝업을 보고 온 경우, dashboard로 돌아가면서 팝업 복원
+      navigate('/dashboard', { 
+        state: { 
+          returnToDashboard: true,
+          popupState: location.state.popupState
+        } 
+      })
+    } else if (location.state?.returnToModal && location.state?.cardId) {
+      // 명함 상세 모달에서 온 경우, 명함 상세 모달로 복귀
       navigate('/business-cards', { 
         state: { 
           openCardId: location.state.cardId 

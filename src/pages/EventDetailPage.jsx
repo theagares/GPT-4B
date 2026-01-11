@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { calendarAPI } from '../utils/api'
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { calendarAPI, cardAPI } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
 import './EventDetailPage.css'
 
@@ -78,6 +78,7 @@ const formatTimeShort = (date) => {
 function EventDetailPage() {
 
   const navigate = useNavigate()
+  const location = useLocation()
 
   const { eventId } = useParams()
 
@@ -114,10 +115,18 @@ function EventDetailPage() {
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false)
 
   const [participantInput, setParticipantInput] = useState('')
+  
+  // 참여자 자동완성 관련 state
+  const [contactSuggestions, setContactSuggestions] = useState([])
+  const [showContactSuggestions, setShowContactSuggestions] = useState(false)
+  const [linkedCardIds, setLinkedCardIds] = useState([])
+  const [participants, setParticipants] = useState([]) // 참여자 객체 배열 (명함 정보 포함)
+  const participantDropdownRef = useRef(null)
+  const [showRegisterCardModal, setShowRegisterCardModal] = useState(false)
+  const [selectedParticipantName, setSelectedParticipantName] = useState('')
 
-  // 이벤트 데이터 로드 (peter - API 연동)
-  useEffect(() => {
-    const fetchEvent = async () => {
+  // 이벤트 데이터 로드 함수 (재사용 가능하도록 분리)
+  const fetchEventData = async (showLoading = true) => {
       if (!eventId) {
         setLoading(false)
         return
@@ -133,16 +142,104 @@ function EventDetailPage() {
             const foundEvent = events.find(e => String(e.id) === String(eventId))
             
             if (foundEvent) {
+              // linkedCardIds 파싱
+              let linkedCardIdsArray = []
+              if (foundEvent.linked_card_ids) {
+                if (typeof foundEvent.linked_card_ids === 'string') {
+                  linkedCardIdsArray = foundEvent.linked_card_ids.split(',').map(id => parseInt(id)).filter(id => !isNaN(id))
+                } else if (Array.isArray(foundEvent.linked_card_ids)) {
+                  linkedCardIdsArray = foundEvent.linked_card_ids.map(id => parseInt(id)).filter(id => !isNaN(id))
+                }
+              } else if (foundEvent.linkedCardIds) {
+                linkedCardIdsArray = Array.isArray(foundEvent.linkedCardIds) 
+                  ? foundEvent.linkedCardIds.map(id => parseInt(id)).filter(id => !isNaN(id))
+                  : []
+              }
+              
               const eventData = {
                 ...foundEvent,
                 startDate: new Date(foundEvent.startDate),
                 endDate: new Date(foundEvent.endDate),
                 participants: typeof foundEvent.participants === 'string' 
                   ? foundEvent.participants.split(', ').filter(p => p)
-                  : (foundEvent.participants || [])
+                  : (foundEvent.participants || []),
+                linkedCardIds: linkedCardIdsArray
               }
               
+              // linkedCardIds의 명함 정보를 가져와서 이름으로 매칭
+              const cardInfoMap = new Map()
+              if (linkedCardIdsArray.length > 0) {
+                try {
+                  const cardPromises = linkedCardIdsArray.map(cardId => 
+                    cardAPI.getById(cardId).catch(err => {
+                      console.error(`Failed to fetch card ${cardId}:`, err)
+                      return null
+                    })
+                  )
+                  const cardResponses = await Promise.all(cardPromises)
+                  
+                  // 명함 정보를 이름을 키로 하는 Map에 저장
+                  cardResponses.forEach((response) => {
+                    if (response && response.data && response.data.success && response.data.data) {
+                      const card = response.data.data
+                      if (card.name) {
+                        cardInfoMap.set(card.name.trim(), {
+                          id: card.id,
+                          name: card.name,
+                          isFromCard: true
+                        })
+                      }
+                    }
+                  })
+                } catch (err) {
+                  console.error('Failed to fetch cards:', err)
+                }
+              }
+              
+              // 모든 참여자 이름으로 명함 검색 (명함 등록 후 새로 추가된 명함도 찾기 위해)
+              try {
+                const allCardsResponse = await cardAPI.getAll({})
+                if (allCardsResponse.data.success && allCardsResponse.data.data) {
+                  const allCards = allCardsResponse.data.data || []
+                  
+                  // 각 참여자 이름으로 명함 검색
+                  eventData.participants.forEach((participantName) => {
+                    const trimmedName = participantName.trim()
+                    // 이미 cardInfoMap에 없으면 검색
+                    if (!cardInfoMap.has(trimmedName)) {
+                      const matchingCard = allCards.find(card => 
+                        card.name && card.name.trim() === trimmedName
+                      )
+                      if (matchingCard) {
+                        cardInfoMap.set(trimmedName, {
+                          id: matchingCard.id,
+                          name: matchingCard.name,
+                          isFromCard: true
+                        })
+                      }
+                    }
+                  })
+                }
+              } catch (err) {
+                console.error('Failed to search all cards:', err)
+              }
+              
+              // participants 배열 생성 (이름으로 매칭)
+              const participantsArray = eventData.participants.map((participantName) => {
+                const matchedCard = cardInfoMap.get(participantName.trim())
+                if (matchedCard) {
+                  return matchedCard
+                } else {
+                  return {
+                    name: participantName,
+                    isFromCard: false
+                  }
+                }
+              })
+              
               setEvent(eventData)
+              setLinkedCardIds(linkedCardIdsArray)
+              setParticipants(participantsArray)
               setFormData({
                 title: eventData.title || '',
                 participant: eventData.participants && eventData.participants.length > 0 
@@ -153,7 +250,7 @@ function EventDetailPage() {
                 memo: eventData.memo || '',
                 notification: eventData.notification || ''
               })
-              setLoading(false)
+              if (showLoading) setLoading(false)
               return
             }
           }
@@ -178,19 +275,40 @@ function EventDetailPage() {
             memo: eventData.memo || '',
             notification: eventData.notification || ''
           })
-          setLoading(false)
+          if (showLoading) setLoading(false)
         } else {
           // 이벤트를 찾을 수 없으면 에러 표시
-          setLoading(false)
+          if (showLoading) setLoading(false)
           console.error('Event not found:', eventId)
         }
       } catch (err) {
         console.error('이벤트 로드 실패:', err)
-        setLoading(false)
+        if (showLoading) setLoading(false)
       }
     }
 
-    fetchEvent()
+  // 이벤트 데이터 로드 (peter - API 연동)
+  useEffect(() => {
+    if (!eventId) {
+      setLoading(false)
+      return
+    }
+    setLoading(true)
+    fetchEventData(true)
+  }, [eventId])
+  
+  // 페이지 포커스 시 이벤트 데이터 새로고침 (명함 등록 후 돌아왔을 때 반영)
+  useEffect(() => {
+    const handleFocus = () => {
+      if (eventId && isAuthenticated()) {
+        fetchEventData(false) // 로딩 표시 없이 새로고침
+      }
+    }
+    
+    window.addEventListener('focus', handleFocus)
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+    }
   }, [eventId])
 
   const handleBack = () => {
@@ -247,13 +365,216 @@ function EventDetailPage() {
     return endMinutes <= startMinutes
   }
 
+  // 명함 자동완성 검색
+  const fetchContactSuggestions = async (searchText) => {
+    if (!searchText || searchText.trim().length < 1) {
+      setContactSuggestions([])
+      setShowContactSuggestions(false)
+      return
+    }
+    
+    try {
+      // 명함 목록에서 검색
+      const response = await cardAPI.getAll({ search: searchText, limit: 10 })
+      if (response.data.success) {
+        const contacts = (response.data.data || []).map(card => ({
+          id: card.id,
+          name: card.name,
+          company: card.company,
+          position: card.position,
+          displayText: `${card.name}${card.company ? ` (${card.company})` : ''}${card.position ? ` - ${card.position}` : ''}`
+        }))
+        setContactSuggestions(contacts)
+        setShowContactSuggestions(contacts.length > 0)
+      }
+    } catch (err) {
+      console.error('Failed to fetch contact suggestions:', err)
+      setContactSuggestions([])
+    }
+  }
+
+  // 참여자 입력 변경 시 자동완성 검색
+  const handleParticipantInputChange = (e) => {
+    const value = e.target.value
+    setParticipantInput(value)
+    
+    // 1글자 이상 입력 시 검색
+    if (value.trim().length >= 1) {
+      fetchContactSuggestions(value)
+      // 명함 검색 결과가 없거나 입력한 이름이 검색 결과에 없으면 직접 입력 옵션 표시
+      setShowContactSuggestions(true)
+    } else {
+      setContactSuggestions([])
+      setShowContactSuggestions(false)
+    }
+  }
+
+  // 자동완성 항목 선택
+  const handleSelectContact = (contact) => {
+    // 이미 추가된 참여자인지 확인
+    const alreadyAdded = participants.some(p => p.id === contact.id)
+    if (!alreadyAdded) {
+      const newParticipant = {
+        id: contact.id,
+        name: contact.name,
+        company: contact.company,
+        position: contact.position,
+        isFromCard: true
+      }
+      setParticipants([...participants, newParticipant])
+      setLinkedCardIds([...linkedCardIds, contact.id])
+      // formData.participant 업데이트
+      const participantNames = [...participants, newParticipant].map(p => p.name)
+      handleInputChange('participant', participantNames.join(', '))
+    }
+    setParticipantInput('')
+    setContactSuggestions([])
+    setShowContactSuggestions(false)
+  }
+
+  const handleAddParticipant = () => {
+    if (participantInput.trim()) {
+      // 명함에 없는 직접 입력 참여자
+      const newParticipant = {
+        name: participantInput.trim(),
+        isFromCard: false
+      }
+      setParticipants([...participants, newParticipant])
+      // formData.participant 업데이트
+      const participantNames = [...participants, newParticipant].map(p => p.name)
+      handleInputChange('participant', participantNames.join(', '))
+      setParticipantInput('')
+      setContactSuggestions([])
+      setShowContactSuggestions(false)
+    }
+  }
+
+  const handleRemoveParticipant = (index) => {
+    const removedParticipant = participants[index]
+    const updatedParticipants = participants.filter((_, i) => i !== index)
+    setParticipants(updatedParticipants)
+    
+    // 명함에서 온 참여자면 linkedCardIds에서도 제거
+    if (removedParticipant.isFromCard && removedParticipant.id) {
+      setLinkedCardIds(linkedCardIds.filter(id => id !== removedParticipant.id))
+    }
+    
+    // formData.participant 업데이트
+    const participantNames = updatedParticipants.map(p => p.name)
+    handleInputChange('participant', participantNames.join(', '))
+  }
+
+  // 참여자 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutsideParticipant = (event) => {
+      if (participantDropdownRef.current && !participantDropdownRef.current.contains(event.target)) {
+        setShowContactSuggestions(false)
+      }
+    }
+
+    if (showContactSuggestions) {
+      document.addEventListener('mousedown', handleClickOutsideParticipant)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutsideParticipant)
+    }
+  }, [showContactSuggestions])
+
+  // 참여자 버튼 클릭 핸들러
+  const handleParticipantClick = async (participantName, index) => {
+    if (isEditing) return // 편집 모드에서는 클릭 비활성화
+    
+    const linkedCardIdsList = event.linkedCardIds || []
+    let cardId = null
+    
+    // linkedCardIds에 있는 명함들을 가져와서 이름으로 매칭
+    if (linkedCardIdsList.length > 0) {
+      try {
+        // 모든 linkedCardIds의 명함 정보를 가져오기
+        const cardPromises = linkedCardIdsList.map(cardId => 
+          cardAPI.getById(cardId).catch(err => {
+            console.error(`Failed to fetch card ${cardId}:`, err)
+            return null
+          })
+        )
+        
+        const cardResponses = await Promise.all(cardPromises)
+        
+        // 이름이 정확히 일치하는 명함 찾기
+        for (const response of cardResponses) {
+          if (response && response.data && response.data.success && response.data.data) {
+            const card = response.data.data
+            if (card.name && card.name.trim() === participantName.trim()) {
+              cardId = typeof card.id === 'string' ? parseInt(card.id, 10) : card.id
+              break
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch cards:', err)
+      }
+    }
+    
+    // linkedCardIds에서 찾지 못했으면 이름으로 검색 시도
+    if (!cardId) {
+      try {
+        const response = await cardAPI.getAll({ search: participantName.trim() })
+        if (response.data.success && response.data.data && response.data.data.length > 0) {
+          // 이름이 정확히 일치하는 명함 찾기
+          const matchingCard = response.data.data.find(card => 
+            card.name && card.name.trim() === participantName.trim()
+          )
+          if (matchingCard) {
+            cardId = typeof matchingCard.id === 'string' 
+              ? parseInt(matchingCard.id, 10) 
+              : matchingCard.id
+          }
+        }
+      } catch (err) {
+        console.error('Failed to search card by name:', err)
+      }
+    }
+    
+    if (cardId) {
+      // 명함이 있으면 명함집 페이지로 이동하고 해당 명함 선택
+      navigate('/business-cards', { 
+        state: { 
+          openCardId: cardId,
+          returnToEventDetail: true,
+          eventId: eventId // 일정 상세로 돌아가기 위한 eventId
+        } 
+      })
+    } else {
+      // 명함이 없으면 등록 팝업 표시
+      setSelectedParticipantName(participantName)
+      setShowRegisterCardModal(true)
+    }
+  }
+
+  // 명함 등록하기 버튼 클릭
+  const handleGoToRegisterCard = () => {
+    setShowRegisterCardModal(false)
+    navigate('/manual-add', { 
+      state: { 
+        participantName: selectedParticipantName,
+        returnToEventDetail: true,
+        eventId: eventId // 일정 상세로 돌아가기 위한 eventId
+      } 
+    })
+  }
+
+  // 명함 등록 팝업 닫기
+  const handleCloseRegisterCardModal = () => {
+    setShowRegisterCardModal(false)
+    setSelectedParticipantName('')
+  }
+
   const handleSave = async () => {
 
     try {
-      // 참가자를 배열로 변환
-      const participants = formData.participant 
-        ? formData.participant.split(',').map(p => p.trim()).filter(p => p)
-        : []
+      // participants 배열에서 이름만 추출
+      const participantNames = participants.map(p => typeof p === 'string' ? p : p.name)
 
       const startDate = formData.startDate || event.startDate
       const endDate = formData.endDate || event.endDate
@@ -268,20 +589,53 @@ function EventDetailPage() {
           color: event.color || '#4A90E2',
           description: event.description || event.category || '미팅',
           location: event.location || '',
-          participants: participants,
+          participants: participantNames,
           memo: formData.memo || '',
-          notification: formData.notification || ''
+          notification: formData.notification || '',
+          linkedCardIds: linkedCardIds.length > 0 ? linkedCardIds : null
         }
 
         const response = await calendarAPI.updateEvent(event.id, eventData)
 
         if (response.data && response.data.success) {
+          // linkedCardIds 파싱
+          let updatedLinkedCardIds = []
+          if (response.data.data.linked_card_ids) {
+            if (typeof response.data.data.linked_card_ids === 'string') {
+              updatedLinkedCardIds = response.data.data.linked_card_ids.split(',').map(id => parseInt(id)).filter(id => !isNaN(id))
+            } else if (Array.isArray(response.data.data.linked_card_ids)) {
+              updatedLinkedCardIds = response.data.data.linked_card_ids.map(id => parseInt(id)).filter(id => !isNaN(id))
+            }
+          } else if (response.data.data.linkedCardIds) {
+            updatedLinkedCardIds = Array.isArray(response.data.data.linkedCardIds) 
+              ? response.data.data.linkedCardIds.map(id => parseInt(id)).filter(id => !isNaN(id))
+              : []
+          }
+          
+          // participants와 linkedCardIds를 매칭하여 participants 배열 업데이트
+          const updatedParticipantsArray = participantNames.map((participantName, index) => {
+            const cardId = updatedLinkedCardIds[index]
+            if (cardId) {
+              return {
+                id: cardId,
+                name: participantName,
+                isFromCard: true
+              }
+            } else {
+              return {
+                name: participantName,
+                isFromCard: false
+              }
+            }
+          })
+          
           // 업데이트된 이벤트 데이터로 상태 업데이트
           const updatedEvent = {
             ...event,
             ...response.data.data,
             title: formData.title,
-            participants: participants,
+            participants: participantNames,
+            linkedCardIds: updatedLinkedCardIds,
             memo: formData.memo,
             notification: formData.notification,
             startDate: new Date(response.data.data.startDate),
@@ -289,8 +643,16 @@ function EventDetailPage() {
           }
 
           setEvent(updatedEvent)
+          setLinkedCardIds(updatedLinkedCardIds)
+          setParticipants(updatedParticipantsArray)
           setIsEditing(false)
           setShowNotificationDropdown(false)
+          
+          // formData도 업데이트
+          setFormData(prev => ({
+            ...prev,
+            participant: participantNames.join(', ')
+          }))
           
           // 편집 모드 종료 후 일정 상세 페이지에 머물기
           return
@@ -368,12 +730,6 @@ function EventDetailPage() {
 
     setParticipantInput('')
 
-  }
-
-  const handleRemoveParticipant = (indexToRemove) => {
-    const participants = formData.participant ? formData.participant.split(', ') : []
-    const updatedParticipants = participants.filter((_, index) => index !== indexToRemove)
-    handleInputChange('participant', updatedParticipants.join(', '))
   }
 
   const handleDelete = async () => {
@@ -723,37 +1079,33 @@ function EventDetailPage() {
 
         {isEditing ? (
           <div className="participant-edit-wrapper">
-            <div className="participant-input-container">
+            <div className="participant-input-container" ref={participantDropdownRef}>
               <input
                 type="text"
                 className="participant-edit-input"
                 value={participantInput}
-                onChange={(e) => setParticipantInput(e.target.value)}
+                onChange={handleParticipantInputChange}
                 onKeyPress={(e) => {
-                  if (e.key === 'Enter' && participantInput.trim()) {
-                    const participants = formData.participant ? formData.participant.split(', ') : []
-                    if (!participants.includes(participantInput.trim())) {
-                      handleInputChange('participant', participants.length > 0 
-                        ? `${formData.participant}, ${participantInput.trim()}` 
-                        : participantInput.trim())
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    // 자동완성 목록이 있으면 첫 번째 항목 선택
+                    if (showContactSuggestions && contactSuggestions.length > 0) {
+                      handleSelectContact(contactSuggestions[0])
+                    } else {
+                      handleAddParticipant()
                     }
-                    setParticipantInput('')
                   }
                 }}
-                placeholder="참석자 추가"
+                placeholder="이름으로 명함 검색 또는 직접 입력"
               />
               <button
                 type="button"
                 className="participant-add-button"
                 onClick={() => {
-                  if (participantInput.trim()) {
-                    const participants = formData.participant ? formData.participant.split(', ') : []
-                    if (!participants.includes(participantInput.trim())) {
-                      handleInputChange('participant', participants.length > 0 
-                        ? `${formData.participant}, ${participantInput.trim()}` 
-                        : participantInput.trim())
-                    }
-                    setParticipantInput('')
+                  if (showContactSuggestions && contactSuggestions.length > 0) {
+                    handleSelectContact(contactSuggestions[0])
+                  } else {
+                    handleAddParticipant()
                   }
                 }}
               >
@@ -761,12 +1113,47 @@ function EventDetailPage() {
                   <path d="M8 3V13M3 8H13" stroke="#584cdc" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
               </button>
+              {/* 자동완성 드롭다운 */}
+              {showContactSuggestions && participantInput.trim().length >= 1 && (
+                <div className="contact-suggestions-dropdown">
+                  {/* 명함 검색 결과 */}
+                  {contactSuggestions.map((contact) => (
+                    <button
+                      key={contact.id}
+                      className="contact-suggestion-item"
+                      onClick={() => handleSelectContact(contact)}
+                    >
+                      <div className="contact-suggestion-name">{contact.name}</div>
+                      {(contact.company || contact.position) && (
+                        <div className="contact-suggestion-info">
+                          {contact.company && <span>{contact.company}</span>}
+                          {contact.position && <span> · {contact.position}</span>}
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                  {/* 직접 입력 옵션 (명함 검색 결과에 없거나 입력한 이름이 검색 결과에 없는 경우) */}
+                  {participantInput.trim() && 
+                   !contactSuggestions.some(c => c.name === participantInput.trim()) &&
+                   !participants.some(p => (typeof p === 'string' ? p : p.name) === participantInput.trim()) && (
+                    <button
+                      className="contact-suggestion-item"
+                      onClick={handleAddParticipant}
+                    >
+                      <div className="contact-suggestion-name">{participantInput.trim()}</div>
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
-            {formData.participant && (
+            {participants.length > 0 && (
               <div className="participants-display">
-                {formData.participant.split(', ').map((p, index) => (
-                  <div key={index} className="participant-item">
-                    <span>{p.trim()}</span>
+                {participants.map((participant, index) => (
+                  <div key={index} className={`participant-item ${participant.isFromCard ? 'from-card' : ''}`}>
+                    <span>{typeof participant === 'string' ? participant : participant.name}</span>
+                    {participant.isFromCard && (
+                      <span className="participant-card-badge" title="명함에서 추가됨">📇</span>
+                    )}
                     <button
                       type="button"
                       className="participant-remove-btn"
@@ -782,21 +1169,36 @@ function EventDetailPage() {
         ) : (
           <div className="participant-content">
             {(() => {
-              const participants = event.participants && Array.isArray(event.participants) && event.participants.length > 0
-                ? event.participants
-                : (event.participants && typeof event.participants === 'string' && event.participants.trim() !== ''
-                  ? event.participants.split(', ').filter(p => p.trim())
-                  : (event.participant && event.participant.trim() !== ''
-                    ? event.participant.split(', ').filter(p => p.trim())
-                    : []))
+              // participants 상태를 사용 (이름으로 이미 매칭되어 있음)
+              const participantsList = participants.length > 0 
+                ? participants 
+                : (event.participants && Array.isArray(event.participants) && event.participants.length > 0
+                  ? event.participants.map(name => ({ name, isFromCard: false }))
+                  : (event.participants && typeof event.participants === 'string' && event.participants.trim() !== ''
+                    ? event.participants.split(', ').filter(p => p.trim()).map(name => ({ name, isFromCard: false }))
+                    : (event.participant && event.participant.trim() !== ''
+                      ? event.participant.split(', ').filter(p => p.trim()).map(name => ({ name, isFromCard: false }))
+                      : [])))
               
-              return participants.length > 0 ? (
+              return participantsList.length > 0 ? (
                 <div className="participants-display">
-                  {participants.map((participant, index) => (
-                    <div key={index} className="participant-item">
-                      <span>{participant.trim()}</span>
-                    </div>
-                  ))}
+                  {participantsList.map((participant, index) => {
+                    const participantName = typeof participant === 'string' ? participant : participant.name
+                    const isFromCard = typeof participant === 'object' && participant.isFromCard
+                    return (
+                      <button
+                        key={index}
+                        type="button"
+                        className={`participant-item-button ${isFromCard ? 'from-card' : ''}`}
+                        onClick={() => handleParticipantClick(participantName.trim(), index)}
+                      >
+                        <span>{participantName.trim()}</span>
+                        {isFromCard && (
+                          <span className="participant-card-badge" title="명함에서 추가됨">📇</span>
+                        )}
+                      </button>
+                    )
+                  })}
                 </div>
               ) : (
                 <p>참석자가 없습니다.</p>
@@ -1285,6 +1687,44 @@ function EventDetailPage() {
 
       </button>
 
+      {/* 명함 등록 팝업 모달 */}
+      {showRegisterCardModal && (
+        <div className="register-card-modal-overlay" onClick={handleCloseRegisterCardModal}>
+          <div className="register-card-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="register-card-modal-header">
+              <h3 className="register-card-modal-title">명함 등록</h3>
+              <button 
+                className="register-card-modal-close"
+                onClick={handleCloseRegisterCardModal}
+              >
+                ×
+              </button>
+            </div>
+            <div className="register-card-modal-content">
+              <p className="register-card-modal-message">
+                <strong>{selectedParticipantName}</strong>님의 명함이 등록되어 있지 않습니다.
+              </p>
+              <p className="register-card-modal-hint">
+                명함을 등록하시겠습니까?
+              </p>
+            </div>
+            <div className="register-card-modal-actions">
+              <button 
+                className="register-card-modal-cancel"
+                onClick={handleCloseRegisterCardModal}
+              >
+                취소
+              </button>
+              <button 
+                className="register-card-modal-confirm"
+                onClick={handleGoToRegisterCard}
+              >
+                명함 등록하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
 
   )

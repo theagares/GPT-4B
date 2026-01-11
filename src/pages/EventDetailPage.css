@@ -921,4 +921,226 @@
   padding-left: 4px;
 }
 
+/* 참여자 자동완성 드롭다운 */
+.participant-input-container {
+  position: relative;
+}
+
+.contact-suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.contact-suggestion-item {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background 0.15s ease;
+}
+
+.contact-suggestion-item:hover {
+  background: #f3f4f6;
+}
+
+.contact-suggestion-item:first-child {
+  border-radius: 12px 12px 0 0;
+}
+
+.contact-suggestion-item:last-child {
+  border-radius: 0 0 12px 12px;
+}
+
+.contact-suggestion-item:only-child {
+  border-radius: 12px;
+}
+
+.contact-suggestion-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.contact-suggestion-info {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* 명함에서 추가된 참여자 태그 스타일 */
+.participant-item.from-card {
+  background: linear-gradient(135deg, #584cdc15 0%, #6366f115 100%);
+  border: 1px solid #584cdc30;
+}
+
+.participant-card-badge {
+  font-size: 14px;
+  margin-left: 4px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 참여자 버튼 스타일 */
+.participant-item-button {
+  background: #f2f1ff;
+  border: 1px solid #584cdc;
+  border-radius: 100px;
+  padding: 6px 12px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #584cdc;
+  line-height: 20px;
+  letter-spacing: -0.1504px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.participant-item-button:hover {
+  background: #e8e6ff;
+  transform: translateY(-1px);
+}
+
+.participant-item-button.from-card {
+  background: linear-gradient(135deg, #584cdc15 0%, #6366f115 100%);
+  border: 1px solid #584cdc30;
+}
+
+/* 명함 등록 팝업 모달 */
+.register-card-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.register-card-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.register-card-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.register-card-modal-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #0a0a0a;
+  margin: 0;
+}
+
+.register-card-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #6a7282;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.register-card-modal-close:hover {
+  color: #0a0a0a;
+}
+
+.register-card-modal-content {
+  margin-bottom: 24px;
+}
+
+.register-card-modal-message {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  color: #0a0a0a;
+  line-height: 1.6;
+  margin: 0 0 8px 0;
+}
+
+.register-card-modal-message strong {
+  font-weight: 600;
+  color: #584cdc;
+}
+
+.register-card-modal-hint {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  color: #6a7282;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.register-card-modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.register-card-modal-cancel,
+.register-card-modal-confirm {
+  flex: 1;
+  height: 44px;
+  border-radius: 8px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.register-card-modal-cancel {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #6a7282;
+}
+
+.register-card-modal-cancel:hover {
+  background: #e5e7eb;
+}
+
+.register-card-modal-confirm {
+  background: #584cdc;
+  border: none;
+  color: white;
+}
+
+.register-card-modal-confirm:hover {
+  background: #4a3fc0;
+}
+
 

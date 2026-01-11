@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import CardForm from "../components/CardForm/CardForm";
 import MemoPromptModal from "../components/MemoPromptModal/MemoPromptModal";
 import { BusinessCard, useCardStore } from "../store/cardStore";
@@ -7,6 +7,7 @@ import "./ManualAddCardPage.css";
 
 const ManualAddCardPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const addCard = useCardStore((state) => state.addCard);
   const [showMemoPrompt, setShowMemoPrompt] = useState(false);
   const [savedCard, setSavedCard] = useState<BusinessCard | null>(null);
@@ -26,7 +27,34 @@ const ManualAddCardPage = () => {
   const handleCloseModal = () => {
     setShowMemoPrompt(false);
     if (savedCard) {
-      navigate("/business-cards", { state: { openCardId: savedCard.id } });
+      // 스케줄 종료 팝업에서 온 경우 팝업으로 돌아가기
+      if (location.state?.returnToEndedPopup && location.state?.popupState) {
+        const popupState = location.state.popupState;
+        // 새로 등록된 명함 정보를 팝업 상태에 추가
+        const updatedPopupState = {
+          ...popupState,
+          savedCardId: savedCard.id,
+          savedCardName: savedCard.name
+        };
+        navigate("/dashboard", {
+          state: {
+            returnToEndedPopup: true,
+            popupState: updatedPopupState
+          }
+        });
+      } else if (location.state?.returnToEventDetail && location.state?.eventId) {
+        // 일정 상세에서 온 경우 명함집으로 이동하되, 일정 상세로 돌아갈 수 있도록 state 전달
+        navigate("/business-cards", { 
+          state: { 
+            openCardId: savedCard.id,
+            returnToEventDetail: true,
+            eventId: location.state.eventId
+          } 
+        });
+      } else {
+        // 일반적인 경우 명함집으로 이동
+        navigate("/business-cards", { state: { openCardId: savedCard.id } });
+      }
     }
   };
 

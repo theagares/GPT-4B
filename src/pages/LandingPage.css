@@ -589,6 +589,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .card-info-title {
@@ -824,52 +825,133 @@
 
 .ended-event-popup {
   background: white;
-  border-radius: 24px;
-  padding: 32px 24px;
+  border-radius: 20px;
+  padding: 20px;
   width: 90%;
-  max-width: 320px;
+  max-width: 380px;
+  max-height: 85vh;
+  overflow-y: auto;
   text-align: center;
   animation: slideUpModal 0.3s ease-out;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-.ended-event-popup-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
 }
 
 .ended-event-popup-title {
   font-size: 18px;
   font-weight: 700;
   color: #1f2937;
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
 }
 
 .ended-event-popup-subtitle {
-  font-size: 14px;
+  font-size: 13px;
   color: #6b7280;
-  margin: 0 0 16px 0;
+  margin: 0 0 18px 0;
 }
 
-.ended-event-popup-message {
-  font-size: 15px;
-  color: #374151;
-  line-height: 1.6;
-  margin: 0 0 24px 0;
+.ended-event-popup-sections {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 600px) {
+  .ended-event-popup-sections {
+    flex-direction: column;
+  }
+  
+  .ended-event-popup {
+    max-width: 90%;
+  }
+}
+
+.ended-event-section {
+  flex: 1;
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+
+.ended-event-section-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.ended-event-section-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.ended-event-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.ended-event-section-description {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.4;
+  margin: 0 0 12px 0;
   white-space: pre-line;
+}
+
+.ended-event-participants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 50px;
+}
+
+.ended-event-participant-btn {
+  background: linear-gradient(135deg, #f0eff8 0%, #f5f4f9 100%);
+  border: 1.5px solid #d1d5f9;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #584cdc;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.ended-event-participant-btn:hover {
+  background: linear-gradient(135deg, #e5e3f5 0%, #ede9f7 100%);
+  border-color: #8f85e7;
+  color: #4736d3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(88, 76, 220, 0.2);
+}
+
+.ended-event-participant-btn:active {
+  transform: scale(0.98);
+  background: linear-gradient(135deg, #d9d5ee 0%, #e5e1f0 100%);
+}
+
+.ended-event-no-participants {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 20px 0;
+  font-style: italic;
 }
 
 .ended-event-popup-buttons {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .ended-event-btn {
   width: 100%;
-  padding: 14px 20px;
-  border-radius: 12px;
-  font-size: 15px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -902,4 +984,108 @@
 
 .ended-event-btn-secondary:active {
   transform: scale(0.98);
+}
+
+/* 하단 네비게이션 및 인디케이터 */
+.card-info-bottom-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  gap: 16px;
+}
+
+.card-nav-button {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #584cdc;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.card-nav-button:hover:not(:disabled) {
+  background: #e5e7eb;
+  transform: scale(1.1);
+}
+
+.card-nav-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.card-info-indicator {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-indicator-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #584cdc;
+}
+
+/* 메모 보러가기 버튼 */
+.card-info-memo-button-container {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.card-info-memo-button {
+  width: 100%;
+  background-color: #584cdc;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.card-info-memo-button:hover {
+  background-color: #4a3fc9;
+  transform: translateY(-1px);
+}
+
+.card-info-memo-button:active {
+  transform: translateY(0);
+  background-color: #3d33b8;
+}
+
+/* 메모 없음 메시지 */
+.no-memo-message {
+  text-align: center;
+  padding: 32px 20px;
+  background: #f9fafb;
+  border-radius: 12px;
+  margin-top: 16px;
+}
+
+.no-memo-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 8px 0;
+}
+
+.no-memo-hint {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
 }

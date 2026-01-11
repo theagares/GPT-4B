@@ -114,6 +114,86 @@ function LandingPage() {
     }
   }, [location.state, navigate, location.pathname])
 
+  // 메모 페이지 또는 명함 등록 페이지에서 돌아온 경우 스케줄 종료 팝업 복원
+  useEffect(() => {
+    if (location.state?.returnToEndedPopup && location.state?.popupState) {
+      const popupState = location.state.popupState
+      // state 초기화
+      navigate(location.pathname, { replace: true, state: {} })
+      
+      // 약간의 지연 후 팝업 복원 및 명함 정보 업데이트
+      setTimeout(async () => {
+        let updatedEventInfo = popupState.endedEventInfo
+        
+        // 새로 등록된 명함이 있는 경우 참여자별 명함 정보 업데이트
+        if (popupState.savedCardId && popupState.savedCardName) {
+          const participantCardMap = new Map(popupState.endedEventInfo.participantCardMap || [])
+          // 새로 등록된 명함 추가
+          participantCardMap.set(popupState.savedCardName.trim(), popupState.savedCardId)
+          
+          updatedEventInfo = {
+            ...popupState.endedEventInfo,
+            participantCardMap: participantCardMap,
+            hasLinkedCard: updatedEventInfo.participantsList?.every(name => 
+              participantCardMap.has(name.trim())
+            ) || false
+          }
+        } else {
+          // 명함 등록이 아닌 경우 (메모 작성에서 돌아온 경우) 명함 정보 다시 불러오기
+          try {
+            const participantsList = updatedEventInfo.participantsList || []
+            const participantCardMap = new Map()
+            
+            // 모든 명함 검색하여 참여자 이름으로 매칭
+            const allCardsResponse = await cardAPI.getAll({})
+            if (allCardsResponse.data.success && allCardsResponse.data.data) {
+              const allCards = allCardsResponse.data.data || []
+              
+              for (const participantName of participantsList) {
+                const trimmedName = participantName.trim()
+                const matchingCard = allCards.find(card => 
+                  card.name && card.name.trim() === trimmedName
+                )
+                if (matchingCard) {
+                  participantCardMap.set(trimmedName, matchingCard.id)
+                }
+              }
+            }
+            
+            updatedEventInfo = {
+              ...updatedEventInfo,
+              participantCardMap: participantCardMap,
+              hasLinkedCard: participantsList.every(name => 
+                participantCardMap.has(name.trim())
+              )
+            }
+          } catch (err) {
+            console.error('Failed to refresh card info:', err)
+          }
+        }
+        
+        setEndedEventInfo(updatedEventInfo)
+        setShowEndedEventPopup(true)
+      }, 300)
+    }
+  }, [location.state, navigate, location.pathname])
+
+  // 메모 페이지에서 돌아온 경우 팝업 복원
+  useEffect(() => {
+    if (location.state?.returnToDashboard && location.state?.popupState) {
+      const popupState = location.state.popupState
+      // state 초기화
+      navigate(location.pathname, { replace: true, state: {} })
+      // 약간의 지연 후 팝업 복원
+      setTimeout(() => {
+        setCardInfoList(popupState.cardInfoList || [])
+        setCurrentCardIndex(popupState.currentCardIndex || 0)
+        setSelectedCardInfo(popupState.cardInfoList?.[popupState.currentCardIndex || 0] || null)
+        setShowCardInfoModal(true)
+      }, 300)
+    }
+  }, [location.state, navigate, location.pathname])
+
   const handleGoToMy = () => {
     setShowCardCompleteModal(false)
     navigate('/my')
@@ -131,12 +211,39 @@ function LandingPage() {
   // 명함 정보 모달 관련 state
   const [showCardInfoModal, setShowCardInfoModal] = useState(false)
   const [selectedCardInfo, setSelectedCardInfo] = useState(null)
+  const [cardInfoList, setCardInfoList] = useState([]) // 여러 명의 명함 정보 배열
+  const [currentCardIndex, setCurrentCardIndex] = useState(0) // 현재 보여지는 명함 인덱스
   const [loadingCardInfo, setLoadingCardInfo] = useState(false)
   
   // 스케줄 종료 팝업 관련 state
   const [showEndedEventPopup, setShowEndedEventPopup] = useState(false)
   const [endedEventInfo, setEndedEventInfo] = useState(null)
-  const [processedEndedEvents, setProcessedEndedEvents] = useState(new Set())
+  
+  // localStorage에서 처리된 이벤트 목록 불러오기
+  const loadProcessedEvents = () => {
+    try {
+      const saved = localStorage.getItem('processedEndedEvents')
+      if (saved) {
+        const eventIds = JSON.parse(saved)
+        return new Set(eventIds)
+      }
+    } catch (err) {
+      console.error('Failed to load processed events:', err)
+    }
+    return new Set()
+  }
+  
+  // 처리된 이벤트 목록을 localStorage에 저장
+  const saveProcessedEvents = (eventsSet) => {
+    try {
+      const eventIds = Array.from(eventsSet)
+      localStorage.setItem('processedEndedEvents', JSON.stringify(eventIds))
+    } catch (err) {
+      console.error('Failed to save processed events:', err)
+    }
+  }
+  
+  const [processedEndedEvents, setProcessedEndedEvents] = useState(() => loadProcessedEvents())
 
   // 알림 시간 계산 함수
   const calculateNotificationTime = (eventStartDate, notificationSetting) => {
@@ -361,6 +468,44 @@ function LandingPage() {
     return () => clearInterval(interval)
   }, [])
 
+  // 곧 시작하는 일정의 시간 텍스트 생성 함수
+  const generateUpcomingTimeText = (eventStartDate) => {
+    const now = new Date()
+    const startDate = new Date(eventStartDate)
+    const diffTime = startDate - now
+    
+    // 이미 지난 일정인 경우
+    if (diffTime <= 0) {
+      return '지금 시작합니다!'
+    }
+
+    // 남은 시간 계산
+    const diffMinutes = Math.floor(diffTime / (1000 * 60))
+    const diffHours = Math.floor(diffTime / (1000 * 60 * 60))
+    const remainingMinutes = diffMinutes - (diffHours * 60)
+
+    let timeText = ''
+    
+    // 시간과 분을 함께 표시
+    if (diffHours > 0) {
+      if (remainingMinutes > 0) {
+        timeText = `${diffHours}시간 ${remainingMinutes}분 후에 시작합니다!`
+      } else {
+        timeText = `${diffHours}시간 후에 시작합니다!`
+      }
+    }
+    // 분 단위로 표시
+    else if (diffMinutes > 0) {
+      timeText = `${diffMinutes}분 후에 시작합니다!`
+    }
+    // 지금
+    else {
+      timeText = '지금 시작합니다!'
+    }
+
+    return timeText
+  }
+
   // 5분 전 알람 체크 (알림 설정 여부와 상관없이)
   useEffect(() => {
     const checkUpcomingEvents = async () => {
@@ -393,18 +538,19 @@ function LandingPage() {
             return diffMinutes > 0 && diffMinutes <= 5 && hasLinkedCard
           })
 
-          // 알림 생성
+          // 알림 생성 (실시간 시간 텍스트 포함)
           const upcomingAlertList = upcomingEvents.map(event => ({
             id: `upcoming-${event.id}`,
             eventId: event.id,
             icon: '⏰',
-            text: `${event.title} 일정이 5분 후에 시작합니다!`,
+            text: `${event.title} 일정이 ${generateUpcomingTimeText(event.startDate)}`,
             event: event,
             type: 'upcoming',
             backgroundColor: '#584cdc',
             category: event.category || '기타',
             participants: event.participants,
-            linkedCardIds: event.linkedCardIds
+            linkedCardIds: event.linkedCardIds,
+            startDate: event.startDate // 시간 계산을 위해 저장
           }))
 
           setUpcomingAlerts(upcomingAlertList)
@@ -422,6 +568,38 @@ function LandingPage() {
     return () => clearInterval(interval)
   }, [])
 
+  // 곧 시작하는 일정의 시간 텍스트를 실시간으로 업데이트
+  useEffect(() => {
+    if (upcomingAlerts.length === 0) return
+
+    const updateUpcomingTimes = () => {
+      setUpcomingAlerts(prevAlerts => {
+        return prevAlerts.map(alert => {
+          if (!alert.startDate) return alert
+          
+          const newTimeText = generateUpcomingTimeText(alert.startDate)
+          return {
+            ...alert,
+            text: `${alert.event.title} 일정이 ${newTimeText}`
+          }
+        }).filter(alert => {
+          // 시작 시간이 지난 알림은 제거
+          const now = new Date()
+          const startDate = new Date(alert.startDate)
+          const diffMinutes = (startDate - now) / (1000 * 60)
+          return diffMinutes > 0 && diffMinutes <= 5
+        })
+      })
+    }
+
+    // 즉시 업데이트
+    updateUpcomingTimes()
+
+    // 1분마다 업데이트 (시간이 바뀔 때마다)
+    const interval = setInterval(updateUpcomingTimes, 60000)
+    return () => clearInterval(interval)
+  }, [upcomingAlerts.length])
+
   // 참여자의 명함 정보 조회
   const fetchParticipantCardInfo = async (participantName) => {
     if (!participantName || !isAuthenticated()) return null
@@ -435,8 +613,8 @@ function LandingPage() {
         // 메모 조회
         let memos = []
         try {
-          const memoResponse = await api.get(`/memo/card/${card.id}`)
-          if (memoResponse.data.success) {
+          const memoResponse = await api.get(`/memo/business-card/${card.id}`)
+          if (memoResponse.data && memoResponse.data.success) {
             memos = memoResponse.data.data || []
           }
         } catch (e) {
@@ -467,7 +645,7 @@ function LandingPage() {
     }
   }
 
-  // 스케줄 종료 시점 체크 (linked_card_ids 여부에 따른 팝업)
+  // 스케줄 종료 시점 체크 (참여자별 명함 여부 확인)
   useEffect(() => {
     const checkEndedEvents = async () => {
       if (!isAuthenticated()) return
@@ -491,25 +669,96 @@ function LandingPage() {
             
             // 이벤트가 끝났고, 아직 팝업을 보여주지 않은 경우
             if (eventEnd <= now && !processedEndedEvents.has(event.id)) {
-              // linkedCardIds 확인 (배열이 있고 비어있지 않은지)
-              const hasLinkedCard = event.linkedCardIds && event.linkedCardIds.length > 0
+              // participants 파싱
+              let participantsList = event.participants || []
+              if (typeof participantsList === 'string' && participantsList.trim() !== '') {
+                participantsList = participantsList.split(',').map(p => p.trim()).filter(p => p)
+              } else if (!Array.isArray(participantsList)) {
+                participantsList = []
+              }
               
-              // 첫 번째 카드 ID 추출
-              let linkedCardId = null
-              if (hasLinkedCard) {
-                linkedCardId = event.linkedCardIds[0]
+              // 참여자가 없으면 팝업 표시 안 함
+              if (participantsList.length === 0) {
+                setProcessedEndedEvents(prev => {
+                  const newSet = new Set([...prev, event.id])
+                  saveProcessedEvents(newSet)
+                  return newSet
+                })
+                continue
+              }
+              
+              // 각 참여자별로 명함 검색
+              const participantCardMap = new Map()
+              let hasAllCards = true
+              
+              // linkedCardIds에 있는 명함 정보 먼저 확인
+              if (event.linkedCardIds && event.linkedCardIds.length > 0) {
+                try {
+                  const cardPromises = event.linkedCardIds.map(cardId => 
+                    cardAPI.getById(cardId).catch(() => null)
+                  )
+                  const cardResponses = await Promise.all(cardPromises)
+                  
+                  cardResponses.forEach((response) => {
+                    if (response && response.data && response.data.success && response.data.data) {
+                      const card = response.data.data
+                      if (card.name) {
+                        participantCardMap.set(card.name.trim(), card.id)
+                      }
+                    }
+                  })
+                } catch (err) {
+                  console.error('Failed to fetch linked cards:', err)
+                }
+              }
+              
+              // 모든 명함 검색하여 참여자 이름으로 매칭
+              try {
+                const allCardsResponse = await cardAPI.getAll({})
+                if (allCardsResponse.data.success && allCardsResponse.data.data) {
+                  const allCards = allCardsResponse.data.data || []
+                  
+                  // 각 참여자별로 명함이 있는지 확인
+                  for (const participantName of participantsList) {
+                    const trimmedName = participantName.trim()
+                    if (!participantCardMap.has(trimmedName)) {
+                      // 전체 명함 목록에서 검색
+                      const matchingCard = allCards.find(card => 
+                        card.name && card.name.trim() === trimmedName
+                      )
+                      if (matchingCard) {
+                        participantCardMap.set(trimmedName, matchingCard.id)
+                      } else {
+                        hasAllCards = false
+                      }
+                    }
+                  }
+                }
+              } catch (err) {
+                console.error('Failed to search all cards:', err)
+              }
+              
+              // linkedCardIds가 있지만 참여자 중 명함이 없는 사람이 있는 경우
+              // 또는 linkedCardIds가 없고 모든 참여자가 명함이 없는 경우
+              const hasAnyLinkedCard = event.linkedCardIds && event.linkedCardIds.length > 0
+              
+              // 첫 번째 명함 ID (명함이 있는 경우)
+              let firstCardId = null
+              if (participantCardMap.size > 0) {
+                firstCardId = Array.from(participantCardMap.values())[0]
               }
               
               setEndedEventInfo({
                 ...event,
-                hasLinkedCard,
-                linkedCardId
+                hasLinkedCard: hasAllCards, // 모든 참여자에게 명함이 있으면 true
+                linkedCardId: firstCardId,
+                participantsList: participantsList,
+                participantCardMap: participantCardMap
               })
               setShowEndedEventPopup(true)
               
-              // 처리 완료 표시
-              setProcessedEndedEvents(prev => new Set([...prev, event.id]))
-              break // 한 번에 하나의 팝업만
+              // 팝업 표시 후에는 break (한 번에 하나만)
+              break
             }
           }
         }
@@ -525,21 +774,57 @@ function LandingPage() {
     return () => clearInterval(interval)
   }, [processedEndedEvents])
 
-  // 스케줄 종료 팝업 - "예" 버튼 클릭
-  const handleEndedEventYes = () => {
-    setShowEndedEventPopup(false)
+  // 명함 등록하기 - 참여자 클릭
+  const handleRegisterCard = (participantName) => {
+    // 팝업 상태 저장
+    const popupState = {
+      endedEventInfo: endedEventInfo,
+      showEndedEventPopup: true
+    }
     
-    if (endedEventInfo?.hasLinkedCard && endedEventInfo?.linkedCardId) {
-      // 명함이 있으면 → 명함 상세 페이지로 이동 (메모 작성)
-      navigate(`/cards/${endedEventInfo.linkedCardId}`)
-    } else {
-      // 명함이 없으면 → 명함 등록 페이지로 이동
-      navigate('/manual-add')
+    setShowEndedEventPopup(false)
+    navigate('/manual-add', {
+      state: {
+        participantName: participantName,
+        returnToEventDetail: false,
+        returnToEndedPopup: true,
+        popupState: popupState
+      }
+    })
+  }
+
+  // 메모 작성하기 - 참여자 클릭
+  const handleWriteMemo = (participantName) => {
+    if (!endedEventInfo?.participantCardMap) return
+    
+    const cardId = endedEventInfo.participantCardMap.get(participantName.trim())
+    if (cardId) {
+      // 팝업 상태 저장
+      const popupState = {
+        endedEventInfo: endedEventInfo,
+        showEndedEventPopup: true
+      }
+      
+      setShowEndedEventPopup(false)
+      navigate(`/memo?businessCardId=${cardId}`, {
+        state: {
+          returnToEndedPopup: true,
+          popupState: popupState
+        }
+      })
     }
   }
 
-  // 스케줄 종료 팝업 - "아니요" 버튼 클릭
+  // 스케줄 종료 팝업 - "다음에 할게요" 버튼 클릭
   const handleEndedEventNo = () => {
+    if (endedEventInfo?.id) {
+      // 처리 완료 표시 (다시 안 뜨도록) - localStorage에 저장
+      setProcessedEndedEvents(prev => {
+        const newSet = new Set([...prev, endedEventInfo.id])
+        saveProcessedEvents(newSet)
+        return newSet
+      })
+    }
     setShowEndedEventPopup(false)
   }
 
@@ -547,6 +832,7 @@ function LandingPage() {
   const handleShowCardInfo = async (alert) => {
     setLoadingCardInfo(true)
     setShowCardInfoModal(true)
+    setCurrentCardIndex(0)
     
     // linkedCardIds가 있으면 직접 사용 (배열)
     const linkedCardIds = alert.linkedCardIds || alert.event?.linkedCardIds
@@ -554,67 +840,144 @@ function LandingPage() {
     // linkedCardIds가 배열이고 비어있지 않은 경우
     const hasLinkedCards = Array.isArray(linkedCardIds) && linkedCardIds.length > 0
     
-    if (hasLinkedCards) {
-      // linkedCardIds에서 첫 번째 카드 ID 추출
-      const cardId = linkedCardIds[0]
-      
-      try {
-        // 명함 정보 조회
-        const cardResponse = await cardAPI.getById(cardId)
-        if (cardResponse.data.success && cardResponse.data.data) {
-          const card = cardResponse.data.data
-          
-          // 선호도 프로필 조회
-          let preferenceProfile = null
-          try {
-            const prefResponse = await api.get(`/profile/${cardId}/preferences`)
-            if (prefResponse.data.success) {
-              preferenceProfile = prefResponse.data.data
+    // 참여자 이름 정보 가져오기
+    let participants = alert.event?.participants || alert.participants
+    if (typeof participants === 'string') {
+      participants = participants.split(',').map(p => p.trim()).filter(p => p)
+    }
+    
+    if (participants && participants.length > 0) {
+      // 모든 참여자 처리 (linkedCardIds와 관계없이 참여자 이름 기준으로 처리)
+      // 참여자 이름으로 명함 검색이 더 정확함
+      const cardInfoPromises = participants.map(async (participantName) => {
+        // 먼저 linkedCardIds에서 해당 참여자 이름과 일치하는 명함 찾기 시도
+        let matchedCard = null
+        
+        if (hasLinkedCards) {
+          // linkedCardIds로 명함 정보 가져오기 시도
+          for (const cardId of linkedCardIds) {
+            if (!cardId) continue
+            
+            try {
+              const cardResponse = await cardAPI.getById(cardId)
+              if (cardResponse.data.success && cardResponse.data.data) {
+                const card = cardResponse.data.data
+                // 명함 이름과 참여자 이름이 일치하는지 확인
+                if (card.name === participantName) {
+                  matchedCard = card
+                  break
+                }
+              }
+            } catch (e) {
+              // 무시하고 계속
             }
-          } catch (e) {
-            console.log('No preference profile found')
+          }
+        }
+        
+        // linkedCardIds에서 찾지 못했으면 이름으로 검색
+        if (!matchedCard) {
+          const cardInfo = await fetchParticipantCardInfo(participantName)
+          if (cardInfo && cardInfo.id) {
+            matchedCard = cardInfo
+          }
+        }
+        
+        // 명함을 찾은 경우
+        if (matchedCard && matchedCard.id) {
+          // 메모 조회
+          let memos = matchedCard.memos || []
+          if (!memos || memos.length === 0) {
+            try {
+              const memoResponse = await api.get(`/memo/business-card/${matchedCard.id}`)
+              if (memoResponse.data && memoResponse.data.success) {
+                memos = memoResponse.data.data || []
+              }
+            } catch (e) {
+              console.log('No memos found')
+            }
           }
           
-          setSelectedCardInfo({
-            ...card,
+          // 선호도 프로필 조회
+          let preferenceProfile = matchedCard.preferenceProfile || null
+          if (!preferenceProfile) {
+            try {
+              const prefResponse = await api.get(`/profile/${matchedCard.id}/preferences`)
+              if (prefResponse.data.success) {
+                preferenceProfile = prefResponse.data.data
+              }
+            } catch (e) {
+              console.log('No preference profile found')
+            }
+          }
+          
+          return {
+            ...matchedCard,
+            memos,
             preferenceProfile,
             eventTitle: alert.event?.title
-          })
+          }
         } else {
-          setSelectedCardInfo({ notFound: true, eventTitle: alert.event?.title })
-        }
-      } catch (error) {
-        console.error('Failed to fetch card info:', error)
-        setSelectedCardInfo({ notFound: true, eventTitle: alert.event?.title })
-      }
-    } else {
-      // linkedCardIds가 없으면 참여자 이름으로 검색 (기존 방식)
-      let participants = alert.event?.participants || alert.participants
-      if (typeof participants === 'string') {
-        participants = participants.split(',').map(p => p.trim()).filter(p => p)
-      }
-      
-      if (participants && participants.length > 0) {
-        const cardInfo = await fetchParticipantCardInfo(participants[0])
-        if (cardInfo && cardInfo.id) {
-          setSelectedCardInfo({
-            ...cardInfo,
-            eventTitle: alert.event?.title,
-            allParticipants: participants
-          })
-        } else {
-          setSelectedCardInfo({
-            name: participants[0],
+          // 명함을 찾지 못한 경우
+          return {
+            name: participantName,
             notFound: true,
-            eventTitle: alert.event?.title,
-            allParticipants: participants
-          })
+            eventTitle: alert.event?.title
+          }
         }
-      } else {
-        setSelectedCardInfo({ noParticipants: true })
-      }
+      })
+      
+      const cardInfos = await Promise.all(cardInfoPromises)
+      setCardInfoList(cardInfos)
+      setSelectedCardInfo(cardInfos[0] || null)
+    } else {
+      setCardInfoList([])
+      setSelectedCardInfo({ noParticipants: true })
     }
     setLoadingCardInfo(false)
+  }
+
+  // 다음 명함으로 이동
+  const handleNextCard = () => {
+    if (currentCardIndex < cardInfoList.length - 1) {
+      const nextIndex = currentCardIndex + 1
+      setCurrentCardIndex(nextIndex)
+      setSelectedCardInfo(cardInfoList[nextIndex])
+    }
+  }
+
+  // 이전 명함으로 이동
+  const handlePrevCard = () => {
+    if (currentCardIndex > 0) {
+      const prevIndex = currentCardIndex - 1
+      setCurrentCardIndex(prevIndex)
+      setSelectedCardInfo(cardInfoList[prevIndex])
+    }
+  }
+
+  // 메모 보러가기 버튼 클릭 - 메모 페이지로 이동
+  const handleGoToMemo = () => {
+    if (selectedCardInfo?.id) {
+      // 팝업 상태 저장 (뒤로가기 시 복원을 위해)
+      const popupState = {
+        showCardInfoModal: true,
+        cardInfoList: cardInfoList,
+        currentCardIndex: currentCardIndex,
+        alertData: {
+          linkedCardIds: cardInfoList.map(card => card.id).filter(id => id),
+          participants: cardInfoList.map(card => card.name || (card.notFound ? card.name : '알 수 없음')),
+          event: {
+            title: cardInfoList[0]?.eventTitle || '',
+            participants: cardInfoList.map(card => card.name || (card.notFound ? card.name : '알 수 없음'))
+          }
+        }
+      }
+      navigate(`/memo?businessCardId=${selectedCardInfo.id}`, { 
+        state: { 
+          returnToDashboard: true,
+          popupState: popupState
+        } 
+      })
+    }
   }
 
   // 알림 텍스트에서 이름 추출 함수
@@ -831,7 +1194,12 @@ function LandingPage() {
                 <div className="card-info-person-header">
                   <span className="card-info-name">{selectedCardInfo.name}</span>
                 </div>
-                <p className="card-info-not-found">명함에 등록되지 않은 참여자입니다.<br/>명함을 등록하면 선호도 프로필을 확인할 수 있어요!</p>
+                <div className="no-memo-message">
+                  <p className="no-memo-text">명함에 등록되지 않은 참여자입니다.</p>
+                  <p className="no-memo-hint">
+                    명함을 등록하고 메모를 남기면<br/>선호도 프로필을 확인할 수 있어요!
+                  </p>
+                </div>
               </div>
             ) : selectedCardInfo ? (
               <div className="card-info-content">
@@ -844,9 +1212,16 @@ function LandingPage() {
                   </span>
                 </div>
                 
-                {/* 선호도 프로필 - 메인 */}
-                {selectedCardInfo.preferenceProfile ? (
-                  <div className="preference-profile-main">
+                {/* 메모가 없는 경우 */}
+                {(!selectedCardInfo.memos || selectedCardInfo.memos.length === 0) ? (
+                  <div className="no-memo-message">
+                    <p className="no-memo-text">아직 메모가 없어요.</p>
+                    <p className="no-memo-hint">상대방에 대한 정보를 메모로 남겨보세요!</p>
+                  </div>
+                ) : (
+                  /* 메모가 있는 경우 - 선호도 프로필 표시 */
+                  selectedCardInfo.preferenceProfile ? (
+                    <div className="preference-profile-main">
                     {/* 좋아하는 것 */}
                     {selectedCardInfo.preferenceProfile.likes && (
                       <div className="pref-section pref-likes">
@@ -941,15 +1316,70 @@ function LandingPage() {
                         </div>
                       </div>
                     )}
-                  </div>
-                ) : (
-                  <div className="no-preference-profile">
-                    <p>아직 선호도 프로필이 없어요.</p>
-                    <p className="no-pref-hint">대화 내용을 메모로 남기면<br/>AI가 선호도를 분석해드려요!</p>
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="no-preference-profile">
+                      <p>아직 선호도 프로필이 없어요.</p>
+                      <p className="no-pref-hint">대화 내용을 메모로 남기면<br/>AI가 선호도를 분석해드려요!</p>
+                    </div>
+                  )
                 )}
               </div>
             ) : null}
+            
+            {/* 메모 보러가기/남기러가기 버튼 (명함이 있는 경우만) */}
+            {selectedCardInfo?.id && !selectedCardInfo?.notFound && (
+              <div className="card-info-memo-button-container">
+                <button 
+                  className="card-info-memo-button"
+                  onClick={handleGoToMemo}
+                >
+                  {selectedCardInfo.memos && selectedCardInfo.memos.length > 0 
+                    ? '메모 보러가기' 
+                    : '메모 남기러가기'}
+                </button>
+              </div>
+            )}
+            
+            {/* 명함이 없는 경우 명함 등록 안내 */}
+            {selectedCardInfo?.notFound && (
+              <div className="card-info-memo-button-container">
+                <button 
+                  className="card-info-memo-button"
+                  onClick={() => {
+                    setShowCardInfoModal(false)
+                    navigate('/manual-add')
+                  }}
+                >
+                  명함 등록하기
+                </button>
+              </div>
+            )}
+            
+            {/* 하단 인디케이터 (여러 명일 때만 표시) */}
+            {cardInfoList.length > 1 && (
+              <div className="card-info-bottom-navigation">
+                <button 
+                  className="card-nav-button card-nav-prev"
+                  onClick={handlePrevCard}
+                  disabled={currentCardIndex === 0}
+                >
+                  ‹
+                </button>
+                <div className="card-info-indicator">
+                  <span className="card-indicator-text">
+                    {currentCardIndex + 1} / {cardInfoList.length}
+                  </span>
+                </div>
+                <button 
+                  className="card-nav-button card-nav-next"
+                  onClick={handleNextCard}
+                  disabled={currentCardIndex === cardInfoList.length - 1}
+                >
+                  ›
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -958,26 +1388,82 @@ function LandingPage() {
       {showEndedEventPopup && endedEventInfo && (
         <div className="ended-event-popup-overlay">
           <div className="ended-event-popup">
-            <div className="ended-event-popup-icon">
-              {endedEventInfo.hasLinkedCard ? '📝' : '📇'}
-            </div>
             <h3 className="ended-event-popup-title">
               {endedEventInfo.title}
             </h3>
             <p className="ended-event-popup-subtitle">일정이 종료되었어요</p>
-            <p className="ended-event-popup-message">
-              {endedEventInfo.hasLinkedCard 
-                ? '상대방에 대한 사소한 정보라도\n메모로 남겨봐요!'
-                : '오늘 만난 상대방의 정보를\n명함으로 등록해봐요!'
-              }
-            </p>
+            
+            <div className="ended-event-popup-sections">
+              {/* 명함 등록하기 섹션 */}
+              <div className="ended-event-section">
+                <div className="ended-event-section-header">
+                  <span className="ended-event-section-icon">📇</span>
+                  <h4 className="ended-event-section-title">명함 등록하기</h4>
+                </div>
+                <p className="ended-event-section-description">
+                  오늘 만난 상대방의 정보를<br />명함으로 등록해봐요
+                </p>
+                <div className="ended-event-participants-list">
+                  {endedEventInfo.participantsList && endedEventInfo.participantsList
+                    .filter(name => {
+                      const trimmedName = name.trim()
+                      return !endedEventInfo.participantCardMap?.has(trimmedName)
+                    })
+                    .map((name, index) => (
+                      <button
+                        key={index}
+                        className="ended-event-participant-btn"
+                        onClick={() => handleRegisterCard(name)}
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  {endedEventInfo.participantsList && endedEventInfo.participantsList
+                    .filter(name => {
+                      const trimmedName = name.trim()
+                      return !endedEventInfo.participantCardMap?.has(trimmedName)
+                    }).length === 0 && (
+                    <p className="ended-event-no-participants">등록할 명함이 없어요</p>
+                  )}
+                </div>
+              </div>
+
+              {/* 메모 작성하기 섹션 */}
+              <div className="ended-event-section">
+                <div className="ended-event-section-header">
+                  <span className="ended-event-section-icon">📝</span>
+                  <h4 className="ended-event-section-title">메모 작성하기</h4>
+                </div>
+                <p className="ended-event-section-description">
+                  상대방에 대한 사소한 정보라도<br />메모로 남겨봐요
+                </p>
+                <div className="ended-event-participants-list">
+                  {endedEventInfo.participantsList && endedEventInfo.participantsList
+                    .filter(name => {
+                      const trimmedName = name.trim()
+                      return endedEventInfo.participantCardMap?.has(trimmedName)
+                    })
+                    .map((name, index) => (
+                      <button
+                        key={index}
+                        className="ended-event-participant-btn"
+                        onClick={() => handleWriteMemo(name)}
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  {endedEventInfo.participantsList && endedEventInfo.participantsList
+                    .filter(name => {
+                      const trimmedName = name.trim()
+                      return endedEventInfo.participantCardMap?.has(trimmedName)
+                    }).length === 0 && (
+                    <p className="ended-event-no-participants">메모를 작성할 명함이 없어요</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div className="ended-event-popup-buttons">
-              <button 
-                className="ended-event-btn ended-event-btn-primary"
-                onClick={handleEndedEventYes}
-              >
-                {endedEventInfo.hasLinkedCard ? '메모 작성하기' : '명함 등록하기'}
-              </button>
               <button 
                 className="ended-event-btn ended-event-btn-secondary"
                 onClick={handleEndedEventNo}
