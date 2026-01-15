@@ -196,17 +196,17 @@ function AICardSelectPage() {
           </div>
           {/* Search Bar and History Button Container */}
           <div className="search-history-container">
-            <div className="ai-card-select-search-bar">
-              <div className="ai-card-select-search-icon-wrapper">
-                <SearchIcon />
-              </div>
-              <input
-                type="text"
-                className="ai-card-select-search-input"
-                placeholder="명함 검색 (이름, 회사, 직급)"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+          <div className="ai-card-select-search-bar">
+            <div className="ai-card-select-search-icon-wrapper">
+              <SearchIcon />
+            </div>
+            <input
+              type="text"
+              className="ai-card-select-search-input"
+              placeholder="명함 검색 (이름, 회사, 직급)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
             </div>
             <button className="history-button" onClick={handleHistoryClick}>
               추천 내역

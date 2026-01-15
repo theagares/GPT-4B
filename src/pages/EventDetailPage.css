@@ -6,6 +6,7 @@
   border-radius: 40px;
   overflow-y: auto;
   padding-bottom: 40px;
+  padding-top: 98px; /* 헤더 높이만큼 padding-top 추가 */
   position: relative;
   margin: 0 auto;
 }
@@ -25,35 +26,34 @@
 
 /* 헤더 */
 .event-detail-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 393px;
+  margin: 0 auto;
+  background-color: white;
+  z-index: 100;
+  padding: 56px 20px 34px 20px; /* ai-card-select와 동일 */
   display: flex;
-  align-items: center;
+  flex-direction: row; /* 가로 배치 */
+  align-items: flex-start; /* 상단 정렬 */
   justify-content: space-between;
-  padding: 66px 18px 0;
-  height: 98px;
-  position: relative;
+  box-sizing: border-box;
 }
 
 .back-button {
-  display: flex;
-  align-items: flex-end;
-  gap: 0px;
-  background: transparent;
+  background: none;
   border: none;
   cursor: pointer;
-  padding: 6px 8px;
-  border-radius: 8px;
-  font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: #0a0a0a;
-  line-height: 20px;
-  letter-spacing: -0.1504px;
+  padding: 4px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 2px; /* ai-card-select와 동일 */
   position: absolute;
-  left: 18px;
-  top: 66px;
-  white-space: nowrap;
-  flex-direction: row;
-  transition: background-color 0.2s;
+  left: 24px; /* ai-card-select와 동일 */
+  top: 56px; /* ai-card-select와 동일 */
 }
 
 .back-button:hover {
@@ -78,44 +78,44 @@
   height: 16px;
 }
 
+.event-detail-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
 .page-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #0a0a0a;
-  line-height: 24px;
-  letter-spacing: -0.3125px;
   margin: 0;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  line-height: 1.4;
 }
 
 .edit-button {
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: 4px 12px; /* 세로 패딩 줄임 */
+  border-radius: 9999px; /* 완전히 둥근 모서리 */
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: #584cdc;
-  line-height: 20px;
+  line-height: 1.4; /* line-height 조정 */
   letter-spacing: -0.1504px;
-  position: absolute;
-  right: 18px;
-  top: 66px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition: all 0.2s;
 }
 
 .edit-actions {
   display: flex;
   gap: 12px;
-  position: absolute;
-  right: 18px;
-  top: 66px;
   align-items: center;
 }
 
@@ -186,7 +186,8 @@
   margin-left: -18px;
   padding: 0;
   padding-left: 18px;
-  justify-content: flex-start;
+  padding-right: 18px;
+  justify-content: space-between; /* 일정 정보 텍스트와 편집 버튼을 양쪽에 배치 */
   white-space: nowrap;
   flex-wrap: nowrap;
 }

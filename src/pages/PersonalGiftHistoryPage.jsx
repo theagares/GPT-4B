@@ -30,7 +30,17 @@ function PersonalGiftHistoryPage() {
   }
 
   // 사용 가능한 모든 연도 추출
-  const availableYears = [...new Set(gifts.map(g => getGiftYear(g)))].sort((a, b) => b.localeCompare(a))
+  // 선물이 없거나 모든 연도의 선물 개수가 0이면 현재 연도만 표시
+  const allGiftCounts = gifts.reduce((acc, g) => {
+    const year = getGiftYear(g)
+    acc[year] = (acc[year] || 0) + 1
+    return acc
+  }, {})
+  const hasAnyGifts = gifts.length > 0 && Object.values(allGiftCounts).some(count => count > 0)
+  
+  const availableYears = !hasAnyGifts
+    ? [new Date().getFullYear().toString()]
+    : [...new Set(gifts.map(g => getGiftYear(g)))].sort((a, b) => b.localeCompare(a))
 
   // 초기 선택 연도: 현재 연도
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString())
@@ -168,8 +178,9 @@ function PersonalGiftHistoryPage() {
   })
 
   // 연도별 개수 계산 (동적으로)
+  // 선물이 없으면 현재 연도만 0으로 표시
   const yearCounts = availableYears.reduce((acc, year) => {
-    acc[year] = gifts.filter(g => getGiftYear(g) === year).length
+    acc[year] = gifts.length === 0 ? 0 : gifts.filter(g => getGiftYear(g) === year).length
     return acc
   }, {})
 

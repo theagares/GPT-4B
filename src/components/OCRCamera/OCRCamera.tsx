@@ -124,7 +124,7 @@ const OCRCamera = ({ onCapture, isProcessing = false, onError, onCameraToggle }:
             </div>
           </div>
         </button>
-        <p className="ocr-capture-hint">버튼을 눌러 촬영하세요</p>
+        <p className="ocr-capture-hint">촬영</p>
       </div>
     </div>
   );
