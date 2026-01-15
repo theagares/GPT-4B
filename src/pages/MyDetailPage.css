@@ -243,24 +243,54 @@
 }
 
 .customize-button {
-  background: #584cdc;
-  border: none;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(5px) saturate(180%);
+  -webkit-backdrop-filter: blur(5px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 12px;
-  padding: 6px 12px;
+  padding: 4px 12px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 11px;
   font-weight: 500;
   color: white;
-  line-height: 18px;
+  line-height: 1.4;
   letter-spacing: -0.1504px;
   cursor: pointer;
   width: 110px;
-  height: 30px;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 5;
   flex-shrink: 0;
+  transition: all 0.2s;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.customize-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  border-radius: 12px 12px 0 0;
+}
+
+.customize-button:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 .logout-button-top {
@@ -366,6 +396,12 @@
   height: 80px;
   display: flex;
   align-items: center;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.stat-card:hover {
+  background: #f3f4f6;
 }
 
 .stat-content {
@@ -586,11 +622,11 @@
 }
 
 .edit-my-info-button:hover {
-  background: #f9fafb;
+  background: #e5e7eb;
 }
 
 .edit-my-info-button:active {
-  transform: scale(0.95);
+  background: #d1d5db;
 }
 
 /* 로그아웃 섹션 */

@@ -64,7 +64,8 @@ const ManualAddCardPage = () => {
 
   return (
     <div className="manual-add-card-page">
-      <div className="manual-add-card-container">
+      {/* Fixed Header */}
+      <div className="manual-add-card-header">
         <button
           className="manual-add-card-back-button"
           onClick={handleBack}
@@ -75,13 +76,16 @@ const ManualAddCardPage = () => {
             <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-
-        <div className="manual-add-card-header">
+        <div className="manual-add-card-header-content">
           <h1 className="manual-add-card-title">수동 명함 등록</h1>
           <p className="manual-add-card-subtitle">
             상대방의 정보를 직접 입력해서 명함을 등록할 수 있어요.
           </p>
         </div>
+        <div style={{ width: '24px' }}></div> {/* Placeholder for right alignment */}
+      </div>
+
+      <div className="manual-add-card-container">
 
         <CardForm onSubmit={handleSubmit} hideMemo={true} />
       </div>

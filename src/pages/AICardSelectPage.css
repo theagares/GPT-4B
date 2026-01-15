@@ -67,25 +67,38 @@
   opacity: 0.7;
 }
 
+.search-history-container {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  width: 100%;
+}
+
 .history-button {
-  background: none;
-  border: none;
+  background-color: #584cdc;
+  border: 1px solid #584cdc;
+  border-radius: 9999px;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 4px 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  right: 24px;
-  top: 25px;
   font-size: 14px;
   font-weight: 500;
-  color: #584cdc;
+  color: white;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  white-space: nowrap;
+  flex-shrink: 0;
+  height: 26px;
+  margin-left: 12px;
+  box-sizing: border-box;
+  transition: background-color 0.2s;
 }
 
 .history-button:hover {
-  opacity: 0.7;
+  background-color: #4539b0;
+  color: white;
+  border-color: #4539b0;
 }
 
 .ai-card-select-header-content {
@@ -135,7 +148,7 @@
 
 .ai-card-select-header .ai-card-select-search-bar {
   position: relative;
-  width: 100%;
+  flex: 1;
   margin: 0;
 }
 

@@ -293,17 +293,16 @@ function GiftRecommendResultPage() {
               <path d="M15 18L9 12L15 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <h2 className="header-title">
-            {userPosition && userCompany ? (
-              <>
-                <span className="header-name">{userName}</span>
-                <span className="header-company-position"> {userCompany} {userPosition}</span>
-              </>
-            ) : (
-              `${userName}님을 위한 선물추천`
+          <div className="gift-result-header-content">
+            <h2 className="gift-result-header-title">{userName}</h2>
+            {(userCompany || userPosition) && (
+              <p className="gift-result-header-subtitle">
+                {userCompany && userCompany}
+                {userCompany && userPosition && ' '}
+                {userPosition && userPosition}
+              </p>
             )}
-          </h2>
-          <div style={{ width: '24px' }}></div>
+          </div>
         </div>
 
         {/* Chat Messages */}

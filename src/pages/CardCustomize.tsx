@@ -83,6 +83,16 @@ const CardCustomize = () => {
     setSelectedDesign(designId);
   };
 
+  const handleBack = () => {
+    // 내 명함인 경우 My 상세 페이지로 이동
+    if (card.id === 'my-card') {
+      navigate('/my/detail');
+    } else {
+      // 일반 명함인 경우 명함집 페이지로 이동하고 상세 모달 열기
+      navigate('/business-cards', { state: { openCardId: card.id } });
+    }
+  };
+
   const handleApply = async () => {
     // 내 명함인 경우 DB에 저장
     if (card.id === 'my-card') {
@@ -103,16 +113,17 @@ const CardCustomize = () => {
     } else {
       // 일반 명함인 경우 store에 저장
       updateCard(card.id, { design: selectedDesign });
-      navigate('/business-cards', { state: { selectCardId: card.id } });
+      navigate('/business-cards', { state: { openCardId: card.id } });
     }
   };
 
   return (
     <div className="card-customize-page">
-      <div className="card-customize-container">
+      {/* Fixed Header */}
+      <div className="card-customize-header">
         <button
           className="card-customize-back-button"
-          onClick={() => navigate(-1)}
+          onClick={handleBack}
           type="button"
           aria-label="뒤로가기"
         >
@@ -120,13 +131,15 @@ const CardCustomize = () => {
             <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-
-        <div className="card-customize-header">
-          <h1 className="card-customize-title">명함 디자인 선택</h1>
+        <div className="card-customize-header-content">
+          <p className="card-customize-title">명함 디자인 선택</p>
           <p className="card-customize-subtitle">
             원하는 디자인을 선택해주세요
           </p>
         </div>
+      </div>
+
+      <div className="card-customize-container">
 
         <div className="card-customize-preview-section">
           <div className="card-customize-preview-label">미리보기</div>

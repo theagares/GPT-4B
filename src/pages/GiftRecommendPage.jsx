@@ -234,17 +234,19 @@ function GiftRecommendPage() {
 
   return (
     <div className="gift-recommend-page">
-      <div className="gift-recommend-container">
-        {/* Header */}
-        <div className="gift-recommend-header">
-          <button className="back-button" onClick={handleBack}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-          <h1 className="page-title">선물 추천 설정</h1>
-          <div style={{ width: '40px' }}></div>
+      {/* Fixed Header */}
+      <div className="gift-recommend-header">
+        <button className="back-button" onClick={handleBack}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <div className="gift-recommend-header-content">
+          <h1 className="gift-recommend-header-title">선물 추천 설정</h1>
         </div>
+      </div>
+
+      <div className="gift-recommend-container">
 
         {/* Contact Info */}
         <div 

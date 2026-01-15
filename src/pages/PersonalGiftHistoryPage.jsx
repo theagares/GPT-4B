@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
-import { giftAPI } from '../utils/api'
+import { giftAPI, userAPI } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
 import './PersonalGiftHistoryPage.css'
 
@@ -17,6 +17,7 @@ function PersonalGiftHistoryPage() {
   const [gifts, setGifts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [userName, setUserName] = useState('')
 
   // 모든 선물에서 연도 추출 함수
   const getGiftYear = (gift) => {
@@ -40,6 +41,26 @@ function PersonalGiftHistoryPage() {
       setSelectedYear(availableYears[0])
     }
   }, [gifts.length]) // gifts.length를 의존성으로 사용하여 gifts가 로드될 때만 실행
+
+  // DB에서 사용자 이름 가져오기
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (!isAuthenticated()) {
+        return
+      }
+
+      try {
+        const response = await userAPI.getProfile()
+        if (response.data.success && response.data.data.name) {
+          setUserName(response.data.data.name)
+        }
+      } catch (error) {
+        console.error('Failed to fetch user name:', error)
+      }
+    }
+
+    fetchUserName()
+  }, [])
 
   // DB에서 선물 이력 가져오기 (더미 데이터 없이 DB 데이터만 사용)
   useEffect(() => {
@@ -161,30 +182,41 @@ function PersonalGiftHistoryPage() {
   }
 
   // UI 형식으로 변환
-  const giftHistory = giftHistoryByYear.map((gift, index) => ({
-    id: gift.id,
-    image: getGiftImage(index, gift.giftImage),
-    recipient: gift.cardName || '이름 없음',
-    recipientPosition: gift.cardCompany || '',
-    giftName: gift.giftName || '선물',
-    category: gift.category || '기타',
-    status: '전달 완료',
-    date: formatDate(gift.purchaseDate || gift.createdAt),
-    price: formatPrice(gift.price)
-  }))
+  const giftHistory = giftHistoryByYear.map((gift, index) => {
+    const recipientName = gift.cardName || '이름 없음'
+    const recipientCompany = gift.cardCompany || ''
+    const recipientDisplay = recipientCompany 
+      ? `${recipientName} (${recipientCompany})`
+      : recipientName
+    
+    return {
+      id: gift.id,
+      image: getGiftImage(index, gift.giftImage),
+      recipient: recipientDisplay,
+      recipientPosition: '', // No longer used separately
+      giftName: gift.giftName || '선물',
+      category: gift.category || '기타',
+      status: '전달 완료',
+      date: formatDate(gift.purchaseDate || gift.createdAt),
+      price: formatPrice(gift.price)
+    }
+  })
 
   return (
     <div className="personal-gift-history-page">
-      <div className="personal-gift-history-container">
-        {/* 헤더 */}
-        <div className="personal-gift-history-header">
-          <button className="personal-back-button" onClick={handleBack}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-          <h1 className="personal-gift-history-title">선물 이력</h1>
+      {/* Fixed Header */}
+      <div className="personal-gift-history-header">
+        <button className="personal-back-button" onClick={handleBack}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <div className="personal-gift-history-header-content">
+          <h1 className="personal-gift-history-title">
+            {userName ? `${userName}님의 선물 이력` : '선물 이력'}
+          </h1>
         </div>
+        <div style={{ width: '24px' }}></div> {/* Placeholder for right alignment */}
 
         {/* 연도별 탭 */}
         {availableYears.length > 0 && (
@@ -200,6 +232,9 @@ function PersonalGiftHistoryPage() {
             ))}
           </div>
         )}
+      </div>
+
+      <div className="personal-gift-history-container">
 
         {/* 선물 이력 리스트 */}
         {loading ? (
@@ -217,7 +252,7 @@ function PersonalGiftHistoryPage() {
                 </div>
                 <div className="personal-gift-info">
                       <div className="personal-gift-header">
-                        <p className="personal-gift-recipient">{gift.recipient} {gift.recipientPosition}</p>
+                        <p className="personal-gift-recipient">{gift.recipient}</p>
                         <p className="personal-gift-name">{gift.giftName}</p>
                   </div>
                       <div className="personal-gift-badges">

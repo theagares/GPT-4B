@@ -20,8 +20,8 @@ function SearchIcon() {
 function PenIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
@@ -30,8 +30,8 @@ function PenIcon() {
 function CameraIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 4H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <circle cx="12" cy="13" r="4" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 4H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="12" cy="13" r="4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
@@ -619,9 +619,7 @@ function BusinessCardWallet() {
           <p className="wallet-page-header-title">{userName ? `${userName}님의 명함집` : '명함집'}</p>
           <p className="wallet-page-header-subtitle">명함을 등록하거나 세부 내용을 수정할 수 있어요</p>
         </div>
-      </div>
 
-      <div className="wallet-container">
         {/* Search Section */}
         <div className="search-section">
           <div className="search-wrapper">
@@ -660,20 +658,47 @@ function BusinessCardWallet() {
               <span className="action-icon">
                 <CameraIcon />
               </span>
-              <span className="action-label">OCR로 명함 추가</span>
+              <span className="action-label">OCR 명함 등록</span>
             </button>
           </div>
           {filteredCards.length > 0 && (
-            <div className="view-all-section">
-              <button 
-                className="view-all-btn"
-                onClick={() => setIsGridView(!isGridView)}
-              >
-                {isGridView ? '슬라이드로 보기' : '전체 펼쳐보기'}
-              </button>
+            <div className="view-toggle-section">
+              <div className="view-toggle-container">
+                <button 
+                  className={`view-toggle-option ${!isGridView ? 'active' : ''}`}
+                  onClick={() => setIsGridView(false)}
+                >
+                  <div className="view-toggle-option-content">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="2" y="4" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                      <rect x="6" y="4" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                      <rect x="10" y="4" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                    </svg>
+                    <span>슬라이드</span>
+                  </div>
+                </button>
+                <button 
+                  className={`view-toggle-option ${isGridView ? 'active' : ''}`}
+                  onClick={() => setIsGridView(true)}
+                >
+                  <div className="view-toggle-option-content">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                      <rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                      <rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                      <rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                    </svg>
+                    <span>전체</span>
+                  </div>
+                </button>
+                <div className={`view-toggle-slider ${isGridView ? 'right' : 'left'}`}></div>
+              </div>
             </div>
           )}
         </div>
+      </div>
+
+      <div className={`wallet-container ${!isGridView ? 'slide-view' : ''}`}>
 
         {/* Usage Count and Guide - Below action buttons */}
         {!isGridView && (
@@ -1248,30 +1273,32 @@ function CardDetailModal({ card, onClose }) {
           </button>
         </div>
 
-        {/* Tab Selection */}
-        <div className="modal-tab-container">
-          <div className="modal-tab-wrapper">
-            <button
-              type="button"
-              className={`modal-tab-button ${activeTab === 'info' ? 'active' : ''}`}
-              onClick={() => setActiveTab('info')}
-            >
-              명함 정보
-            </button>
-            <button
-              type="button"
-              className={`modal-tab-button ${activeTab === 'preferences' ? 'active' : ''}`}
-              onClick={() => setActiveTab('preferences')}
-            >
-              선호도 프로필
-            </button>
-          </div>
-        </div>
-
         {/* Business Card Information Section */}
-        {activeTab === 'info' && (
         <div className="modal-info-section">
           <div className="modal-info-card">
+            {/* Tab Selection */}
+            <div className="modal-tab-container">
+              <div className="modal-tab-toggle-container">
+                <button
+                  type="button"
+                  className={`modal-tab-toggle-option ${activeTab === 'info' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('info')}
+                >
+                  명함 정보
+                </button>
+                <button
+                  type="button"
+                  className={`modal-tab-toggle-option ${activeTab === 'preferences' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('preferences')}
+                >
+                  선호도 프로필
+                </button>
+                <div className={`modal-tab-toggle-slider ${activeTab === 'preferences' ? 'right' : 'left'}`}></div>
+              </div>
+            </div>
+
+            {activeTab === 'info' && (
+            <>
             {/* Phone Number */}
             <div className="modal-info-row">
               <span className="info-icon">
@@ -1324,24 +1351,11 @@ function CardDetailModal({ card, onClose }) {
                 </span>
               </div>
             </div>
-          </div>
-        </div>
-        )}
+            </>
+            )}
 
-        {/* Preferences Section */}
-        {activeTab === 'preferences' && (
-        <div className="modal-preferences-section">
-          <div className="modal-preferences-header">
-            <button
-              type="button"
-              onClick={handleRebuildPreferences}
-              disabled={isRebuilding}
-              className="modal-rebuild-button"
-            >
-              {isRebuilding ? '갱신 중...' : '프로필 갱신'}
-            </button>
-          </div>
-
+            {activeTab === 'preferences' && (
+            <div className="modal-preferences-section-inner">
           {isLoadingPreferences ? (
             <div className="modal-preferences-loading">선호도를 불러오는 중...</div>
           ) : (
@@ -1349,16 +1363,26 @@ function CardDetailModal({ card, onClose }) {
               {/* Likes */}
               {preferences.likes && preferences.likes.length > 0 && (
                 <div className="modal-preferences-category">
-                  <h4 className="modal-preferences-category-title">
-                    <span className="preference-like-icon">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="10" cy="10" r="8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        <circle cx="7" cy="8" r="1" fill="#0a0a0a"/>
-                        <circle cx="13" cy="8" r="1" fill="#0a0a0a"/>
-                        <path d="M6 13C6 13 7.5 15 10 15C12.5 15 14 13 14 13" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </span> 좋아함
-                  </h4>
+                  <div className="modal-preferences-category-header">
+                    <h4 className="modal-preferences-category-title">
+                      <span className="preference-like-icon">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="10" cy="10" r="8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          <circle cx="7" cy="8" r="1" fill="#0a0a0a"/>
+                          <circle cx="13" cy="8" r="1" fill="#0a0a0a"/>
+                          <path d="M6 13C6 13 7.5 15 10 15C12.5 15 14 13 14 13" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </span> 좋아함
+                    </h4>
+                    <button
+                      type="button"
+                      onClick={handleRebuildPreferences}
+                      disabled={isRebuilding}
+                      className="modal-rebuild-button"
+                    >
+                      {isRebuilding ? '갱신 중...' : '프로필 갱신'}
+                    </button>
+                  </div>
                   <div className="modal-preferences-chips">
                     {preferences.likes.map((item, index) => (
                       <div key={`like-${index}`} className="preference-chip preference-chip-like">
@@ -1524,8 +1548,10 @@ function CardDetailModal({ card, onClose }) {
               )}
             </div>
           )}
+            </div>
+            )}
+          </div>
         </div>
-        )}
       </div>
 
       {showToast && (
