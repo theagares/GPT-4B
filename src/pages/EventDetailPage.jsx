@@ -103,6 +103,21 @@ const formatTimeShort = (date) => {
 
 }
 
+const CATEGORIES = [
+  { id: '미팅', label: '미팅', color: '#584cdc' },
+  { id: '업무', label: '업무', color: '#3b82f6' },
+  { id: '개인', label: '개인', color: '#10b981' },
+  { id: '기타', label: '기타', color: '#6b7280' }
+]
+
+// hex 색상을 rgba로 변환하는 함수 (opacity 적용)
+function hexToRgba(hex, opacity = 0.05) {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`
+}
+
 function EventDetailPage() {
 
   const navigate = useNavigate()
@@ -152,6 +167,7 @@ function EventDetailPage() {
   const participantDropdownRef = useRef(null)
   const [showRegisterCardModal, setShowRegisterCardModal] = useState(false)
   const [selectedParticipantName, setSelectedParticipantName] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0])
 
   // 이벤트 데이터 로드 함수 (재사용 가능하도록 분리)
   const fetchEventData = async (showLoading = true) => {
@@ -278,6 +294,9 @@ function EventDetailPage() {
                 memo: eventData.memo || '',
                 notification: eventData.notification || '1일 전'
               })
+              // 카테고리 설정
+              const category = CATEGORIES.find(cat => cat.id === eventData.category) || CATEGORIES[0]
+              setSelectedCategory(category)
               if (showLoading) setLoading(false)
               return
             }
@@ -303,6 +322,9 @@ function EventDetailPage() {
             memo: eventData.memo || '',
             notification: eventData.notification || ''
           })
+          // 카테고리 설정
+          const category = CATEGORIES.find(cat => cat.id === eventData.category) || CATEGORIES[0]
+          setSelectedCategory(category)
           if (showLoading) setLoading(false)
         } else {
           // 이벤트를 찾을 수 없으면 에러 표시
@@ -359,6 +381,10 @@ function EventDetailPage() {
 
     setShowNotificationDropdown(false)
 
+  }
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category)
   }
 
   // 로컬 시간을 MySQL DATETIME 형식으로 변환하는 함수 (YYYY-MM-DD HH:mm:ss)
@@ -613,9 +639,9 @@ function EventDetailPage() {
           title: formData.title,
           startDate: toMySQLDateTime(startDate),
           endDate: toMySQLDateTime(endDate),
-          category: event.category || '미팅',
-          color: event.color || '#4A90E2',
-          description: event.description || event.category || '미팅',
+          category: selectedCategory.id,
+          color: selectedCategory.color,
+          description: selectedCategory.id,
           location: event.location || '',
           participants: participantNames,
           memo: formData.memo || '',
@@ -849,13 +875,15 @@ function EventDetailPage() {
 
       <div className="event-detail-header">
 
-        <button className="back-button" onClick={handleBack}>
+        {!isEditing && (
+          <button className="back-button" onClick={handleBack}>
 
-          <span className="back-icon">
-            <BackIcon />
-          </span>
+            <span className="back-icon">
+              <BackIcon />
+            </span>
 
-        </button>
+          </button>
+        )}
 
         <div className="event-detail-header-content">
           <h2 className="page-title">일정 상세</h2>
@@ -866,7 +894,15 @@ function EventDetailPage() {
         ) : (
           <div className="edit-actions">
             <button className="cancel-button" onClick={handleCancel}>취소</button>
-            <button className="save-button" onClick={handleSave}>저장</button>
+            <button 
+              className="save-button" 
+              onClick={handleSave}
+              style={{
+                background: selectedCategory.color,
+              }}
+            >
+              저장
+            </button>
           </div>
         )}
 
@@ -882,7 +918,14 @@ function EventDetailPage() {
 
         </div>
 
-        <div className="meeting-info-content">
+        <div 
+          className="meeting-info-content"
+          style={{
+            background: isEditing 
+              ? hexToRgba(selectedCategory.color, 0.05)
+              : (event?.color ? hexToRgba(event.color, 0.05) : '#eeeeee')
+          }}
+        >
 
           {isEditing ? (
 
@@ -900,7 +943,26 @@ function EventDetailPage() {
 
                 placeholder="일정 제목"
 
+                style={{
+                  borderBottomColor: selectedCategory.color,
+                  '--category-bg-color': hexToRgba(selectedCategory.color, 0.05)
+                }}
+
               />
+
+              <div className="category-options-wrapper">
+                {CATEGORIES.map((category) => (
+                  <button
+                    key={category.id}
+                    type="button"
+                    className={`category-option-button ${selectedCategory.id === category.id ? 'selected' : ''}`}
+                    onClick={() => handleCategorySelect(category)}
+                  >
+                    <div className="category-dot" style={{ backgroundColor: category.color }} />
+                    <span>{category.label}</span>
+                  </button>
+                ))}
+              </div>
 
               <div className="date-time-info">
 
@@ -912,13 +974,18 @@ function EventDetailPage() {
 
                   onClick={() => setShowDatePicker(!showDatePicker)}
 
+                  style={{
+                    background: hexToRgba(selectedCategory.color, 0.05),
+                    borderColor: hexToRgba(selectedCategory.color, 0.2)
+                  }}
+
                 >
 
                   {formatDateForDisplay(formData.startDate || event.startDate)}
 
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                    <path d="M4 6L8 10L12 6" stroke="#6a7282" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M4 6L8 10L12 6" stroke={selectedCategory.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
 
                   </svg>
 
@@ -932,13 +999,18 @@ function EventDetailPage() {
 
                   onClick={() => setShowTimePicker(!showTimePicker)}
 
+                  style={{
+                    background: hexToRgba(selectedCategory.color, 0.05),
+                    borderColor: hexToRgba(selectedCategory.color, 0.2)
+                  }}
+
                 >
 
                   {formatTimeForDisplay(formData.startDate || event.startDate)} ~ {formatTimeForDisplay(formData.endDate || event.endDate)}
 
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                    <path d="M4 6L8 10L12 6" stroke="#6a7282" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M4 6L8 10L12 6" stroke={selectedCategory.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
 
                   </svg>
 
@@ -956,137 +1028,27 @@ function EventDetailPage() {
                 <h4 className="event-title">{event.title}</h4>
               </div>
 
-              <p className="date-info">{formatDateForDisplay(event.startDate)}</p>
+              <p 
+                className="date-info"
+                style={{
+                  color: event?.color || '#0a0a0a'
+                }}
+              >
+                {formatDateForDisplay(event.startDate)}
+              </p>
 
-              <p className="time-info">{formatTimeForDisplay(event.startDate)} ~ {formatTimeForDisplay(event.endDate)}</p>
+              <p 
+                className="time-info"
+                style={{
+                  color: event?.color || '#0a0a0a'
+                }}
+              >
+                {formatTimeForDisplay(event.startDate)} ~ {formatTimeForDisplay(event.endDate)}
+              </p>
 
             </>
 
           )}
-
-          
-
-          {/* 시간 타임라인 - Meeting Info 내부로 이동 */}
-
-          <div className="time-timeline">
-
-            {(() => {
-
-              const displayStartDate = formData.startDate || event.startDate
-
-              const displayEndDate = formData.endDate || event.endDate
-
-              const startHour = displayStartDate.getHours()
-
-              const endHour = displayEndDate.getHours()
-
-              const startMinute = displayStartDate.getMinutes()
-
-              const endMinute = displayEndDate.getMinutes()
-
-              
-
-              // 시작 시간과 종료 시간을 분 단위로 계산
-
-              const startTotalMinutes = startHour * 60 + startMinute
-
-              const endTotalMinutes = endHour * 60 + endMinute
-
-              
-
-              // 시작 시간의 이전 시간부터 종료 시간의 다음 시간까지 시간 라벨 생성
-
-              const startHourLabel = Math.max(0, startHour - 1) // 최소 0시
-
-              const endHourLabel = Math.min(23, endHour + 1) // 최대 23시
-
-              
-
-              const timeLabels = []
-
-              for (let hour = startHourLabel; hour <= endHourLabel; hour++) {
-
-                const period = hour < 12 ? '오전' : '오후'
-
-                const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour)
-
-                timeLabels.push({
-
-                  hour,
-
-                  minutes: hour * 60,
-
-                  label: `${period} ${displayHour}시`
-
-                })
-
-              }
-
-              
-
-              // 이벤트 바의 위치 계산 (각 시간 라벨의 높이를 기준으로)
-
-              const hourHeight = 30 // 각 시간 라벨의 높이 (픽셀) - 절반으로 줄임
-
-              const offset = 4 // 시간 라벨과 바의 정렬을 위한 오프셋
-
-              const eventStartPosition = ((startTotalMinutes - startHourLabel * 60) / 60) * hourHeight + offset
-
-              const eventEndPosition = ((endTotalMinutes - startHourLabel * 60) / 60) * hourHeight + offset
-
-              const eventHeight = eventEndPosition - eventStartPosition
-
-              
-
-              return (
-
-                <div className="timeline-wrapper">
-
-                  <div className="timeline-labels">
-
-                    {timeLabels.map((timeLabel, index) => (
-
-                      <div key={index} className="timeline-label-item" style={{ height: `${hourHeight}px` }}>
-
-                        <span className="timeline-time">{timeLabel.label}</span>
-
-                      </div>
-
-                    ))}
-
-                  </div>
-
-                  <div className="timeline-bars-container">
-
-                    <div 
-
-                      className="timeline-event-bar" 
-
-                      style={{ 
-
-                        backgroundColor: event.color,
-
-                        top: `${eventStartPosition}px`,
-
-                        height: `${eventHeight}px`
-
-                      }}
-
-                    >
-
-                      <span className="timeline-event-title">{formData.title || event.title}</span>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              )
-
-            })()}
-
-          </div>
 
         </div>
 
@@ -1100,10 +1062,10 @@ function EventDetailPage() {
 
         {isEditing ? (
           <div className="participant-edit-wrapper">
-            <div className="participant-input-container" ref={participantDropdownRef}>
+            <div className="participant-section" ref={participantDropdownRef}>
               <input
                 type="text"
-                className="participant-edit-input"
+                className="participant-input"
                 value={participantInput}
                 onChange={handleParticipantInputChange}
                 onKeyPress={(e) => {
@@ -1117,11 +1079,16 @@ function EventDetailPage() {
                     }
                   }
                 }}
+                onFocus={() => {
+                  if (participantInput.trim().length >= 1) {
+                    fetchContactSuggestions(participantInput)
+                  }
+                }}
                 placeholder="이름으로 명함 검색 또는 직접 입력"
               />
               <button
                 type="button"
-                className="participant-add-button"
+                className={`participant-button ${participantInput.trim() ? 'active' : ''}`}
                 onClick={() => {
                   if (showContactSuggestions && contactSuggestions.length > 0) {
                     handleSelectContact(contactSuggestions[0])
@@ -1129,15 +1096,16 @@ function EventDetailPage() {
                     handleAddParticipant()
                   }
                 }}
+                disabled={!participantInput.trim()}
+                title="명함에 없는 참석자 직접 추가"
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8 3V13M3 8H13" stroke="#584cdc" strokeWidth="2" strokeLinecap="round"/>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </button>
               {/* 자동완성 드롭다운 */}
-              {showContactSuggestions && participantInput.trim().length >= 1 && (
+              {showContactSuggestions && contactSuggestions.length > 0 && (
                 <div className="contact-suggestions-dropdown">
-                  {/* 명함 검색 결과 */}
                   {contactSuggestions.map((contact) => (
                     <button
                       key={contact.id}
@@ -1145,35 +1113,36 @@ function EventDetailPage() {
                       onClick={() => handleSelectContact(contact)}
                     >
                       <div className="contact-suggestion-name">{contact.name}</div>
-                      {(contact.company || contact.position) && (
-                        <div className="contact-suggestion-info">
-                          {contact.company && <span>{contact.company}</span>}
-                          {contact.position && <span> · {contact.position}</span>}
-                        </div>
-                      )}
+                      <div className="contact-suggestion-info">
+                        {contact.company && <span>{contact.company}</span>}
+                        {contact.position && <span> · {contact.position}</span>}
+                      </div>
                     </button>
                   ))}
-                  {/* 직접 입력 옵션 (명함 검색 결과에 없거나 입력한 이름이 검색 결과에 없는 경우) */}
-                  {participantInput.trim() && 
-                   !contactSuggestions.some(c => c.name === participantInput.trim()) &&
-                   !participants.some(p => (typeof p === 'string' ? p : p.name) === participantInput.trim()) && (
-                    <button
-                      className="contact-suggestion-item"
-                      onClick={handleAddParticipant}
-                    >
-                      <div className="contact-suggestion-name">{participantInput.trim()}</div>
-                    </button>
-                  )}
                 </div>
               )}
             </div>
             {participants.length > 0 && (
               <div className="participants-display">
                 {participants.map((participant, index) => (
-                  <div key={index} className={`participant-item ${participant.isFromCard ? 'from-card' : ''}`}>
+                  <div 
+                    key={index} 
+                    className={`participant-item ${participant.isFromCard ? 'from-card' : ''}`}
+                    style={{
+                      background: hexToRgba(selectedCategory.color, 0.1),
+                      color: selectedCategory.color,
+                      border: `1px solid ${hexToRgba(selectedCategory.color, 0.3)}`
+                    }}
+                  >
                     <span>{typeof participant === 'string' ? participant : participant.name}</span>
                     {participant.isFromCard && (
-                      <span className="participant-card-badge" title="명함에서 추가됨">
+                      <span 
+                        className="participant-card-badge" 
+                        title="명함에서 추가됨"
+                        style={{
+                          color: selectedCategory.color
+                        }}
+                      >
                         <PersonBadgeIcon />
                       </span>
                     )}
@@ -1214,10 +1183,25 @@ function EventDetailPage() {
                         type="button"
                         className={`participant-item-button ${isFromCard ? 'from-card' : ''}`}
                         onClick={() => handleParticipantClick(participantName.trim(), index)}
+                        style={{
+                          background: event?.color 
+                            ? hexToRgba(event.color, 0.1)
+                            : '#f2f1ff',
+                          color: event?.color || '#584cdc',
+                          border: event?.color 
+                            ? `1px solid ${hexToRgba(event.color, 0.3)}`
+                            : 'none'
+                        }}
                       >
                         <span>{participantName.trim()}</span>
                         {isFromCard && (
-                          <span className="participant-card-badge" title="명함에서 추가됨">
+                          <span 
+                            className="participant-card-badge" 
+                            title="명함에서 추가됨"
+                            style={{
+                              color: event?.color || '#584cdc'
+                            }}
+                          >
                             <PersonBadgeIcon />
                           </span>
                         )}
@@ -1255,11 +1239,22 @@ function EventDetailPage() {
 
             placeholder="메모를 입력하세요"
 
+            style={{
+              background: '#f3f4f6 !important',
+              '--category-border-color': selectedCategory.color,
+              '--category-focus-bg-color': hexToRgba(selectedCategory.color, 0.08)
+            }}
+
           />
 
         ) : (
 
-          <div className="memo-content">
+          <div 
+            className="memo-content"
+            style={{
+              background: '#f3f4f6'
+            }}
+          >
 
             <p className={!event.memo ? 'memo-placeholder' : ''}>{event.memo || '메모가 없습니다'}</p>
 
@@ -1694,13 +1689,12 @@ function EventDetailPage() {
 
       )}
 
-      {/* 삭제 버튼 */}
-
-      <button className="delete-button" onClick={handleDelete}>
-
-        이벤트 삭제
-
-      </button>
+      {/* 편집 모드일 때만 삭제 버튼 표시 */}
+      {isEditing && (
+        <button className="delete-button" onClick={handleDelete}>
+          일정 삭제
+        </button>
+      )}
 
       {/* 명함 등록 팝업 모달 */}
       {showRegisterCardModal && (

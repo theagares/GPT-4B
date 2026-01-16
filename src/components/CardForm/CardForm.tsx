@@ -153,7 +153,7 @@ const CardForm = ({
           disabled={isSubmitting}
           className="card-form-submit-button"
         >
-          {isSubmitting ? "저장 중..." : "저장하기"}
+          {isSubmitting ? "저장 중..." : "등록하기"}
         </button>
       </form>
     </div>

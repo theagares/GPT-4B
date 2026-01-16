@@ -103,8 +103,8 @@
 }
 
 .card-confirm-edit-button:hover {
-  border-color: rgba(109, 48, 223, 1);
-  color: rgba(109, 48, 223, 1);
+  border-color: #584cdc;
+  color: #584cdc;
   background: #f9fafb;
 }
 
@@ -114,7 +114,7 @@
 
 .card-confirm-save-button {
   padding: 16px 20px;
-  background: rgba(109, 48, 223, 1);
+  background: #584cdc;
   border: none;
   border-radius: 12px;
   font-size: 14px;
@@ -123,13 +123,13 @@
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0px 4px 12px rgba(109, 48, 223, 0.3);
+  box-shadow: 0px 4px 12px rgba(88, 76, 220, 0.3);
 }
 
 .card-confirm-save-button:hover {
-  background: rgba(88, 76, 220, 1);
+  background: #4a3fc0;
   transform: translateY(-2px);
-  box-shadow: 0px 6px 16px rgba(109, 48, 223, 0.4);
+  box-shadow: 0px 6px 16px rgba(88, 76, 220, 0.4);
 }
 
 .card-confirm-save-button:active {

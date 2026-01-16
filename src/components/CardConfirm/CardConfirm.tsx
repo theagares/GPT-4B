@@ -89,7 +89,7 @@ const CardConfirm = ({
               onClick={onSaveEdit}
               className="card-confirm-save-button"
             >
-              저장 완료
+              등록하기
             </button>
           </>
         ) : (
@@ -107,7 +107,7 @@ const CardConfirm = ({
               onClick={onConfirm}
               className="card-confirm-save-button"
             >
-              {isSaving ? "저장 중..." : "저장 완료"}
+              {isSaving ? "저장 중..." : "등록하기"}
             </button>
           </>
         )}

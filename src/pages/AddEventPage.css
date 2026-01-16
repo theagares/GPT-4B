@@ -175,7 +175,7 @@
   cursor: pointer;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   color: #030213;
   line-height: 20px;
   letter-spacing: -0.1504px;
@@ -707,6 +707,7 @@
 
 .memo-input::placeholder {
   color: #717182;
+  font-weight: 300;
 }
 
 .notification-section {
@@ -1339,6 +1340,7 @@
 
 .memo-input::placeholder {
   color: #717182;
+  font-weight: 300;
 }
 
 
