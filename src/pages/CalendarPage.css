@@ -69,18 +69,23 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: transparent;
+  background: #584cdc;
   border: none;
   cursor: pointer;
-  padding: 8px 0 8px 8px;
-  border-radius: 10px;
+  padding: 8px 16px;
+  border-radius: 999px;
   margin-right: 0;
+  transition: background-color 0.2s ease;
+}
+
+.add-schedule-btn:hover {
+  background: #4a3fc0;
 }
 
 .add-schedule-plus {
   font-size: 20px;
   font-weight: 400;
-  color: #584cdc;
+  color: white;
   line-height: 1;
   display: flex;
   align-items: center;
@@ -91,7 +96,7 @@
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 16px;
   font-weight: 400;
-  color: #584cdc;
+  color: white;
   line-height: 24px;
   letter-spacing: -0.3125px;
 }
@@ -501,6 +506,8 @@
   margin-bottom: 20px;
   width: 100%;
   box-sizing: border-box;
+  padding: 0;
+  margin-left: 0;
 }
 
 .title-input-wrapper {
@@ -508,10 +515,13 @@
   align-items: center;
   gap: 12px;
   width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .event-title-input {
   flex: 1;
+  min-width: 0;
   height: 36px;
   background: var(--input-bg-color);
   border: none;
@@ -524,6 +534,7 @@
   color: #717182;
   letter-spacing: 0.3955px;
   outline: none;
+  box-sizing: border-box;
 }
 
 .event-title-input::placeholder {
@@ -631,6 +642,7 @@
   padding: 12px 16px;
   width: 100%;
   box-sizing: border-box;
+  max-width: 100%;
 }
 
 .participant-input {
@@ -668,7 +680,7 @@
 }
 
 .participant-button.active {
-  color: #584cdc;
+  color: white;
   cursor: pointer;
 }
 
@@ -687,7 +699,8 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 20px;
-  padding: 0 18px;
+  margin-top: 8px;
+  padding: -10 18px;
 }
 
 .participant-tag {
@@ -723,21 +736,44 @@
   background-color: rgba(0, 0, 0, 0.1);
 }
 
+.datetime-section-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  margin-left: 0;
+}
+
+.datetime-label {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0a0a0a;
+  margin-bottom: 0;
+  display: block;
+  text-align: left;
+}
+
 .datetime-section {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 12px;
   width: 100%;
   box-sizing: border-box;
+  max-width: 100%;
 }
 
 .date-display,
 .time-display {
+  flex: 1;
   height: 36px;
-  padding: 8px 0;
-  background: transparent;
+  padding: 8px 12px;
+  background: var(--input-bg-color) !important;
   border: none;
   border-radius: 8px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
@@ -747,11 +783,19 @@
   line-height: 20px;
   letter-spacing: -0.1504px;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .date-picker-button:hover {
-  background: #f3f3f5;
+  background: var(--input-bg-hover) !important;
+}
+
+.time-picker-button:hover {
+  background: var(--input-bg-hover) !important;
 }
 
 .date-picker-modal {
@@ -837,9 +881,6 @@
   opacity: 0.9;
 }
 
-.time-display:hover {
-  background: #f3f3f5;
-}
 
 /* Calendar Page Time Picker */
 .calendar-time-picker-modal {
@@ -936,21 +977,12 @@
 }
 
 /* 알림 섹션 */
-.notification-label {
-  font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: #0a0a0a;
-  margin-bottom: 0;
-  display: block;
-  text-align: left;
-}
-
 .notification-section {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 20px;
   position: relative;
   width: 100%;
@@ -959,32 +991,52 @@
   margin-left: 0;
 }
 
+.notification-label {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0a0a0a;
+  margin-bottom: 0;
+  display: block;
+  text-align: left;
+  flex-shrink: 0;
+}
+
 .notification-edit-wrapper {
   position: relative;
-  width: 100%;
+  flex: 1;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .notification-button {
-  width: 100%;
+  width: auto;
+  min-width: 100px;
   background: var(--input-bg-color);
   border: none;
   border-radius: 10px;
-  height: 45px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
   cursor: pointer;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: #717182;
   line-height: 20px;
   letter-spacing: -0.3125px;
   box-sizing: border-box;
   margin: 0;
+}
+
+.notification-button span {
+  flex: 1;
+  text-align: left;
 }
 
 .notification-button:hover {
@@ -1055,7 +1107,7 @@
 }
 
 .notification-option.selected {
-  color: #584cdc;
+  color: white;
   font-weight: 500;
 }
 
@@ -1216,6 +1268,11 @@
 }
 
 .participant-card-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 12px;
-  margin-left: 2px;
+  margin-left: 4px;
+  color: white;
+  flex-shrink: 0;
 }

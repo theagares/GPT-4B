@@ -861,7 +861,14 @@ function EventDetailPage() {
           <h2 className="page-title">일정 상세</h2>
         </div>
 
-        <div style={{ width: '24px' }}></div> {/* Placeholder for right alignment */}
+        {!isEditing ? (
+          <button className="edit-button-header" onClick={handleEdit}>편집</button>
+        ) : (
+          <div className="edit-actions">
+            <button className="cancel-button" onClick={handleCancel}>취소</button>
+            <button className="save-button" onClick={handleSave}>저장</button>
+          </div>
+        )}
 
       </div>
 
@@ -872,22 +879,6 @@ function EventDetailPage() {
         <div className="section-header">
 
           <h3 className="section-title">일정 정보</h3>
-
-          {!isEditing ? (
-
-            <button className="edit-button" onClick={handleEdit}>편집</button>
-
-          ) : (
-
-            <div className="edit-actions">
-
-              <button className="cancel-button" onClick={handleCancel}>취소</button>
-
-              <button className="save-button" onClick={handleSave}>저장</button>
-
-            </div>
-
-          )}
 
         </div>
 

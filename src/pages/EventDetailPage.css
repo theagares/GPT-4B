@@ -37,9 +37,11 @@
   padding: 56px 20px 34px 20px; /* ai-card-select와 동일 */
   display: flex;
   flex-direction: row; /* 가로 배치 */
-  align-items: flex-start; /* 상단 정렬 */
+  align-items: center; /* 중앙 정렬 */
   justify-content: space-between;
   box-sizing: border-box;
+  min-height: 24px;
+  height: 24px;
 }
 
 .back-button {
@@ -113,20 +115,47 @@
   transition: all 0.2s;
 }
 
+.edit-button-header {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 12px;
+  padding-top: 43px;
+  border-radius: 9999px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #584cdc;
+  line-height: 1.4;
+  letter-spacing: -0.1504px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  height: 24px;
+  flex-shrink: 0;
+  margin: 0px;
+}
+
 .edit-actions {
   display: flex;
   gap: 12px;
   align-items: center;
+  height: 24px;
+  flex-shrink: 0;
+  margin: 0;
+  margin-top: 30px;
+  padding: 0;
 }
 
 .cancel-button,
 .save-button {
-  min-width: 60px;
-  height: 28px;
+  min-width: 40px;
+  height: 24px;
   border: none;
   cursor: pointer;
-  padding: 6px 14px;
-  border-radius: 14px;
+  padding: 4px 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -134,8 +163,9 @@
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  line-height: 20px;
+  line-height: 1.4;
   letter-spacing: -0.1504px;
+  white-space: nowrap;
 }
 
 .cancel-button {
@@ -164,7 +194,7 @@
 .participant-section-detail {
   margin: 0;
   margin-top: 20px;
-  padding: 0 18px;
+  padding: 0;
   width: 100%;
   box-sizing: border-box;
 }
@@ -183,10 +213,8 @@
   align-items: center;
   gap: 6px;
   margin-bottom: 3px;
-  margin-left: -18px;
-  padding: 0;
-  padding-left: 18px;
-  padding-right: 18px;
+  margin-left: 0;
+  padding: 0 18px;
   justify-content: space-between; /* 일정 정보 텍스트와 편집 버튼을 양쪽에 배치 */
   white-space: nowrap;
   flex-wrap: nowrap;
@@ -223,13 +251,20 @@
   border-radius: 8.687px;
   padding: 10.424px 18px;
   min-height: 182px;
-  margin: 0;
+  margin: 0 18px;
   margin-bottom: 0;
-  width: 100%;
-  max-width: 100%;
+  width: calc(100% - 36px);
+  max-width: calc(100% - 36px);
   min-width: 0;
   box-sizing: border-box;
   display: block;
+}
+
+/* 편집 모드일 때 meeting-info-content 스타일 */
+.meeting-info-content .edit-form {
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 .event-title-row {
@@ -323,17 +358,22 @@
   min-width: 0;
   box-sizing: border-box;
   margin-top: 3px;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
 }
 
 .participant-input-container {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
   background: #eeeeee;
   border-radius: 8.687px;
   padding: 6px 18px;
-  width: 100%;
-  max-width: 100%;
+  margin: 0 18px;
+  width: calc(100% - 36px);
+  max-width: calc(100% - 36px);
   min-width: 0;
   box-sizing: border-box;
 }
@@ -383,7 +423,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 4px;
+  margin: 4px 18px 0 18px;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .participant-tag {
@@ -507,7 +549,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 8px;
+  margin: 8px 18px 0 18px;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .participant-item {
@@ -562,21 +606,23 @@
 /* 메모 섹션 */
 .memo-section .section-header {
   margin-bottom: 0;
+  margin-left: 0;
+  padding: 0 18px;
 }
 
 .memo-content {
-  background: #eeeeee;
+  background: rgba(88, 76, 220, 0.05) !important;
   border-radius: 8.687px;
   padding: 10.424px 18px;
   min-height: 86.867px;
-  margin: 0;
+  margin: 0 18px 0 18px;
   margin-top: 0;
-  width: 100%;
-  max-width: 100%;
+  width: calc(100% - 36px);
+  max-width: calc(100% - 36px);
   min-width: 0;
   box-sizing: border-box;
   display: block;
-  border: none;
+  border: none !important;
 }
 
 .memo-content p {
@@ -594,20 +640,20 @@
 }
 
 .memo-textarea {
-  width: 100%;
-  max-width: 100%;
+  width: calc(100% - 36px);
+  max-width: calc(100% - 36px);
   min-width: 0;
   min-height: 86.867px;
   max-height: 200px;
   padding: 10.424px 18px;
-  border: 1px solid #e5e7eb;
+  border: none !important;
   border-radius: 8.687px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-size: 12.161px;
   color: #0a0a0a;
-  background: #eeeeee;
+  background: rgba(88, 76, 220, 0.05) !important;
   resize: none;
-  margin: 0;
+  margin: 0 18px 0 18px;
   margin-top: 0;
   overflow-y: auto;
   overflow-x: hidden;
@@ -619,7 +665,8 @@
 
 .memo-textarea:focus {
   outline: none;
-  border-color: #584cdc;
+  background: rgba(88, 76, 220, 0.08) !important;
+  border: 1px solid #584cdc !important;
 }
 
 /* 알림 섹션 */
@@ -629,10 +676,9 @@
 
 .notification-section .section-header {
   justify-content: space-between;
-  width: calc(100% + 36px);
-  margin-left: -18px;
-  padding-left: 18px;
-  padding-right: 18px;
+  width: 100%;
+  margin-left: 0;
+  padding: 0 18px;
   box-sizing: border-box;
   align-items: baseline;
 }
@@ -1006,9 +1052,6 @@
 }
 
 /* 참여자 자동완성 드롭다운 */
-.participant-input-container {
-  position: relative;
-}
 
 .contact-suggestions-dropdown {
   position: absolute;

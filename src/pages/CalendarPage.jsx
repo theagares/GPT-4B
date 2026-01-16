@@ -14,6 +14,16 @@ function DropdownIcon() {
   )
 }
 
+// 사람 모양 선형 SVG 아이콘 컴포넌트
+function PersonIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 const WEEKDAYS_KR = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일']
 
 const CATEGORIES = [
@@ -347,10 +357,7 @@ function CalendarPage() {
 
   // 일정 추가 핸들러
   const handleAddSchedule = () => {
-    setModalSelectedDate(selectedDate)
-    setParticipants([])
-    setParticipantInput('')
-    setShowAddEventModal(true)
+    navigate('/calendar/add', { state: { selectedDate: selectedDate } })
   }
 
   const handleCloseModal = () => {
@@ -927,7 +934,9 @@ function CalendarPage() {
                   <div key={index} className={`participant-tag ${participant.isFromCard ? 'from-card' : ''}`}>
                     <span>{typeof participant === 'string' ? participant : participant.name}</span>
                     {participant.isFromCard && (
-                      <span className="participant-card-badge" title="명함에서 추가됨">📇</span>
+                      <span className="participant-card-badge" title="명함에서 추가됨">
+                        <PersonIcon />
+                      </span>
                     )}
                     <button 
                       className="participant-remove"
@@ -941,19 +950,22 @@ function CalendarPage() {
             )}
 
             {/* 날짜/시간 표시 */}
-            <div className="datetime-section">
-              <button
-                className="date-display date-picker-button"
-                onClick={() => setShowDatePicker(!showDatePicker)}
-              >
-                {formatDateForDisplay(modalSelectedDate)}
-              </button>
-              <button
-                className="time-display"
-                onClick={() => setShowTimePicker(!showTimePicker)}
-              >
-                {formatTimeForDisplay(formData.startTime, formData.endTime)}
-              </button>
+            <div className="datetime-section-wrapper">
+              <label className="datetime-label">날짜/시간</label>
+              <div className="datetime-section">
+                <button
+                  className="date-display date-picker-button"
+                  onClick={() => setShowDatePicker(!showDatePicker)}
+                >
+                  {formatDateForDisplay(modalSelectedDate)}
+                </button>
+                <button
+                  className="time-display time-picker-button"
+                  onClick={() => setShowTimePicker(!showTimePicker)}
+                >
+                  {formatTimeForDisplay(formData.startTime, formData.endTime)}
+                </button>
+              </div>
             </div>
 
             {/* 날짜 선택기 */}
