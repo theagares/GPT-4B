@@ -157,9 +157,10 @@ function EditMyInfoPage() {
 
   return (
     <div className="edit-my-info-page">
-      <div className="edit-my-info-container">
+      {/* Fixed Header */}
+      <div className="edit-my-info-header-fixed">
         <button
-          className="edit-my-info-back-button"
+          className="back-button"
           onClick={() => navigate(-1)}
           type="button"
           aria-label="뒤로가기"
@@ -168,9 +169,11 @@ function EditMyInfoPage() {
             <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <div className="edit-my-info-header">
-          <h1 className="edit-my-info-title">내 명함 정보 수정</h1>
+        <div className="edit-my-info-header-content">
+          <h1 className="edit-my-info-title">내 정보 수정</h1>
         </div>
+      </div>
+      <div className="edit-my-info-container">
         <form className="edit-my-info-form" onSubmit={handleSubmit}>
           {fields.map((field) => (
             <div key={field.name} className="edit-my-info-field">
@@ -215,7 +218,7 @@ function EditMyInfoPage() {
             className="edit-my-info-submit-button"
             disabled={isSubmitting || isLoading}
           >
-            {isSubmitting ? '저장 중...' : '저장하기'}
+            {isSubmitting ? '저장 중...' : '저장'}
           </button>
         </form>
       </div>

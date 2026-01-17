@@ -278,6 +278,9 @@ function LandingPage() {
   
   // 5분 전 알람 관련 state
   const [upcomingAlerts, setUpcomingAlerts] = useState([])
+  const [showUpcomingAlertPopup, setShowUpcomingAlertPopup] = useState(false)
+  const [currentUpcomingAlert, setCurrentUpcomingAlert] = useState(null)
+  const [dismissedAlertIds, setDismissedAlertIds] = useState(new Set())
   
   // 명함 정보 모달 관련 state
   const [showCardInfoModal, setShowCardInfoModal] = useState(false)
@@ -644,13 +647,37 @@ function LandingPage() {
     return () => clearInterval(interval)
   }, [])
 
+  // upcomingAlerts가 변경될 때 팝업 표시
+  useEffect(() => {
+    if (upcomingAlerts.length > 0 && !showUpcomingAlertPopup) {
+      // 닫히지 않은 알림 찾기
+      const undismissedAlert = upcomingAlerts.find(alert => !dismissedAlertIds.has(alert.id))
+      
+      if (undismissedAlert) {
+        // 새로운 알림이 나타났고 팝업이 열려있지 않으면 팝업 표시
+        setCurrentUpcomingAlert(undismissedAlert)
+        setShowUpcomingAlertPopup(true)
+      }
+    }
+  }, [upcomingAlerts, showUpcomingAlertPopup, dismissedAlertIds])
+
   // 곧 시작하는 일정의 시간 텍스트를 실시간으로 업데이트
   useEffect(() => {
-    if (upcomingAlerts.length === 0) return
+    if (upcomingAlerts.length === 0) {
+      // 알림이 없으면 팝업 닫기
+      if (showUpcomingAlertPopup) {
+        setShowUpcomingAlertPopup(false)
+        setCurrentUpcomingAlert(null)
+      }
+      return
+    }
 
     const updateUpcomingTimes = () => {
       setUpcomingAlerts(prevAlerts => {
-        return prevAlerts.map(alert => {
+        // 현재 알림이 있는 경우, 업데이트 시에도 유지되도록 처리
+        const currentAlertId = currentUpcomingAlert?.id
+        
+        const updated = prevAlerts.map(alert => {
           if (!alert.startDate) return alert
           
           const newTimeText = generateUpcomingTimeText(alert.startDate)
@@ -659,22 +686,53 @@ function LandingPage() {
             text: `${alert.event.title} 일정이 ${newTimeText}`
           }
         }).filter(alert => {
-          // 시작 시간이 지난 알림은 제거
+          // 시작 시간이 지난 알림은 제거 (단, 현재 팝업에 표시된 알림은 제외)
           const now = new Date()
           const startDate = new Date(alert.startDate)
           const diffMinutes = (startDate - now) / (1000 * 60)
+          
+          // 현재 팝업에 표시된 알림은 시간이 지나도 유지 (사용자가 수동으로 닫을 때까지)
+          if (alert.id === currentAlertId && showUpcomingAlertPopup) {
+            return true // 시간 제한 없이 항상 유지
+          }
+          
           return diffMinutes > 0 && diffMinutes <= 5
         })
+        
+        // 현재 팝업에 표시된 알림도 업데이트 (팝업이 열려있을 때만)
+        if (showUpcomingAlertPopup && currentUpcomingAlert) {
+          // updated 배열에서 찾거나, 없으면 기존 알림을 업데이트
+          const currentAlert = updated.find(a => a.id === currentUpcomingAlert.id)
+          
+          if (currentAlert) {
+            // 시간 텍스트만 업데이트
+            setCurrentUpcomingAlert(currentAlert)
+          } else {
+            // updated에 없어도 (시간이 지났어도) 기존 알림을 업데이트하여 유지
+            const now = new Date()
+            const startDate = new Date(currentUpcomingAlert.startDate)
+            const newTimeText = generateUpcomingTimeText(startDate)
+            setCurrentUpcomingAlert({
+              ...currentUpcomingAlert,
+              text: `${currentUpcomingAlert.event.title} 일정이 ${newTimeText}`
+            })
+          }
+        }
+        
+        return updated
       })
     }
 
-    // 즉시 업데이트
-    updateUpcomingTimes()
+    // 약간의 지연 후 업데이트 (팝업이 먼저 표시되도록)
+    const timeoutId = setTimeout(updateUpcomingTimes, 500)
 
     // 1분마다 업데이트 (시간이 바뀔 때마다)
     const interval = setInterval(updateUpcomingTimes, 60000)
-    return () => clearInterval(interval)
-  }, [upcomingAlerts.length])
+    return () => {
+      clearTimeout(timeoutId)
+      clearInterval(interval)
+    }
+  }, [upcomingAlerts.length, showUpcomingAlertPopup, currentUpcomingAlert])
 
   // 참여자의 명함 정보 조회
   const fetchParticipantCardInfo = async (participantName) => {
@@ -1144,38 +1202,6 @@ function LandingPage() {
           <button className="view-all-button" onClick={() => navigate('/popular-gifts')}>전체보기</button>
         </div>
 
-        {/* 5분 전 알람 섹션 (알림 설정과 상관없이) */}
-        {upcomingAlerts.length > 0 && (
-          <div className="upcoming-alerts-section">
-            <h2 className="alerts-title">곧 시작하는 일정</h2>
-            <div className="alerts-list">
-              {upcomingAlerts.map((alert) => (
-                <div 
-                  key={alert.id} 
-                  className="alert-card upcoming-alert"
-                  style={{ backgroundColor: '#584cdc' }}
-                >
-                  <p className="alert-text" style={{ color: 'white' }}>
-                    {alert.text}
-                  </p>
-                  {alert.participants && (
-                    <button 
-                      type="button"
-                      className="alert-button alert-button-full"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        handleShowCardInfo(alert)
-                      }}
-                    >
-                      상대방 정보 보기
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Important Alerts Section */}
         <div className="alerts-section">
@@ -1244,6 +1270,86 @@ function LandingPage() {
           </div>
         </div>
       )}
+
+      {/* 5분 전 알림 팝업 */}
+      {showUpcomingAlertPopup && currentUpcomingAlert && (() => {
+        // 일정 카테고리별 색상 매핑
+        const categoryColors = {
+          '미팅': '#584cdc',
+          '업무': '#3b82f6',
+          '개인': '#10b981',
+          '기타': '#6b7280'
+        }
+        const category = currentUpcomingAlert.category || '기타'
+        const buttonColor = categoryColors[category] || categoryColors['기타']
+        
+        return (
+          <div 
+            className="upcoming-alert-popup-overlay" 
+            onClick={() => {
+              if (currentUpcomingAlert) {
+                setDismissedAlertIds(prev => new Set([...prev, currentUpcomingAlert.id]))
+              }
+              setShowUpcomingAlertPopup(false)
+              setCurrentUpcomingAlert(null)
+            }}
+          >
+            <div 
+              className="upcoming-alert-popup" 
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="upcoming-alert-popup-header">
+                <button 
+                  className="upcoming-alert-close"
+                  onClick={() => {
+                    if (currentUpcomingAlert) {
+                      setDismissedAlertIds(prev => new Set([...prev, currentUpcomingAlert.id]))
+                    }
+                    setShowUpcomingAlertPopup(false)
+                    setCurrentUpcomingAlert(null)
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+              <p className="upcoming-alert-text">
+                {currentUpcomingAlert.text?.includes('일정이 ') 
+                  ? currentUpcomingAlert.text.split('일정이 ').map((part, index) => 
+                      index === 0 ? (
+                        <span key={index}>{part}일정이<br /></span>
+                      ) : (
+                        <span key={index}>{part}</span>
+                      )
+                    )
+                  : currentUpcomingAlert.text}
+              </p>
+              {currentUpcomingAlert.participants && (
+                <button 
+                  type="button"
+                  className="upcoming-alert-action-button"
+                  style={{ backgroundColor: buttonColor }}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    // 팝업을 먼저 닫고 나서 모달 열기
+                    if (currentUpcomingAlert) {
+                      setDismissedAlertIds(prev => new Set([...prev, currentUpcomingAlert.id]))
+                    }
+                    setShowUpcomingAlertPopup(false)
+                    setCurrentUpcomingAlert(null)
+                    // 팝업이 닫힌 후 모달 열기
+                    setTimeout(() => {
+                      handleShowCardInfo(currentUpcomingAlert)
+                    }, 100)
+                  }}
+                >
+                  상대방 정보 보기
+                </button>
+              )}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* 선호도 프로필 팝업 모달 */}
       {showCardInfoModal && (

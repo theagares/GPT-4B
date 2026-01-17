@@ -517,21 +517,98 @@
   transform: scale(0.98);
 }
 
-/* 5분 전 알람 섹션 */
-.upcoming-alerts-section {
-  margin-bottom: 24px;
+/* 5분 전 알람 팝업 */
+.upcoming-alert-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
 }
 
-.upcoming-alert {
-  animation: pulse 2s infinite;
+.upcoming-alert-popup {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUpModal 0.3s ease-out;
 }
 
-@keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(88, 76, 220, 0.4);
+.upcoming-alert-popup-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.upcoming-alert-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.upcoming-alert-close:hover {
+  color: #6b7280;
+}
+
+.upcoming-alert-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+.upcoming-alert-action-button {
+  width: 100%;
+  margin: 0 auto;
+  display: block;
+  background: #584cdc;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  box-sizing: border-box;
+}
+
+.upcoming-alert-action-button:hover {
+  opacity: 0.9;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  50% {
-    box-shadow: 0 0 0 8px rgba(88, 76, 220, 0);
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpModal {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
