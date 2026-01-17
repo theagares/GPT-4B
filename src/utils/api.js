@@ -293,11 +293,11 @@ export const chatAPI = {
 
   getById: (id) => api.get(`/chat/${id}`),
 
-  sendMessage: (message, llmProvider = "gpt", chatId = null) =>
-    api.post("/chat", { message, llmProvider, chatId }),
+  sendMessage: (message, llmProvider = "gpt", chatId = null, cardId = null) =>
+    api.post("/chat", { message, llmProvider, chatId, cardId }),
 
-  createHistory: (messages, title, llmProvider = "gpt") =>
-    api.post("/chat/create-history", { messages, title, llmProvider }),
+  createHistory: (messages, title, llmProvider = "gpt", cardId = null) =>
+    api.post("/chat/create-history", { messages, title, llmProvider, cardId }),
 
   delete: (id) => api.delete(`/chat/${id}`),
 };

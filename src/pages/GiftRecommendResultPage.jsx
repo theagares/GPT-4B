@@ -20,17 +20,17 @@ const fallbackGifts = [
 function GiftRecommendResultPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  
+
   // 기본 정보
   const card = location.state?.card
   const additionalInfo = location.state?.additionalInfo || ''
   const memos = location.state?.memos || []
-  
+
   // API 응답 데이터
   const recommendedGifts = location.state?.recommendedGifts || []
   const rationaleCards = location.state?.rationaleCards || []
   const personaString = location.state?.personaString || ''
-  
+
   const [selectedGiftIndex, setSelectedGiftIndex] = useState(null)
   const [selectedGift, setSelectedGift] = useState(null) // 선택된 선물 정보 (메모리에서만 관리)
   const [savedGiftId, setSavedGiftId] = useState(null) // 저장된 선물 ID
@@ -38,7 +38,7 @@ function GiftRecommendResultPage() {
   const [isSavingGift, setIsSavingGift] = useState(false)
   const [isSavingChat, setIsSavingChat] = useState(false)
   const completionSectionRef = useRef(null)
-  
+
   // 실제 표시할 선물 데이터 (API 응답 또는 폴백)
   const giftsToShow = recommendedGifts.length > 0 ? recommendedGifts : fallbackGifts
 
@@ -82,10 +82,10 @@ function GiftRecommendResultPage() {
       try {
         const existingGiftsResponse = await giftAPI.getAll({ cardId: String(card.id) })
         if (existingGiftsResponse.data && existingGiftsResponse.data.success) {
-          const existingGifts = Array.isArray(existingGiftsResponse.data.data) 
-            ? existingGiftsResponse.data.data 
+          const existingGifts = Array.isArray(existingGiftsResponse.data.data)
+            ? existingGiftsResponse.data.data
             : []
-          
+
           // 모든 기존 선물 삭제
           for (const existingGift of existingGifts) {
             try {
@@ -107,7 +107,7 @@ function GiftRecommendResultPage() {
       const giftPrice = selectedGift.price ? parseInt(selectedGift.price) : (metadata.price ? parseInt(metadata.price) : null)
       const giftImage = selectedGift.image || metadata.image || ''
       const giftCategory = selectedGift.category || metadata.category || '카테고리 없음'
-      
+
       // 선물 정보를 DB에 저장
       const response = await giftAPI.create({
         cardId: card.id,
@@ -147,11 +147,11 @@ function GiftRecommendResultPage() {
 
   const handleSelectGift = async (gift, index) => {
     if (isSavingGift) return // 저장 중이면 무시
-    
+
     if (!card?.id) {
       alert('명함 정보가 없어 선물을 저장할 수 없습니다.')
       return
-  }
+    }
 
     // 같은 선물을 다시 클릭하면 선택 취소 (선택됨 버튼 클릭)
     if (selectedGiftIndex === index) {
@@ -168,7 +168,7 @@ function GiftRecommendResultPage() {
 
   const saveChatHistory = async (selectedGift, giftName, giftPrice, giftImage, giftCategory) => {
     if (isSavingChat) return // 이미 저장 중이면 무시
-    
+
     setIsSavingChat(true)
 
     try {
@@ -209,13 +209,14 @@ function GiftRecommendResultPage() {
       ]
 
 
-      // Chat 생성
+      // Chat 생성 (cardId 연결)
       const chatResponse = await chatAPI.createHistory(
         chatMessages,
         `${userName}님을 위한 선물 추천`,
-        'gpt'
+        'gpt',
+        card?.id || null  // 명함 ID 연결
       )
-      
+
       // 생성된 채팅 내역 ID 저장
       if (chatResponse.data && chatResponse.data.success && chatResponse.data.data) {
         setSavedChatId(chatResponse.data.data.id)
@@ -234,22 +235,22 @@ function GiftRecommendResultPage() {
   const userCompany = card?.company || ''
 
   // 추천 rationale 데이터 (API 응답 또는 기본값)
-  const rationaleData = rationaleCards.length > 0 
+  const rationaleData = rationaleCards.length > 0
     ? rationaleCards.map((card, index) => ({
-        id: card.id || index + 1,
-        title: card.title || '추천 이유',
-        icon: getIconForCategory(card.title),
-        description: card.description || ''
-      }))
+      id: card.id || index + 1,
+      title: card.title || '추천 이유',
+      icon: getIconForCategory(card.title),
+      description: card.description || ''
+    }))
     : [
-    {
-      id: 1,
-          title: '맞춤 추천',
-          icon: '🎁',
-          description: '입력하신 정보를 바탕으로 선물을 추천해드립니다.'
-        }
-      ]
-  
+      {
+        id: 1,
+        title: '맞춤 추천',
+        icon: '🎁',
+        description: '입력하신 정보를 바탕으로 선물을 추천해드립니다.'
+      }
+    ]
+
   // 카테고리에 따른 아이콘 매핑
   function getIconForCategory(title) {
     if (!title) return '🎁'
@@ -271,15 +272,15 @@ function GiftRecommendResultPage() {
       '생일': '🎂',
       '기념일': '💝'
     }
-    
+
     for (const [key, icon] of Object.entries(iconMap)) {
       if (title.includes(key)) return icon
     }
     return '🎁'
-    }
+  }
 
   // 관심사 추출 (메모에서만)
-  const interests = memos.length > 0 
+  const interests = memos.length > 0
     ? memos.join(', ')
     : '-'
 
@@ -290,7 +291,7 @@ function GiftRecommendResultPage() {
         <div className="gift-result-header">
           <button className="back-button" onClick={handleBack}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 18L9 12L15 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M15 18L9 12L15 6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
           <div className="gift-result-header-content">
@@ -333,16 +334,16 @@ function GiftRecommendResultPage() {
           {/* Gift Recommendations */}
           <div className="message-bubble ai-message">
             <div className="gift-recommendation-header">
-              <img 
-                src="/assets/gpt_4b_logo_blueberry.png" 
-                alt="GPT-4b Logo" 
+              <img
+                src="/assets/gpt_4b_logo_blueberry.png"
+                alt="GPT-4b Logo"
                 className="gift-recommendation-logo"
               />
               <p>GPT-4b의 선물 추천</p>
             </div>
             <p className="gift-recommendation-subtitle">{userName}님의 관심사를 고려하여 다음 선물들을 추천드립니다:</p>
             {giftsToShow.length > 0 && giftsToShow[0].id !== 'fallback-1' ? (
-            <div className="gift-recommendations">
+              <div className="gift-recommendations">
                 {giftsToShow.map((gift, index) => {
                   const giftName = gift.name || (gift.metadata?.name || gift.metadata?.product_name) || `선물 ${index + 1}`
                   // 각 선물의 추천 이유 (gift.rationale, gift.reason, 또는 rationaleCards에서 가져오기)
@@ -350,10 +351,10 @@ function GiftRecommendResultPage() {
                   return (
                     <div key={gift.id} className={`gift-item-wrapper ${selectedGiftIndex === index ? 'selected' : ''} ${selectedGiftIndex !== null && selectedGiftIndex !== index ? 'disabled' : ''}`}>
                       <div className="gift-recommendation-card">
-                  <div className="gift-card-image">
+                        <div className="gift-card-image">
                           {gift.image ? (
-                            <img 
-                              src={gift.image} 
+                            <img
+                              src={gift.image}
                               alt={gift.name}
                               onError={(e) => {
                                 e.target.style.display = 'none'
@@ -364,14 +365,14 @@ function GiftRecommendResultPage() {
                           <div className="gift-card-image-placeholder" style={{ display: gift.image ? 'none' : 'flex' }}>
                             🎁
                           </div>
-                  </div>
-                  <div className="gift-card-content">
+                        </div>
+                        <div className="gift-card-content">
                           <div className="gift-card-header">
-                    <h3 className="gift-card-title">{gift.name}</h3>
+                            <h3 className="gift-card-title">{gift.name}</h3>
                             {gift.url && gift.url !== '#' ? (
-                              <a 
-                                href={gift.url} 
-                                target="_blank" 
+                              <a
+                                href={gift.url}
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="gift-card-detail-link"
                               >
@@ -383,10 +384,10 @@ function GiftRecommendResultPage() {
                             {gift.category}
                             {gift.brand && ` · ${gift.brand}`}
                           </p>
-                    <div className="gift-card-bottom">
+                          <div className="gift-card-bottom">
                             <span className="gift-card-price">
                               ₩{Number(gift.price).toLocaleString()}
-                              </span>
+                            </span>
                             <button
                               className={`gift-select-button ${selectedGiftIndex === index ? 'selected' : ''}`}
                               onClick={() => handleSelectGift(gift, index)}
@@ -403,9 +404,9 @@ function GiftRecommendResultPage() {
                           <div className="rationale-card-content">
                             <p className="rationale-card-description">{rationale}</p>
                           </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
                   )
                 })}
               </div>
@@ -413,7 +414,7 @@ function GiftRecommendResultPage() {
               <div className="no-gifts-message">
                 <p>😢 조건에 맞는 선물을 찾지 못했습니다.</p>
                 <p>검색 조건을 변경해서 다시 시도해보세요.</p>
-            </div>
+              </div>
             )}
           </div>
 
@@ -427,9 +428,9 @@ function GiftRecommendResultPage() {
                 </p>
                 <div className="completion-links">
                   <button className="completion-home-button" onClick={handleGoHome}>홈으로 가기</button>
-          </div>
+                </div>
+              </div>
             </div>
-        </div>
           )}
 
         </div>
