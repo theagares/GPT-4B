@@ -2233,7 +2233,15 @@ function CardDetailModal({ card, onClose }) {
                (!preferences.dislikes || preferences.dislikes.length === 0) &&
                (!preferences.uncertain || preferences.uncertain.length === 0) && (
                 <div className="modal-preferences-empty">
-                  선호도 정보가 없습니다. 메모를 작성한 후 "프로필 갱신" 버튼을 눌러주세요.
+                  아직 선호도 정보가 없습니다.<br/>
+                  메모를 작성한 후 <button 
+                    type="button"
+                    onClick={handleRebuildPreferences}
+                    disabled={isRebuilding}
+                    className="modal-rebuild-button-inline"
+                  >
+                    프로필을 갱신
+                  </button>해보세요.
                 </div>
               )}
             </div>

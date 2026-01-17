@@ -2378,6 +2378,35 @@
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
 }
 
+.modal-rebuild-button-inline {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: #584cdc;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline;
+  vertical-align: baseline;
+}
+
+.modal-rebuild-button-inline:hover:not(:disabled) {
+  color: #4a3fc0;
+  text-decoration-thickness: 2px;
+}
+
+.modal-rebuild-button-inline:disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .modal-preferences-content {
   display: flex;
   flex-direction: column;
