@@ -244,8 +244,13 @@ export const ocrAPI = {
 
 // Calendar/Event API
 export const calendarAPI = {
-  getEvents: (start, end) =>
-    api.get("/calendar/events", { params: { start, end } }),
+  // start, end 없으면 전체 일정 조회
+  getEvents: (start, end) => {
+    const params = {};
+    if (start) params.start = start;
+    if (end) params.end = end;
+    return api.get("/calendar/events", { params });
+  },
 
   createEvent: (eventData) => api.post("/calendar/events", eventData),
 

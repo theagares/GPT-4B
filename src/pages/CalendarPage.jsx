@@ -9,7 +9,7 @@ import './CalendarPage.css'
 function DropdownIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 6L8 10L12 6" stroke="#6a7282" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M4 6L8 10L12 6" stroke="#6a7282" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -18,8 +18,8 @@ function DropdownIcon() {
 function PersonIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -33,8 +33,8 @@ const CATEGORIES = [
   { id: '기타', label: '기타', color: '#6b7280' }
 ]
 
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 
-                'July', 'August', 'September', 'October', 'November', 'December']
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December']
 const DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
 // 구글 캘린더 색상 ID를 UI 색상으로 매핑
@@ -87,15 +87,15 @@ function CalendarPage() {
   const location = useLocation()
   const categoryDropdownRef = useRef(null)
   const isAddEventPage = location.pathname === '/calendar/add'
-  
+
   // location.state에서 전달된 날짜가 있으면 사용, 없으면 오늘 날짜
-  const initialSelectedDate = location.state?.selectedDate 
-    ? new Date(location.state.selectedDate) 
+  const initialSelectedDate = location.state?.selectedDate
+    ? new Date(location.state.selectedDate)
     : new Date()
-  const initialCurrentDate = location.state?.selectedDate 
-    ? new Date(location.state.selectedDate) 
+  const initialCurrentDate = location.state?.selectedDate
+    ? new Date(location.state.selectedDate)
     : new Date()
-  
+
   const [currentDate, setCurrentDate] = useState(initialCurrentDate)
   const [selectedDate, setSelectedDate] = useState(initialSelectedDate)
   const [events, setEvents] = useState([]) // 구글 캘린더 이벤트 배열
@@ -115,13 +115,13 @@ function CalendarPage() {
   const [participants, setParticipants] = useState([])
   const [participantInput, setParticipantInput] = useState('')
   const [modalSelectedDate, setModalSelectedDate] = useState(new Date())
-  
+
   // 참여자 자동완성 관련 state
   const [contactSuggestions, setContactSuggestions] = useState([])
   const [showContactSuggestions, setShowContactSuggestions] = useState(false)
   const [linkedCardIds, setLinkedCardIds] = useState([])
   const participantDropdownRef = useRef(null)
-  
+
   const [formData, setFormData] = useState({
     title: '',
     participant: '',
@@ -131,27 +131,24 @@ function CalendarPage() {
     notification: ''
   })
 
-  // DB에서 이벤트를 가져오는 함수
-  const fetchCalendarEvents = async (startDate, endDate) => {
+  // DB에서 모든 이벤트를 가져오는 함수 (날짜 필터 없음)
+  const fetchCalendarEvents = async () => {
     setLoading(true)
     setError(null)
-    
+
     try {
       if (!isAuthenticated()) {
         setLoading(false)
         return []
       }
 
-      // DB에서 이벤트 가져오기
-      const response = await calendarAPI.getEvents(
-        startDate.toISOString(),
-        endDate.toISOString()
-      )
-      
+      // DB에서 모든 이벤트 가져오기 (날짜 필터 없음)
+      const response = await calendarAPI.getEvents()
+
       if (response.data.success) {
         return response.data.data || []
       }
-      
+
       return []
     } catch (err) {
       console.error('Failed to fetch events:', err)
@@ -168,7 +165,7 @@ function CalendarPage() {
     const endDate = new Date(dbEvent.endDate)
     const category = dbEvent.category || '기타'
     const color = dbEvent.color || COLOR_MAP[category] || COLOR_MAP['기타']
-    
+
     // participants가 문자열인 경우 배열로 변환
     let participant = ''
     if (dbEvent.participants) {
@@ -179,7 +176,7 @@ function CalendarPage() {
         participant = dbEvent.participants.join(', ')
       }
     }
-    
+
     return {
       id: String(dbEvent.id),
       title: dbEvent.title || '제목 없음',
@@ -208,7 +205,7 @@ function CalendarPage() {
       }
       grouped[dateKey].push(event)
     })
-    
+
     // 각 날짜의 이벤트를 시간순으로 정렬
     Object.keys(grouped).forEach(dateKey => {
       grouped[dateKey].sort((a, b) => {
@@ -216,7 +213,7 @@ function CalendarPage() {
         return a.startDate.getTime() - b.startDate.getTime()
       })
     })
-    
+
     return grouped
   }, [events])
 
@@ -227,12 +224,8 @@ function CalendarPage() {
       return
     }
 
-    const year = currentDate.getFullYear()
-    const month = currentDate.getMonth()
-    const startDate = new Date(year, month, 1)
-    const endDate = new Date(year, month + 1, 0)
-    
-    fetchCalendarEvents(startDate, endDate).then(dbEvents => {
+    // 모든 일정 가져오기
+    fetchCalendarEvents().then(dbEvents => {
       // 중복 제거: id 기준으로 중복 제거
       const uniqueEvents = dbEvents.reduce((acc, event) => {
         const existingIndex = acc.findIndex(e => e.id === event.id)
@@ -241,7 +234,7 @@ function CalendarPage() {
         }
         return acc
       }, [])
-      
+
       const transformedEvents = uniqueEvents.map(transformDBEvent)
       setEvents(transformedEvents)
     })
@@ -259,12 +252,8 @@ function CalendarPage() {
   // location.state에서 refreshEvents가 true이면 이벤트 새로고침
   useEffect(() => {
     if (location.state?.refreshEvents && isAuthenticated()) {
-      const year = currentDate.getFullYear()
-      const month = currentDate.getMonth()
-      const startDate = new Date(year, month, 1)
-      const endDate = new Date(year, month + 1, 0)
-      
-      fetchCalendarEvents(startDate, endDate).then(dbEvents => {
+      // 모든 일정 가져오기
+      fetchCalendarEvents().then(dbEvents => {
         const uniqueEvents = dbEvents.reduce((acc, event) => {
           const existingIndex = acc.findIndex(e => e.id === event.id)
           if (existingIndex === -1) {
@@ -272,11 +261,11 @@ function CalendarPage() {
           }
           return acc
         }, [])
-        
+
         const transformedEvents = uniqueEvents.map(transformDBEvent)
         setEvents(transformedEvents)
       })
-      
+
       // state 초기화
       navigate(location.pathname, { replace: true, state: {} })
     }
@@ -289,27 +278,27 @@ function CalendarPage() {
     const lastDay = new Date(year, month + 1, 0)
     const daysInMonth = lastDay.getDate()
     const startingDayOfWeek = firstDay.getDay()
-    
+
     const days = []
-    
+
     // 이전 달의 마지막 날들
     const prevMonth = new Date(year, month, 0)
     const prevMonthDays = prevMonth.getDate()
     for (let i = startingDayOfWeek - 1; i >= 0; i--) {
       days.push({ date: prevMonthDays - i, isCurrentMonth: false })
     }
-    
+
     // 현재 달의 날들
     for (let i = 1; i <= daysInMonth; i++) {
       days.push({ date: i, isCurrentMonth: true })
     }
-    
+
     // 다음 달의 첫 날들 (캘린더를 채우기 위해)
     const remainingDays = 42 - days.length // 6주 * 7일
     for (let i = 1; i <= remainingDays; i++) {
       days.push({ date: i, isCurrentMonth: false })
     }
-    
+
     return days
   }
 
@@ -330,16 +319,16 @@ function CalendarPage() {
   const isSelectedDate = (day) => {
     if (!day.isCurrentMonth) return false
     return selectedDate.getDate() === day.date &&
-           selectedDate.getMonth() === currentDate.getMonth() &&
-           selectedDate.getFullYear() === currentDate.getFullYear()
+      selectedDate.getMonth() === currentDate.getMonth() &&
+      selectedDate.getFullYear() === currentDate.getFullYear()
   }
 
   const hasEventsForDay = (day) => {
     if (!day.isCurrentMonth) return false
-    
+
     const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day.date)
     const dayDateStr = formatDateToISO(dayDate)
-    
+
     return events.some(event => {
       const eventDate = formatDateToISO(event.startDate)
       return eventDate === dayDateStr
@@ -388,7 +377,7 @@ function CalendarPage() {
       setShowContactSuggestions(false)
       return
     }
-    
+
     try {
       // 명함 목록에서 검색
       const response = await cardAPI.getAll({ search: searchText, limit: 10 })
@@ -413,7 +402,7 @@ function CalendarPage() {
   const handleParticipantInputChange = (e) => {
     const value = e.target.value
     setParticipantInput(value)
-    
+
     // 1글자 이상 입력 시 검색
     if (value.trim().length >= 1) {
       fetchContactSuggestions(value)
@@ -458,7 +447,7 @@ function CalendarPage() {
   const handleRemoveParticipant = (index) => {
     const removedParticipant = participants[index]
     setParticipants(participants.filter((_, i) => i !== index))
-    
+
     // 명함에서 온 참여자면 linkedCardIds에서도 제거
     if (removedParticipant.isFromCard && removedParticipant.id) {
       setLinkedCardIds(linkedCardIds.filter(id => id !== removedParticipant.id))
@@ -555,7 +544,7 @@ function CalendarPage() {
     const hours = String(date.getHours()).padStart(2, '0')
     const minutes = String(date.getMinutes()).padStart(2, '0')
     const seconds = String(date.getSeconds()).padStart(2, '0')
-    
+
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   }
 
@@ -599,7 +588,7 @@ function CalendarPage() {
 
       // participants 배열에서 이름만 추출
       const participantNames = participants.map(p => typeof p === 'string' ? p : p.name)
-      
+
       const eventData = {
         title: formData.title,
         startDate: toMySQLDateTime(startDate),
@@ -623,12 +612,8 @@ function CalendarPage() {
 
         // 이벤트 목록 새로고침 (약간의 지연을 두어 DB 반영 시간 확보)
         setTimeout(async () => {
-          const year = currentDate.getFullYear()
-          const month = currentDate.getMonth()
-          const startDateRange = new Date(year, month, 1)
-          const endDateRange = new Date(year, month + 1, 0)
-          
-          const dbEvents = await fetchCalendarEvents(startDateRange, endDateRange)
+          // 모든 일정 가져오기
+          const dbEvents = await fetchCalendarEvents()
           // 중복 제거: id 기준으로 중복 제거
           const uniqueEvents = dbEvents.reduce((acc, event) => {
             const existingIndex = acc.findIndex(e => e.id === event.id)
@@ -637,7 +622,7 @@ function CalendarPage() {
             }
             return acc
           }, [])
-          
+
           const transformedEvents = uniqueEvents.map(transformDBEvent)
           setEvents(transformedEvents)
         }, 200)
@@ -690,7 +675,7 @@ function CalendarPage() {
     if (!isDragging) return
 
     let lastPosition = modalPosition
-    
+
     const handleModalMouseMove = (e) => {
       const newPosition = e.clientY - dragStartY
       // 위로는 드래그할 수 없게 (0 이상만 허용, 아래로만 드래그 가능)
@@ -802,8 +787,8 @@ function CalendarPage() {
             <div className="no-events error">일정을 불러오는 중 오류가 발생했습니다: {error}</div>
           ) : currentEvents.length > 0 ? (
             currentEvents.map((event) => (
-              <div 
-                key={event.id} 
+              <div
+                key={event.id}
                 className="event-item"
                 onClick={() => navigate(`/calendar/event/${event.id}`)}
               >
@@ -828,13 +813,13 @@ function CalendarPage() {
       {/* 일정 추가 모달 */}
       {showAddEventModal && (
         <div className="add-event-modal-overlay" onClick={handleCloseModal}>
-          <div 
-            className="add-event-modal" 
+          <div
+            className="add-event-modal"
             ref={modalRef}
             onClick={(e) => e.stopPropagation()}
             onMouseDown={handleModalMouseDown}
             onTouchStart={handleModalTouchStart}
-            style={{ 
+            style={{
               transform: `translateY(${modalPosition}px)`,
               height: '70vh',
               maxHeight: 'calc(100vh - 83px)'
@@ -898,7 +883,7 @@ function CalendarPage() {
                     }
                   }}
                 />
-                <button 
+                <button
                   className={`participant-button ${participantInput.trim() ? 'active' : ''}`}
                   onClick={handleAddParticipant}
                   disabled={!participantInput.trim()}
@@ -938,7 +923,7 @@ function CalendarPage() {
                         <PersonIcon />
                       </span>
                     )}
-                    <button 
+                    <button
                       className="participant-remove"
                       onClick={() => handleRemoveParticipant(index)}
                     >
@@ -1131,7 +1116,7 @@ function CalendarPage() {
             <div className="notification-section">
               <label className="notification-label">알림</label>
               <div className="notification-edit-wrapper">
-                <button 
+                <button
                   className={`notification-button ${showNotificationDropdown ? 'dropdown-open' : ''}`}
                   onClick={() => setShowNotificationDropdown(!showNotificationDropdown)}
                 >
@@ -1170,7 +1155,7 @@ function CalendarPage() {
             </div>
 
             {/* 추가 버튼 */}
-            <button 
+            <button
               className={`add-button ${formData.title.trim() && !isSaving && !isEndTimeInvalid() ? 'add-button-active' : ''}`}
               onClick={handleSave}
               disabled={!formData.title.trim() || isSaving || isEndTimeInvalid()}
