@@ -494,6 +494,618 @@
   background-color: #e5e7eb;
 }
 
+/* 그룹화 슬라이드 */
+.group-slider-container {
+  margin-bottom: 20px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.group-slider {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  padding-bottom: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.group-slider::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.group-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1.5px solid #e5e7eb;
+  background: white;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: grab;
+  transition: all 0.2s;
+  position: relative;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.group-tag:active {
+  cursor: grabbing;
+}
+
+.group-tag:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.group-tag.active {
+  background: linear-gradient(135deg, #f0eff8 0%, #f5f4f9 100%);
+  border-color: #8f85e7;
+  color: #584cdc;
+}
+
+.group-tag.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.group-tag.drag-over {
+  border-color: #584cdc;
+  background: #f0eff8;
+  transform: scale(1.05);
+}
+
+.group-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  cursor: grab;
+  margin-right: 2px;
+  padding: 2px;
+  transition: color 0.2s;
+}
+
+.group-tag:hover .group-drag-handle {
+  color: #6b7280;
+}
+
+.group-tag.active .group-drag-handle {
+  color: #584cdc;
+}
+
+.group-tag:active .group-drag-handle {
+  cursor: grabbing;
+}
+
+.add-group-tag {
+  border-style: dashed;
+  border-color: #d1d5db;
+  color: #9ca3af;
+  padding: 8px 12px;
+}
+
+.add-group-tag:hover {
+  border-color: #584cdc;
+  color: #584cdc;
+  background: #f9fafb;
+}
+
+.add-group-tag.fixed {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.group-count {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.group-delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(88, 76, 220, 0.1);
+  border: none;
+  color: #584cdc;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.group-tag:hover .group-delete-btn {
+  opacity: 1;
+}
+
+.group-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
+.group-delete-btn:active {
+  transform: scale(0.95);
+}
+
+/* 그리드 카드에 그룹 토글 버튼 */
+.grid-card-item {
+  position: relative;
+}
+
+.group-toggle-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #584cdc;
+  color: #584cdc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.group-toggle-btn:hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+.group-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.grid-card-item.in-group .group-toggle-btn {
+  background: #584cdc;
+  color: white;
+}
+
+/* 그룹 추가 모달 */
+.add-group-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.add-group-modal {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 360px;
+  max-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  margin: auto;
+}
+
+.add-group-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+  width: 28px;
+  height: 28px;
+}
+
+.add-group-modal-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #1f2937;
+}
+
+.add-group-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 18px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+
+.add-group-modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.add-group-modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.add-group-modal-content::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.add-group-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* 그룹 추가 카드 */
+.add-group-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.add-group-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 2px;
+}
+
+.add-group-card-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.add-group-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.add-group-card-desc {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.add-group-name-input-card {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1f2937;
+  transition: all 0.2s;
+  background: white;
+}
+
+.add-group-name-input-card:focus {
+  outline: none;
+  border-color: #584cdc;
+  box-shadow: 0 0 0 3px rgba(88, 76, 220, 0.1);
+}
+
+.add-group-mode-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.add-group-mode-button {
+  width: 100%;
+  padding: 12px 18px;
+  background: #584cdc;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.add-group-mode-button:hover {
+  background: #4a3fc0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(88, 76, 220, 0.3);
+}
+
+.add-group-mode-button:active {
+  transform: translateY(0);
+}
+
+.add-group-select-list-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-top: 2px;
+}
+
+.add-group-select-list-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.add-group-select-list-card::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.add-group-select-list-card::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.add-group-select-list-card::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.add-group-select-button {
+  width: 100%;
+  padding: 12px 18px;
+  background: #584cdc;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.add-group-select-button:hover {
+  background: #4a3fc0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(88, 76, 220, 0.3);
+}
+
+.add-group-select-button:active {
+  transform: translateY(0);
+}
+
+.add-group-select-button.selected {
+  background: #3b2fa0;
+  box-shadow: 0 0 0 2px rgba(88, 76, 220, 0.3);
+}
+
+.add-group-empty-message {
+  padding: 32px 24px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  margin: 0;
+}
+
+.add-group-confirm-button {
+  width: 100%;
+  padding: 12px 18px;
+  background: #584cdc;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 6px;
+}
+
+.add-group-confirm-button:hover:not(:disabled) {
+  background: #4a3fc0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(88, 76, 220, 0.3);
+}
+
+.add-group-confirm-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.add-group-confirm-button:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Custom 추가 - 명함 선택 리스트 */
+.add-group-custom-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-top: 2px;
+}
+
+.add-group-custom-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.add-group-custom-list::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.add-group-custom-list::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.add-group-custom-list::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.add-group-custom-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+}
+
+.add-group-custom-item:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.add-group-custom-item.selected {
+  border-color: #584cdc;
+  background: #f0eff8;
+}
+
+.add-group-custom-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.add-group-custom-item.selected .add-group-custom-checkbox {
+  background: #584cdc;
+  border-color: #584cdc;
+}
+
+.add-group-custom-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.add-group-custom-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.add-group-custom-item.selected .add-group-custom-name {
+  color: #584cdc;
+}
+
+.add-group-custom-detail {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.add-group-custom-item.selected .add-group-custom-detail {
+  color: #8f85e7;
+}
+
+/* 그룹 소속 추가 버튼 */
+.group-add-member-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: #584cdc;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(88, 76, 220, 0.2);
+  white-space: nowrap;
+}
+
+.group-add-member-btn:hover {
+  background: #4a3fc0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(88, 76, 220, 0.3);
+}
+
+.group-add-member-btn:active {
+  transform: translateY(0);
+}
+
+.group-add-member-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 480px) {
+  .add-group-modal-overlay {
+    padding: 12px;
+  }
+
+  .add-group-modal {
+    max-width: 100%;
+    max-height: calc(100vh - 24px);
+    border-radius: 20px;
+  }
+
+  .add-group-modal-content {
+    padding: 24px 16px 16px 16px;
+    gap: 14px;
+  }
+
+  .add-group-card {
+    padding: 18px;
+    gap: 12px;
+  }
+
+  .add-group-select-list-card {
+    max-height: 200px;
+  }
+}
+
 /* Grid View */
 .cards-grid {
   display: grid;
@@ -816,6 +1428,10 @@
   align-items: center;
   margin: 0;
   padding: 0;
+}
+
+.usage-indicator-bottom .group-add-member-btn {
+  margin: 0 auto;
 }
 
 /* Footer in grid view - reduce top margin */
