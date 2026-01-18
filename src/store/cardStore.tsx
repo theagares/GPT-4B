@@ -73,7 +73,7 @@ export const useCardStore = create<CardState>((set, get) => ({
     
     set({ isLoading: true });
     try {
-      const response = await cardAPI.getAll({ search });
+      const response = await cardAPI.getAll({ search, limit: 200 });
       if (response.data.success) {
         // DB에서 받은 데이터를 BusinessCard 타입으로 변환
         const cards = (response.data.data || []).map((card: any) => ({
