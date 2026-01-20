@@ -1641,20 +1641,19 @@ function BusinessCardWallet() {
           </div>
         )}
 
-        {/* Footer Message - 명함집 탭이고 그룹 선택 시 숨김 */}
+        {/* Footer - 관계 그래프 버튼 (명함집 탭이고 그룹 선택 시 숨김) */}
         {activeTab === 'cards' && !selectedGroupId && (
           <div className={`wallet-footer ${isGridView ? 'grid-view-footer' : ''}`}>
-            <p className="footer-text">더 많은 명함을 관리할 수 있어요</p>
-            <a 
-              href="#" 
-              className="upgrade-link"
-              onClick={(e) => {
-                e.preventDefault()
-                navigate('/upgrade')
-              }}
+            <button 
+              className="relation-graph-btn"
+              onClick={() => navigate('/relation-graph')}
             >
-              gpt-4b+ 살펴보기
-            </a>
+              <span className="relation-graph-icon">🔗</span>
+              <span className="relation-graph-text">명함 관계 보기</span>
+              <svg className="relation-graph-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
           </div>
         )}
       </div>
