@@ -1204,3 +1204,45 @@
   margin: 0;
   line-height: 1.5;
 }
+
+/* Relationship Graph Button */
+.relationship-graph-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 32px 0 24px 0;
+  padding: 0 20px;
+}
+
+.relationship-graph-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #584cdc;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+.relationship-graph-button:hover {
+  background: #4a3fc0;
+}
+
+.relationship-graph-button-icon {
+  width: 16px;
+  height: 16px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.relationship-graph-button-text {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: white;
+  line-height: 20px;
+  letter-spacing: -0.3125px;
+  margin: 0;
+}

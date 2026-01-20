@@ -1,0 +1,126 @@
+.relationship-graph-page {
+  width: 100%;
+  max-width: 405px;
+  min-height: 100vh;
+  background-color: #f9fafb;
+  padding-bottom: 100px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 auto;
+  position: relative;
+}
+
+.relationship-graph-container {
+  max-width: 405px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  padding-top: 120px; /* 헤더 높이만큼 (56px + 12px + 40px + 여유 12px) */
+}
+
+.relationship-graph-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 405px;
+  z-index: 100;
+  background-color: #f9fafb;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 56px 20px 12px 20px; /* 상태바 높이 + 좌우 패딩 */
+  box-sizing: border-box;
+}
+
+.relationship-graph-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 40px; /* 버튼 높이 */
+}
+
+.relationship-graph-back-button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.relationship-graph-back-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.relationship-graph-back-button:active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.relationship-graph-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.relationship-graph-description {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.relationship-graph-main-text {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+}
+
+.relationship-graph-sub-text {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.relationship-graph-wrapper {
+  width: 100%;
+  min-height: 500px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  position: relative;
+}
+
+/* 그래프 컨트롤 - 그래프 영역 내부에 위치 */
+.relationship-graph-controls {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none; /* 클릭 이벤트는 자식 요소에서만 */
+}
+
+.graph-hint-wrapper {
+  flex: 1;
+  min-width: 0;
+  margin-right: 8px;
+  pointer-events: auto; /* 안내 문구는 클릭 가능 */
+}
+
+.graph-favorite-filter {
+  pointer-events: auto; /* 하트 버튼은 클릭 가능 */
+}

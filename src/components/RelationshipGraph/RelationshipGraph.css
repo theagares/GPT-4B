@@ -1,0 +1,408 @@
+.relationship-graph-svg-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 460px; /* 컨트롤 영역 제외한 높이 */
+}
+
+.relationship-graph-svg {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  background-color: #f9fafb;
+  border-radius: 20px;
+}
+
+/* 하트 필터 버튼 - RelationshipGraphPage에서 사용 */
+.graph-favorite-filter {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  flex-shrink: 0; /* 줄어들지 않도록 */
+}
+
+.graph-favorite-filter:hover {
+  background: #f9fafb;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.graph-favorite-filter.active {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+.graph-favorite-filter.active svg path {
+  fill: #ef4444;
+  stroke: #ef4444;
+}
+
+/* 엣지 클릭 안내 - RelationshipGraphPage에서 사용 */
+.graph-hint {
+  background: rgba(88, 76, 220, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  word-wrap: break-word;
+}
+
+.graph-hint p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.graph-link {
+  transition: stroke-width 0.2s, stroke-opacity 0.2s;
+}
+
+.graph-link:hover {
+  stroke-width: 4px !important;
+  stroke-opacity: 0.8;
+  stroke: #584cdc;
+}
+
+.graph-node {
+  transition: transform 0.2s;
+}
+
+.graph-node:hover {
+  transform: scale(1.1);
+}
+
+.graph-loading,
+.graph-error,
+.graph-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  background-color: #f9fafb;
+  border-radius: 20px;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+}
+
+/* 관계 요약 모달 */
+.summary-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.summary-modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 360px;
+  width: 100%;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+.summary-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.summary-modal-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.summary-modal-close {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.summary-modal-close:hover {
+  background-color: #f3f4f6;
+}
+
+.summary-refresh-button {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  opacity: 0.7;
+}
+
+.summary-refresh-button:hover:not(:disabled) {
+  background-color: #f3f4f6;
+  opacity: 1;
+}
+
+.summary-refresh-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.summary-refresh-button svg {
+  animation: none;
+}
+
+.summary-refresh-button:disabled svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.summary-modal-body {
+  padding: 16px 20px;
+}
+
+.summary-section {
+  margin-bottom: 20px;
+}
+
+.summary-section:last-child {
+  margin-bottom: 0;
+}
+
+.summary-section-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 10px 0;
+}
+
+.summary-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.summary-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-info-label {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.summary-info-value {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #584cdc;
+}
+
+.summary-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-stat-item {
+  padding: 12px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.summary-stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.summary-stat-type {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.summary-stat-count {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #584cdc;
+}
+
+.summary-stat-confidence {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.summary-stat-examples {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.summary-interactions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-interaction-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: #f9fafb;
+  border-radius: 6px;
+}
+
+.summary-interaction-type {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.summary-interaction-date {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.summary-text-content {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #374151;
+  padding: 10px 12px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.summary-preferences {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.summary-preference-tag {
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #6b5de8 0%, #584cdc 100%);
+  color: white;
+  border-radius: 16px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.summary-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.summary-keyword-tag {
+  padding: 5px 10px;
+  background: linear-gradient(135deg, #6b5de8 0%, #584cdc 100%);
+  color: white;
+  border-radius: 14px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.summary-keyword-tag.speculative {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.summary-keyword-tag:hover {
+  opacity: 0.9;
+}
+
+.summary-more-indicator {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.summary-more-indicator:hover {
+  color: #584cdc;
+}
+
+.summary-modal-loading,
+.summary-modal-error {
+  padding: 48px 24px;
+  text-align: center;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.summary-modal-error button {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: #584cdc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.summary-modal-error button:hover {
+  background: #4736d3;
+}

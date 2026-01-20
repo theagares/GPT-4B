@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useCardStore } from "../store/cardStore";
 import { preferenceAPI } from "../utils/api";
@@ -7,9 +7,23 @@ import { isAuthenticated } from "../utils/auth";
 const CardDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromRelationshipGraph = location.state?.fromRelationshipGraph;
   const card = useCardStore((state) =>
     id ? state.getCardById(id) : undefined,
   );
+
+  // 브라우저 뒤로가기 처리
+  useEffect(() => {
+    const handlePopState = () => {
+      if (fromRelationshipGraph) {
+        navigate('/relationship-graph', { replace: true });
+      }
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [fromRelationshipGraph, navigate]);
   const [preferences, setPreferences] = useState<{
     likes: Array<{ item: string; evidence: string[]; weight?: number }>;
     dislikes: Array<{ item: string; evidence: string[]; weight?: number }>;
@@ -82,7 +96,7 @@ const CardDetail = () => {
         <p className="text-sm text-slate-500">명함을 찾을 수 없습니다.</p>
         <button
           type="button"
-          onClick={() => navigate("/cards")}
+          onClick={() => navigate(fromRelationshipGraph ? "/relationship-graph" : "/cards")}
           className="mt-4 rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white"
         >
           목록으로 이동
@@ -91,8 +105,28 @@ const CardDetail = () => {
     );
   }
 
+  const handleBack = () => {
+    if (fromRelationshipGraph) {
+      navigate('/relationship-graph')
+    } else {
+      navigate(-1)
+    }
+  }
+
   return (
     <section className="space-y-6">
+      {/* 뒤로가기 버튼 */}
+      <button
+        type="button"
+        onClick={handleBack}
+        className="mb-4 flex items-center gap-2 text-slate-600 hover:text-slate-900"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span>뒤로</span>
+      </button>
+      
       <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-white shadow-glass">
         <p className="text-sm text-white/70">{card.company}</p>
         <p className="mt-6 text-3xl font-semibold">{card.name}</p>

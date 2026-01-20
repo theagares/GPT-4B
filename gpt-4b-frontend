@@ -1,0 +1,560 @@
+> gpt-4b-frontend@1.0.0 dev
+> vite
+
+The CJS build of 
+The CJS build of Vite's Node API i
+The CJS build of Vite's Node API is deprecated. See
+The CJS build of Vite's Node API is deprecated. See https://vite.dev
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troublesho
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-c
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-depre
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more de
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+Re-optimizing dep
+Re-optimizing dependencies because
+Re-optimizing dependencies because lockfile has cha
+Re-optimizing dependencies because lockfile has changed
+
+  VITE v5.4.21  r
+  VITE v5.4.21  ready in 180 ms
+
+  ➜  Loc:   htt
+  ➜  Local:   http://localhost:517
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: htt
+  ➜  Network: http://172.16.99.208
+  ➜  Network: http://172.16.99.208:5173/
+  ➜  press h + en
+  ➜  press h + enter to show help
+Error: The follow
+Error: The following dependencies 
+Error: The following dependencies are imported but 
+Error: The following dependencies are imported but could not be reso
+Error: The following dependencies are imported but could not be resolved:
+
+  d3-selection (i
+  d3-selection (imported by /Users
+  d3-selection (imported by /Users/anyeonju/Desktop
+  d3-selection (imported by /Users/anyeonju/Desktop/TEAM_PROJECT/FE/
+  d3-selection (imported by /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/Re
+  d3-selection (imported by /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/R
+  d3-selection (imported by /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.
+  d3-selection (imported by /Users/anyeoAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.jsx)
+  d3-drag (import
+  d3-drag (imported by /Users/anye
+  d3-drag (imported by /Users/anyeonju/Desktop/TEAM
+  d3-drag (imported by /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/c
+  d3-drag (imported by /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/Relatio
+  d3-drag (imported by /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/Relati
+  d3-drag (imported by /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.jsx)
+
+Are they installe
+Are they installed?
+    at file:///Us
+    at file:///Users/anyeonju/Desk
+    at file:///Users/anyeonju/Desktop/TEAM_PROJECT/
+    at file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/v
+    at file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chu
+    at file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.
+    at file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:50669:15
+    at process.pr
+    at process.processTicksAndReje
+    at process.processTicksAndRejections (node:inte
+    at process.processTicksAndRejections (node:internal/process/task
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file
+    at async file:///Users/anyeonj
+    at async file:///Users/anyeonju/Desktop/TEAM_PR
+    at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_mod
+    at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/no
+    at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3
+    at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:50174:26
+6:32:58 PM [vite]
+6:32:58 PM [vite] Pre-transform er
+6:32:58 PM [vite] Pre-transform error: Failed to re
+6:32:58 PM [vite] Pre-transform error: Failed to resolve import "d3-
+6:32:58 PM [vite] Pre-transform error: Failed to resolve import "d3-selection" from "
+6:32:58 PM [vite] Pre-transform error: Failed to resolve import "d3-selection" from "src/components/Re
+6:32:58 PM [vite] Pre-transform error: Failed to resolve import "d3-selection" from "src/components/RelationshipGraph/R
+6:32:58 PM [vite] Pre-transform error: Failed to resolve import "d3-selection" from "src/components/RelationshipGraph/RelationshipGraph.
+6:32:58 PM [vite] Pre-transform error: Failed to resolve import "d3-selection" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the fi
+6:32:58 PM [vite] Pre-transform error: Failed to resolve import "d3-selection" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the file exist?
+6:32:58 PM [vite]
+6:32:58 PM [vite] Internal server 
+6:32:58 PM [vite] Internal server error: Failed to 
+6:32:58 PM [vite] Internal server error: Failed to resolve import "d
+6:32:58 PM [vite] Internal server error: Failed to resolve import "d3-selection" from
+6:32:58 PM [vite] Internal server error: Failed to resolve import "d3-selection" from "src/components/
+6:32:58 PM [vite] Internal server error: Failed to resolve import "d3-selection" from "src/components/RelationshipGraph
+6:32:58 PM [vite] Internal server error: Failed to resolve import "d3-selection" from "src/components/RelationshipGraph/RelationshipGrap
+6:32:58 PM [vite] Internal server error: Failed to resolve import "d3-selection" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the 
+6:32:58 PM [vite] Internal server error: Failed to resolve import "d3-selection" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the file exist?
+  Plugin: vite:im
+  Plugin: vite:import-analysis
+  File: /Users/an
+  File: /Users/anyeonju/Desktop/TE
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/Relat
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/Rela
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.jsx
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.jsx:3:26
+  18 |  import { 
+  18 |  import { useEffect, useRef
+  18 |  import { useEffect, useRef, useState } from
+  18 |  import { useEffect, useRef, useState } from "react";
+  19 |  import * 
+  19 |  import * as d3Force from "
+  19 |  import * as d3Force from "d3-force";
+  20 |  import * 
+  20 |  import * as d3Select from 
+  20 |  import * as d3Select from "d3-selection";
+     |           
+     |                            
+     |                             ^
+  21 |  import * 
+  21 |  import * as d3Drag from "d
+  21 |  import * as d3Drag from "d3-drag";
+  22 |  import { 
+  22 |  import { relationshipAPI }
+  22 |  import { relationshipAPI } from "../../util
+  22 |  import { relationshipAPI } from "../../utils/api";
+      at Transfor
+      at TransformPluginContext._f
+      at TransformPluginContext._formatError (file:
+      at TransformPluginContext._formatError (file:///Users/anyeonju
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PRO
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modu
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/nod
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41)
+      at Transfor
+      at TransformPluginContext.er
+      at TransformPluginContext.error (file:///User
+      at TransformPluginContext.error (file:///Users/anyeonju/Deskto
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vit
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunk
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16)
+      at normaliz
+      at normalizeUrl (file:///Use
+      at normalizeUrl (file:///Users/anyeonju/Deskt
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/F
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vi
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chun
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.j
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23)
+      at process.
+      at process.processTicksAndRe
+      at process.processTicksAndRejections (node:in
+      at process.processTicksAndRejections (node:internal/process/ta
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async fi
+      at async file:///Users/anyeo
+      at async file:///Users/anyeonju/Desktop/TEAM_
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_m
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-B
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+      at async Pr
+      at async Promise.all (index 
+      at async Promise.all (index 5)
+      at async Tr
+      at async TransformPluginCont
+      at async TransformPluginContext.transform (fi
+      at async TransformPluginContext.transform (file:///Users/anyeo
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_m
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-B
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7)
+      at async Pl
+      at async PluginContainer.tra
+      at async PluginContainer.transform (file:///U
+      at async PluginContainer.transform (file:///Users/anyeonju/Des
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/ch
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18)
+      at async lo
+      at async loadAndTransform (f
+      at async loadAndTransform (file:///Users/anye
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27)
+      at async vi
+      at async viteTransformMiddle
+      at async viteTransformMiddleware (file:///Use
+      at async viteTransformMiddleware (file:///Users/anyeonju/Deskt
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/F
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vi
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chun
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.j
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:62106:24)
+6:33:45 PM [vite]
+6:33:45 PM [vite] hmr update /src/
+6:33:45 PM [vite] hmr update /src/pages/Relationshi
+6:33:45 PM [vite] hmr update /src/pages/RelationshipGraphPage.jsx
+6:33:45 PM [vite]
+6:33:45 PM [vite] Pre-transform er
+6:33:45 PM [vite] Pre-transform error: Failed to re
+6:33:45 PM [vite] Pre-transform error: Failed to resolve import "d3"
+6:33:45 PM [vite] Pre-transform error: Failed to resolve import "d3" from "src/compon
+6:33:45 PM [vite] Pre-transform error: Failed to resolve import "d3" from "src/components/Relationship
+6:33:45 PM [vite] Pre-transform error: Failed to resolve import "d3" from "src/components/RelationshipGraph/Relationshi
+6:33:45 PM [vite] Pre-transform error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does
+6:33:45 PM [vite] Pre-transform error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the file exist?
+6:33:45 PM [vite]
+6:33:45 PM [vite] Internal server 
+6:33:45 PM [vite] Internal server error: Failed to 
+6:33:45 PM [vite] Internal server error: Failed to resolve import "d
+6:33:45 PM [vite] Internal server error: Failed to resolve import "d3" from "src/comp
+6:33:45 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/Relationsh
+6:33:45 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/Relations
+6:33:45 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Do
+6:33:45 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the file exist
+6:33:45 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the file exist?
+  Plugin: vite:im
+  Plugin: vite:import-analysis
+  File: /Users/an
+  File: /Users/anyeonju/Desktop/TE
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/Relat
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/Rela
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.jsx
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.jsx:2:20
+  17 |  var _s = 
+  17 |  var _s = $RefreshSig$();
+  18 |  import { 
+  18 |  import { useEffect, useRef
+  18 |  import { useEffect, useRef, useState } from
+  18 |  import { useEffect, useRef, useState } from "react";
+  19 |  import * 
+  19 |  import * as d3 from "d3";
+     |           
+     |                       ^
+  20 |  import { 
+  20 |  import { relationshipAPI }
+  20 |  import { relationshipAPI } from "../../util
+  20 |  import { relationshipAPI } from "../../utils/api";
+  21 |  import { 
+  21 |  import { isAuthenticated }
+  21 |  import { isAuthenticated } from "../../util
+  21 |  import { isAuthenticated } from "../../utils/auth";
+      at Transfor
+      at TransformPluginContext._f
+      at TransformPluginContext._formatError (file:
+      at TransformPluginContext._formatError (file:///Users/anyeonju
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PRO
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modu
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/nod
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41)
+      at Transfor
+      at TransformPluginContext.er
+      at TransformPluginContext.error (file:///User
+      at TransformPluginContext.error (file:///Users/anyeonju/Deskto
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vit
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunk
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16)
+      at normaliz
+      at normalizeUrl (file:///Use
+      at normalizeUrl (file:///Users/anyeonju/Deskt
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/F
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vi
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chun
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.j
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23)
+      at process.
+      at process.processTicksAndRe
+      at process.processTicksAndRejections (node:in
+      at process.processTicksAndRejections (node:internal/process/ta
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async fi
+      at async file:///Users/anyeo
+      at async file:///Users/anyeonju/Desktop/TEAM_
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_m
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-B
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+      at async Pr
+      at async Promise.all (index 
+      at async Promise.all (index 4)
+      at async Tr
+      at async TransformPluginCont
+      at async TransformPluginContext.transform (fi
+      at async TransformPluginContext.transform (file:///Users/anyeo
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_m
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-B
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7)
+      at async Pl
+      at async PluginContainer.tra
+      at async PluginContainer.transform (file:///U
+      at async PluginContainer.transform (file:///Users/anyeonju/Des
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/ch
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18)
+      at async lo
+      at async loadAndTransform (f
+      at async loadAndTransform (file:///Users/anye
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27)
+      at async vi
+      at async viteTransformMiddle
+      at async viteTransformMiddleware (file:///Use
+      at async viteTransformMiddleware (file:///Users/anyeonju/Deskt
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/F
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vi
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chun
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.j
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:62106:24)
+6:33:49 PM [vite]
+6:33:49 PM [vite] Internal server 
+6:33:49 PM [vite] Internal server error: Failed to 
+6:33:49 PM [vite] Internal server error: Failed to resolve import "d
+6:33:49 PM [vite] Internal server error: Failed to resolve import "d3" from "src/comp
+6:33:49 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/Relationsh
+6:33:49 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/Relations
+6:33:49 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Do
+6:33:49 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the file exist
+6:33:49 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the file exist?
+  Plugin: vite:im
+  Plugin: vite:import-analysis
+  File: /Users/an
+  File: /Users/anyeonju/Desktop/TE
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/Relat
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/Rela
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.jsx
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.jsx:2:20
+  17 |  var _s = 
+  17 |  var _s = $RefreshSig$();
+  18 |  import { 
+  18 |  import { useEffect, useRef
+  18 |  import { useEffect, useRef, useState } from
+  18 |  import { useEffect, useRef, useState } from "react";
+  19 |  import * 
+  19 |  import * as d3 from "d3";
+     |           
+     |                       ^
+  20 |  import { 
+  20 |  import { relationshipAPI }
+  20 |  import { relationshipAPI } from "../../util
+  20 |  import { relationshipAPI } from "../../utils/api";
+  21 |  import { 
+  21 |  import { isAuthenticated }
+  21 |  import { isAuthenticated } from "../../util
+  21 |  import { isAuthenticated } from "../../utils/auth";
+      at Transfor
+      at TransformPluginContext._f
+      at TransformPluginContext._formatError (file:
+      at TransformPluginContext._formatError (file:///Users/anyeonju
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PRO
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modu
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/nod
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41)
+      at Transfor
+      at TransformPluginContext.er
+      at TransformPluginContext.error (file:///User
+      at TransformPluginContext.error (file:///Users/anyeonju/Deskto
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vit
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunk
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16)
+      at normaliz
+      at normalizeUrl (file:///Use
+      at normalizeUrl (file:///Users/anyeonju/Deskt
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/F
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vi
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chun
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.j
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23)
+      at process.
+      at process.processTicksAndRe
+      at process.processTicksAndRejections (node:in
+      at process.processTicksAndRejections (node:internal/process/ta
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async fi
+      at async file:///Users/anyeo
+      at async file:///Users/anyeonju/Desktop/TEAM_
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_m
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-B
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+      at async Pr
+      at async Promise.all (index 
+      at async Promise.all (index 4)
+      at async Tr
+      at async TransformPluginCont
+      at async TransformPluginContext.transform (fi
+      at async TransformPluginContext.transform (file:///Users/anyeo
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_m
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-B
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7)
+      at async Pl
+      at async PluginContainer.tra
+      at async PluginContainer.transform (file:///U
+      at async PluginContainer.transform (file:///Users/anyeonju/Des
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/ch
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18)
+      at async lo
+      at async loadAndTransform (f
+      at async loadAndTransform (file:///Users/anye
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27)
+      at async vi
+      at async viteTransformMiddle
+      at async viteTransformMiddleware (file:///Use
+      at async viteTransformMiddleware (file:///Users/anyeonju/Deskt
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/F
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vi
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chun
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.j
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:62106:24) (x2)
+6:33:50 PM [vite]
+6:33:50 PM [vite] Internal server 
+6:33:50 PM [vite] Internal server error: Failed to 
+6:33:50 PM [vite] Internal server error: Failed to resolve import "d
+6:33:50 PM [vite] Internal server error: Failed to resolve import "d3" from "src/comp
+6:33:50 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/Relationsh
+6:33:50 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/Relations
+6:33:50 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Do
+6:33:50 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the file exist
+6:33:50 PM [vite] Internal server error: Failed to resolve import "d3" from "src/components/RelationshipGraph/RelationshipGraph.jsx". Does the file exist?
+  Plugin: vite:im
+  Plugin: vite:import-analysis
+  File: /Users/an
+  File: /Users/anyeonju/Desktop/TE
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/Relat
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/Rela
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.jsx
+  File: /Users/anyeonju/Desktop/TEAM_PROJECT/FE/src/components/RelationshipGraph/RelationshipGraph.jsx:2:20
+  17 |  var _s = 
+  17 |  var _s = $RefreshSig$();
+  18 |  import { 
+  18 |  import { useEffect, useRef
+  18 |  import { useEffect, useRef, useState } from
+  18 |  import { useEffect, useRef, useState } from "react";
+  19 |  import * 
+  19 |  import * as d3 from "d3";
+     |           
+     |                       ^
+  20 |  import { 
+  20 |  import { relationshipAPI }
+  20 |  import { relationshipAPI } from "../../util
+  20 |  import { relationshipAPI } from "../../utils/api";
+  21 |  import { 
+  21 |  import { isAuthenticated }
+  21 |  import { isAuthenticated } from "../../util
+  21 |  import { isAuthenticated } from "../../utils/auth";
+      at Transfor
+      at TransformPluginContext._f
+      at TransformPluginContext._formatError (file:
+      at TransformPluginContext._formatError (file:///Users/anyeonju
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PRO
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modu
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/nod
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b
+      at TransformPluginContext._formatError (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41)
+      at Transfor
+      at TransformPluginContext.er
+      at TransformPluginContext.error (file:///User
+      at TransformPluginContext.error (file:///Users/anyeonju/Deskto
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vit
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunk
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js
+      at TransformPluginContext.error (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16)
+      at normaliz
+      at normalizeUrl (file:///Use
+      at normalizeUrl (file:///Users/anyeonju/Deskt
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/F
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vi
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chun
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.j
+      at normalizeUrl (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23)
+      at process.
+      at process.processTicksAndRe
+      at process.processTicksAndRejections (node:in
+      at process.processTicksAndRejections (node:internal/process/ta
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async fi
+      at async file:///Users/anyeo
+      at async file:///Users/anyeonju/Desktop/TEAM_
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_m
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-B
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:
+      at async file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+      at async Pr
+      at async Promise.all (index 
+      at async Promise.all (index 4)
+      at async Tr
+      at async TransformPluginCont
+      at async TransformPluginContext.transform (fi
+      at async TransformPluginContext.transform (file:///Users/anyeo
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_m
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-B
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:
+      at async TransformPluginContext.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7)
+      at async Pl
+      at async PluginContainer.tra
+      at async PluginContainer.transform (file:///U
+      at async PluginContainer.transform (file:///Users/anyeonju/Des
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/ch
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa
+      at async PluginContainer.transform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18)
+      at async lo
+      at async loadAndTransform (f
+      at async loadAndTransform (file:///Users/anye
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978
+      at async loadAndTransform (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27)
+      at async vi
+      at async viteTransformMiddle
+      at async viteTransformMiddleware (file:///Use
+      at async viteTransformMiddleware (file:///Users/anyeonju/Deskt
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/F
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vi
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chun
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.j
+      at async viteTransformMiddleware (file:///Users/anyeonju/Desktop/TEAM_PROJECT/FE/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:62106:24) (x3)

@@ -333,4 +333,12 @@ export const preferenceAPI = {
     api.post(`/profile/${businessCardId}/preferences/rebuild`, { limit }),
 };
 
+// Relationship Graph API
+export const relationshipAPI = {
+  getGraphData: () => api.get("/relationship/graph"),
+
+  getRelationshipSummary: (contactId) => api.get(`/relationship/${contactId}/summary`),
+  getLLMSummaries: (contactId) => api.get(`/relationship/${contactId}/summary/llm`),
+};
+
 export default api;

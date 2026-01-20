@@ -1241,6 +1241,21 @@ function LandingPage() {
             ) : null}
           </div>
         </div>
+
+        {/* Relationship Graph Button */}
+        <div className="relationship-graph-button-container">
+          <button 
+            className="relationship-graph-button"
+            onClick={() => navigate('/relationship-graph')}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="relationship-graph-button-icon">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span className="relationship-graph-button-text">지금까지 맺은 관계</span>
+          </button>
+        </div>
       </div>
 
       <BottomNavigation />

@@ -37,6 +37,7 @@ import UpgradePage from './pages/UpgradePage'
 import EditMyInfoPage from './pages/EditMyInfoPage'
 import NotFoundPage from './pages/NotFoundPage'
 import MemoPage from './pages/MemoPage'
+import RelationshipGraphPage from './pages/RelationshipGraphPage'
 import './App.css'
 
 function App() {
@@ -81,6 +82,7 @@ function App() {
         <Route path="/popular-gifts/:giftId" element={<GiftDetailPage />} />
         <Route path="/popular-gifts/filter" element={<FilterPage />} />
         <Route path="/upgrade" element={<UpgradePage />} />
+        <Route path="/relationship-graph" element={<RelationshipGraphPage />} />
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
