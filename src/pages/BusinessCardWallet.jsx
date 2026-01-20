@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
+import RelationshipGraphOverlay from '../components/RelationshipGraph/RelationshipGraphOverlay'
 import { useCardStore } from '../store/cardStore'
 import { giftAPI, userAPI, preferenceAPI } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
@@ -129,6 +130,7 @@ function BusinessCardWallet() {
   const [isGridView, setIsGridView] = useState(location.state?.isGridView || false)
   const [selectedCardId, setSelectedCardId] = useState(null)
   const [userName, setUserName] = useState('')
+  const [showRelationshipGraph, setShowRelationshipGraph] = useState(false)
   const cards = useCardStore((state) => state.cards)
   const fetchCards = useCardStore((state) => state.fetchCards)
   const updateCard = useCardStore((state) => state.updateCard)
@@ -1304,20 +1306,23 @@ function BusinessCardWallet() {
           </>
         )}
 
-        {/* Footer Message - 그룹 선택 시 숨김 */}
+        {/* Relationship Graph CTA - 그룹 선택 시 숨김 */}
         {!selectedGroupId && (
           <div className={`wallet-footer ${isGridView ? 'grid-view-footer' : ''}`}>
-            <p className="footer-text">더 많은 명함을 관리할 수 있어요</p>
-            <a 
-              href="#" 
-              className="upgrade-link"
-              onClick={(e) => {
-                e.preventDefault()
-                navigate('/upgrade')
-              }}
-            >
-              gpt-4b+ 살펴보기
-            </a>
+            <div className="relationship-cta">
+              <div className="relationship-cta-text">
+                <p className="relationship-cta-title">선호 명함 관계도 보기</p>
+                <span className="relationship-cta-subtitle">하트를 누른 명함들의 관계를 한눈에</span>
+              </div>
+              <button
+                type="button"
+                className="relationship-cta-button"
+                onClick={() => setShowRelationshipGraph(true)}
+                aria-label="선호 명함 관계도 보기"
+              >
+                열기
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -1604,7 +1609,15 @@ function BusinessCardWallet() {
         </div>
       )}
 
-      <BottomNavigation />
+      {showRelationshipGraph && (
+        <RelationshipGraphOverlay
+          cards={cards}
+          meName={userName || 'Me'}
+          onClose={() => setShowRelationshipGraph(false)}
+        />
+      )}
+
+      {!showRelationshipGraph && <BottomNavigation />}
 
       {/* Card Detail Modal */}
       {showDetailModal && selectedCard && (

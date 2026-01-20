@@ -237,6 +237,30 @@ export const cardAPI = {
   delete: (id) => api.delete(`/cards/${id}`),
 };
 
+// Extracted Fact API
+export const extractedFactAPI = {
+  getByCardIds: (cardIds = []) =>
+    api.get("/extracted-facts", {
+      params: cardIds.length ? { cardIds: cardIds.join(",") } : {},
+    }),
+};
+
+// Source Event API
+export const sourceEventAPI = {
+  getByCardIds: (cardIds = []) =>
+    api.get("/source-events", {
+      params: cardIds.length ? { cardIds: cardIds.join(",") } : {},
+    }),
+};
+
+// Relationship Summary API
+export const relationshipSummaryAPI = {
+  getByCardId: (cardId) =>
+    api.get("/relationship-summary", {
+      params: { cardId },
+    }),
+};
+
 // OCR API
 export const ocrAPI = {
   process: (image) => api.post("/ocr/process", { image }),
