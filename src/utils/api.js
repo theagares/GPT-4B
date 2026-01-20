@@ -333,4 +333,10 @@ export const preferenceAPI = {
     api.post(`/profile/${businessCardId}/preferences/rebuild`, { limit }),
 };
 
+// Search API (cardSearch 기반 검색)
+export const searchAPI = {
+  // cardSearch 기반 명함 검색
+  search: (query) => api.post("/card-search", { query }),
+};
+
 export default api;
