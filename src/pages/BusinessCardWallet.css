@@ -1453,18 +1453,52 @@
   margin: 4px 0 2px 0;
 }
 
-.upgrade-link {
-  font-size: 14px;
-  font-weight: 400;
-  color: #155dfc;
-  font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  text-decoration: underline;
-  text-underline-position: from-font;
+/* 관계 그래프 버튼 */
+.relation-graph-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 14px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.upgrade-link:hover {
-  opacity: 0.8;
+.relation-graph-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.relation-graph-btn:active {
+  transform: translateY(0);
+}
+
+.relation-graph-icon {
+  font-size: 18px;
+}
+
+.relation-graph-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  letter-spacing: -0.3px;
+}
+
+.relation-graph-arrow {
+  color: rgba(255, 255, 255, 0.8);
+  transition: transform 0.2s ease;
+}
+
+.relation-graph-btn:hover .relation-graph-arrow {
+  transform: translateX(3px);
 }
 
 /* Card Flipping Animation */
