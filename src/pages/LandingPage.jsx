@@ -280,7 +280,19 @@ function LandingPage() {
   const [upcomingAlerts, setUpcomingAlerts] = useState([])
   const [showUpcomingAlertPopup, setShowUpcomingAlertPopup] = useState(false)
   const [currentUpcomingAlert, setCurrentUpcomingAlert] = useState(null)
-  const [dismissedAlertIds, setDismissedAlertIds] = useState(new Set())
+  const [dismissedAlertIds, setDismissedAlertIds] = useState(() => {
+    // localStorage에서 닫힌 팝업 ID 목록 불러오기
+    try {
+      const saved = localStorage.getItem('dismissedUpcomingAlertIds')
+      if (saved) {
+        const ids = JSON.parse(saved)
+        return new Set(ids)
+      }
+    } catch (err) {
+      console.error('Failed to load dismissed alert ids:', err)
+    }
+    return new Set()
+  })
   
   // 명함 정보 모달 관련 state
   const [showCardInfoModal, setShowCardInfoModal] = useState(false)
@@ -647,7 +659,17 @@ function LandingPage() {
     return () => clearInterval(interval)
   }, [])
 
-  // upcomingAlerts가 변경될 때 팝업 표시
+  // dismissedAlertIds를 localStorage에 저장
+  const saveDismissedAlertIds = (idsSet) => {
+    try {
+      const ids = Array.from(idsSet)
+      localStorage.setItem('dismissedUpcomingAlertIds', JSON.stringify(ids))
+    } catch (err) {
+      console.error('Failed to save dismissed alert ids:', err)
+    }
+  }
+
+  // upcomingAlerts가 변경될 때 팝업 표시 (한 번 닫힌 팝업은 다시 표시하지 않음)
   useEffect(() => {
     if (upcomingAlerts.length > 0 && !showUpcomingAlertPopup) {
       // 닫히지 않은 알림 찾기
@@ -1203,6 +1225,62 @@ function LandingPage() {
         </div>
 
 
+        {/* 5분 전 알림 Section */}
+        {upcomingAlerts.length > 0 && (
+          <div className="alerts-section">
+            <h2 className="alerts-title">5분 전 알림</h2>
+            <div className="alerts-list">
+              {upcomingAlerts.map((alert) => {
+                // 일정 카테고리별 원색 매핑
+                const categoryColors = {
+                  '미팅': '#584cdc',
+                  '업무': '#3b82f6',
+                  '개인': '#10b981',
+                  '기타': '#6b7280'
+                }
+                // 일정 카테고리별 약간 옅은 색상 매핑
+                const categoryLightColors = {
+                  '미팅': '#7c6fe8',
+                  '업무': '#5b9aff',
+                  '개인': '#2dd4a0',
+                  '기타': '#9ca3af'
+                }
+                const category = alert.category || '기타'
+                const buttonColor = categoryColors[category] || categoryColors['기타']
+                const cardColor = categoryLightColors[category] || categoryLightColors['기타']
+                
+                return (
+                  <div 
+                    key={alert.id} 
+                    className="alert-card"
+                    style={{ 
+                      backgroundColor: cardColor
+                    }}
+                  >
+                    <p 
+                      className="alert-text"
+                      style={{ color: 'white' }}
+                    >
+                      {alert.text}
+                    </p>
+                    <button 
+                      className="alert-button upcoming-alert-button"
+                      style={{ 
+                        backgroundColor: 'white',
+                        borderColor: 'white',
+                        color: buttonColor
+                      }}
+                      onClick={() => handleShowCardInfo(alert)}
+                    >
+                      상대 정보 확인하기
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Important Alerts Section */}
         <div className="alerts-section">
           <h2 className="alerts-title">일정 알림</h2>
@@ -1230,15 +1308,15 @@ function LandingPage() {
                     >
                       일정 보기
                     </button>
-                </div>
+                  </div>
                 )
               })
-            ) : upcomingAlerts.length === 0 ? (
+            ) : (
               <div className="no-alerts">
                 <p className="no-alerts-text">아직 등록된 일정이 없어요.</p>
                 <p className="no-alerts-text">'캘린더' 탭에서 일정을 등록해보세요!</p>
               </div>
-            ) : null}
+            )}
           </div>
         </div>
       </div>
@@ -1288,7 +1366,9 @@ function LandingPage() {
             className="upcoming-alert-popup-overlay" 
             onClick={() => {
               if (currentUpcomingAlert) {
-                setDismissedAlertIds(prev => new Set([...prev, currentUpcomingAlert.id]))
+                const newDismissedIds = new Set([...dismissedAlertIds, currentUpcomingAlert.id])
+                setDismissedAlertIds(newDismissedIds)
+                saveDismissedAlertIds(newDismissedIds)
               }
               setShowUpcomingAlertPopup(false)
               setCurrentUpcomingAlert(null)
@@ -1303,7 +1383,9 @@ function LandingPage() {
                   className="upcoming-alert-close"
                   onClick={() => {
                     if (currentUpcomingAlert) {
-                      setDismissedAlertIds(prev => new Set([...prev, currentUpcomingAlert.id]))
+                      const newDismissedIds = new Set([...dismissedAlertIds, currentUpcomingAlert.id])
+                      setDismissedAlertIds(newDismissedIds)
+                      saveDismissedAlertIds(newDismissedIds)
                     }
                     setShowUpcomingAlertPopup(false)
                     setCurrentUpcomingAlert(null)
@@ -1333,7 +1415,9 @@ function LandingPage() {
                     e.stopPropagation()
                     // 팝업을 먼저 닫고 나서 모달 열기
                     if (currentUpcomingAlert) {
-                      setDismissedAlertIds(prev => new Set([...prev, currentUpcomingAlert.id]))
+                      const newDismissedIds = new Set([...dismissedAlertIds, currentUpcomingAlert.id])
+                      setDismissedAlertIds(newDismissedIds)
+                      saveDismissedAlertIds(newDismissedIds)
                     }
                     setShowUpcomingAlertPopup(false)
                     setCurrentUpcomingAlert(null)

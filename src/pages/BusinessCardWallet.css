@@ -12,13 +12,17 @@
 
 .wallet-container {
   padding: 24px;
-  padding-top: 235px;
+  padding-top: 0;
   max-width: 405px;
   margin: 0 auto;
 }
 
-.wallet-container.slide-view {
-  padding-top: 230px;
+/* View Toggle Section - 헤더 밖 */
+.view-toggle-section-outer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px 0 24px;
+  margin-bottom: 16px;
 }
 
 /* Fixed Page Header */
@@ -31,10 +35,10 @@
   margin: 0 auto;
   background-color: white;
   z-index: 100;
-  padding: 56px 24px 20px 24px;
+  padding: 56px 24px 16px 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .wallet-page-header-content {
@@ -53,6 +57,14 @@
   line-height: 1.4;
 }
 
+.wallet-group-header .wallet-page-header-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: auto;
+}
+
 .wallet-page-header-subtitle {
   font-size: 11px;
   font-weight: 400;
@@ -60,6 +72,85 @@
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0;
   line-height: 1.4;
+}
+
+/* 그룹 헤더 */
+.wallet-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  position: relative;
+}
+
+.wallet-group-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #1f2937;
+  transition: all 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+  margin-left: -4px;
+}
+
+.wallet-group-back-btn:hover {
+  background: #f3f4f6;
+  color: #584cdc;
+}
+
+.wallet-group-back-btn:active {
+  transform: scale(0.95);
+}
+
+.wallet-group-back-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Tab Navigation */
+.wallet-tab-navigation {
+  display: flex;
+  gap: 0;
+  border-radius: 0;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.wallet-tab {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: white;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-right: 1px solid #e5e7eb;
+}
+
+.wallet-tab:last-child {
+  border-right: none;
+}
+
+.wallet-tab.active {
+  color: white;
+  font-weight: 600;
+  background: #584cdc;
+}
+
+.wallet-tab:hover:not(.active) {
+  background: #f9fafb;
 }
 
 /* Header Section */
@@ -165,10 +256,65 @@
 /* Search Section */
 .search-section {
   margin-bottom: 0;
+  flex: 1;
+  margin-right: 12px;
 }
 
 .wallet-page-header .search-section {
+  width: auto;
+}
+
+/* Search and Toggle Container */
+.search-and-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   width: 100%;
+}
+
+/* 그룹 추가 버튼 - 헤더용 */
+.group-add-btn-header {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #584cdc;
+  border-radius: 9999px;
+  color: #584cdc;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.group-add-btn-header:hover {
+  background: #584cdc;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.group-add-btn-header:hover svg {
+  color: white;
+}
+
+.group-add-btn-header:active {
+  background: #4a3fc0;
+  color: white;
+  transform: translateY(0);
+}
+
+.group-add-btn-header:active svg {
+  color: white;
+}
+
+.group-add-btn-header svg {
+  color: #584cdc;
+  transition: color 0.2s ease;
 }
 
 /* Action Buttons Section */
@@ -183,6 +329,7 @@
 .search-wrapper {
   position: relative;
   width: 100%;
+  max-width: 100%;
 }
 
 .search-icon {
@@ -230,7 +377,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 0;
   padding: 0;
   width: 100%;
 }
@@ -451,8 +598,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0;
+  margin: 0 0 0 110px;
   flex: 1;
+  min-height: 20px;
 }
 
 .card-guide-text {
@@ -693,7 +841,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10000;
   padding: 16px;
   overflow-y: auto;
 }
@@ -736,6 +884,79 @@
   color: #1f2937;
 }
 
+/* 그룹 삭제 확인 모달 */
+.delete-group-modal {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  margin: auto;
+}
+
+.delete-group-modal-content {
+  padding: 32px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.delete-group-modal-message {
+  font-size: 16px;
+  font-weight: 400;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.delete-group-modal-group-name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.delete-group-modal-buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.delete-group-modal-cancel,
+.delete-group-modal-confirm {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.delete-group-modal-cancel {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.delete-group-modal-cancel:hover {
+  background: #e5e7eb;
+}
+
+.delete-group-modal-confirm {
+  background: #f87171;
+  color: white;
+}
+
+.delete-group-modal-confirm:hover {
+  background: #ef4444;
+}
+
 .add-group-modal-content {
   flex: 1;
   overflow-y: auto;
@@ -763,6 +984,18 @@
   background: #9ca3af;
 }
 
+/* 그룹 추가 카드 세로 배치 */
+.add-group-cards-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.add-group-cards-row .add-group-card {
+  width: 100%;
+}
+
 /* 그룹 추가 카드 */
 .add-group-card {
   background: #ffffff;
@@ -778,8 +1011,8 @@
 .add-group-card-icon {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  margin-bottom: 2px;
+  justify-content: center;
+  margin-bottom: -4px;
 }
 
 .add-group-card-icon svg {
@@ -793,20 +1026,22 @@
   color: #1f2937;
   margin: 0;
   line-height: 1.4;
+  text-align: center;
 }
 
 .add-group-card-desc {
   font-size: 13px;
   color: #6b7280;
-  margin: 0;
+  margin: 0 0 0 0;
   line-height: 1.5;
+  text-align: center;
 }
 
 .add-group-name-input-card {
   width: 100%;
   padding: 12px 14px;
   border: 1.5px solid #e5e7eb;
-  border-radius: 10px;
+  border-radius: 0;
   font-size: 14px;
   color: #1f2937;
   transition: all 0.2s;
@@ -819,25 +1054,69 @@
   box-shadow: 0 0 0 3px rgba(88, 76, 220, 0.1);
 }
 
+/* 그룹 멤버 추가 모달 검색 입력 */
+.add-group-search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 9999px;
+  margin-bottom: 12px;
+}
+
+.add-group-search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.add-group-search-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.add-group-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  outline: none;
+}
+
+.add-group-search-input::placeholder {
+  color: #9ca3af;
+}
+
+.add-group-search-wrapper:focus-within {
+  border-color: #584cdc;
+  box-shadow: 0 0 0 3px rgba(88, 76, 220, 0.1);
+}
+
 .add-group-mode-buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 8px;
   margin-top: 2px;
 }
 
 .add-group-mode-button {
-  width: 100%;
-  padding: 12px 18px;
+  flex: 1;
+  padding: 12px 12px;
   background: #584cdc;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 9999px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
   text-align: center;
+  min-width: 0;
 }
 
 .add-group-mode-button:hover {
@@ -881,9 +1160,9 @@
 .add-group-select-button {
   width: 100%;
   padding: 12px 18px;
-  background: #584cdc;
-  color: white;
-  border: none;
+  background: white;
+  color: #584cdc;
+  border: 1px solid #584cdc;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 500;
@@ -893,9 +1172,9 @@
 }
 
 .add-group-select-button:hover {
-  background: #4a3fc0;
+  background: #f3f4f6;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(88, 76, 220, 0.3);
+  box-shadow: 0 4px 12px rgba(88, 76, 220, 0.2);
 }
 
 .add-group-select-button:active {
@@ -903,8 +1182,9 @@
 }
 
 .add-group-select-button.selected {
-  background: #3b2fa0;
-  box-shadow: 0 0 0 2px rgba(88, 76, 220, 0.3);
+  background: #584cdc;
+  color: white;
+  border: 1px solid #584cdc;
 }
 
 .add-group-empty-message {
@@ -1045,6 +1325,13 @@
 }
 
 /* 그룹 소속 추가 버튼 */
+.group-action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
 .group-add-member-btn {
   display: inline-flex;
   align-items: center;
@@ -1054,7 +1341,7 @@
   background: #584cdc;
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 9999px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -1077,6 +1364,102 @@
   width: 16px;
   height: 16px;
   flex-shrink: 0;
+}
+
+/* 그룹에서 삭제 버튼 */
+.group-remove-member-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+  white-space: nowrap;
+}
+
+.group-remove-member-btn:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.group-remove-member-btn:active {
+  transform: translateY(0);
+}
+
+.group-remove-member-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* 선택 버튼 */
+.group-selection-btn {
+  padding: 6px 16px;
+  background: white;
+  color: #584cdc;
+  border: 1px solid #584cdc;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.group-selection-btn:hover {
+  background: #f3f4f6;
+}
+
+.group-selection-btn.active {
+  background: #584cdc;
+  color: white;
+}
+
+/* 명함 선택 표시 */
+.grid-card-selection-indicator {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+}
+
+.selection-circle {
+  width: 24px;
+  height: 24px;
+  border: 2px dashed #584cdc;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.selection-circle.selected {
+  background: #584cdc;
+  border: 2px solid #584cdc;
+  border-style: solid;
+}
+
+.selection-circle.selected::after {
+  content: '✓';
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.grid-card-item {
+  position: relative;
 }
 
 /* 모바일 반응형 */
@@ -1252,10 +1635,11 @@
 }
 
 /* View All Button */
-.view-toggle-section {
+.view-toggle-section-header {
   display: flex;
   justify-content: flex-end;
   margin: 0;
+  flex-shrink: 0;
 }
 
 .view-toggle-container {
@@ -1365,9 +1749,11 @@
 .usage-and-guide-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   margin: 4px 0 4px 0;
-  padding: 0 0 0 40px;
+  padding: 0;
+  width: 100%;
+  position: relative;
 }
 
 /* Grid view: align usage count to right */
@@ -1408,6 +1794,29 @@
   font-weight: 600;
 }
 
+/* n/200 텍스트 - 명함 밖 하단 가운데 (슬라이드 뷰) */
+.usage-indicator-bottom-carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 16px 0;
+  margin-top: 0;
+}
+
+.usage-indicator-bottom-carousel .usage-count-carousel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  text-align: center;
+}
+
+.usage-indicator-bottom-carousel .usage-count-number-carousel {
+  font-weight: 600;
+  color: #1f2937;
+}
+
 /* Grid view usage count */
 .usage-count-grid {
   font-size: 14px;
@@ -1430,13 +1839,23 @@
   padding: 0;
 }
 
+/* 전체보기일 때 하단 요소 위치 올리기 */
+.cards-tab-content:not(.slide-view) .usage-indicator-bottom {
+  margin-top: -20px;
+}
+
 .usage-indicator-bottom .group-add-member-btn {
   margin: 0 auto;
 }
 
+/* 그룹이 선택되었을 때 그룹 인원 추가 버튼을 더 아래로 */
+.cards-tab-content.group-selected .usage-indicator-bottom {
+  margin-top: 40px;
+}
+
 /* Footer in grid view - reduce top margin */
 .wallet-footer.grid-view-footer {
-  margin-top: 0px;
+  margin-top: -20px;
 }
 
 .footer-text {
@@ -2177,6 +2596,18 @@
   padding: 12px 20px 12px 20px;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  position: relative;
+}
+
+.modal-info-card.has-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  z-index: 10;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .modal-info-row {
@@ -2311,7 +2742,30 @@
 
 /* Preferences Section */
 .modal-preferences-section-inner {
+  position: relative;
   padding-top: 0;
+  min-height: 300px;
+}
+
+/* 작은 오버레이 삭제 - modal-info-card의 ::before 오버레이만 사용 */
+
+.preference-evidence-box-centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 16px;
+  background-color: white;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 30;
+  width: 280px;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
 }
 
 .modal-preferences-section {
@@ -2527,9 +2981,7 @@
   height: 14px;
 }
 
-.preference-chip-evidence-toggle:hover {
-  opacity: 1;
-}
+/* 호버 효과 제거 */
 
 .preference-chip-evidence-wrapper .preference-chip-evidence {
   position: absolute;
@@ -2541,20 +2993,20 @@
   border: none;
   border-radius: 8px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); /* 그림자 강화 */
-  z-index: 1000;
+  z-index: 30;
   min-width: 200px;
   max-width: 250px;
   width: max-content;
   box-sizing: border-box;
-  opacity: 0;
-  visibility: hidden;
+  opacity: 1;
+  visibility: visible;
   transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
-  pointer-events: none;
+  pointer-events: auto;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
   white-space: normal;
-  transform: translate(-50%, -4px); /* 중앙 정렬 + 등장 애니메이션 효과 */
+  transform: translate(-50%, 0); /* 중앙 정렬 */
 }
 
 /* 갭 메우기 위한 가상 요소 */
@@ -2569,7 +3021,8 @@
   background: transparent;
 }
 
-.preference-chip-evidence-wrapper:hover .preference-chip-evidence {
+/* 호버 효과 제거 - 클릭 시에만 표시 */
+.preference-chip-evidence-wrapper .preference-chip-evidence.show {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -2578,16 +3031,63 @@
 
 .preference-evidence-item {
   font-size: 12px;
-  color: #6b7280;
+  color: #000000;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  padding: 4px 0;
+  padding: 8px 12px;
   line-height: 1.4;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: none;
+}
+
+.preference-evidence-item.evidence-like {
+  background-color: #dbeafe; /* 옅은 파란색 */
+  transition: background-color 0.2s ease;
+}
+
+.preference-evidence-item.evidence-like:hover {
+  background-color: #bfdbfe; /* 더 진한 파란색 */
+}
+
+.preference-evidence-item.evidence-dislike {
+  background-color: #fee2e2; /* 옅은 빨간색 */
+  transition: background-color 0.2s ease;
+}
+
+.preference-evidence-item.evidence-dislike:hover {
+  background-color: #fecaca; /* 더 진한 빨간색 */
+}
+
+.preference-evidence-item.evidence-uncertain {
+  background-color: #f3f4f6; /* 옅은 회색 */
+  transition: background-color 0.2s ease;
+}
+
+.preference-evidence-item.evidence-uncertain:hover {
+  background-color: #e5e7eb; /* 더 진한 회색 */
 }
 
 .preference-evidence-item:not(:last-child) {
-  border-bottom: 1px solid #f3f4f6;
-  padding-bottom: 8px;
   margin-bottom: 8px;
+}
+
+.preference-evidence-box-centered .preference-evidence-item {
+  padding: 8px 12px;
+}
+
+.preference-evidence-hint {
+  font-size: 11px;
+  color: #9ca3af;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  text-align: center;
+  margin-top: 4px;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-top: none;
 }
 
 /* Edit Button - Bottom right of card */
@@ -2645,6 +3145,60 @@
   gap: 12px;
   backdrop-filter: blur(4px);
   line-height: 1.5;
+}
+
+/* 하트 토스트 메시지 */
+.wallet-heart-toast {
+  position: fixed;
+  bottom: 150px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 32px);
+  width: auto;
+  min-width: 280px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, rgba(109, 48, 223, 0.95) 0%, rgba(88, 76, 220, 0.95) 100%);
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(88, 76, 220, 0.35);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
+}
+
+.wallet-heart-toast p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: white;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  text-align: center;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.wallet-heart-toast .toast-heart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.wallet-heart-toast .toast-quote {
+  font-size: 16px;
+  line-height: 1;
+  color: white;
+}
+
+.wallet-heart-toast.fade-away {
+  opacity: 0;
 }
 
 .rebuild-loading-spinner {
@@ -2717,4 +3271,365 @@
 
 .preference-evidence-item:hover .preference-evidence-arrow {
   opacity: 1;
+}
+
+/* 타인 명함 등록 탭 */
+.register-buttons-container-header {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  padding: 2px 20px;
+  width: 100%;
+}
+
+.register-action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
+  background: white;
+  border: 1px solid #584cdc;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: none;
+  gap: 8px;
+  color: #584cdc;
+}
+
+.register-action-btn:hover {
+  background: #584cdc;
+  color: white;
+}
+
+.register-action-btn:hover .register-action-icon {
+  color: white;
+}
+
+.register-action-btn:active {
+  transform: scale(0.98);
+}
+
+.register-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #584cdc;
+}
+
+.register-action-icon svg {
+  width: 20px;
+  height: 20px;
+  transition: color 0.3s ease;
+}
+
+.register-action-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #584cdc;
+  transition: color 0.3s ease;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.register-action-btn:hover .register-action-label {
+  color: white;
+}
+
+/* 명함집 탭 */
+.cards-tab-content {
+  padding: 240px 0 24px 0;
+}
+
+.cards-tab-content.slide-view {
+  padding-top: 270px;
+}
+
+/* 전체보기일 때 padding-top 줄여서 하단 요소 위치 올리기 */
+.cards-tab-content:not(.slide-view) {
+  padding-top: 270px;
+}
+
+/* 그룹이 선택되었을 때 명함 위치 더 위로 */
+.cards-tab-content.group-selected {
+  padding-top: 145px;
+}
+
+/* 그룹 탭 */
+.groups-tab-content {
+  padding: 210px 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  min-height: calc(100vh - 200px);
+  position: relative;
+}
+
+
+.groups-tab-header {
+  margin-top: auto;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 0;
+  flex-shrink: 0;
+}
+
+.group-add-btn-large {
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: white;
+  border: 1px solid #584cdc;
+  border-radius: 9999px;
+  color: #584cdc;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+
+.group-add-btn-large:hover {
+  background: #584cdc;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.group-add-btn-large:hover svg {
+  color: white;
+}
+
+.group-add-btn-large:active {
+  transform: translateY(0);
+  background: #4a3fc0;
+  color: white;
+}
+
+.group-add-btn-large:active svg {
+  color: white;
+}
+
+.group-add-btn-large svg {
+  width: 20px;
+  height: 20px;
+  color: #584cdc;
+}
+
+.groups-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+}
+
+.groups-list-container.empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 60px;
+}
+
+.groups-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.groups-empty-message {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0 0 2px 0;
+}
+
+.groups-empty-desc {
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  margin: 0;
+}
+
+.groups-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.group-item {
+  background: white;
+  border: 2px solid #000000;
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  position: relative;
+}
+
+.group-item:hover {
+  border-color: #584cdc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.group-item.active {
+  border-color: #000000;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* 그룹 탭에서는 active 상태를 표시하지 않음 */
+.groups-tab-content .group-item.active {
+  border-color: #000000;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.groups-tab-content .group-item.active .group-item-name {
+  color: #000000;
+}
+
+.group-item.dragging {
+  opacity: 0.5;
+}
+
+.group-item.drag-over {
+  border-color: #584cdc;
+  background: rgba(88, 76, 220, 0.1);
+}
+
+.group-item-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.group-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.group-item-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  transition: color 0.2s ease;
+}
+
+.group-item:hover .group-item-name {
+  color: #584cdc;
+}
+
+.group-item.active .group-item-name {
+  color: #000000;
+}
+
+.group-item-count {
+  font-size: 13px;
+  font-weight: 400;
+  color: #6b7280;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.group-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.group-item-add-member-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #1f2937;
+}
+
+.group-item-delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #1f2937;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 0;
+}
+
+.group-item-add-member-btn:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.group-item-delete-btn:hover {
+  color: #6b7280;
+}
+
+.group-item-add-member-btn:active {
+  transform: scale(0.95);
+}
+
+.group-item-delete-btn:active {
+  transform: scale(0.9);
+}
+
+.group-item-add-member-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.group-item-delete-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* 반응형 조정 */
+@media (max-width: 405px) {
+  .wallet-tab {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  
+  .register-action-btn {
+    padding: 24px 20px;
+  }
+  
+  .register-action-icon {
+    width: 48px;
+    height: 48px;
+  }
 }

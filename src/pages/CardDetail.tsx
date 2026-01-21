@@ -68,13 +68,22 @@ const CardDetail = () => {
   };
 
   // Toggle evidence expansion
-  const toggleEvidence = (category: string, index: number) => {
+  const toggleEvidence = (category: string, index: number, e: React.MouseEvent) => {
+    e.stopPropagation();
     const key = `${category}-${index}`;
     setExpandedEvidence((prev) => ({
       ...prev,
       [key]: !prev[key],
     }));
   };
+
+  // Close all evidence when clicking overlay
+  const closeAllEvidence = () => {
+    setExpandedEvidence({});
+  };
+
+  // Check if any evidence is expanded
+  const hasExpandedEvidence = Object.values(expandedEvidence).some(Boolean);
 
   if (!card) {
     return (
@@ -117,8 +126,15 @@ const CardDetail = () => {
       </section>
 
       {/* Preferences Section */}
-      <section className="rounded-3xl bg-white p-6 shadow-lg">
-        <div className="flex items-center justify-between mb-4">
+      <section className="rounded-3xl bg-white p-6 shadow-lg relative">
+        {/* Overlay when evidence is expanded */}
+        {hasExpandedEvidence && (
+          <div
+            className="absolute inset-0 bg-black/20 rounded-3xl z-10"
+            onClick={closeAllEvidence}
+          />
+        )}
+        <div className="flex items-center justify-between mb-4 relative z-20">
           <h3 className="text-lg font-semibold text-slate-900">선호도 프로필</h3>
           <button
             type="button"
@@ -131,9 +147,9 @@ const CardDetail = () => {
         </div>
 
         {isLoadingPreferences ? (
-          <div className="text-center py-8 text-sm text-slate-500">선호도를 불러오는 중...</div>
+          <div className="text-center py-8 text-sm text-slate-500 relative z-20">선호도를 불러오는 중...</div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 relative z-20">
             {/* Likes */}
             {preferences.likes && preferences.likes.length > 0 && (
               <div>
@@ -148,8 +164,8 @@ const CardDetail = () => {
                         {item.evidence && item.evidence.length > 0 && (
                           <button
                             type="button"
-                            onClick={() => toggleEvidence('like', index)}
-                            className="ml-1 text-blue-500 hover:text-blue-700"
+                            onClick={(e) => toggleEvidence('like', index, e)}
+                            className="ml-1 text-blue-500"
                             title="증거 보기"
                           >
                             ℹ️
@@ -157,7 +173,7 @@ const CardDetail = () => {
                         )}
                       </div>
                       {expandedEvidence[`like-${index}`] && item.evidence && (
-                        <div className="absolute top-full left-0 mt-1 p-2 bg-white border border-slate-200 rounded-lg shadow-lg z-10 min-w-[200px] max-w-[300px]">
+                        <div className="absolute top-full left-0 mt-1 p-2 bg-white border border-slate-200 rounded-lg shadow-lg z-30 min-w-[200px] max-w-[300px]" onClick={(e) => e.stopPropagation()}>
                           {item.evidence.map((ev: string, evIndex: number) => (
                             <div key={evIndex} className="text-xs text-slate-600 py-1">
                               &quot;{ev}&quot;
@@ -185,8 +201,8 @@ const CardDetail = () => {
                         {item.evidence && item.evidence.length > 0 && (
                           <button
                             type="button"
-                            onClick={() => toggleEvidence('dislike', index)}
-                            className="ml-1 text-red-500 hover:text-red-700"
+                            onClick={(e) => toggleEvidence('dislike', index, e)}
+                            className="ml-1 text-red-500"
                             title="증거 보기"
                           >
                             ℹ️
@@ -194,7 +210,7 @@ const CardDetail = () => {
                         )}
                       </div>
                       {expandedEvidence[`dislike-${index}`] && item.evidence && (
-                        <div className="absolute top-full left-0 mt-1 p-2 bg-white border border-slate-200 rounded-lg shadow-lg z-10 min-w-[200px] max-w-[300px]">
+                        <div className="absolute top-full left-0 mt-1 p-2 bg-white border border-slate-200 rounded-lg shadow-lg z-30 min-w-[200px] max-w-[300px]" onClick={(e) => e.stopPropagation()}>
                           {item.evidence.map((ev: string, evIndex: number) => (
                             <div key={evIndex} className="text-xs text-slate-600 py-1">
                               &quot;{ev}&quot;
@@ -222,8 +238,8 @@ const CardDetail = () => {
                         {item.evidence && item.evidence.length > 0 && (
                           <button
                             type="button"
-                            onClick={() => toggleEvidence('uncertain', index)}
-                            className="ml-1 text-slate-500 hover:text-slate-700"
+                            onClick={(e) => toggleEvidence('uncertain', index, e)}
+                            className="ml-1 text-slate-500"
                             title="증거 보기"
                           >
                             ℹ️
@@ -231,7 +247,7 @@ const CardDetail = () => {
                         )}
                       </div>
                       {expandedEvidence[`uncertain-${index}`] && item.evidence && (
-                        <div className="absolute top-full left-0 mt-1 p-2 bg-white border border-slate-200 rounded-lg shadow-lg z-10 min-w-[200px] max-w-[300px]">
+                        <div className="absolute top-full left-0 mt-1 p-2 bg-white border border-slate-200 rounded-lg shadow-lg z-30 min-w-[200px] max-w-[300px]" onClick={(e) => e.stopPropagation()}>
                           {item.evidence.map((ev: string, evIndex: number) => (
                             <div key={evIndex} className="text-xs text-slate-600 py-1">
                               &quot;{ev}&quot;

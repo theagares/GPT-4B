@@ -396,6 +396,69 @@
   background-color: rgba(255, 255, 255, 0.9);
 }
 
+/* 5분 전 알림 버튼 스타일 */
+.upcoming-alert-button {
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 9999px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  flex-shrink: 0;
+  animation: pulse-glow 2s ease-in-out infinite;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(255, 255, 255, 0.6);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15), 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.4);
+    transform: scale(1.02);
+  }
+}
+
+.upcoming-alert-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  pointer-events: none;
+}
+
+.upcoming-alert-button:hover {
+  filter: brightness(0.85);
+  animation: none;
+}
+
+.upcoming-alert-button:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.upcoming-alert-button:active {
+  transform: translateY(0) scale(1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  animation: none;
+}
+
 .no-alerts {
   background-color: #D4D2E5;
   border-radius: 14px;
