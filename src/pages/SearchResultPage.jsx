@@ -145,21 +145,6 @@ function SearchResultPage() {
           </button>
           <div className="search-result-header-content">
             <h1 className="search-result-header-title">검색 결과</h1>
-            {searchQuery && (
-              <>
-                <p className="search-result-header-query">
-                  "{searchQuery}"
-                </p>
-                <p className="search-result-header-subtitle">
-                  에 대한 결과입니다
-                </p>
-              </>
-            )}
-            {!searchQuery && (
-              <p className="search-result-header-subtitle">
-                검색 결과를 확인하세요
-              </p>
-            )}
           </div>
         </div>
 
@@ -205,11 +190,6 @@ function SearchResultPage() {
                       {result.card.position && (
                         <div className="search-card-position">
                           {result.card.position}
-                        </div>
-                      )}
-                      {result.card.email && (
-                        <div className="search-card-email">
-                          {result.card.email}
                         </div>
                       )}
                       {result.evidences && result.evidences.length > 0 && (

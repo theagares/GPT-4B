@@ -1326,8 +1326,8 @@ function LandingPage() {
         </div>
           <div className="banner-content">
             <div className="banner-text">
-              <p className="banner-subtitle">AI 맞춤형 비즈니스 선물 추천 서비스 GPT-4b</p>
-              <p className="banner-title">상대방의 정보를 기반으로 최적의 선물을 찾아드립니다</p>
+              <p className="banner-subtitle">AI 맞춤형 비즈니스 인맥 관리 서비스 GPT-4b</p>
+              <p className="banner-title">명함 관리와 선물 추천으로 인맥 관리를 도와드립니다</p>
             </div>
           </div>
         </div>
@@ -1335,13 +1335,13 @@ function LandingPage() {
         {/* Search Section */}
         <div className="search-section">
           <div className="search-greeting">
-            {userName ? `${userName}님, 안녕하세요. 어떤 생각을 하고 계시나요?` : '안녕하세요. 어떤 생각을 하고 계시나요?'}
+누구의 명함을 찾고 계신가요?
           </div>
           
           <div className="search-input-container">
             <textarea
               className="search-textarea"
-              placeholder="무엇이든 물어보세요"
+              placeholder="상대가 무엇을 좋아하는지, 어떤 성격인지 등을 입력해주세요"
               rows={3}
               value={searchQuery}
               onChange={(e) => {
@@ -1392,23 +1392,23 @@ function LandingPage() {
           <div className="search-suggestions">
             <div 
               className="search-suggestion-item"
-              onClick={() => handleSuggestionClick('최근 만난 사람과의 관계를 어떻게 발전시킬 수 있을까요?')}
+              onClick={() => handleSuggestionClick('축구를 좋아하는 분이 누구였지?')}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M21 21L16.65 16.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              <span>최근 만난 사람과의 관계를 어떻게 발전시킬 수 있을까요?</span>
+              <span>축구를 좋아하는 분이 누구였지?</span>
             </div>
             <div 
               className="search-suggestion-item"
-              onClick={() => handleSuggestionClick('오랜만에 연락할 사람에게 어떤 선물이 좋을까요?')}
+              onClick={() => handleSuggestionClick('농산물 관련 일 같이 했던 분이 누구였지?')}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M21 21L16.65 16.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              <span>오랜만에 연락할 사람에게 어떤 선물이 좋을까요?</span>
+              <span>농산물 관련 일 같이 했던 분이 누구였지?</span>
             </div>
           </div>
         </div>
@@ -1471,7 +1471,7 @@ function LandingPage() {
         )}
 
         {/* Important Alerts Section */}
-        <div className="alerts-section">
+        <div className="alerts-section schedule-alerts-section">
           <h2 className="alerts-title">일정 알림</h2>
           <div className="alerts-list">
             {alerts.length > 0 ? (
