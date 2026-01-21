@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { memoAPI } from '../utils/api'
@@ -49,6 +49,13 @@ function MemoPage() {
   const [editContent, setEditContent] = useState('')
   const [deleteConfirmId, setDeleteConfirmId] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [isListening, setIsListening] = useState(false)
+  const [isListeningEdit, setIsListeningEdit] = useState(false)
+  const [isSTTSupported, setIsSTTSupported] = useState(false)
+  const recognitionRef = useRef(null)
+  const recognitionEditRef = useRef(null)
+  const processedFinalRef = useRef('')
+  const processedFinalEditRef = useRef('')
   const user = getUser()
   const fetchCards = useCardStore((state) => state.fetchCards)
   
@@ -87,6 +94,127 @@ function MemoPage() {
       setLoading(false)
     }
   }
+
+  // STT 지원 여부 확인 및 초기화 (메모 작성용)
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    
+    if (SpeechRecognition) {
+      setIsSTTSupported(true)
+      const recognition = new SpeechRecognition()
+      recognition.lang = 'ko-KR'
+      recognition.continuous = false
+      recognition.interimResults = true
+      
+      recognition.onstart = () => {
+        setIsListening(true)
+        processedFinalRef.current = '' // 초기화
+      }
+      
+      recognition.onresult = (event) => {
+        let finalTranscript = ''
+        
+        // 최종 결과만 수집
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript
+          }
+        }
+        
+        // 최종 결과가 있고 아직 처리하지 않은 경우에만 추가
+        if (finalTranscript && finalTranscript !== processedFinalRef.current) {
+          setIsListening(false)
+          processedFinalRef.current = finalTranscript // 처리된 결과 저장
+          setContent(prev => {
+            // 기존 텍스트에 최종 결과만 한 번 추가
+            return prev ? `${prev} ${finalTranscript}` : finalTranscript
+          })
+        }
+      }
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error)
+        setIsListening(false)
+        if (event.error === 'no-speech') {
+          alert('음성이 감지되지 않았습니다. 다시 시도해주세요.')
+        } else if (event.error === 'not-allowed') {
+          alert('마이크 권한이 필요합니다. 브라우저 설정에서 마이크 권한을 허용해주세요.')
+        }
+      }
+      
+      recognition.onend = () => {
+        setIsListening(false)
+      }
+      
+      recognitionRef.current = recognition
+    }
+    
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop()
+      }
+    }
+  }, [])
+
+  // STT 지원 여부 확인 및 초기화 (메모 수정용)
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition()
+      recognition.lang = 'ko-KR'
+      recognition.continuous = false
+      recognition.interimResults = true
+      
+      recognition.onstart = () => {
+        setIsListeningEdit(true)
+        processedFinalEditRef.current = '' // 초기화
+      }
+      
+      recognition.onresult = (event) => {
+        let finalTranscript = ''
+        
+        // 최종 결과만 수집
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript
+          }
+        }
+        
+        // 최종 결과가 있고 아직 처리하지 않은 경우에만 추가
+        if (finalTranscript && finalTranscript !== processedFinalEditRef.current) {
+          setIsListeningEdit(false)
+          processedFinalEditRef.current = finalTranscript // 처리된 결과 저장
+          setEditContent(prev => {
+            // 기존 텍스트에 최종 결과만 한 번 추가
+            return prev ? `${prev} ${finalTranscript}` : finalTranscript
+          })
+        }
+      }
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error (edit):', event.error)
+        setIsListeningEdit(false)
+        if (event.error === 'no-speech') {
+          alert('음성이 감지되지 않았습니다. 다시 시도해주세요.')
+        } else if (event.error === 'not-allowed') {
+          alert('마이크 권한이 필요합니다. 브라우저 설정에서 마이크 권한을 허용해주세요.')
+        }
+      }
+      
+      recognition.onend = () => {
+        setIsListeningEdit(false)
+      }
+      
+      recognitionEditRef.current = recognition
+    }
+    
+    return () => {
+      if (recognitionEditRef.current) {
+        recognitionEditRef.current.stop()
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -145,6 +273,46 @@ function MemoPage() {
       alert('메모 생성에 실패했습니다: ' + (err.response?.data?.message || err.message))
     } finally {
       setIsCreating(false)
+    }
+  }
+
+  // STT 시작/중지 (메모 작성용)
+  const toggleListening = () => {
+    if (!isSTTSupported) {
+      alert('이 브라우저는 음성 인식을 지원하지 않습니다.')
+      return
+    }
+    
+    if (isListening) {
+      recognitionRef.current?.stop()
+      setIsListening(false)
+    } else {
+      try {
+        recognitionRef.current?.start()
+      } catch (error) {
+        console.error('Failed to start recognition:', error)
+        alert('음성 인식을 시작할 수 없습니다.')
+      }
+    }
+  }
+
+  // STT 시작/중지 (메모 수정용)
+  const toggleListeningEdit = () => {
+    if (!isSTTSupported) {
+      alert('이 브라우저는 음성 인식을 지원하지 않습니다.')
+      return
+    }
+    
+    if (isListeningEdit) {
+      recognitionEditRef.current?.stop()
+      setIsListeningEdit(false)
+    } else {
+      try {
+        recognitionEditRef.current?.start()
+      } catch (error) {
+        console.error('Failed to start recognition:', error)
+        alert('음성 인식을 시작할 수 없습니다.')
+      }
     }
   }
 
@@ -300,17 +468,41 @@ function MemoPage() {
           </div>
         )}
         <div className="memo-input-section">
-          <textarea
-            className="memo-input"
-            placeholder={card && card.name ? `${card.name}님에 대한 메모를 입력하세요` : '메모를 입력하세요...'}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={4}
-          />
+          <div className="memo-input-wrapper">
+            <textarea
+              className="memo-input"
+              placeholder={card && card.name ? `${card.name}님에 대한 메모를 입력하세요` : '메모를 입력하세요...'}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              rows={4}
+              disabled={isListening}
+            />
+            {isSTTSupported && (
+              <button
+                className={`memo-mic-button ${isListening ? 'listening' : ''}`}
+                onClick={toggleListening}
+                disabled={isCreating}
+                title={isListening ? '음성 인식 중...' : '음성으로 입력'}
+              >
+                {isListening ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 19V23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M8 23H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </button>
+            )}
+          </div>
           <button
             className={`memo-create-btn ${content.trim() && !isCreating ? 'active' : ''}`}
             onClick={handleCreate}
-            disabled={!content.trim() || isCreating}
+            disabled={!content.trim() || isCreating || isListening}
           >
             {isCreating ? '생성 중...' : '메모 추가'}
           </button>
@@ -343,22 +535,47 @@ function MemoPage() {
                 <div key={memo.id} className="memo-item">
                   {editingId === memo.id ? (
                     <div className="memo-edit-mode">
-                      <textarea
-                        className="memo-edit-input"
-                        value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
-                        rows={3}
-                      />
+                      <div className="memo-edit-input-wrapper">
+                        <textarea
+                          className="memo-edit-input"
+                          value={editContent}
+                          onChange={(e) => setEditContent(e.target.value)}
+                          rows={3}
+                          disabled={isListeningEdit}
+                        />
+                        {isSTTSupported && (
+                          <button
+                            className={`memo-mic-button memo-mic-button-edit ${isListeningEdit ? 'listening' : ''}`}
+                            onClick={toggleListeningEdit}
+                            title={isListeningEdit ? '음성 인식 중...' : '음성으로 입력'}
+                          >
+                            {isListeningEdit ? (
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>
+                              </svg>
+                            ) : (
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M12 19V23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M8 23H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            )}
+                          </button>
+                        )}
+                      </div>
                       <div className="memo-edit-actions">
                         <button
                           className="memo-save-btn"
                           onClick={() => handleEditSave(memo.id)}
+                          disabled={isListeningEdit}
                         >
                           저장
                         </button>
                         <button
                           className="memo-cancel-btn"
                           onClick={handleEditCancel}
+                          disabled={isListeningEdit}
                         >
                           취소
                         </button>

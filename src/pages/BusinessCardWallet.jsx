@@ -403,9 +403,9 @@ function BusinessCardWallet() {
               })
             })
           }
-          // returnToEventDetail이 있으면 state를 유지 (모달 닫을 때 일정 상세로 돌아가기 위해)
+          // returnToEventDetail이나 returnToSearchResult가 있으면 state를 유지 (모달 닫을 때 원래 페이지로 돌아가기 위해)
           // 없으면 state 초기화
-          if (!location.state?.returnToEventDetail) {
+          if (!location.state?.returnToEventDetail && !location.state?.returnToSearchResult) {
             navigate(location.pathname, { replace: true, state: {} })
           }
         }, delay)
@@ -915,6 +915,29 @@ function BusinessCardWallet() {
   }
 
   const handleCloseModal = () => {
+    // 검색 결과에서 온 경우 검색 결과 페이지로 돌아가기
+    if (location.state?.returnToSearchResult && location.state?.searchQuery) {
+      const modalElement = document.querySelector('.card-detail-modal')
+      if (modalElement) {
+        modalElement.style.animation = 'slideDownModal 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+        const overlayElement = document.querySelector('.card-detail-modal-overlay')
+        if (overlayElement) {
+          overlayElement.style.animation = 'fadeOutOverlay 0.3s ease-out forwards'
+        }
+      }
+      setTimeout(() => {
+        setShowDetailModal(false)
+        setFlippingCardId(null)
+        setSelectedCardId(null)
+        navigate('/search-result', {
+          state: {
+            query: location.state.searchQuery
+          }
+        })
+      }, 300)
+      return
+    }
+    
     // 일정 상세에서 온 경우 일정 상세로 돌아가기
     if (location.state?.returnToEventDetail && location.state?.eventId) {
       const modalElement = document.querySelector('.card-detail-modal')

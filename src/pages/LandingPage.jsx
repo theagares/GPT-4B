@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
-import { userAPI, calendarAPI, cardAPI } from '../utils/api'
+import { userAPI, calendarAPI, cardAPI, searchAPI } from '../utils/api'
 import { isAuthenticated, getUser } from '../utils/auth'
 import api from '../utils/api'
 import './LandingPage.css'
@@ -143,6 +143,16 @@ function LandingPage() {
   const [userName, setUserName] = useState('')
   const [showCardCompleteModal, setShowCardCompleteModal] = useState(false)
   const cards = useCardStore((state) => state.cards)
+  
+  // 검색 관련 state
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [showSearchResults, setShowSearchResults] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [isSTTSupported, setIsSTTSupported] = useState(false)
+  const recognitionRef = useRef(null)
+  const handleSearchRef = useRef(null)
 
   // DB에서 로그인한 유저의 이름 가져오기
   useEffect(() => {
@@ -1168,6 +1178,140 @@ function LandingPage() {
     }
   }
 
+  // STT 지원 여부 확인 및 초기화
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    
+    if (SpeechRecognition) {
+      setIsSTTSupported(true)
+      const recognition = new SpeechRecognition()
+      recognition.lang = 'ko-KR' // 한국어 설정
+      recognition.continuous = false // 한 번만 인식
+      recognition.interimResults = true // 중간 결과도 받기 (텍스트가 실시간으로 표시됨)
+      
+      recognition.onstart = () => {
+        setIsListening(true)
+      }
+      
+      recognition.onresult = (event) => {
+        // 중간 결과와 최종 결과 모두 처리
+        let interimTranscript = ''
+        let finalTranscript = ''
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript
+          } else {
+            interimTranscript += transcript
+          }
+        }
+        
+        // 중간 결과가 있으면 실시간으로 표시
+        if (interimTranscript) {
+          console.log('🎤 음성 인식 중간 결과:', interimTranscript)
+          setSearchQuery(finalTranscript + interimTranscript)
+        }
+        
+        // 최종 결과가 있으면 텍스트만 설정 (검색 실행 제거)
+        if (finalTranscript) {
+          console.log('🎤 음성 인식 최종 결과:', finalTranscript)
+          setIsListening(false)
+          
+          // 최종 텍스트 설정
+          setSearchQuery(finalTranscript)
+          console.log('✅ searchQuery 상태 업데이트:', finalTranscript)
+        }
+      }
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error)
+        setIsListening(false)
+        if (event.error === 'no-speech') {
+          alert('음성이 감지되지 않았습니다. 다시 시도해주세요.')
+        } else if (event.error === 'not-allowed') {
+          alert('마이크 권한이 필요합니다. 브라우저 설정에서 마이크 권한을 허용해주세요.')
+        } else {
+          alert('음성 인식 중 오류가 발생했습니다.')
+        }
+      }
+      
+      recognition.onend = () => {
+        setIsListening(false)
+      }
+      
+      recognitionRef.current = recognition
+    }
+    
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop()
+      }
+    }
+  }, [])
+
+  // STT 시작/중지
+  const toggleListening = () => {
+    if (!isSTTSupported) {
+      alert('이 브라우저는 음성 인식을 지원하지 않습니다.')
+      return
+    }
+    
+    if (isListening) {
+      recognitionRef.current?.stop()
+      setIsListening(false)
+    } else {
+      try {
+        recognitionRef.current?.start()
+      } catch (error) {
+        console.error('Failed to start recognition:', error)
+        alert('음성 인식을 시작할 수 없습니다.')
+      }
+    }
+  }
+
+  // 검색 실행 - 결과 페이지로 이동
+  const handleSearch = useCallback(async (query = null) => {
+    const searchText = query || searchQuery.trim()
+    if (!searchText) {
+      return
+    }
+
+    if (!isAuthenticated()) {
+      navigate('/login')
+      return
+    }
+
+    // 결과 페이지로 이동 (검색어 전달)
+    navigate('/search-result', { 
+      state: { 
+        query: searchText 
+      } 
+    })
+  }, [searchQuery, navigate])
+
+  // handleSearch를 ref에 저장 (STT에서 사용하기 위해)
+  useEffect(() => {
+    handleSearchRef.current = handleSearch
+  }, [handleSearch])
+
+  // searchQuery 변경 감지 (디버깅용)
+  useEffect(() => {
+    console.log('📝 searchQuery 상태 변경:', searchQuery)
+  }, [searchQuery])
+
+  // 제안 쿼리 클릭
+  const handleSuggestionClick = (suggestionText) => {
+    setSearchQuery(suggestionText)
+    // 검색 실행 로직 제거
+  }
+
+  // 명함 상세 페이지로 이동
+  const handleCardClick = (cardId) => {
+    navigate(`/cards/${cardId}`)
+    handleCloseSearchResults()
+  }
+
   return (
     <div className="landing-page">
       <div className="landing-container">
@@ -1188,40 +1332,85 @@ function LandingPage() {
           </div>
         </div>
 
-        {/* Popular Gifts Section */}
-        <div className="popular-gifts-section">
-          <div className="section-header">
-            <div className="section-title-wrapper">
-              <h2 className="section-title">인기 선물</h2>
+        {/* Search Section */}
+        <div className="search-section">
+          <div className="search-greeting">
+            {userName ? `${userName}님, 안녕하세요. 어떤 생각을 하고 계시나요?` : '안녕하세요. 어떤 생각을 하고 계시나요?'}
+          </div>
+          
+          <div className="search-input-container">
+            <textarea
+              className="search-textarea"
+              placeholder="무엇이든 물어보세요"
+              rows={3}
+              value={searchQuery}
+              onChange={(e) => {
+                console.log('✏️ 텍스트 입력:', e.target.value)
+                setSearchQuery(e.target.value)
+              }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSearch()
+                }
+              }}
+              disabled={isListening}
+            />
+            <div className="search-input-actions">
+              <button 
+                className="search-action-button search-send-button"
+                onClick={() => handleSearch()}
+                disabled={!searchQuery.trim()}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <button 
+                className={`search-action-button search-mic-button ${isListening ? 'listening' : ''}`}
+                onClick={toggleListening}
+                disabled={isSearching || !isSTTSupported}
+                title={isListening ? '음성 인식 중...' : '음성으로 검색'}
+              >
+                {isListening ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 19V23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M8 23H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
 
-          <div className="gift-cards-container">
-            {popularGifts.map((gift) => (
-              <a 
-                key={gift.id} 
-                href={gift.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="gift-card"
-                style={{ cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}
-              >
-                <div className="gift-card-image">
-                  <img src={gift.image} alt={gift.name} />
-                  <div className="rank-badge">{gift.rank}</div>
-                </div>
-                <div className="gift-card-content">
-                  <div className="category-badge">{gift.category}</div>
-                  <h3 className="gift-card-title">{gift.name}</h3>
-                  <div className="gift-card-price">
-                    <span className="price">{gift.price}</span>
-                  </div>
-                </div>
-              </a>
-            ))}
+          <div className="search-suggestions">
+            <div 
+              className="search-suggestion-item"
+              onClick={() => handleSuggestionClick('최근 만난 사람과의 관계를 어떻게 발전시킬 수 있을까요?')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M21 21L16.65 16.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>최근 만난 사람과의 관계를 어떻게 발전시킬 수 있을까요?</span>
+            </div>
+            <div 
+              className="search-suggestion-item"
+              onClick={() => handleSuggestionClick('오랜만에 연락할 사람에게 어떤 선물이 좋을까요?')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M21 21L16.65 16.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>오랜만에 연락할 사람에게 어떤 선물이 좋을까요?</span>
+            </div>
           </div>
-
-          <button className="view-all-button" onClick={() => navigate('/popular-gifts')}>전체보기</button>
         </div>
 
 
