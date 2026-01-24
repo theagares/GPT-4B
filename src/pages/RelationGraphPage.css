@@ -79,6 +79,11 @@
   margin-top: 4px;
 }
 
+.rg-card-count {
+  color: #584cdc;
+  font-weight: 500;
+}
+
 .rg-modal-buttons {
   display: flex;
   gap: 10px;
@@ -202,7 +207,27 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rg-back-while-loading {
+  margin-top: 8px;
+  padding: 10px 24px;
+  background: #f3f4f6;
+  color: #6b7280;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rg-back-while-loading:hover {
+  background: #e5e7eb;
+  color: #374151;
 }
 
 /* Content */
@@ -577,3 +602,183 @@
   z-index: 1000;
 }
 
+/* 휴면 관계 섹션 */
+.rg-dormant-section {
+  margin-top: 0;
+}
+
+.rg-dormant-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+  border: 1px solid #fed7aa;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rg-dormant-banner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+}
+
+.rg-dormant-banner:active {
+  transform: translateY(0);
+}
+
+.rg-dormant-banner-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.rg-dormant-banner-content {
+  flex: 1;
+}
+
+.rg-dormant-banner-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #c2410c;
+  margin-bottom: 2px;
+}
+
+.rg-dormant-banner-desc {
+  font-size: 0.8rem;
+  color: #9a3412;
+}
+
+.rg-dormant-banner-desc strong {
+  color: #c2410c;
+}
+
+.rg-dormant-banner-arrow {
+  font-size: 1.2rem;
+  color: #ea580c;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* 휴면 클러스터 팝업 */
+.rg-dormant-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 32px);
+  max-width: 400px;
+  max-height: 70vh;
+  background: white;
+  border-radius: 20px;
+  z-index: 1001;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.rg-dormant-header {
+  padding: 20px;
+  background: linear-gradient(135deg, #f97316 0%, #eab308 100%);
+  color: white;
+  position: relative;
+}
+
+.rg-dormant-header h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+}
+
+.rg-dormant-header p {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.rg-dormant-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rg-dormant-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.rg-dormant-list {
+  padding: 12px;
+  max-height: calc(70vh - 100px);
+  overflow-y: auto;
+}
+
+.rg-dormant-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.rg-dormant-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.rg-dormant-item:last-child {
+  margin-bottom: 0;
+}
+
+.rg-dormant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rg-dormant-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.rg-dormant-company {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.rg-dormant-score {
+  font-size: 0.7rem;
+  color: #f97316;
+  font-weight: 500;
+}
+
+.rg-dormant-schedule-btn {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #f97316, #eab308);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.rg-dormant-schedule-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}

@@ -271,6 +271,28 @@ function CalendarPage() {
     }
   }, [location.state?.refreshEvents])
 
+  // 관계 그래프에서 "약속잡기"로 넘어온 경우 - 참석자 자동 추가 및 모달 열기
+  useEffect(() => {
+    if (location.state?.scheduleWith) {
+      const { cardId, name, company } = location.state.scheduleWith
+      
+      // 참석자에 명함 추가
+      setParticipants([{
+        id: cardId,
+        name: name,
+        company: company,
+        isFromCard: true
+      }])
+      setLinkedCardIds([cardId])
+      
+      // 일정 추가 모달 열기
+      setShowAddEventModal(true)
+      
+      // state 초기화 (뒤로가기 시 다시 열리지 않도록)
+      navigate(location.pathname, { replace: true, state: { selectedDate: selectedDate } })
+    }
+  }, [location.state?.scheduleWith])
+
   const getDaysInMonth = (date) => {
     const year = date.getFullYear()
     const month = date.getMonth()
