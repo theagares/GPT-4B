@@ -268,6 +268,14 @@
   cursor: not-allowed;
 }
 
+.landing-page .search-mic-button {
+  color: #584cdc;
+}
+
+.landing-page .search-send-button:not(:disabled) {
+  color: #584cdc;
+}
+
 .search-mic-button.listening {
   background-color: #dc3545;
   color: white;

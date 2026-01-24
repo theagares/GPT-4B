@@ -1188,6 +1188,12 @@ function BusinessCardWallet() {
               <p className="wallet-page-header-title">
                 {groups.find(g => g.id === selectedGroupId)?.name || '그룹'}
               </p>
+              <button
+                className="group-edit-name-btn-header"
+                onClick={handleEditGroupName}
+              >
+                그룹명 수정
+              </button>
             </div>
           ) : (
             <>
@@ -1237,12 +1243,6 @@ function BusinessCardWallet() {
             </div>
             {selectedGroupId && (
               <div className="group-action-buttons">
-                <button
-                  className="group-edit-name-btn"
-                  onClick={handleEditGroupName}
-                >
-                  그룹명 수정
-                </button>
                 <button
                   className={`group-selection-btn ${isSelectionMode ? 'active' : ''}`}
                   onClick={() => {
@@ -2047,22 +2047,22 @@ function BusinessCardWallet() {
 
             {/* 그룹명 수정 모달 */}
             {showEditGroupNameModal && selectedGroupId && (
-              <div className="add-group-modal-overlay" onClick={handleCloseEditGroupNameModal}>
-                <div className="add-group-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="edit-group-name-modal-overlay" onClick={handleCloseEditGroupNameModal}>
+                <div className="edit-group-name-modal" onClick={(e) => e.stopPropagation()}>
                   <button 
-                    className="add-group-modal-close"
+                    className="edit-group-name-modal-close"
                     onClick={handleCloseEditGroupNameModal}
                   >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </button>
-                  <div className="add-group-modal-content">
-                    <h2 className="add-group-modal-title">그룹명 수정</h2>
-                    <div className="add-group-name-section">
+                  <div className="edit-group-name-modal-content">
+                    <h2 className="edit-group-name-modal-title">그룹명 수정</h2>
+                    <div className="edit-group-name-section">
                       <input
                         type="text"
-                        className="add-group-name-input"
+                        className="edit-group-name-input"
                         placeholder="그룹명을 입력하세요"
                         value={editingGroupName}
                         onChange={(e) => setEditingGroupName(e.target.value)}
@@ -2074,15 +2074,15 @@ function BusinessCardWallet() {
                         autoFocus
                       />
                     </div>
-                    <div className="add-group-modal-buttons">
+                    <div className="edit-group-name-modal-buttons">
                       <button
-                        className="add-group-cancel-btn"
+                        className="edit-group-name-cancel-btn"
                         onClick={handleCloseEditGroupNameModal}
                       >
                         취소
                       </button>
                       <button
-                        className="add-group-confirm-btn"
+                        className="edit-group-name-confirm-btn"
                         onClick={handleConfirmEditGroupName}
                       >
                         수정

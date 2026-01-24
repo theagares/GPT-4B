@@ -227,7 +227,16 @@ function BusinessCardGiftHistoryPage() {
   }))
 
   const handleBack = () => {
-    navigate(-1) // 이전 페이지로 돌아가기
+    // 명함 상세 모달을 열기 위해 명함집 페이지로 이동하면서 openCardId 전달
+    if (card && card.id) {
+      navigate('/business-cards', { 
+        state: { 
+          openCardId: card.id 
+        } 
+      })
+    } else {
+      navigate(-1) // card 정보가 없으면 이전 페이지로 돌아가기
+    }
   }
 
   const handleYearChange = (year) => {
