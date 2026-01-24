@@ -767,78 +767,86 @@ function RelationGraphPage() {
         </div>
       ) : null}
 
-      {/* Detail Panel */}
-      <div className={`rg-panel ${showPanel ? 'open' : ''}`}>
-        <div className="rg-panel-header">
-          <span className="rg-panel-title">관계 상세</span>
-          <button className="rg-panel-close" onClick={closePanel}>×</button>
-        </div>
-        {selectedRelation && (
-          <div className="rg-panel-content">
-            <div className="rg-panel-name">{selectedRelation.label}</div>
-            <div className="rg-panel-company">{selectedRelation.company || ''}</div>
-
-            <div className="rg-panel-score">
-              <div
-                className="rg-panel-score-value"
-                style={{ color: selectedRelation.grade?.color || '#888' }}
-              >
-                {selectedRelation.score || 0}
-              </div>
-              <div className="rg-panel-score-label">관계 점수</div>
+      {/* 관계 상세 팝업 */}
+      {showPanel && selectedRelation && (
+        <>
+          <div className="rg-overlay" onClick={closePanel}></div>
+          <div className="rg-relation-popup">
+            <button className="rg-popup-close" onClick={closePanel}>×</button>
+            
+            <div className="rg-popup-header">
+              <div className="rg-popup-name">{selectedRelation.label}</div>
+              <div className="rg-popup-company">{selectedRelation.company || ''}</div>
             </div>
 
-            <div className="rg-panel-tags">
-              <span
-                className="rg-panel-tag"
-                style={{
-                  background: `${selectedRelation.grade?.color || '#888'}20`,
-                  color: selectedRelation.grade?.color || '#888'
-                }}
+            <div className="rg-popup-score-section">
+              <div
+                className="rg-popup-score"
+                style={{ color: selectedRelation.grade?.color || '#888' }}
               >
-                {selectedRelation.grade?.level || '?'} - {selectedRelation.grade?.label || '알 수 없음'}
-              </span>
-              <span
-                className="rg-panel-tag"
-                style={{
-                  background: `${typeColors[selectedRelation.relationshipType] || '#888'}20`,
-                  color: typeColors[selectedRelation.relationshipType] || '#888'
-                }}
-              >
-                {selectedRelation.relationshipType || '-'}
-              </span>
+                {selectedRelation.score || 0}점
+              </div>
+              <div className="rg-popup-tags">
+                <span
+                  className="rg-popup-tag"
+                  style={{
+                    background: `${selectedRelation.grade?.color || '#888'}15`,
+                    color: selectedRelation.grade?.color || '#888'
+                  }}
+                >
+                  {selectedRelation.grade?.level || '?'} - {selectedRelation.grade?.label || '알 수 없음'}
+                </span>
+                <span
+                  className="rg-popup-tag"
+                  style={{
+                    background: `${typeColors[selectedRelation.relationshipType] || '#888'}15`,
+                    color: typeColors[selectedRelation.relationshipType] || '#888'
+                  }}
+                >
+                  {selectedRelation.relationshipType || '-'}
+                </span>
+              </div>
             </div>
 
             {selectedRelation.summary && (
-              <div className="rg-panel-section">
-                <div className="rg-panel-section-title">관계 요약</div>
-                <div className="rg-panel-section-content">{selectedRelation.summary}</div>
+              <div className="rg-popup-section">
+                <div className="rg-popup-section-title">📝 관계 요약</div>
+                <div className="rg-popup-section-content">{selectedRelation.summary}</div>
               </div>
             )}
 
             {selectedRelation.reasoning && (
-              <div className="rg-panel-section">
-                <div className="rg-panel-section-title">💡 LLM 분석 근거</div>
-                <div className="rg-panel-section-content">{selectedRelation.reasoning}</div>
+              <div className="rg-popup-section">
+                <div className="rg-popup-section-title">💡 LLM 분석 근거</div>
+                <div className="rg-popup-section-content">{selectedRelation.reasoning}</div>
               </div>
             )}
 
             {selectedRelation.strengths && selectedRelation.strengths.length > 0 && (
-              <div className="rg-panel-section">
-                <div className="rg-panel-section-title">관계의 강점</div>
-                <ul className="rg-panel-list">
+              <div className="rg-popup-section">
+                <div className="rg-popup-section-title">✨ 관계의 강점</div>
+                <ul className="rg-popup-list">
                   {selectedRelation.strengths.map((s, i) => (
                     <li key={i}>{s}</li>
                   ))}
                 </ul>
               </div>
             )}
-          </div>
-        )}
-      </div>
 
-      {/* Overlay */}
-      {showPanel && <div className="rg-overlay" onClick={closePanel}></div>}
+            <button
+              className="rg-popup-memo-btn"
+              onClick={() => {
+                closePanel()
+                navigate(`/memo?businessCardId=${selectedRelation.cardId}`, {
+                  state: { returnTo: '/relation-graph' }
+                })
+              }}
+            >
+              📝 명함에 메모 작성하러 가기
+            </button>
+          </div>
+        </>
+      )}
 
       {/* 휴면 클러스터 팝업 */}
       {showDormantPopup && (

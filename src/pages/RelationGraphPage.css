@@ -607,6 +607,156 @@
   font-weight: bold;
 }
 
+/* 관계 상세 팝업 */
+.rg-relation-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 32px);
+  max-width: 400px;
+  max-height: 80vh;
+  background: white;
+  border-radius: 20px;
+  z-index: 1001;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.rg-popup-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  color: #6b7280;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s;
+}
+
+.rg-popup-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #1f2937;
+}
+
+.rg-popup-header {
+  padding: 24px 20px 16px;
+  text-align: center;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.rg-popup-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.rg-popup-company {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.rg-popup-score-section {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9fafb;
+}
+
+.rg-popup-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.rg-popup-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.rg-popup-tag {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.rg-popup-section {
+  padding: 16px 20px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.rg-popup-section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 10px;
+}
+
+.rg-popup-section-content {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #4b5563;
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.rg-popup-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rg-popup-list li {
+  padding: 8px 0;
+  font-size: 0.85rem;
+  color: #4b5563;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.rg-popup-list li::before {
+  content: '✓';
+  color: #22c55e;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.rg-popup-memo-btn {
+  margin: 16px 20px 20px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #584cdc 0%, #6d30df 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rg-popup-memo-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(88, 76, 220, 0.3);
+}
+
+.rg-popup-memo-btn:active {
+  transform: translateY(0);
+}
+
 /* Overlay */
 .rg-overlay {
   position: fixed;
