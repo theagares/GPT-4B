@@ -773,7 +773,7 @@ function RelationGraphPage() {
           <div className="rg-overlay" onClick={closePanel}></div>
           <div className="rg-relation-popup">
             <button className="rg-popup-close" onClick={closePanel}>×</button>
-            
+
             <div className="rg-popup-header">
               <div className="rg-popup-name">{selectedRelation.label}</div>
               <div className="rg-popup-company">{selectedRelation.company || ''}</div>
