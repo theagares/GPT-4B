@@ -8,6 +8,7 @@
   padding-top: 10px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  contain: layout style;
 }
 
 .wallet-container {
@@ -15,6 +16,8 @@
   padding-top: 0;
   max-width: 405px;
   margin: 0 auto;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /* View Toggle Section - 헤더 밖 */
@@ -390,6 +393,9 @@
   margin-bottom: 0;
   padding: 0;
   width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+  contain: layout style;
 }
 
 .carousel-wrapper {
@@ -400,12 +406,15 @@
   height: auto;
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
+  contain: layout style;
 }
 
 .carousel-track {
   position: relative;
   width: 100%;
   aspect-ratio: 1.6;
+  overflow: visible;
+  contain: layout style;
 }
 
 .carousel-card {
@@ -420,6 +429,10 @@
   transform-origin: center center;
   will-change: transform;
   touch-action: pan-y;
+  box-sizing: border-box;
+  contain: layout style paint;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .carousel-card.dragging {
@@ -438,6 +451,10 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
+  box-sizing: border-box;
+  contain: layout style;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .card-display-content {
@@ -1944,6 +1961,7 @@
 .carousel-card {
   cursor: pointer;
   perspective: 1000px;
+  contain: layout style paint;
 }
 
 .carousel-card.active {
