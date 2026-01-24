@@ -237,6 +237,18 @@ export const cardAPI = {
   delete: (id) => api.delete(`/cards/${id}`),
 };
 
+// Group API
+export const groupAPI = {
+  getAll: () => api.get("/groups"),
+  getById: (id) => api.get(`/groups/${id}`),
+  create: (groupData) => api.post("/groups", groupData),
+  update: (id, groupData) => api.put(`/groups/${id}`, groupData),
+  delete: (id) => api.delete(`/groups/${id}`),
+  addCard: (groupId, cardId) => api.post(`/groups/${groupId}/cards`, { cardId }),
+  removeCard: (groupId, cardId) => api.delete(`/groups/${groupId}/cards/${cardId}`),
+  updateOrders: (groupOrders) => api.put("/groups/orders", { groupOrders }),
+};
+
 // OCR API
 export const ocrAPI = {
   process: (image) => api.post("/ocr/process", { image }),

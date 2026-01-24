@@ -259,8 +259,9 @@
   /* Search Section */
   .search-section {
   margin-bottom: 0;
-  flex: 1;
+  flex: 1.2;
   margin-right: 12px;
+  margin-left: 5px;
   }
   
   .wallet-page-header .search-section {
@@ -1422,6 +1423,32 @@
   }
   
   /* 선택 버튼 */
+  .group-action-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  }
+  
+  .group-edit-name-btn {
+  padding: 6px 16px;
+  background: transparent;
+  color: #717182;
+  border: none;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: underline;
+  white-space: nowrap;
+  }
+  
+  .group-edit-name-btn:hover {
+  color: #584cdc;
+  }
+  
   .group-selection-btn {
   padding: 6px 16px;
   background: white;
