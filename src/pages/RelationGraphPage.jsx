@@ -629,13 +629,22 @@ function RelationGraphPage() {
               <span className="rg-modal-hint">상위 N개만 그래프에 표시 (3~20개)</span>
             </div>
 
+            {/* 유효성 검사 경고 */}
+            {analyzeCount !== '' && displayCount !== '' && parseInt(analyzeCount) < parseInt(displayCount) && (
+              <p className="rg-modal-warning">⚠️ 분석할 명함 수는 그래프에 표시할 명함 수보다 크거나 같아야 합니다.</p>
+            )}
+
             <div className="rg-modal-buttons">
               {hasCache && (
                 <button className="rg-modal-btn-secondary" onClick={handleUseCache}>
                   캐시 사용
                 </button>
               )}
-              <button className="rg-modal-btn-primary" onClick={handleStartAnalysis}>
+              <button 
+                className="rg-modal-btn-primary" 
+                onClick={handleStartAnalysis}
+                disabled={analyzeCount === '' || displayCount === '' || parseInt(analyzeCount) < parseInt(displayCount)}
+              >
                 분석 시작
               </button>
             </div>

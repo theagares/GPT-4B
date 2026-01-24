@@ -134,6 +134,22 @@
   border-radius: 8px;
 }
 
+.rg-modal-warning {
+  font-size: 0.8rem;
+  color: #dc2626;
+  text-align: center;
+  margin: 0;
+  padding: 10px 12px;
+  background: rgba(220, 38, 38, 0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.rg-modal-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Header */
 .rg-header {
   display: flex;
