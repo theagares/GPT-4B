@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
-import { userAPI, calendarAPI, cardAPI } from '../utils/api'
+import { userAPI, calendarAPI, cardAPI, searchAPI } from '../utils/api'
 import { isAuthenticated, getUser } from '../utils/auth'
 import api from '../utils/api'
 import './LandingPage.css'
@@ -143,6 +143,16 @@ function LandingPage() {
   const [userName, setUserName] = useState('')
   const [showCardCompleteModal, setShowCardCompleteModal] = useState(false)
   const cards = useCardStore((state) => state.cards)
+  
+  // 검색 관련 state
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [showSearchResults, setShowSearchResults] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [isSTTSupported, setIsSTTSupported] = useState(false)
+  const recognitionRef = useRef(null)
+  const handleSearchRef = useRef(null)
 
   // DB에서 로그인한 유저의 이름 가져오기
   useEffect(() => {
@@ -280,7 +290,19 @@ function LandingPage() {
   const [upcomingAlerts, setUpcomingAlerts] = useState([])
   const [showUpcomingAlertPopup, setShowUpcomingAlertPopup] = useState(false)
   const [currentUpcomingAlert, setCurrentUpcomingAlert] = useState(null)
-  const [dismissedAlertIds, setDismissedAlertIds] = useState(new Set())
+  const [dismissedAlertIds, setDismissedAlertIds] = useState(() => {
+    // localStorage에서 닫힌 팝업 ID 목록 불러오기
+    try {
+      const saved = localStorage.getItem('dismissedUpcomingAlertIds')
+      if (saved) {
+        const ids = JSON.parse(saved)
+        return new Set(ids)
+      }
+    } catch (err) {
+      console.error('Failed to load dismissed alert ids:', err)
+    }
+    return new Set()
+  })
   
   // 명함 정보 모달 관련 state
   const [showCardInfoModal, setShowCardInfoModal] = useState(false)
@@ -647,7 +669,17 @@ function LandingPage() {
     return () => clearInterval(interval)
   }, [])
 
-  // upcomingAlerts가 변경될 때 팝업 표시
+  // dismissedAlertIds를 localStorage에 저장
+  const saveDismissedAlertIds = (idsSet) => {
+    try {
+      const ids = Array.from(idsSet)
+      localStorage.setItem('dismissedUpcomingAlertIds', JSON.stringify(ids))
+    } catch (err) {
+      console.error('Failed to save dismissed alert ids:', err)
+    }
+  }
+
+  // upcomingAlerts가 변경될 때 팝업 표시 (한 번 닫힌 팝업은 다시 표시하지 않음)
   useEffect(() => {
     if (upcomingAlerts.length > 0 && !showUpcomingAlertPopup) {
       // 닫히지 않은 알림 찾기
@@ -1146,6 +1178,146 @@ function LandingPage() {
     }
   }
 
+  // STT 지원 여부 확인 및 초기화
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    
+    if (SpeechRecognition) {
+      setIsSTTSupported(true)
+      const recognition = new SpeechRecognition()
+      recognition.lang = 'ko-KR' // 한국어 설정
+      recognition.continuous = false // 한 번만 인식
+      recognition.interimResults = true // 중간 결과도 받기 (텍스트가 실시간으로 표시됨)
+      
+      recognition.onstart = () => {
+        setIsListening(true)
+      }
+      
+      recognition.onresult = (event) => {
+        // 중간 결과와 최종 결과 모두 처리
+        let interimTranscript = ''
+        let finalTranscript = ''
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript
+          } else {
+            interimTranscript += transcript
+          }
+        }
+        
+        // 중간 결과가 있으면 실시간으로 표시
+        if (interimTranscript) {
+          console.log('🎤 음성 인식 중간 결과:', interimTranscript)
+          setSearchQuery(finalTranscript + interimTranscript)
+        }
+        
+        // 최종 결과가 있으면 텍스트 설정 후 자동 검색 실행
+        if (finalTranscript) {
+          console.log('1. STT 완료:', finalTranscript)
+          setIsListening(false)
+          
+          // 최종 텍스트 설정
+          setSearchQuery(finalTranscript)
+          
+          // 자동으로 검색 실행
+          setTimeout(() => {
+            console.log('2. 자동 검색 시작')
+            handleSearch(finalTranscript)
+          }, 100)
+        }
+      }
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error)
+        setIsListening(false)
+        if (event.error === 'no-speech') {
+          alert('음성이 감지되지 않았습니다. 다시 시도해주세요.')
+        } else if (event.error === 'not-allowed') {
+          alert('마이크 권한이 필요합니다. 브라우저 설정에서 마이크 권한을 허용해주세요.')
+        } else {
+          alert('음성 인식 중 오류가 발생했습니다.')
+        }
+      }
+      
+      recognition.onend = () => {
+        setIsListening(false)
+      }
+      
+      recognitionRef.current = recognition
+    }
+    
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop()
+      }
+    }
+  }, [])
+
+  // STT 시작/중지
+  const toggleListening = () => {
+    if (!isSTTSupported) {
+      alert('이 브라우저는 음성 인식을 지원하지 않습니다.')
+      return
+    }
+    
+    if (isListening) {
+      recognitionRef.current?.stop()
+      setIsListening(false)
+    } else {
+      try {
+        console.log('0. STT 호출')
+        recognitionRef.current?.start()
+      } catch (error) {
+        console.error('Failed to start recognition:', error)
+        alert('음성 인식을 시작할 수 없습니다.')
+      }
+    }
+  }
+
+  // 검색 실행 - 결과 페이지로 이동
+  const handleSearch = useCallback(async (query = null) => {
+    const searchText = query || searchQuery.trim()
+    if (!searchText) {
+      return
+    }
+
+    if (!isAuthenticated()) {
+      navigate('/login')
+      return
+    }
+
+    // 결과 페이지로 이동 (검색어 전달)
+    navigate('/search-result', { 
+      state: { 
+        query: searchText 
+      } 
+    })
+  }, [searchQuery, navigate])
+
+  // handleSearch를 ref에 저장 (STT에서 사용하기 위해)
+  useEffect(() => {
+    handleSearchRef.current = handleSearch
+  }, [handleSearch])
+
+  // searchQuery 변경 감지 (디버깅용)
+  useEffect(() => {
+    console.log('📝 searchQuery 상태 변경:', searchQuery)
+  }, [searchQuery])
+
+  // 제안 쿼리 클릭
+  const handleSuggestionClick = (suggestionText) => {
+    setSearchQuery(suggestionText)
+    // 검색 실행 로직 제거
+  }
+
+  // 명함 상세 페이지로 이동
+  const handleCardClick = (cardId) => {
+    navigate(`/cards/${cardId}`)
+    handleCloseSearchResults()
+  }
+
   return (
     <div className="landing-page">
       <div className="landing-container">
@@ -1160,51 +1332,152 @@ function LandingPage() {
         </div>
           <div className="banner-content">
             <div className="banner-text">
-              <p className="banner-subtitle">AI 맞춤형 비즈니스 선물 추천 서비스 GPT-4b</p>
-              <p className="banner-title">상대방의 정보를 기반으로 최적의 선물을 찾아드립니다</p>
+              <p className="banner-subtitle">AI 맞춤형 비즈니스 인맥 관리 서비스 GPT-4b</p>
+              <p className="banner-title">명함 관리와 선물 추천으로 인맥 관리를 도와드립니다</p>
             </div>
           </div>
         </div>
 
-        {/* Popular Gifts Section */}
-        <div className="popular-gifts-section">
-          <div className="section-header">
-            <div className="section-title-wrapper">
-              <h2 className="section-title">인기 선물</h2>
-            </div>
+        {/* Search Section */}
+        <div className="search-section">
+          <div className="search-greeting">
+누구의 명함을 찾고 계신가요?
           </div>
-
-          <div className="gift-cards-container">
-            {popularGifts.map((gift) => (
-              <a 
-                key={gift.id} 
-                href={gift.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="gift-card"
-                style={{ cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}
+          
+          <div className="search-input-container">
+            <textarea
+              className="search-textarea"
+              placeholder="상대가 무엇을 좋아하는지, 어떤 성격인지 등을 입력해주세요"
+              rows={3}
+              value={searchQuery}
+              onChange={(e) => {
+                console.log('✏️ 텍스트 입력:', e.target.value)
+                setSearchQuery(e.target.value)
+              }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSearch()
+                }
+              }}
+              disabled={isListening}
+            />
+            <div className="search-input-actions">
+              <button 
+                className="search-action-button search-send-button"
+                onClick={() => handleSearch()}
+                disabled={!searchQuery.trim()}
               >
-                <div className="gift-card-image">
-                  <img src={gift.image} alt={gift.name} />
-                  <div className="rank-badge">{gift.rank}</div>
-                </div>
-                <div className="gift-card-content">
-                  <div className="category-badge">{gift.category}</div>
-                  <h3 className="gift-card-title">{gift.name}</h3>
-                  <div className="gift-card-price">
-                    <span className="price">{gift.price}</span>
-                  </div>
-                </div>
-              </a>
-            ))}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <button 
+                className={`search-action-button search-mic-button ${isListening ? 'listening' : ''}`}
+                onClick={toggleListening}
+                disabled={isSearching || !isSTTSupported}
+                title={isListening ? '음성 인식 중...' : '음성으로 검색'}
+              >
+                {isListening ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 19V23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M8 23H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
 
-          <button className="view-all-button" onClick={() => navigate('/popular-gifts')}>전체보기</button>
+          <div className="search-suggestions">
+            <div 
+              className="search-suggestion-item"
+              onClick={() => handleSuggestionClick('축구를 좋아하는 분이 누구였지?')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M21 21L16.65 16.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>축구를 좋아하는 분이 누구였지?</span>
+            </div>
+            <div 
+              className="search-suggestion-item"
+              onClick={() => handleSuggestionClick('농산물 관련 일 같이 했던 분이 누구였지?')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M21 21L16.65 16.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>농산물 관련 일 같이 했던 분이 누구였지?</span>
+            </div>
+          </div>
         </div>
 
+
+        {/* 5분 전 알림 Section */}
+        {upcomingAlerts.length > 0 && (
+          <div className="alerts-section">
+            <h2 className="alerts-title">5분 전 알림</h2>
+            <div className="alerts-list">
+              {upcomingAlerts.map((alert) => {
+                // 일정 카테고리별 원색 매핑
+                const categoryColors = {
+                  '미팅': '#584cdc',
+                  '업무': '#3b82f6',
+                  '개인': '#10b981',
+                  '기타': '#6b7280'
+                }
+                // 일정 카테고리별 약간 옅은 색상 매핑
+                const categoryLightColors = {
+                  '미팅': '#7c6fe8',
+                  '업무': '#5b9aff',
+                  '개인': '#2dd4a0',
+                  '기타': '#9ca3af'
+                }
+                const category = alert.category || '기타'
+                const buttonColor = categoryColors[category] || categoryColors['기타']
+                const cardColor = categoryLightColors[category] || categoryLightColors['기타']
+                
+                return (
+                  <div 
+                    key={alert.id} 
+                    className="alert-card"
+                    style={{ 
+                      backgroundColor: cardColor
+                    }}
+                  >
+                    <p 
+                      className="alert-text"
+                      style={{ color: 'white' }}
+                    >
+                      {alert.text}
+                    </p>
+                    <button 
+                      className="alert-button upcoming-alert-button"
+                      style={{ 
+                        backgroundColor: 'white',
+                        borderColor: 'white',
+                        color: buttonColor
+                      }}
+                      onClick={() => handleShowCardInfo(alert)}
+                    >
+                      상대 정보 확인하기
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Important Alerts Section */}
-        <div className="alerts-section">
+        <div className="alerts-section schedule-alerts-section">
           <h2 className="alerts-title">일정 알림</h2>
           <div className="alerts-list">
             {alerts.length > 0 ? (
@@ -1230,15 +1503,15 @@ function LandingPage() {
                     >
                       일정 보기
                     </button>
-                </div>
+                  </div>
                 )
               })
-            ) : upcomingAlerts.length === 0 ? (
+            ) : (
               <div className="no-alerts">
                 <p className="no-alerts-text">아직 등록된 일정이 없어요.</p>
                 <p className="no-alerts-text">'캘린더' 탭에서 일정을 등록해보세요!</p>
               </div>
-            ) : null}
+            )}
           </div>
         </div>
       </div>
@@ -1288,7 +1561,9 @@ function LandingPage() {
             className="upcoming-alert-popup-overlay" 
             onClick={() => {
               if (currentUpcomingAlert) {
-                setDismissedAlertIds(prev => new Set([...prev, currentUpcomingAlert.id]))
+                const newDismissedIds = new Set([...dismissedAlertIds, currentUpcomingAlert.id])
+                setDismissedAlertIds(newDismissedIds)
+                saveDismissedAlertIds(newDismissedIds)
               }
               setShowUpcomingAlertPopup(false)
               setCurrentUpcomingAlert(null)
@@ -1303,7 +1578,9 @@ function LandingPage() {
                   className="upcoming-alert-close"
                   onClick={() => {
                     if (currentUpcomingAlert) {
-                      setDismissedAlertIds(prev => new Set([...prev, currentUpcomingAlert.id]))
+                      const newDismissedIds = new Set([...dismissedAlertIds, currentUpcomingAlert.id])
+                      setDismissedAlertIds(newDismissedIds)
+                      saveDismissedAlertIds(newDismissedIds)
                     }
                     setShowUpcomingAlertPopup(false)
                     setCurrentUpcomingAlert(null)
@@ -1333,7 +1610,9 @@ function LandingPage() {
                     e.stopPropagation()
                     // 팝업을 먼저 닫고 나서 모달 열기
                     if (currentUpcomingAlert) {
-                      setDismissedAlertIds(prev => new Set([...prev, currentUpcomingAlert.id]))
+                      const newDismissedIds = new Set([...dismissedAlertIds, currentUpcomingAlert.id])
+                      setDismissedAlertIds(newDismissedIds)
+                      saveDismissedAlertIds(newDismissedIds)
                     }
                     setShowUpcomingAlertPopup(false)
                     setCurrentUpcomingAlert(null)

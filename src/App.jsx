@@ -26,6 +26,7 @@ import GiftRecommendPage from './pages/GiftRecommendPage'
 import GiftRecommendResultPage from './pages/GiftRecommendResultPage'
 import FilterPage from './pages/FilterPage'
 import AICardSelectPage from './pages/AICardSelectPage'
+import SearchResultPage from './pages/SearchResultPage'
 import OCR from './pages/OCR'
 import Confirm from './pages/Confirm'
 import AddInfo from './pages/AddInfo'
@@ -54,6 +55,7 @@ function App() {
         <Route path="/tutorial" element={<TutorialPage />} />
         <Route path="/llm" element={<LLMPage />} />
         <Route path="/ai-card-select" element={<AICardSelectPage />} />
+        <Route path="/search-result" element={<SearchResultPage />} />
         <Route path="/chat-history" element={<ChatHistoryPage />} />
         <Route path="/chat-history/:id" element={<ChatDetailPage />} />
         <Route path="/dashboard" element={<LandingPage />} />

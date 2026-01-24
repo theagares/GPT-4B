@@ -19,9 +19,9 @@ function SearchIcon() {
 // 연필 아이콘 SVG 컴포넌트 (수동 명함 등록)
 function PenIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
@@ -29,9 +29,18 @@ function PenIcon() {
 // 카메라 아이콘 SVG 컴포넌트 (OCR로 명함 추가)
 function CameraIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 4H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <circle cx="12" cy="13" r="4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 4H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="12" cy="13" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+// 토스트 하트 아이콘 SVG 컴포넌트
+function ToastHeartIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="#ef4444" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.5783 8.50903 2.9987 7.05 2.9987C5.59096 2.9987 4.19169 3.5783 3.16 4.61C2.1283 5.6417 1.54871 7.04097 1.54871 8.5C1.54871 9.95903 2.1283 11.3583 3.16 12.39L4.22 13.45L12 21.23L19.78 13.45L20.84 12.39C21.351 11.8792 21.7564 11.2728 22.0329 10.6054C22.3095 9.93789 22.4518 9.22248 22.4518 8.5C22.4518 7.77752 22.3095 7.0621 22.0329 6.39464C21.7564 5.72718 21.351 5.12075 20.84 4.61Z" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
@@ -122,6 +131,7 @@ function BusinessCardWallet() {
   const navigate = useNavigate()
   const location = useLocation()
   const [searchQuery, setSearchQuery] = useState('')
+  const [groupSearchQuery, setGroupSearchQuery] = useState('')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isFlipping, setIsFlipping] = useState(false)
   const [showDetailModal, setShowDetailModal] = useState(false)
@@ -166,6 +176,23 @@ function BusinessCardWallet() {
   // 그룹에 멤버 추가 관련 state
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [selectedCardsForMember, setSelectedCardsForMember] = useState([]) // 그룹에 추가할 명함 ID들
+  const [memberSearchQuery, setMemberSearchQuery] = useState('') // 그룹 멤버 추가 모달 검색어
+  const [showRegisterMenu, setShowRegisterMenu] = useState(false) // 명함 등록 메뉴 펼침/접힘 상태
+  
+  // 그룹 삭제 확인 모달 관련 state
+  const [showDeleteGroupModal, setShowDeleteGroupModal] = useState(false)
+  const [groupToDelete, setGroupToDelete] = useState(null) // 삭제할 그룹 정보
+  
+  // 하트 토스트 관련 state
+  const [showHeartToast, setShowHeartToast] = useState(false)
+  const [isHeartToastFading, setIsHeartToastFading] = useState(false)
+  
+  // 그룹 페이지 선택 모드 관련 state
+  const [isSelectionMode, setIsSelectionMode] = useState(false)
+  const [selectedCardIds, setSelectedCardIds] = useState([]) // 선택된 명함 ID들
+  
+  // 탭 상태 관리
+  const [activeTab, setActiveTab] = useState('cards') // 'cards', 'register', 'groups'
   
   // 터치 스와이프 관련 상태
   const [touchStart, setTouchStart] = useState(null)
@@ -252,6 +279,20 @@ function BusinessCardWallet() {
       window.removeEventListener('focus', handleFocus);
     };
   }, [fetchCards])
+
+  // body와 html의 스크롤을 막아서 컨테이너 내부에만 스크롤이 생기도록 함
+  useEffect(() => {
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, [])
 
   // 명함 정렬 함수 (하트 우선 → 가나다순)
   const sortCards = (cards) => {
@@ -377,9 +418,9 @@ function BusinessCardWallet() {
               })
             })
           }
-          // returnToEventDetail이 있으면 state를 유지 (모달 닫을 때 일정 상세로 돌아가기 위해)
+          // returnToEventDetail이나 returnToSearchResult가 있으면 state를 유지 (모달 닫을 때 원래 페이지로 돌아가기 위해)
           // 없으면 state 초기화
-          if (!location.state?.returnToEventDetail) {
+          if (!location.state?.returnToEventDetail && !location.state?.returnToSearchResult) {
             navigate(location.pathname, { replace: true, state: {} })
           }
         }, delay)
@@ -661,17 +702,49 @@ function BusinessCardWallet() {
 
   // 그룹 선택
   const handleSelectGroup = (groupId) => {
-    setSelectedGroupId(groupId === selectedGroupId ? null : groupId)
+    // 그룹을 선택하면 명함집 탭으로 전환하고 전체보기로 설정
+    setSelectedGroupId(groupId)
+    setActiveTab('cards')
+    setIsGridView(true) // 그룹 선택 시 항상 전체보기
   }
+
+  // 그룹이 선택되었을 때는 항상 전체보기로 유지
+  useEffect(() => {
+    if (selectedGroupId) {
+      setIsGridView(true)
+    } else {
+      // 그룹 선택이 해제되면 선택 모드도 초기화
+      setIsSelectionMode(false)
+      setSelectedCardIds([])
+    }
+  }, [selectedGroupId])
 
   // 그룹 삭제
   const handleDeleteGroup = (groupId, e) => {
     e.stopPropagation()
-    const updatedGroups = groups.filter(g => g.id !== groupId)
-    setGroups(updatedGroups)
-    localStorage.setItem('cardGroups', JSON.stringify(updatedGroups))
-    if (selectedGroupId === groupId) {
-      setSelectedGroupId(null)
+    const group = groups.find(g => g.id === groupId)
+    if (group) {
+      setGroupToDelete(group)
+      setShowDeleteGroupModal(true)
+    }
+  }
+
+  // 그룹 삭제 확인 모달 닫기
+  const handleCloseDeleteGroupModal = () => {
+    setShowDeleteGroupModal(false)
+    setGroupToDelete(null)
+  }
+
+  // 그룹 삭제 확인
+  const handleConfirmDeleteGroup = () => {
+    if (groupToDelete) {
+      const updatedGroups = groups.filter(g => g.id !== groupToDelete.id)
+      setGroups(updatedGroups)
+      localStorage.setItem('cardGroups', JSON.stringify(updatedGroups))
+      if (selectedGroupId === groupToDelete.id) {
+        setSelectedGroupId(null)
+      }
+      handleCloseDeleteGroupModal()
     }
   }
 
@@ -761,10 +834,34 @@ function BusinessCardWallet() {
     setSelectedCardsForMember([])
   }
 
+  // 그룹에서 선택된 명함들 삭제
+  const handleRemoveFromGroup = () => {
+    if (selectedCardIds.length === 0) return
+    
+    const updatedGroups = groups.map(group => {
+      if (group.id === selectedGroupId) {
+        const currentCardIds = group.cardIds || []
+        const updatedCardIds = currentCardIds.filter(id => !selectedCardIds.includes(id))
+        return {
+          ...group,
+          cardIds: updatedCardIds
+        }
+      }
+      return group
+    })
+    setGroups(updatedGroups)
+    localStorage.setItem('cardGroups', JSON.stringify(updatedGroups))
+    
+    // 선택 모드 해제 및 선택 초기화
+    setSelectedCardIds([])
+    setIsSelectionMode(false)
+  }
+
   // 그룹에 멤버 추가 모달 닫기
   const handleCloseAddMemberModal = () => {
     setShowAddMemberModal(false)
     setSelectedCardsForMember([])
+    setMemberSearchQuery('')
   }
 
   // 그룹에 멤버 추가 - 명함 선택/해제
@@ -833,6 +930,29 @@ function BusinessCardWallet() {
   }
 
   const handleCloseModal = () => {
+    // 검색 결과에서 온 경우 검색 결과 페이지로 돌아가기
+    if (location.state?.returnToSearchResult && location.state?.searchQuery) {
+      const modalElement = document.querySelector('.card-detail-modal')
+      if (modalElement) {
+        modalElement.style.animation = 'slideDownModal 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+        const overlayElement = document.querySelector('.card-detail-modal-overlay')
+        if (overlayElement) {
+          overlayElement.style.animation = 'fadeOutOverlay 0.3s ease-out forwards'
+        }
+      }
+      setTimeout(() => {
+        setShowDetailModal(false)
+        setFlippingCardId(null)
+        setSelectedCardId(null)
+        navigate('/search-result', {
+          state: {
+            query: location.state.searchQuery
+          }
+        })
+      }, 300)
+      return
+    }
+    
     // 일정 상세에서 온 경우 일정 상세로 돌아가기
     if (location.state?.returnToEventDetail && location.state?.eventId) {
       const modalElement = document.querySelector('.card-detail-modal')
@@ -882,6 +1002,27 @@ function BusinessCardWallet() {
   const handleToggleFavorite = async (e, cardId) => {
     e.stopPropagation() // 카드 클릭 이벤트 방지
     
+    // 그룹이 선택된 상태에서는 하트 기능 비활성화
+    if (selectedGroupId) {
+      // 이미 토스트가 표시 중이면 무시
+      if (showHeartToast) return
+      
+      // 토스트 메시지 표시
+      setShowHeartToast(true)
+      setIsHeartToastFading(false)
+      
+      // 2초 후 fade-away 시작
+      setTimeout(() => {
+        setIsHeartToastFading(true)
+        // fade-away 애니메이션 후 완전히 제거
+        setTimeout(() => {
+          setShowHeartToast(false)
+          setIsHeartToastFading(false)
+        }, 500) // fade-away 시간
+      }, 2000) // 2초간 표시
+      return
+    }
+    
     const card = cards.find(c => c.id === cardId || String(c.id) === String(cardId))
     if (!card) return
     
@@ -918,190 +1059,238 @@ function BusinessCardWallet() {
       {/* Fixed Header */}
       <div className="wallet-page-header">
         <div className="wallet-page-header-content">
-          <p className="wallet-page-header-title">{userName ? `${userName}님의 명함집` : '명함집'}</p>
-          <p className="wallet-page-header-subtitle">명함을 등록하거나 세부 내용을 수정할 수 있어요</p>
-        </div>
-
-        {/* Search Section */}
-        <div className="search-section">
-          <div className="search-wrapper">
-            <div className="search-icon">
-              <SearchIcon />
+          {selectedGroupId && activeTab === 'cards' ? (
+            <div className="wallet-group-header">
+              <button
+                className="wallet-group-back-btn"
+                onClick={() => {
+                  setSelectedGroupId(null)
+                  setCurrentIndex(0)
+                }}
+                aria-label="전체 명함으로 돌아가기"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <p className="wallet-page-header-title">
+                {groups.find(g => g.id === selectedGroupId)?.name || '그룹'}
+              </p>
             </div>
-            <input
-              type="text"
-              placeholder="회사명, 직급 등을 검색"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value)
-                setCurrentIndex(0)
-              }}
-              className="search-input"
-            />
-          </div>
-        </div>
-
-        {/* Action Buttons and View Toggle */}
-        <div className="action-buttons-section">
-          <div className="header-actions">
-            <button 
-              className="header-action-btn"
-              onClick={() => navigate('/manual-add')}
-            >
-              <span className="action-icon">
-                <PenIcon />
-              </span>
-              <span className="action-label">수동 명함 등록</span>
-            </button>
-            <button 
-              className="header-action-btn"
-              onClick={() => navigate('/ocr')}
-            >
-              <span className="action-icon">
-                <CameraIcon />
-              </span>
-              <span className="action-label">OCR 명함 등록</span>
-            </button>
-          </div>
-          {filteredCards.length > 0 && (
-            <div className="view-toggle-section">
-              <div className="view-toggle-container">
-                <button 
-                  className={`view-toggle-option ${!isGridView ? 'active' : ''}`}
-                  onClick={() => setIsGridView(false)}
-                >
-                  <div className="view-toggle-option-content">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="2" y="4" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                      <rect x="6" y="4" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                      <rect x="10" y="4" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                    </svg>
-                    <span>슬라이드</span>
-                  </div>
-                </button>
-                <button 
-                  className={`view-toggle-option ${isGridView ? 'active' : ''}`}
-                  onClick={() => setIsGridView(true)}
-                >
-                  <div className="view-toggle-option-content">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                      <rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                      <rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                      <rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                    </svg>
-                    <span>전체</span>
-                  </div>
-                </button>
-                <div className={`view-toggle-slider ${isGridView ? 'right' : 'left'}`}></div>
-              </div>
-            </div>
+          ) : (
+            <>
+              <p className="wallet-page-header-title">{userName ? `${userName}님의 명함집` : '명함집'}</p>
+              <p className="wallet-page-header-subtitle">명함을 등록/수정하거나 원하는 그룹을 만들 수 있어요</p>
+            </>
           )}
         </div>
+
+        {/* Tab Navigation - 그룹이 선택되지 않았을 때만 표시 */}
+        {!selectedGroupId && (
+          <div className="wallet-tab-navigation">
+            <button
+              className={`wallet-tab ${activeTab === 'cards' ? 'active' : ''}`}
+              onClick={() => setActiveTab('cards')}
+            >
+              명함집
+            </button>
+            <button
+              className={`wallet-tab ${activeTab === 'groups' ? 'active' : ''}`}
+              onClick={() => setActiveTab('groups')}
+            >
+              그룹
+            </button>
+          </div>
+        )}
+
+        {/* Search Section and View Toggle - 명함집 탭에서만 표시, 그룹이 선택되지 않았을 때만 토글 표시 */}
+        {activeTab === 'cards' && (
+          <div className="search-and-toggle-container">
+            <div className="search-section">
+              <div className="search-wrapper">
+                <div className="search-icon">
+                  <SearchIcon />
+                </div>
+                <input
+                  type="text"
+                  placeholder="이름, 회사명, 직급 등을 검색"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value)
+                    setCurrentIndex(0)
+                  }}
+                  className="search-input"
+                />
+              </div>
+            </div>
+            {selectedGroupId && (
+              <button
+                className={`group-selection-btn ${isSelectionMode ? 'active' : ''}`}
+                onClick={() => {
+                  setIsSelectionMode(!isSelectionMode)
+                  if (isSelectionMode) {
+                    setSelectedCardIds([])
+                  }
+                }}
+              >
+                선택
+              </button>
+            )}
+            {!selectedGroupId && filteredCards.length > 0 && (
+              <div className="view-toggle-section-header">
+                <div className="view-toggle-container">
+                  <button 
+                    className={`view-toggle-option ${!isGridView ? 'active' : ''}`}
+                    onClick={() => setIsGridView(false)}
+                  >
+                    <div className="view-toggle-option-content">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="4" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                        <rect x="6" y="4" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                        <rect x="10" y="4" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                      </svg>
+                      <span>슬라이드</span>
+                    </div>
+                  </button>
+                  <button 
+                    className={`view-toggle-option ${isGridView ? 'active' : ''}`}
+                    onClick={() => setIsGridView(true)}
+                  >
+                    <div className="view-toggle-option-content">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                        <rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                        <rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                        <rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                      </svg>
+                      <span>전체</span>
+                    </div>
+                  </button>
+                  <div className={`view-toggle-slider ${isGridView ? 'right' : 'left'}`}></div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+
+        {/* 그룹 탭 검색 - 헤더 안에 표시 */}
+        {activeTab === 'groups' && (
+          <div className="search-and-toggle-container">
+            <div className="search-section">
+              <div className="search-wrapper">
+                <div className="search-icon">
+                  <SearchIcon />
+                </div>
+                <input
+                  type="text"
+                  placeholder="그룹 검색"
+                  value={groupSearchQuery}
+                  onChange={(e) => setGroupSearchQuery(e.target.value)}
+                  className="search-input"
+                />
+              </div>
+            </div>
+            <button
+              className="group-add-btn-header"
+              onClick={handleAddGroup}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>그룹 추가</span>
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className={`wallet-container ${!isGridView ? 'slide-view' : ''}`}>
+      <div className="wallet-container">
+        {/* 그룹 탭 콘텐츠 */}
+        {activeTab === 'groups' && (
+          <div className="groups-tab-content">
+            {/* 그룹 목록 */}
+            <div className={`groups-list-container ${groups.length === 0 ? 'empty' : ''}`}>
+              {(() => {
+                // 검색어로 그룹 필터링
+                const filteredGroups = groups.filter(group =>
+                  group.name.toLowerCase().includes(groupSearchQuery.toLowerCase())
+                )
 
-        {/* Usage Count and Guide - Below action buttons */}
-        {!isGridView && (
-          <div className="usage-and-guide-container">
-            <div className="card-guide">
-              <p className="card-guide-text">명함을 눌러 상세 정보 확인</p>
-            </div>
-            <div className="usage-indicator-top">
-              <span className="usage-count-carousel">
-                {filteredCards.length > 0 ? (
-                  <>
-                    <span className="usage-count-number-carousel">{currentIndex + 1}</span> / 200
-                  </>
-                ) : (
-                  <>
-                    <span className="usage-count-number-carousel">0</span> / 200
-                  </>
-                )}
-              </span>
+                if (filteredGroups.length === 0) {
+                  return (
+                    <div className="groups-empty-state">
+                      <p className="groups-empty-message">
+                        {groupSearchQuery ? '검색 결과가 없습니다' : '등록된 그룹이 없습니다'}
+                      </p>
+                      {!groupSearchQuery && (
+                        <p className="groups-empty-desc">그룹을 추가하여 명함을 관리하세요</p>
+                      )}
+                    </div>
+                  )
+                }
+
+                return (
+                  <div className="groups-list">
+                    {filteredGroups.map((group, index) => {
+                      const cardCount = group.cardIds ? group.cardIds.length : 0
+                      const originalIndex = groups.findIndex(g => g.id === group.id)
+                      const isDragging = draggedGroupIndex === originalIndex
+                      const isDragOver = dragOverGroupIndex === originalIndex
+                      return (
+                        <div
+                          key={group.id}
+                          className={`group-item ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''}`}
+                          onClick={() => handleSelectGroup(group.id)}
+                          draggable
+                          onDragStart={(e) => handleGroupDragStart(e, originalIndex)}
+                          onDragOver={(e) => handleGroupDragOver(e, originalIndex)}
+                          onDragEnd={handleGroupDragEnd}
+                          onDrop={(e) => handleGroupDrop(e, originalIndex)}
+                          onDragLeave={handleGroupDragLeave}
+                        >
+                          <div className="group-item-content">
+                            <div className="group-item-info">
+                              <span className="group-item-name">{group.name}</span>
+                              <span className="group-item-count">{cardCount}명</span>
+                            </div>
+                            <button
+                              className="group-item-delete-btn"
+                              onClick={(e) => handleDeleteGroup(group.id, e)}
+                              title="그룹 삭제"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+              })()}
             </div>
           </div>
         )}
 
-        {/* Business Card Display */}
-        {isLoading ? (
-          <div className="empty-state">
-            <p className="empty-message">로딩 중...</p>
-          </div>
-        ) : (
-          <>
-            {/* 그룹화 슬라이드 (전체보기일 때만 표시, 빈 그룹이어도 표시) */}
-            {isGridView && (
-              <div className="group-slider-container">
-                {/* 그룹 추가 버튼 (고정) */}
-                <button
-                  className="group-tag add-group-tag fixed"
-                  onClick={handleAddGroup}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span>그룹 추가</span>
-                </button>
-                {/* 그룹 태그들 (슬라이드 가능) */}
-                <div 
-                  className="group-slider"
-                  ref={groupScrollRef}
-                  onScroll={(e) => setGroupScrollLeft(e.target.scrollLeft)}
-                >
-                  {groups.map((group, index) => {
-                      const isSelected = selectedGroupId === group.id
-                      const cardCount = group.cardIds ? group.cardIds.length : 0
-                      const isDragging = draggedGroupIndex === index
-                      const isDragOver = dragOverGroupIndex === index
-                      return (
-                        <button
-                          key={group.id}
-                          className={`group-tag ${isSelected ? 'active' : ''} ${isDragging ? 'dragging' : ''} ${isDragOver ? 'drag-over' : ''}`}
-                          onClick={() => handleSelectGroup(group.id)}
-                          draggable
-                          onDragStart={(e) => handleGroupDragStart(e, index)}
-                          onDragOver={(e) => handleGroupDragOver(e, index)}
-                          onDragEnd={handleGroupDragEnd}
-                          onDrop={(e) => handleGroupDrop(e, index)}
-                          onDragLeave={handleGroupDragLeave}
-                        >
-                          <span className="group-drag-handle">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M9 5H11V7H9V5Z" fill="currentColor"/>
-                              <path d="M9 11H11V13H9V11Z" fill="currentColor"/>
-                              <path d="M9 17H11V19H9V17Z" fill="currentColor"/>
-                              <path d="M13 5H15V7H13V5Z" fill="currentColor"/>
-                              <path d="M13 11H15V13H13V11Z" fill="currentColor"/>
-                              <path d="M13 17H15V19H13V17Z" fill="currentColor"/>
-                            </svg>
-                          </span>
-                          <span>{group.name}</span>
-                          {cardCount > 0 && (
-                            <span className="group-count">({cardCount})</span>
-                          )}
-                          <button
-                            className="group-delete-btn"
-                            onClick={(e) => handleDeleteGroup(group.id, e)}
-                            title="그룹 삭제"
-                          >
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </button>
-                        </button>
-                      )
-                    })}
-                </div>
-              </div>
-            )}
+        {/* 명함집 탭 콘텐츠 */}
+        {activeTab === 'cards' && (
+          <div className={`cards-tab-content ${!isGridView && !selectedGroupId ? 'slide-view' : ''} ${selectedGroupId ? 'group-selected' : ''}`}>
 
-            {filteredCards.length > 0 ? (
-              <div className="card-carousel-section">
-                {!isGridView ? (
+            {/* Business Card Display */}
+            {isLoading ? (
+              <div className="empty-state">
+                <p className="empty-message">로딩 중...</p>
+              </div>
+            ) : (
               <>
-                <div className="carousel-container">
+
+                {filteredCards.length > 0 ? (
+                  <div className="card-carousel-section">
+                    {!isGridView && !selectedGroupId ? (
+                      <>
+                        <p className="slide-view-hint">명함을 눌러 상세정보 확인</p>
+                        <div className="carousel-container">
                   <button 
                     className="carousel-nav-btn carousel-nav-prev"
                     onClick={handlePrev}
@@ -1213,10 +1402,24 @@ function BusinessCardWallet() {
                     </svg>
                   </button>
                 </div>
+                {/* n/200 텍스트 - 명함 밖 하단 가운데 */}
+                <div className="usage-indicator-bottom-carousel">
+                  <span className="usage-count-carousel">
+                    {filteredCards.length > 0 ? (
+                      <>
+                        <span className="usage-count-number-carousel">{currentIndex + 1}</span> / 200
+                      </>
+                    ) : (
+                      <>
+                        <span className="usage-count-number-carousel">0</span> / 200
+                      </>
+                    )}
+                  </span>
+                </div>
               </>
             ) : (
-              <>
-                <div className="cards-grid">
+                    <>
+                      <div className="cards-grid">
                   {filteredCards.map((card) => {
                     const isInSelectedGroup = selectedGroupId 
                       ? groups.find(g => g.id === selectedGroupId)?.cardIds?.includes(String(card.id))
@@ -1224,25 +1427,24 @@ function BusinessCardWallet() {
                     return (
                       <div
                         key={card.id}
-                        className={`grid-card-item ${isInSelectedGroup ? 'in-group' : ''}`}
-                        onClick={() => handleCardClick(card.id)}
+                        className={`grid-card-item ${isInSelectedGroup ? 'in-group' : ''} ${isSelectionMode && selectedCardIds.includes(String(card.id)) ? 'selected' : ''}`}
+                        onClick={() => {
+                          if (isSelectionMode) {
+                            const cardIdStr = String(card.id)
+                            if (selectedCardIds.includes(cardIdStr)) {
+                              setSelectedCardIds(selectedCardIds.filter(id => id !== cardIdStr))
+                            } else {
+                              setSelectedCardIds([...selectedCardIds, cardIdStr])
+                            }
+                          } else {
+                            handleCardClick(card.id)
+                          }
+                        }}
                       >
-                        {selectedGroupId && (
-                          <button
-                            className="group-toggle-btn"
-                            onClick={(e) => handleToggleCardGroup(card.id, e)}
-                            title={isInSelectedGroup ? '그룹에서 제거' : '그룹에 추가'}
-                          >
-                            {isInSelectedGroup ? (
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                            ) : (
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                            )}
-                          </button>
+                        {isSelectionMode && (
+                          <div className="grid-card-selection-indicator">
+                            <div className={`selection-circle ${selectedCardIds.includes(String(card.id)) ? 'selected' : ''}`}></div>
+                          </div>
                         )}
                         <div 
                           className="grid-business-card"
@@ -1273,39 +1475,54 @@ function BusinessCardWallet() {
                         </div>
                       </div>
                     )
-                  })}
-                </div>
-                {/* Usage Count or Add Member Button - Below grid for grid view */}
-                <div className="usage-indicator-bottom">
-                  {selectedGroupId ? (
-                    <button
-                      className="group-add-member-btn"
-                      onClick={handleAddMemberToGroup}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                      <span>그룹 인원 추가</span>
-                    </button>
-                  ) : (
-                    <span className="usage-count-grid">
-                      <span className="usage-count-number-grid">{cards.length}</span> / 200
-                    </span>
+                      })}
+                      </div>
+                      {/* Usage Count or Add Member Button - Below grid for grid view */}
+                      <div className="usage-indicator-bottom">
+                        {selectedGroupId ? (
+                          <div className="group-action-buttons">
+                            <button
+                              className="group-add-member-btn"
+                              onClick={handleAddMemberToGroup}
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                              <span>그룹 인원 추가</span>
+                            </button>
+                            {selectedCardIds.length > 0 && (
+                              <button
+                                className="group-remove-member-btn"
+                                onClick={handleRemoveFromGroup}
+                              >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                                <span>{selectedCardIds.length}명을 그룹에서 삭제</span>
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="usage-count-grid">
+                            <span className="usage-count-number-grid">{cards.length}</span> / 200
+                          </span>
+                        )}
+                      </div>
+                    </>
                   )}
-                </div>
+                  </div>
+                ) : (
+                  <div className="empty-state">
+                    <p className="empty-message">검색 결과가 없습니다.</p>
+                  </div>
+                )}
               </>
             )}
           </div>
-            ) : (
-              <div className="empty-state">
-                <p className="empty-message">검색 결과가 없습니다.</p>
-              </div>
-            )}
-          </>
         )}
 
         {/* Footer - 관계 그래프 버튼 */}
-        {!selectedGroupId && (
+        {activeTab === 'cards' && !selectedGroupId && (
           <div className={`wallet-footer ${isGridView ? 'grid-view-footer' : ''}`}>
             <button 
               className="relation-graph-btn"
@@ -1338,51 +1555,82 @@ function BusinessCardWallet() {
               <div className="add-group-card">
                 <div className="add-group-card-icon">
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 5V19M5 12H19" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M20 7V3M18 5H22" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
-                <h3 className="add-group-card-title">그룹 소속 추가</h3>
+                <h3 className="add-group-card-title">그룹 멤버 추가</h3>
                 <p className="add-group-card-desc">그룹에 추가할 명함을 선택하세요</p>
+                {/* 검색 입력 필드 */}
+                <div className="add-group-search-wrapper">
+                  <div className="add-group-search-icon">
+                    <SearchIcon />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="이름, 회사명, 직급 등을 검색"
+                    value={memberSearchQuery}
+                    onChange={(e) => setMemberSearchQuery(e.target.value)}
+                    className="add-group-search-input"
+                  />
+                </div>
                 <div className="add-group-custom-list">
                   {(() => {
                     const currentGroup = groups.find(g => g.id === selectedGroupId)
                     const currentGroupCardIds = currentGroup?.cardIds || []
-                    const availableCards = cards.filter(card => card && !currentGroupCardIds.includes(String(card.id)))
+                    let availableCards = cards.filter(card => card && !currentGroupCardIds.includes(String(card.id)))
                     
-                    return availableCards.length > 0 ? (
-                      sortCards(availableCards).map((card) => {
-                        const isSelected = selectedCardsForMember.includes(String(card.id))
-                        return (
-                          <button
-                            key={card.id}
-                            className={`add-group-custom-item ${isSelected ? 'selected' : ''}`}
-                            onClick={() => handleToggleMemberSelection(card.id)}
-                          >
-                            <div className="add-group-custom-checkbox">
-                              {isSelected && (
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                              )}
-                            </div>
-                            <div className="add-group-custom-info">
-                              <span className="add-group-custom-name">{card.name}</span>
-                              {(card.company || card.position) && (
-                                <span className="add-group-custom-detail">
-                                  {card.company && <span>{card.company}</span>}
-                                  {card.company && card.position && <span> · </span>}
-                                  {card.position && <span>{card.position}</span>}
-                                </span>
-                              )}
-                            </div>
-                          </button>
-                        )
+                    // 검색어로 필터링
+                    if (memberSearchQuery.trim()) {
+                      const query = memberSearchQuery.toLowerCase().trim()
+                      availableCards = availableCards.filter(card => {
+                        const name = (card.name || '').toLowerCase()
+                        const company = (card.company || '').toLowerCase()
+                        const position = (card.position || '').toLowerCase()
+                        return name.includes(query) || company.includes(query) || position.includes(query)
                       })
-                    ) : (
-                      <p className="add-group-empty-message">추가할 명함이 없습니다</p>
-                    )
+                    }
+                    
+                    if (availableCards.length === 0) {
+                      const currentGroup = groups.find(g => g.id === selectedGroupId)
+                      const currentGroupCardIds = currentGroup?.cardIds || []
+                      const allAvailableCards = cards.filter(card => card && !currentGroupCardIds.includes(String(card.id)))
+                      if (allAvailableCards.length === 0) {
+                        return <p className="add-group-empty-message">추가할 명함이 없습니다</p>
+                      } else {
+                        return <p className="add-group-empty-message">검색 결과가 없습니다</p>
+                      }
+                    }
+                    
+                    return sortCards(availableCards).map((card) => {
+                      const isSelected = selectedCardsForMember.includes(String(card.id))
+                      return (
+                        <button
+                          key={card.id}
+                          className={`add-group-custom-item ${isSelected ? 'selected' : ''}`}
+                          onClick={() => handleToggleMemberSelection(card.id)}
+                        >
+                          <div className="add-group-custom-checkbox">
+                            {isSelected && (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            )}
+                          </div>
+                          <div className="add-group-custom-info">
+                            <span className="add-group-custom-name">{card.name}</span>
+                            {(card.company || card.position) && (
+                              <span className="add-group-custom-detail">
+                                {card.company && <span>{card.company}</span>}
+                                {card.company && card.position && <span> · </span>}
+                                {card.position && <span>{card.position}</span>}
+                              </span>
+                            )}
+                          </div>
+                        </button>
+                      )
+                    })
                   })()}
                 </div>
                 <button
@@ -1412,60 +1660,63 @@ function BusinessCardWallet() {
             </button>
 
             <div className="add-group-modal-content">
-              {/* 그룹 이름 입력 카드 */}
-              <div className="add-group-card">
-                <div className="add-group-card-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <h3 className="add-group-card-title">그룹 이름</h3>
-                <p className="add-group-card-desc">그룹을 구분할 수 있는 이름을 입력하세요</p>
-                <input
-                  type="text"
-                  className="add-group-name-input-card"
-                  value={newGroupName}
-                  onChange={(e) => setNewGroupName(e.target.value)}
-                  placeholder={`그룹 ${groups.length + 1}`}
-                />
-              </div>
-
-              {/* 모드 선택 카드 */}
-              {!groupAddMode && (
+              {/* 그룹 이름 입력 카드와 모드 선택 카드를 가로로 배치 */}
+              <div className="add-group-cards-row">
+                {/* 그룹 이름 입력 카드 */}
                 <div className="add-group-card">
                   <div className="add-group-card-icon">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 5V19M5 12H19" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M3 7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </div>
-                  <h3 className="add-group-card-title">추가 방식</h3>
-                  <p className="add-group-card-desc">명함을 그룹화하는 방법을 선택하세요</p>
-                  <div className="add-group-mode-buttons">
-                    <button
-                      className="add-group-mode-button"
-                      onClick={() => handleSelectAddMode('custom')}
-                    >
-                      Custom 추가
-                    </button>
-                    <button
-                      className="add-group-mode-button"
-                      onClick={() => handleSelectAddMode('company')}
-                    >
-                      소속 단위
-                    </button>
-                    <button
-                      className="add-group-mode-button"
-                      onClick={() => handleSelectAddMode('position')}
-                    >
-                      직급 단위
-                    </button>
-                  </div>
+                  <h3 className="add-group-card-title">그룹 이름</h3>
+                  <p className="add-group-card-desc">그룹을 구분할 수 있는 이름을 입력하세요</p>
+                  <input
+                    type="text"
+                    className="add-group-name-input-card"
+                    value={newGroupName}
+                    onChange={(e) => setNewGroupName(e.target.value)}
+                    placeholder="예) A사"
+                  />
                 </div>
-              )}
+
+                {/* 모드 선택 카드 */}
+                {!groupAddMode && (
+                  <div className="add-group-card">
+                    <div className="add-group-card-icon">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 5V19M5 12H19" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M3 7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <h3 className="add-group-card-title">추가 방식</h3>
+                    <p className="add-group-card-desc">명함 그룹화 옵션을 선택하세요</p>
+                    <div className="add-group-mode-buttons">
+                      <button
+                        className="add-group-mode-button"
+                        onClick={() => handleSelectAddMode('custom')}
+                      >
+                        커스텀 추가
+                      </button>
+                      <button
+                        className="add-group-mode-button"
+                        onClick={() => handleSelectAddMode('company')}
+                      >
+                        소속 단위
+                      </button>
+                      <button
+                        className="add-group-mode-button"
+                        onClick={() => handleSelectAddMode('position')}
+                      >
+                        직급 단위
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* 소속 선택 카드 */}
               {groupAddMode === 'company' && (
@@ -1603,15 +1854,110 @@ function BusinessCardWallet() {
         </div>
       )}
 
-      <BottomNavigation />
-
-      {/* Card Detail Modal */}
-      {showDetailModal && selectedCard && (
-        <CardDetailModal 
-          card={selectedCard} 
-          onClose={handleCloseModal}
-        />
+      {/* 하트 토스트 메시지 */}
+      {showHeartToast && (
+        <div className={`wallet-heart-toast ${isHeartToastFading ? 'fade-away' : ''}`}>
+          <p>
+            <span className="toast-quote">"</span>
+            <span className="toast-heart">
+              <ToastHeartIcon />
+            </span>
+            <span className="toast-quote">"</span>
+            <span> 설정은 명함집 탭에서 가능합니다</span>
+          </p>
+        </div>
       )}
+
+      {/* 명함 등록 플로팅 버튼 - 명함집 탭에서만 표시 */}
+      {activeTab === 'cards' && !selectedGroupId && (
+        <div className={`floating-register-buttons ${showRegisterMenu ? 'expanded' : ''}`}>
+          {/* 수동 명함 등록 버튼 */}
+          <button 
+            className={`floating-register-btn floating-register-option ${showRegisterMenu ? 'visible' : ''}`}
+            onClick={() => {
+              navigate('/manual-add')
+              setShowRegisterMenu(false)
+            }}
+            title="수동 명함 등록"
+          >
+            <PenIcon />
+            <span className="floating-register-label">수동</span>
+          </button>
+          
+          {/* OCR 명함 등록 버튼 */}
+          <button 
+            className={`floating-register-btn floating-register-option ${showRegisterMenu ? 'visible' : ''}`}
+            onClick={() => {
+              navigate('/ocr')
+              setShowRegisterMenu(false)
+            }}
+            title="OCR 명함 등록"
+          >
+            <CameraIcon />
+            <span className="floating-register-label">OCR</span>
+          </button>
+          
+          {/* 메인 명함 등록 버튼 */}
+          <button 
+            className="floating-register-btn floating-register-main"
+            onClick={() => setShowRegisterMenu(!showRegisterMenu)}
+            title="명함 등록"
+          >
+            <svg 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ 
+                transform: showRegisterMenu ? 'rotate(45deg)' : 'rotate(0deg)', 
+                transformOrigin: 'center center',
+                transition: 'transform 0.3s ease'
+              }}
+            >
+              <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="floating-register-label">명함 등록</span>
+          </button>
+        </div>
+      )}
+
+            {!selectedGroupId && <BottomNavigation />}
+
+            {/* 그룹 삭제 확인 모달 */}
+            {showDeleteGroupModal && groupToDelete && (
+              <div className="add-group-modal-overlay" onClick={handleCloseDeleteGroupModal}>
+                <div className="delete-group-modal" onClick={(e) => e.stopPropagation()}>
+                  <div className="delete-group-modal-content">
+                    <p className="delete-group-modal-message">
+                      <span className="delete-group-modal-group-name">{groupToDelete.name}</span> 그룹을 삭제하시겠습니까?
+                    </p>
+                    <div className="delete-group-modal-buttons">
+                      <button
+                        className="delete-group-modal-confirm"
+                        onClick={handleConfirmDeleteGroup}
+                      >
+                        예
+                      </button>
+                      <button
+                        className="delete-group-modal-cancel"
+                        onClick={handleCloseDeleteGroupModal}
+                      >
+                        아니오
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Card Detail Modal */}
+            {showDetailModal && selectedCard && (
+              <CardDetailModal
+                card={selectedCard}
+                onClose={handleCloseModal}
+              />
+            )}
     </div>
   )
 }
@@ -1742,13 +2088,24 @@ function CardDetailModal({ card, onClose }) {
   }
 
   // Toggle evidence expansion
-  const toggleEvidence = (category, index) => {
+  const toggleEvidence = (category, index, e) => {
+    if (e) {
+      e.stopPropagation()
+    }
     const key = `${category}-${index}`
-    setExpandedEvidence(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }))
+    // 다른 모든 근거를 닫고 현재 것만 열기
+    setExpandedEvidence({
+      [key]: true
+    })
   }
+
+  // Close all evidence when clicking overlay
+  const closeAllEvidence = () => {
+    setExpandedEvidence({})
+  }
+
+  // Check if any evidence is expanded
+  const hasExpandedEvidence = Object.values(expandedEvidence).some(Boolean)
 
   const handleCustomize = () => {
     navigate('/customize', { state: { card } })
@@ -1964,7 +2321,10 @@ function CardDetailModal({ card, onClose }) {
 
         {/* Business Card Information Section */}
         <div className="modal-info-section">
-          <div className="modal-info-card">
+          <div 
+            className={`modal-info-card ${hasExpandedEvidence && activeTab === 'preferences' ? 'has-overlay' : ''}`}
+            onClick={hasExpandedEvidence && activeTab === 'preferences' ? closeAllEvidence : undefined}
+          >
             {/* Tab Selection */}
             <div className="modal-tab-container">
               <div className="modal-tab-toggle-container">
@@ -2044,11 +2404,44 @@ function CardDetailModal({ card, onClose }) {
             )}
 
             {activeTab === 'preferences' && (
-            <div className="modal-preferences-section-inner">
+            <div className="modal-preferences-section-inner relative">
+              {/* Evidence box - centered in preferences section */}
+              {hasExpandedEvidence && (() => {
+                const expandedKey = Object.keys(expandedEvidence).find(key => expandedEvidence[key])
+                if (!expandedKey) return null
+                const [category, indexStr] = expandedKey.split('-')
+                const index = parseInt(indexStr, 10)
+                const categoryData = category === 'like' ? preferences.likes : 
+                                   category === 'dislike' ? preferences.dislikes : 
+                                   preferences.uncertain
+                const item = categoryData && categoryData[index]
+                if (!item || !item.evidence) return null
+                const categoryClass = category === 'like' ? 'evidence-like' : 
+                                     category === 'dislike' ? 'evidence-dislike' : 
+                                     'evidence-uncertain'
+                return (
+                  <div className="preference-evidence-box-centered" onClick={(e) => e.stopPropagation()}>
+                    {item.evidence.map((ev, evIndex) => (
+                      <div key={evIndex}>
+                        <div 
+                          className={`preference-evidence-item ${categoryClass}`}
+                          onClick={() => handleEvidenceClick(ev)}
+                          title="클릭하여 메모 보기"
+                        >
+                          <span className="preference-evidence-text">"{ev}"</span>
+                        </div>
+                        {evIndex === item.evidence.length - 1 && (
+                          <div className="preference-evidence-hint">근거를 클릭해서 메모 보기</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )
+              })()}
           {isLoadingPreferences ? (
-            <div className="modal-preferences-loading">선호도를 불러오는 중...</div>
+            <div className="modal-preferences-loading relative z-20">선호도를 불러오는 중...</div>
           ) : (
-            <div className="modal-preferences-content">
+            <div className="modal-preferences-content relative z-20">
               {/* Likes */}
               {preferences.likes && preferences.likes.length > 0 && (
                 <div className="modal-preferences-category">
@@ -2079,12 +2472,12 @@ function CardDetailModal({ card, onClose }) {
                         {item.evidence && item.evidence.length > 0 && (
                           <div 
                             className="preference-chip-evidence-wrapper"
-                            onMouseEnter={adjustTooltipPosition}
                           >
                             <button
                               type="button"
                               className="preference-chip-evidence-toggle"
                               title="증거 보기"
+                              onClick={(e) => toggleEvidence('like', index, e)}
                             >
                               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="8" cy="8" r="6" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -2092,22 +2485,6 @@ function CardDetailModal({ card, onClose }) {
                                 <path d="M8 8V11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                               </svg>
                             </button>
-                            <div className="preference-chip-evidence">
-                              {item.evidence.map((ev, evIndex) => (
-                                <div 
-                                  key={evIndex} 
-                                  className="preference-evidence-item"
-                                  onClick={() => handleEvidenceClick(ev)}
-                                  title="클릭하여 메모 보기"
-                                >
-                                  <span className="preference-evidence-text">"{ev}"</span>
-                                  <svg className="preference-evidence-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                    <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                  </svg>
-                                </div>
-                              ))}
-                            </div>
                           </div>
                         )}
                       </div>
@@ -2136,12 +2513,12 @@ function CardDetailModal({ card, onClose }) {
                         {item.evidence && item.evidence.length > 0 && (
                           <div 
                             className="preference-chip-evidence-wrapper"
-                            onMouseEnter={adjustTooltipPosition}
                           >
                             <button
                               type="button"
                               className="preference-chip-evidence-toggle"
                               title="증거 보기"
+                              onClick={(e) => toggleEvidence('dislike', index, e)}
                             >
                               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="8" cy="8" r="6" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -2149,22 +2526,6 @@ function CardDetailModal({ card, onClose }) {
                                 <path d="M8 8V11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                               </svg>
                             </button>
-                            <div className="preference-chip-evidence">
-                              {item.evidence.map((ev, evIndex) => (
-                                <div 
-                                  key={evIndex} 
-                                  className="preference-evidence-item"
-                                  onClick={() => handleEvidenceClick(ev)}
-                                  title="클릭하여 메모 보기"
-                                >
-                                  <span className="preference-evidence-text">"{ev}"</span>
-                                  <svg className="preference-evidence-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                    <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                  </svg>
-                                </div>
-                              ))}
-                            </div>
                           </div>
                         )}
                       </div>
@@ -2191,12 +2552,12 @@ function CardDetailModal({ card, onClose }) {
                         {item.evidence && item.evidence.length > 0 && (
                           <div 
                             className="preference-chip-evidence-wrapper"
-                            onMouseEnter={adjustTooltipPosition}
                           >
                             <button
                               type="button"
                               className="preference-chip-evidence-toggle"
                               title="증거 보기"
+                              onClick={(e) => toggleEvidence('uncertain', index, e)}
                             >
                               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="8" cy="8" r="6" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -2204,22 +2565,6 @@ function CardDetailModal({ card, onClose }) {
                                 <path d="M8 8V11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                               </svg>
                             </button>
-                            <div className="preference-chip-evidence">
-                              {item.evidence.map((ev, evIndex) => (
-                                <div 
-                                  key={evIndex} 
-                                  className="preference-evidence-item"
-                                  onClick={() => handleEvidenceClick(ev)}
-                                  title="클릭하여 메모 보기"
-                                >
-                                  <span className="preference-evidence-text">"{ev}"</span>
-                                  <svg className="preference-evidence-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                    <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                  </svg>
-                                </div>
-                              ))}
-                            </div>
                           </div>
                         )}
                       </div>
