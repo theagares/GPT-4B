@@ -177,6 +177,7 @@ function BusinessCardWallet() {
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [selectedCardsForMember, setSelectedCardsForMember] = useState([]) // 그룹에 추가할 명함 ID들
   const [memberSearchQuery, setMemberSearchQuery] = useState('') // 그룹 멤버 추가 모달 검색어
+  const [showRegisterMenu, setShowRegisterMenu] = useState(false) // 명함 등록 메뉴 펼침/접힘 상태
   
   // 그룹 삭제 확인 모달 관련 state
   const [showDeleteGroupModal, setShowDeleteGroupModal] = useState(false)
@@ -1158,29 +1159,6 @@ function BusinessCardWallet() {
           </div>
         )}
 
-        {/* 명함 등록 버튼 - 명함집 탭에서만 표시 */}
-        {activeTab === 'cards' && !selectedGroupId && (
-          <div className="register-buttons-container-header">
-            <button 
-              className="register-action-btn"
-              onClick={() => navigate('/manual-add')}
-            >
-              <span className="register-action-icon">
-                <PenIcon />
-              </span>
-              <span className="register-action-label">수동 명함 등록</span>
-            </button>
-            <button 
-              className="register-action-btn"
-              onClick={() => navigate('/ocr')}
-            >
-              <span className="register-action-icon">
-                <CameraIcon />
-              </span>
-              <span className="register-action-label">OCR 명함 등록</span>
-            </button>
-          </div>
-        )}
 
         {/* 그룹 탭 검색 - 헤더 안에 표시 */}
         {activeTab === 'groups' && (
@@ -1297,6 +1275,7 @@ function BusinessCardWallet() {
                   <div className="card-carousel-section">
                     {!isGridView && !selectedGroupId ? (
                       <>
+                        <p className="slide-view-hint">명함을 눌러 상세정보 확인</p>
                         <div className="carousel-container">
                   <button 
                     className="carousel-nav-btn carousel-nav-prev"
@@ -1873,6 +1852,60 @@ function BusinessCardWallet() {
             <span className="toast-quote">"</span>
             <span> 설정은 명함집 탭에서 가능합니다</span>
           </p>
+        </div>
+      )}
+
+      {/* 명함 등록 플로팅 버튼 - 명함집 탭에서만 표시 */}
+      {activeTab === 'cards' && !selectedGroupId && (
+        <div className={`floating-register-buttons ${showRegisterMenu ? 'expanded' : ''}`}>
+          {/* 수동 명함 등록 버튼 */}
+          <button 
+            className={`floating-register-btn floating-register-option ${showRegisterMenu ? 'visible' : ''}`}
+            onClick={() => {
+              navigate('/manual-add')
+              setShowRegisterMenu(false)
+            }}
+            title="수동 명함 등록"
+          >
+            <PenIcon />
+            <span className="floating-register-label">수동</span>
+          </button>
+          
+          {/* OCR 명함 등록 버튼 */}
+          <button 
+            className={`floating-register-btn floating-register-option ${showRegisterMenu ? 'visible' : ''}`}
+            onClick={() => {
+              navigate('/ocr')
+              setShowRegisterMenu(false)
+            }}
+            title="OCR 명함 등록"
+          >
+            <CameraIcon />
+            <span className="floating-register-label">OCR</span>
+          </button>
+          
+          {/* 메인 명함 등록 버튼 */}
+          <button 
+            className="floating-register-btn floating-register-main"
+            onClick={() => setShowRegisterMenu(!showRegisterMenu)}
+            title="명함 등록"
+          >
+            <svg 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ 
+                transform: showRegisterMenu ? 'rotate(45deg)' : 'rotate(0deg)', 
+                transformOrigin: 'center center',
+                transition: 'transform 0.3s ease'
+              }}
+            >
+              <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="floating-register-label">명함 등록</span>
+          </button>
         </div>
       )}
 
