@@ -1188,6 +1188,12 @@ function BusinessCardWallet() {
               <p className="wallet-page-header-title">
                 {groups.find(g => g.id === selectedGroupId)?.name || '그룹'}
               </p>
+              <button
+                className="group-edit-name-btn-header"
+                onClick={handleEditGroupName}
+              >
+                그룹명 수정
+              </button>
             </div>
           ) : (
             <>
@@ -1237,12 +1243,6 @@ function BusinessCardWallet() {
             </div>
             {selectedGroupId && (
               <div className="group-action-buttons">
-                <button
-                  className="group-edit-name-btn"
-                  onClick={handleEditGroupName}
-                >
-                  그룹명 수정
-                </button>
                 <button
                   className={`group-selection-btn ${isSelectionMode ? 'active' : ''}`}
                   onClick={() => {

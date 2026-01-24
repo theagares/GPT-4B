@@ -109,6 +109,29 @@
   color: #584cdc;
 }
 
+/* 헤더 내 그룹명 수정 버튼 */
+.group-edit-name-btn-header {
+  padding: 0;
+  background: transparent;
+  color: #584cdc;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: underline;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.group-edit-name-btn-header:hover {
+  color: #4a3fc0;
+}
+
 .wallet-group-back-btn:active {
   transform: scale(0.95);
 }
