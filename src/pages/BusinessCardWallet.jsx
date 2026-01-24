@@ -2047,7 +2047,7 @@ function BusinessCardWallet() {
       {/* 그룹명 수정 모달 */}
       {showEditGroupNameModal && selectedGroupId && (
         <div className="add-group-modal-overlay" onClick={handleCloseEditGroupNameModal}>
-          <div className="add-group-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="add-group-modal edit-group-name-modal" onClick={(e) => e.stopPropagation()}>
             <button
               className="add-group-modal-close"
               onClick={handleCloseEditGroupNameModal}

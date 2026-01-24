@@ -897,7 +897,7 @@
   background: white;
   border-radius: 20px;
   width: 100%;
-  max-width: 280px;
+  max-width: 360px;
   max-height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
@@ -905,6 +905,11 @@
   position: relative;
   overflow: hidden;
   margin: auto;
+}
+
+/* 그룹명 수정 모달 전용 스타일 */
+.edit-group-name-modal {
+  max-width: 280px;
 }
 
 .add-group-modal-close {
@@ -921,8 +926,8 @@
   justify-content: center;
   transition: all 0.2s;
   z-index: 10;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
 }
 
 .add-group-modal-close:hover {
@@ -930,6 +935,17 @@
 }
 
 .add-group-modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* 그룹명 수정 모달의 X 버튼 */
+.edit-group-name-modal .add-group-modal-close {
+  width: 36px;
+  height: 36px;
+}
+
+.edit-group-name-modal .add-group-modal-close svg {
   width: 24px;
   height: 24px;
 }
@@ -1038,6 +1054,11 @@
 .add-group-modal-buttons {
   display: flex;
   gap: 12px;
+  margin-top: 16px;
+}
+
+/* 그룹명 수정 모달의 버튼 영역 */
+.edit-group-name-modal .add-group-modal-buttons {
   margin-top: 2px;
   width: 100%;
   max-width: 220px;
@@ -1068,7 +1089,7 @@
   padding: 14px 20px;
   border: none;
   border-radius: 12px;
-  background: #584cdc;
+  background: linear-gradient(135deg, #584cdc 0%, #6d30df 100%);
   color: #fff;
   font-size: 15px;
   font-weight: 600;
@@ -1077,13 +1098,21 @@
 }
 
 .add-group-confirm-btn:hover {
-  background: #4a3fc0;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(88, 76, 220, 0.3);
 }
 
 .add-group-confirm-btn:active {
   transform: translateY(0);
+}
+
+/* 그룹명 수정 모달의 수정 버튼 */
+.edit-group-name-modal .add-group-confirm-btn {
+  background: #584cdc;
+}
+
+.edit-group-name-modal .add-group-confirm-btn:hover {
+  background: #4a3fc0;
 }
 
 /* 그룹 추가 카드 세로 배치 */
@@ -1118,8 +1147,8 @@
 }
 
 .add-group-card-icon svg {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
 }
 
 .add-group-card-title {
@@ -1371,6 +1400,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  height: 300px;
   max-height: 300px;
   overflow-y: auto;
   padding-right: 4px;
