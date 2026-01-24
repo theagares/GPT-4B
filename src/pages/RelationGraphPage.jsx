@@ -640,8 +640,8 @@ function RelationGraphPage() {
                   캐시 사용
                 </button>
               )}
-              <button 
-                className="rg-modal-btn-primary" 
+              <button
+                className="rg-modal-btn-primary"
                 onClick={handleStartAnalysis}
                 disabled={analyzeCount === '' || displayCount === '' || parseInt(analyzeCount) < parseInt(displayCount)}
               >
@@ -865,8 +865,8 @@ function RelationGraphPage() {
                       className="rg-dormant-schedule-btn"
                       onClick={() => {
                         setShowDormantPopup(false)
-                        // 캘린더 페이지로 이동하면서 명함 정보 전달
-                        navigate('/calendar', {
+                        // 일정 추가 페이지로 이동하면서 명함 정보 전달
+                        navigate('/calendar/add', {
                           state: {
                             scheduleWith: {
                               cardId: card.cardId,

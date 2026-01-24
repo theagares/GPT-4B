@@ -89,6 +89,22 @@ function AddEventPage() {
     navigate('/calendar', { state: { selectedDate: selectedDate } })
   }
 
+  // 관계 그래프에서 "약속잡기"로 넘어온 경우 - 참석자 자동 추가
+  useEffect(() => {
+    if (location.state?.scheduleWith) {
+      const { cardId, name, company } = location.state.scheduleWith
+      
+      // 참석자에 명함 추가
+      setParticipants([{
+        id: cardId,
+        name: name,
+        company: company,
+        isFromCard: true
+      }])
+      setLinkedCardIds([cardId])
+    }
+  }, [location.state?.scheduleWith])
+
   // 참석자 자동완성 검색 (명함에서 검색)
   const fetchContactSuggestions = useCallback(async (searchText) => {
     if (!searchText.trim() || !isAuthenticated()) {
