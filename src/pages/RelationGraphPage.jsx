@@ -1,16 +1,15 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as d3 from 'd3'
+import { useGraphAnalysis } from '../contexts/GraphAnalysisContext'
 import './RelationGraphPage.css'
 
-const API_BASE = 'http://localhost:3002'
 const CACHE_KEY = 'relation_graph_cache'
 
 function RelationGraphPage() {
   const navigate = useNavigate()
   const graphRef = useRef(null)
   const [graphData, setGraphData] = useState(null)
-  const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState(null)
   const [usedFeatures, setUsedFeatures] = useState([])
   const [relationshipTypes, setRelationshipTypes] = useState({})
@@ -25,27 +24,44 @@ function RelationGraphPage() {
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [analyzeCount, setAnalyzeCount] = useState(20)
   const [displayCount, setDisplayCount] = useState(10)
-  const [hasCache, setHasCache] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  // 휴면 클러스터 팝업 관련 state
+  const [showDormantPopup, setShowDormantPopup] = useState(false)
+  const [dormantCards, setDormantCards] = useState([])
+  const [clusterGroups, setClusterGroups] = useState({})
+
+  // Context에서 분석 상태 가져오기
+  const {
+    isAnalyzing,
+    cachedData,
+    hasCache,
+    totalCardCount,
+    startAnalysis,
+    closeCompletePopup
+  } = useGraphAnalysis()
+
+  // 최대 분석 개수 (명함 개수 또는 기본 50개)
+  const maxAnalyzeCount = Math.max(5, totalCardCount || 50)
 
   // 페이지 진입 시 캐시 확인 및 팝업 표시
   useEffect(() => {
-    const cached = sessionStorage.getItem(CACHE_KEY)
-    if (cached) {
-      setHasCache(true)
+    if (cachedData) {
+      // 캐시가 있으면 바로 로드
       loadFromCache()
-    } else {
+    } else if (!isAnalyzing) {
+      // 캐시도 없고 분석 중도 아니면 설정 팝업 표시
       setShowSettingsModal(true)
     }
-  }, [])
+  }, [cachedData])
 
   // 캐시에서 데이터 로드
   const loadFromCache = () => {
     try {
-      const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY))
-      if (cached && cached.data) {
-        applyData(cached.data, cached.displayCount || 10)
-        setAnalyzeCount(cached.analyzeCount || 20)
-        setDisplayCount(cached.displayCount || 10)
+      if (cachedData && cachedData.data) {
+        applyData(cachedData.data, cachedData.displayCount || 10)
+        setAnalyzeCount(cachedData.analyzeCount || 20)
+        setDisplayCount(cachedData.displayCount || 10)
       }
     } catch (error) {
       console.error('캐시 로드 오류:', error)
@@ -67,6 +83,19 @@ function RelationGraphPage() {
     const nonUserNodes = data.graph.nodes.filter(n => n.type !== 'user')
     const userNode = data.graph.nodes.find(n => n.type === 'user')
 
+    // 클러스터별 그룹화
+    const groups = {}
+    nonUserNodes.forEach(node => {
+      const type = node.relationshipType || '기타'
+      if (!groups[type]) groups[type] = []
+      groups[type].push(node)
+    })
+    setClusterGroups(groups)
+
+    // 휴면 카드 목록 저장
+    const dormant = nonUserNodes.filter(n => n.relationshipType === '휴면')
+    setDormantCards(dormant)
+
     const topKNodes = [...nonUserNodes]
       .sort((a, b) => (b.score || 0) - (a.score || 0))
       .slice(0, topK)
@@ -87,43 +116,18 @@ function RelationGraphPage() {
     setGraphData(filteredGraph)
   }
 
-  // API에서 데이터 로드
-  const loadData = async (limit, topK) => {
-    setLoading(true)
-    setShowSettingsModal(false)
-    try {
-      const response = await fetch(`${API_BASE}/api/llm-auto?limit=${limit}&maxIterations=2`)
-      const result = await response.json()
-
-      if (!result.success) {
-        throw new Error(result.error)
-      }
-
-      const data = result.data
-
-      // 캐시에 저장
-      sessionStorage.setItem(CACHE_KEY, JSON.stringify({
-        data,
-        analyzeCount: limit,
-        displayCount: topK,
-        timestamp: Date.now()
-      }))
-      setHasCache(true)
-
-      applyData(data, topK)
-
-    } catch (error) {
-      console.error('데이터 로드 오류:', error)
-      alert('데이터를 불러오는데 실패했습니다.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // 설정 확인 후 분석 시작
+  // 설정 확인 후 분석 시작 (Context 사용)
   const handleStartAnalysis = () => {
-    loadData(analyzeCount, displayCount)
+    setShowSettingsModal(false)
+    startAnalysis(analyzeCount, displayCount)
   }
+
+  // Context에서 캐시 데이터가 업데이트되면 적용
+  useEffect(() => {
+    if (cachedData && cachedData.data && !graphData) {
+      applyData(cachedData.data, cachedData.displayCount || displayCount)
+    }
+  }, [cachedData])
 
   // 새로고침 (캐시 무시)
   const handleRefresh = () => {
@@ -394,9 +398,56 @@ function RelationGraphPage() {
     const getDistance = (edge) => {
       const targetNode = graphData.nodes.find(n => n.id === edge.target || n.id === edge.target?.id)
       const score = targetNode?.score || 50
-      const minDist = 30   // 점수 100일 때 (가장 친밀)
-      const maxDist = 120  // 점수 0일 때 (가장 덜 친밀)
+      const minDist = 50   // 점수 100일 때 (가장 친밀)
+      const maxDist = 150  // 점수 0일 때 (가장 덜 친밀)
       return maxDist - (score / 100) * (maxDist - minDist)
+    }
+
+    // 🎯 관계 유형별 각도 할당 (라디안) - 6개 유형
+    const typeAngles = {
+      '핵심': 0,                        // 오른쪽 (0°) - 가장 중요한 관계
+      '협력': Math.PI / 3,              // 오른쪽 위 (60°)
+      '네트워킹': Math.PI * 2 / 3,      // 왼쪽 위 (120°)
+      '신규': Math.PI,                  // 왼쪽 (180°)
+      '개인': Math.PI * 4 / 3,          // 왼쪽 아래 (240°)
+      '휴면': Math.PI * 5 / 3,          // 오른쪽 아래 (300°)
+    }
+
+    // 노드에 타겟 각도 할당
+    graphData.nodes.forEach(d => {
+      if (d.type === 'user') {
+        d.targetAngle = null
+      } else {
+        d.targetAngle = typeAngles[d.relationshipType] ?? Math.PI // 기본값: 왼쪽
+      }
+    })
+
+    // 🔄 관계 유형별 클러스터링 force (부드러운 방향 유도)
+    const forceCluster = (alpha) => {
+      const centerX = width / 2
+      const centerY = height / 2
+      const clusterStrength = 0.03 * alpha // 부드럽게
+
+      graphData.nodes.forEach(d => {
+        if (d.type === 'user' || d.targetAngle === null || d.wasDragged) return
+
+        // 현재 위치에서 중심까지의 거리
+        const dx = d.x - centerX
+        const dy = d.y - centerY
+        const currentDist = Math.sqrt(dx * dx + dy * dy) || 1
+
+        // 타겟 방향의 단위 벡터
+        const targetX = Math.cos(d.targetAngle)
+        const targetY = Math.sin(d.targetAngle)
+
+        // 현재 방향의 단위 벡터
+        const currentX = dx / currentDist
+        const currentY = dy / currentDist
+
+        // 타겟 방향으로 부드럽게 회전
+        d.vx += (targetX - currentX) * clusterStrength * currentDist * 0.1
+        d.vy += (targetY - currentY) * clusterStrength * currentDist * 0.1
+      })
     }
 
     simulationRef.current = d3.forceSimulation(graphData.nodes)
@@ -408,12 +459,13 @@ function RelationGraphPage() {
       .force('charge', d3.forceManyBody().strength(-60))
       .force('center', d3.forceCenter(width / 2, height / 2).strength(0.08))
       .force('collision', d3.forceCollide().radius(d => getNodeSize(d) + 8))
-      .alphaDecay(0.02)
-      .alphaMin(0.001)
-      .velocityDecay(0.3)
+      .force('cluster', forceCluster)  // 관계 유형별 클러스터링
+      .alphaDecay(0.03)  // 빠르게 안정화
+      .alphaMin(0.01)    // 빠르게 멈춤
+      .velocityDecay(0.4)  // 더 빠른 감속
       .on('tick', () => {
         tickCount++
-        
+
         // 직선 링크 업데이트
         link
           .attr('x1', d => d.source.x)
@@ -423,36 +475,65 @@ function RelationGraphPage() {
 
         node.attr('transform', d => `translate(${d.x},${d.y})`)
       })
+      .on('end', () => {
+        // 시뮬레이션이 끝나면 기준 위치 저장 (고정하지 않음)
+        graphData.nodes.forEach(d => {
+          d.baseX = d.x
+          d.baseY = d.y
+        })
 
-    // 🌊 지속적인 미세 움직임 (floating effect)
-    const floatingAnimation = () => {
-      const time = Date.now() * 0.001
-
-      graphData.nodes.forEach(d => {
-        if (!d.isDragging && !d.wasDragged) {
-          // 부드러운 사인파 움직임 (드래그 안된 노드만)
-          const floatX = Math.sin(time * d.floatSpeed + d.floatPhase) * d.floatAmplitude
-          const floatY = Math.cos(time * d.floatSpeed * 0.7 + d.floatPhase) * d.floatAmplitude
-
-          d.vx = (d.vx || 0) + floatX * 0.008
-          d.vy = (d.vy || 0) + floatY * 0.008
-        }
+        // 🎈 Floating 애니메이션 시작
+        startFloatingAnimation(node, link, graphData)
       })
 
-      // alpha 값을 최소값 이상으로 유지하여 시뮬레이션 지속
-      if (simulationRef.current.alpha() < 0.03) {
-        simulationRef.current.alpha(0.03)
+    // 🎈 Floating 애니메이션 함수
+    function startFloatingAnimation(nodeSelection, linkSelection, data) {
+      let startTime = Date.now()
+
+      function animate() {
+        const elapsed = (Date.now() - startTime) / 1000  // 초 단위
+
+        data.nodes.forEach(d => {
+          if (d.isDragging || d.type === 'user') return  // 드래그 중이거나 유저 노드는 제외
+
+          // 기준 위치가 없으면 현재 위치를 기준으로
+          if (d.baseX === undefined) d.baseX = d.x
+          if (d.baseY === undefined) d.baseY = d.y
+
+          // 부드러운 사인파 움직임
+          const phase = d.floatPhase || 0
+          const speed = d.floatSpeed || 0.4
+          const amplitude = d.floatAmplitude || 2
+
+          // X, Y 각각 다른 주기로 움직임 (더 자연스럽게)
+          const offsetX = Math.sin(elapsed * speed + phase) * amplitude
+          const offsetY = Math.cos(elapsed * speed * 0.7 + phase * 1.3) * amplitude * 0.8
+
+          d.x = d.baseX + offsetX
+          d.y = d.baseY + offsetY
+        })
+
+        // 노드 위치 업데이트
+        nodeSelection.attr('transform', d => `translate(${d.x},${d.y})`)
+
+        // 링크 위치 업데이트
+        linkSelection
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y)
+
+        animationFrameRef.current = requestAnimationFrame(animate)
       }
 
-      animationFrameRef.current = requestAnimationFrame(floatingAnimation)
+      animate()
     }
 
-    // 초기 안정화 후 floating 시작
-    setTimeout(() => {
-      floatingAnimation()
-    }, 2500)
-
     function dragstarted(event, d) {
+      // Floating 애니메이션 일시 중지
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+      }
       if (!event.active) simulationRef.current.alphaTarget(0.3).restart()
       d.isDragging = true
       d.fx = d.x
@@ -465,12 +546,17 @@ function RelationGraphPage() {
     }
 
     function dragended(event, d) {
-      if (!event.active) simulationRef.current.alphaTarget(0.1).restart()
+      if (!event.active) simulationRef.current.alphaTarget(0)
       d.isDragging = false
       d.wasDragged = true  // 드래그된 적 있음 표시 → 클러스터링에서 제외
-      // 드래그 종료 후 자유롭게 움직이도록 fx, fy 해제
+      // 드래그 종료 후 새 기준 위치 설정
+      d.baseX = event.x
+      d.baseY = event.y
       d.fx = null
       d.fy = null
+
+      // Floating 애니메이션 재시작
+      startFloatingAnimation(node, link, graphData)
     }
   }
 
@@ -490,11 +576,12 @@ function RelationGraphPage() {
   }
 
   const typeColors = {
-    '비즈니스': '#584cdc',
-    '개인적': '#22c55e',
-    '잠재적': '#eab308',
-    '소원': '#f97316',
-    '혼합': '#a855f7'
+    '핵심': '#ef4444',      // 빨강 - 가장 중요
+    '협력': '#584cdc',      // 보라 - 업무 협력
+    '네트워킹': '#3b82f6',  // 파랑 - 인맥
+    '신규': '#22c55e',      // 초록 - 새로운 기회
+    '개인': '#f59e0b',      // 주황 - 개인적
+    '휴면': '#6b7280',      // 회색 - 휴면
   }
 
   return (
@@ -506,17 +593,20 @@ function RelationGraphPage() {
           <div className="rg-settings-modal">
             <div className="rg-modal-title">🔧 분석 설정</div>
             <p className="rg-modal-desc">관계 그래프 분석에 필요한 설정을 입력해주세요</p>
-            
+
             <div className="rg-modal-field">
               <label>분석할 명함 수</label>
               <input
                 type="number"
                 min="5"
-                max="50"
+                max={maxAnalyzeCount}
                 value={analyzeCount}
-                onChange={(e) => setAnalyzeCount(Math.min(50, Math.max(5, parseInt(e.target.value) || 5)))}
+                onChange={(e) => setAnalyzeCount(Math.min(maxAnalyzeCount, Math.max(5, parseInt(e.target.value) || 5)))}
               />
-              <span className="rg-modal-hint">LLM이 분석할 명함 (5~50개)</span>
+              <span className="rg-modal-hint">
+                LLM이 분석할 명함 (5~{maxAnalyzeCount}개)
+                {totalCardCount > 0 && <span className="rg-card-count"> · 보유 명함: {totalCardCount}개</span>}
+              </span>
             </div>
 
             <div className="rg-modal-field">
@@ -553,7 +643,7 @@ function RelationGraphPage() {
       <div className="rg-header">
         <button className="rg-back-btn" onClick={() => navigate(-1)}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
         <div className="rg-header-content">
@@ -562,17 +652,20 @@ function RelationGraphPage() {
         </div>
         <button className="rg-refresh-btn" onClick={handleRefresh}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M1 4V10H7" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M23 20V14H17" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14L18.36 18.36A9 9 0 0 1 3.51 15" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M1 4V10H7" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M23 20V14H17" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14L18.36 18.36A9 9 0 0 1 3.51 15" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       </div>
 
-      {loading ? (
+      {isAnalyzing ? (
         <div className="rg-loading">
           <div className="rg-spinner"></div>
-          <p>분석 중... (시간이 소요될 수 있습니다)</p>
+          <p>분석 중... (다른 작업을 하셔도 됩니다.)</p>
+          <button className="rg-back-while-loading" onClick={() => navigate(-1)}>
+            뒤로가기
+          </button>
         </div>
       ) : graphData ? (
         <div className="rg-content">
@@ -600,11 +693,28 @@ function RelationGraphPage() {
 
           {/* Graph */}
           <div className="rg-graph-card">
-            <div className="rg-graph-title">🕸️ 관계 네트워크 (Top {displayCount})</div>
+            <div className="rg-graph-header">
+              <div className="rg-graph-title">🕸️ 관계 네트워크 (Top {displayCount})</div>
+            </div>
             <div className="rg-graph-container" ref={graphRef}>
               <div className="rg-graph-hint">💡 노드나 선을 탭하여 상세 정보 확인</div>
             </div>
           </div>
+
+          {/* 휴면 관계 섹션 */}
+          {dormantCards.length > 0 && (
+            <div className="rg-dormant-section">
+              <div className="rg-dormant-banner" onClick={() => setShowDormantPopup(true)}>
+                <div className="rg-dormant-banner-content">
+                  <div className="rg-dormant-banner-title">다시 가까워져봐요</div>
+                  <div className="rg-dormant-banner-desc">
+                    연락이 뜸해진 <strong>{dormantCards.length}명</strong>의 지인이 있어요
+                  </div>
+                </div>
+                <div className="rg-dormant-banner-arrow">→</div>
+              </div>
+            </div>
+          )}
 
           {/* Score Ranking */}
           <div className="rg-card">
@@ -622,9 +732,9 @@ function RelationGraphPage() {
                   </div>
                   <div className="rg-score-right">
                     <span className="rg-score-value">{node.score || 0}점</span>
-                    <span 
+                    <span
                       className="rg-grade-badge"
-                      style={{ 
+                      style={{
                         background: `${node.grade?.color || '#888'}20`,
                         color: node.grade?.color || '#888'
                       }}
@@ -652,7 +762,7 @@ function RelationGraphPage() {
             <div className="rg-panel-company">{selectedRelation.company || ''}</div>
 
             <div className="rg-panel-score">
-              <div 
+              <div
                 className="rg-panel-score-value"
                 style={{ color: selectedRelation.grade?.color || '#888' }}
               >
@@ -662,18 +772,18 @@ function RelationGraphPage() {
             </div>
 
             <div className="rg-panel-tags">
-              <span 
+              <span
                 className="rg-panel-tag"
-                style={{ 
+                style={{
                   background: `${selectedRelation.grade?.color || '#888'}20`,
                   color: selectedRelation.grade?.color || '#888'
                 }}
               >
                 {selectedRelation.grade?.level || '?'} - {selectedRelation.grade?.label || '알 수 없음'}
               </span>
-              <span 
+              <span
                 className="rg-panel-tag"
-                style={{ 
+                style={{
                   background: `${typeColors[selectedRelation.relationshipType] || '#888'}20`,
                   color: typeColors[selectedRelation.relationshipType] || '#888'
                 }}
@@ -712,6 +822,53 @@ function RelationGraphPage() {
 
       {/* Overlay */}
       {showPanel && <div className="rg-overlay" onClick={closePanel}></div>}
+
+      {/* 휴면 클러스터 팝업 */}
+      {showDormantPopup && (
+        <>
+          <div className="rg-overlay" onClick={() => setShowDormantPopup(false)}></div>
+          <div className="rg-dormant-popup">
+            <div className="rg-dormant-header">
+              <h3>😴 휴면 관계 명함</h3>
+              <p>오래 연락하지 못한 분들이에요. 약속을 잡아보세요!</p>
+              <button className="rg-dormant-close" onClick={() => setShowDormantPopup(false)}>×</button>
+            </div>
+            <div className="rg-dormant-list">
+              {dormantCards.length === 0 ? (
+                <div className="rg-dormant-empty">휴면 관계가 없습니다 🎉</div>
+              ) : (
+                dormantCards.map(card => (
+                  <div key={card.id} className="rg-dormant-item">
+                    <div className="rg-dormant-info">
+                      <span className="rg-dormant-name">{card.label}</span>
+                      <span className="rg-dormant-company">{card.company || '-'}</span>
+                      <span className="rg-dormant-score">{card.score}점</span>
+                    </div>
+                    <button
+                      className="rg-dormant-schedule-btn"
+                      onClick={() => {
+                        setShowDormantPopup(false)
+                        // 캘린더 페이지로 이동하면서 명함 정보 전달
+                        navigate('/calendar', {
+                          state: {
+                            scheduleWith: {
+                              cardId: card.cardId,
+                              name: card.label,
+                              company: card.company
+                            }
+                          }
+                        })
+                      }}
+                    >
+                      📅 약속잡기
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
