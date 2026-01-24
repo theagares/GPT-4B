@@ -1008,6 +1008,53 @@
   background: #9ca3af;
 }
 
+/* 그룹 모달 버튼 영역 */
+.add-group-modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.add-group-cancel-btn {
+  flex: 1;
+  padding: 14px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-group-cancel-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.add-group-confirm-btn {
+  flex: 1;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #584cdc 0%, #6d30df 100%);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-group-confirm-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(88, 76, 220, 0.3);
+}
+
+.add-group-confirm-btn:active {
+  transform: translateY(0);
+}
+
 /* 그룹 추가 카드 세로 배치 */
 .add-group-cards-row {
   display: flex;
