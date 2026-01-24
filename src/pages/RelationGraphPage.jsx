@@ -601,7 +601,11 @@ function RelationGraphPage() {
                 min="5"
                 max={maxAnalyzeCount}
                 value={analyzeCount}
-                onChange={(e) => setAnalyzeCount(Math.min(maxAnalyzeCount, Math.max(5, parseInt(e.target.value) || 5)))}
+                onChange={(e) => setAnalyzeCount(e.target.value === '' ? '' : parseInt(e.target.value) || '')}
+                onBlur={(e) => {
+                  const val = parseInt(e.target.value) || 5
+                  setAnalyzeCount(Math.min(maxAnalyzeCount, Math.max(5, val)))
+                }}
               />
               <span className="rg-modal-hint">
                 LLM이 분석할 명함 (5~{maxAnalyzeCount}개)
@@ -616,7 +620,11 @@ function RelationGraphPage() {
                 min="3"
                 max="20"
                 value={displayCount}
-                onChange={(e) => setDisplayCount(Math.min(20, Math.max(3, parseInt(e.target.value) || 3)))}
+                onChange={(e) => setDisplayCount(e.target.value === '' ? '' : parseInt(e.target.value) || '')}
+                onBlur={(e) => {
+                  const val = parseInt(e.target.value) || 3
+                  setDisplayCount(Math.min(20, Math.max(3, val)))
+                }}
               />
               <span className="rg-modal-hint">상위 N개만 그래프에 표시 (3~20개)</span>
             </div>
