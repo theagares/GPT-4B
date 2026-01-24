@@ -280,6 +280,20 @@ function BusinessCardWallet() {
     };
   }, [fetchCards])
 
+  // body와 html의 스크롤을 막아서 컨테이너 내부에만 스크롤이 생기도록 함
+  useEffect(() => {
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, [])
+
   // 명함 정렬 함수 (하트 우선 → 가나다순)
   const sortCards = (cards) => {
     const isKorean = (char) => {
