@@ -1213,14 +1213,19 @@ function LandingPage() {
           setSearchQuery(finalTranscript + interimTranscript)
         }
         
-        // 최종 결과가 있으면 텍스트만 설정 (검색 실행 제거)
+        // 최종 결과가 있으면 텍스트 설정 후 자동 검색 실행
         if (finalTranscript) {
-          console.log('🎤 음성 인식 최종 결과:', finalTranscript)
+          console.log('1. STT 완료:', finalTranscript)
           setIsListening(false)
           
           // 최종 텍스트 설정
           setSearchQuery(finalTranscript)
-          console.log('✅ searchQuery 상태 업데이트:', finalTranscript)
+          
+          // 자동으로 검색 실행
+          setTimeout(() => {
+            console.log('2. 자동 검색 시작')
+            handleSearch(finalTranscript)
+          }, 100)
         }
       }
       
@@ -1262,6 +1267,7 @@ function LandingPage() {
       setIsListening(false)
     } else {
       try {
+        console.log('0. STT 호출')
         recognitionRef.current?.start()
       } catch (error) {
         console.error('Failed to start recognition:', error)
