@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
-import { giftAPI, userAPI, preferenceAPI } from '../utils/api'
+import { giftAPI, userAPI, preferenceAPI, groupAPI } from '../utils/api'
 import { isAuthenticated } from '../utils/auth'
 import './BusinessCardWallet.css'
 
@@ -70,41 +70,7 @@ const allGiftHistory = [
     giftName: '프리미엄 와인 세트',
     year: '2025'
   },
-  {
-    id: 2,
-    cardId: 'card-1',
-    cardName: '안연주',
-    giftName: '명품 선물 세트',
-    year: '2025'
-  },
-  {
-    id: 3,
-    cardId: 'card-2',
-    cardName: '이부장',
-    giftName: '꽃다발 선물',
-    year: '2025'
-  },
-  {
-    id: 4,
-    cardId: 'card-3',
-    cardName: '최대리',
-    giftName: '초콜릿 선물 세트',
-    year: '2025'
-  },
-  {
-    id: 5,
-    cardId: 'card-1',
-    cardName: '안연주',
-    giftName: '선물 배송 상자',
-    year: '2024'
-  },
-  {
-    id: 6,
-    cardId: 'card-2',
-    cardName: '이부장',
-    giftName: '고급 와인 세트',
-    year: '2024'
-  }
+
 ]
 
 // 명함 디자인 맵
@@ -145,18 +111,7 @@ function BusinessCardWallet() {
   const isLoading = useCardStore((state) => state.isLoading)
 
   // 그룹화 관련 state
-  const [groups, setGroups] = useState(() => {
-    // localStorage에서 그룹 목록 불러오기
-    try {
-      const saved = localStorage.getItem('cardGroups')
-      if (saved) {
-        return JSON.parse(saved)
-      }
-    } catch (err) {
-      console.error('Failed to load groups:', err)
-    }
-    return []
-  })
+  const [groups, setGroups] = useState([])
   const [selectedGroupId, setSelectedGroupId] = useState(null) // null = 전체, 그룹 ID = 해당 그룹만
   const [groupScrollLeft, setGroupScrollLeft] = useState(0)
   const groupScrollRef = useRef(null)
@@ -182,6 +137,10 @@ function BusinessCardWallet() {
   // 그룹 삭제 확인 모달 관련 state
   const [showDeleteGroupModal, setShowDeleteGroupModal] = useState(false)
   const [groupToDelete, setGroupToDelete] = useState(null) // 삭제할 그룹 정보
+
+  // 그룹명 수정 모달 관련 state
+  const [showEditGroupNameModal, setShowEditGroupNameModal] = useState(false)
+  const [editingGroupName, setEditingGroupName] = useState('')
 
   // 하트 토스트 관련 state
   const [showHeartToast, setShowHeartToast] = useState(false)
@@ -292,6 +251,34 @@ function BusinessCardWallet() {
       document.body.style.overflow = originalBodyOverflow;
       document.documentElement.style.overflow = originalHtmlOverflow;
     };
+  }, [])
+
+  // 그룹 목록 가져오기
+  useEffect(() => {
+    const fetchGroups = async () => {
+      if (isAuthenticated()) {
+        try {
+          const response = await groupAPI.getAll()
+          console.log('그룹 API 응답:', response.data)
+          if (response.data.success) {
+            const groupsData = response.data.data || []
+            console.log('가져온 그룹 개수:', groupsData.length)
+            console.log('그룹 데이터:', groupsData)
+            setGroups(Array.isArray(groupsData) ? groupsData : [])
+          } else {
+            console.warn('그룹 API 응답 실패:', response.data)
+            setGroups([])
+          }
+        } catch (error) {
+          console.error('Failed to fetch groups:', error)
+          console.error('에러 상세:', error.response?.data || error.message)
+          setGroups([])
+        }
+      } else {
+        console.log('인증되지 않음 - 그룹을 가져올 수 없습니다')
+      }
+    }
+    fetchGroups()
   }, [])
 
   // 명함 정렬 함수 (하트 우선 → 가나다순)
@@ -664,7 +651,9 @@ function BusinessCardWallet() {
   }
 
   // 그룹 생성 완료
-  const handleConfirmAddGroup = () => {
+  const handleConfirmAddGroup = async () => {
+    if (!isAuthenticated()) return
+
     let cardIds = []
 
     if (groupAddMode === 'custom') {
@@ -687,17 +676,22 @@ function BusinessCardWallet() {
     }
 
     const groupName = newGroupName.trim() || `그룹 ${groups.length + 1}`
-    const newGroup = {
-      id: `group-${Date.now()}`,
-      name: groupName,
-      cardIds: cardIds || []
-    }
 
-    const updatedGroups = [...groups, newGroup]
-    setGroups(updatedGroups)
-    localStorage.setItem('cardGroups', JSON.stringify(updatedGroups))
-    setSelectedGroupId(newGroup.id)
-    handleCloseAddGroupModal()
+    try {
+      const response = await groupAPI.create({
+        name: groupName,
+        cardIds: cardIds || []
+      })
+
+      if (response.data.success) {
+        const newGroup = response.data.data
+        setGroups([...groups, newGroup])
+        setSelectedGroupId(newGroup.id)
+        handleCloseAddGroupModal()
+      }
+    } catch (error) {
+      console.error('Failed to create group:', error)
+    }
   }
 
   // 그룹 선택
@@ -736,20 +730,27 @@ function BusinessCardWallet() {
   }
 
   // 그룹 삭제 확인
-  const handleConfirmDeleteGroup = () => {
-    if (groupToDelete) {
-      const updatedGroups = groups.filter(g => g.id !== groupToDelete.id)
-      setGroups(updatedGroups)
-      localStorage.setItem('cardGroups', JSON.stringify(updatedGroups))
-      if (selectedGroupId === groupToDelete.id) {
-        setSelectedGroupId(null)
+  const handleConfirmDeleteGroup = async () => {
+    if (!groupToDelete || !isAuthenticated()) return
+
+    try {
+      const response = await groupAPI.delete(groupToDelete.id)
+      if (response.data.success) {
+        const updatedGroups = groups.filter(g => g.id !== groupToDelete.id)
+        setGroups(updatedGroups)
+        if (selectedGroupId === groupToDelete.id) {
+          setSelectedGroupId(null)
+        }
+        handleCloseDeleteGroupModal()
       }
-      handleCloseDeleteGroupModal()
+    } catch (error) {
+      console.error('Failed to delete group:', error)
     }
   }
 
   // 그룹 드래그 시작
   const handleGroupDragStart = (e, index) => {
+    e.stopPropagation()
     setDraggedGroupIndex(index)
     e.dataTransfer.effectAllowed = 'move'
     e.dataTransfer.setData('text/html', e.target)
@@ -759,6 +760,7 @@ function BusinessCardWallet() {
   // 그룹 드래그 중
   const handleGroupDragOver = (e, index) => {
     e.preventDefault()
+    e.stopPropagation()
     e.dataTransfer.dropEffect = 'move'
     if (draggedGroupIndex !== null && draggedGroupIndex !== index) {
       setDragOverGroupIndex(index)
@@ -767,38 +769,90 @@ function BusinessCardWallet() {
 
   // 그룹 드래그 종료
   const handleGroupDragEnd = (e) => {
+    e.stopPropagation()
     e.target.style.opacity = '1'
     setDraggedGroupIndex(null)
     setDragOverGroupIndex(null)
   }
 
   // 그룹 드롭
-  const handleGroupDrop = (e, dropIndex) => {
+  const handleGroupDrop = async (e, dropIndex) => {
     e.preventDefault()
-    if (draggedGroupIndex === null || draggedGroupIndex === dropIndex) {
+    e.stopPropagation()
+    if (draggedGroupIndex === null || draggedGroupIndex === dropIndex || !isAuthenticated()) {
       setDraggedGroupIndex(null)
       setDragOverGroupIndex(null)
       return
     }
 
-    const newGroups = [...groups]
-    const draggedGroup = newGroups[draggedGroupIndex]
+    // 현재 groups 상태를 저장 (복구용)
+    const originalGroups = [...groups]
+    const draggedGroup = originalGroups[draggedGroupIndex]
+
+    // 새로운 그룹 배열 생성
+    const newGroups = [...originalGroups]
 
     // 드래그된 그룹 제거
     newGroups.splice(draggedGroupIndex, 1)
 
-    // 새로운 위치에 삽입
-    const insertIndex = draggedGroupIndex < dropIndex ? dropIndex : dropIndex
+    // 새로운 위치에 삽입할 인덱스 계산
+    // splice는 지정된 인덱스 앞에 삽입함
+    // dropIndex는 목표 위치이고, 드래그된 그룹을 제거한 후의 배열 기준으로 계산해야 함
+    let insertIndex = dropIndex
+
+    if (draggedGroupIndex < dropIndex) {
+      // 아래로 드래그한 경우: 드래그된 그룹을 제거했으므로 dropIndex가 1 감소
+      // 예: [A(0), B(1), C(2), D(3)]에서 A(0)를 D(3) 위치로 옮기면
+      //     A를 제거하면 [B(0), C(1), D(2)]가 되고, 원래 D의 인덱스는 3이었지만 이제는 2
+      //     D 위치(원래 3번째)에 삽입하려면 splice(3, 0, A)를 해야 함
+      //     제거 후에는 인덱스가 1씩 줄어들었지만, dropIndex를 그대로 사용하면 됨
+      //     왜냐하면 splice는 지정된 인덱스 앞에 삽입하기 때문
+      //     따라서 dropIndex 위치에 삽입하려면 dropIndex를 그대로 사용해야 함
+      insertIndex = dropIndex
+    } else {
+      // 위로 드래그한 경우: dropIndex 그대로 사용
+      insertIndex = dropIndex
+    }
+
     newGroups.splice(insertIndex, 0, draggedGroup)
 
+    // UI 즉시 업데이트
     setGroups(newGroups)
-    localStorage.setItem('cardGroups', JSON.stringify(newGroups))
     setDraggedGroupIndex(null)
     setDragOverGroupIndex(null)
+
+    // DB에 순서 저장
+    try {
+      const groupOrders = newGroups.map((group, index) => ({
+        groupId: group.id,
+        displayOrder: index
+      }))
+
+      console.log('그룹 순서 업데이트 요청:', groupOrders)
+      const response = await groupAPI.updateOrders(groupOrders)
+      console.log('그룹 순서 업데이트 응답:', response.data)
+
+      if (response.data && response.data.success) {
+        // 서버에서 업데이트된 그룹 목록으로 갱신
+        const updatedGroups = response.data.data || newGroups
+        console.log('업데이트된 그룹 개수:', updatedGroups.length)
+        setGroups(updatedGroups)
+      } else {
+        console.error('그룹 순서 업데이트 실패:', response.data)
+        // 에러 발생 시 원래 상태로 복구
+        setGroups(originalGroups)
+      }
+    } catch (error) {
+      console.error('Failed to update group orders:', error)
+      console.error('에러 상세:', error.response?.data || error.message)
+      // 에러 발생 시 원래 상태로 복구
+      setGroups(originalGroups)
+    }
   }
 
   // 그룹 드래그 리브 (마우스가 영역을 벗어날 때)
   const handleGroupDragLeave = (e) => {
+    e.stopPropagation()
     // 같은 요소 내에서 이동하는 경우는 무시
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setDragOverGroupIndex(null)
@@ -806,26 +860,74 @@ function BusinessCardWallet() {
   }
 
   // 그룹에 명함 추가/제거 (명함 클릭 시)
-  const handleToggleCardGroup = (cardId, e) => {
-    if (!selectedGroupId) return
+  const handleToggleCardGroup = async (cardId, e) => {
+    if (!selectedGroupId || !isAuthenticated()) return
     e.stopPropagation()
 
-    const updatedGroups = groups.map(group => {
-      if (group.id === selectedGroupId) {
-        const cardIdStr = String(cardId)
-        const cardIds = group.cardIds || []
-        const isInGroup = cardIds.includes(cardIdStr)
-        return {
-          ...group,
-          cardIds: isInGroup
-            ? cardIds.filter(id => id !== cardIdStr)
-            : [...cardIds, cardIdStr]
+    const cardIdStr = String(cardId)
+    const group = groups.find(g => g.id === selectedGroupId)
+    if (!group) return
+
+    const cardIds = group.cardIds || []
+    const isInGroup = cardIds.includes(cardIdStr)
+
+    try {
+      if (isInGroup) {
+        // 명함 제거
+        const response = await groupAPI.removeCard(selectedGroupId, parseInt(cardId))
+        if (response.data.success) {
+          const updatedGroup = response.data.data
+          setGroups(groups.map(g => g.id === selectedGroupId ? updatedGroup : g))
+        }
+      } else {
+        // 명함 추가
+        const response = await groupAPI.addCard(selectedGroupId, parseInt(cardId))
+        if (response.data.success) {
+          const updatedGroup = response.data.data
+          setGroups(groups.map(g => g.id === selectedGroupId ? updatedGroup : g))
         }
       }
-      return group
-    })
-    setGroups(updatedGroups)
-    localStorage.setItem('cardGroups', JSON.stringify(updatedGroups))
+    } catch (error) {
+      console.error('Failed to toggle card in group:', error)
+    }
+  }
+
+  // 그룹명 수정 모달 열기
+  const handleEditGroupName = () => {
+    const selectedGroup = groups.find(g => g.id === selectedGroupId)
+    if (selectedGroup) {
+      setEditingGroupName(selectedGroup.name)
+      setShowEditGroupNameModal(true)
+    }
+  }
+
+  // 그룹명 수정 모달 닫기
+  const handleCloseEditGroupNameModal = () => {
+    setShowEditGroupNameModal(false)
+    setEditingGroupName('')
+  }
+
+  // 그룹명 수정 확인
+  const handleConfirmEditGroupName = async () => {
+    if (!selectedGroupId || !isAuthenticated()) return
+
+    const newName = editingGroupName.trim()
+    if (!newName) {
+      alert('그룹명을 입력해주세요')
+      return
+    }
+
+    try {
+      const response = await groupAPI.update(selectedGroupId, { name: newName })
+      if (response.data.success) {
+        const updatedGroup = response.data.data
+        setGroups(groups.map(g => g.id === selectedGroupId ? updatedGroup : g))
+        handleCloseEditGroupNameModal()
+      }
+    } catch (error) {
+      console.error('Failed to update group name:', error)
+      alert('그룹명 수정에 실패했습니다')
+    }
   }
 
   // 그룹에 멤버 추가 모달 열기
@@ -835,26 +937,30 @@ function BusinessCardWallet() {
   }
 
   // 그룹에서 선택된 명함들 삭제
-  const handleRemoveFromGroup = () => {
-    if (selectedCardIds.length === 0) return
+  const handleRemoveFromGroup = async () => {
+    if (selectedCardIds.length === 0 || !selectedGroupId || !isAuthenticated()) return
 
-    const updatedGroups = groups.map(group => {
-      if (group.id === selectedGroupId) {
-        const currentCardIds = group.cardIds || []
-        const updatedCardIds = currentCardIds.filter(id => !selectedCardIds.includes(id))
-        return {
-          ...group,
-          cardIds: updatedCardIds
-        }
+    try {
+      // 각 명함을 순차적으로 제거
+      await Promise.all(
+        selectedCardIds.map(cardId =>
+          groupAPI.removeCard(selectedGroupId, parseInt(cardId))
+        )
+      )
+
+      // 그룹 정보 다시 가져오기
+      const response = await groupAPI.getById(selectedGroupId)
+      if (response.data.success) {
+        const updatedGroup = response.data.data
+        setGroups(groups.map(g => g.id === selectedGroupId ? updatedGroup : g))
       }
-      return group
-    })
-    setGroups(updatedGroups)
-    localStorage.setItem('cardGroups', JSON.stringify(updatedGroups))
 
-    // 선택 모드 해제 및 선택 초기화
-    setSelectedCardIds([])
-    setIsSelectionMode(false)
+      // 선택 모드 해제 및 선택 초기화
+      setSelectedCardIds([])
+      setIsSelectionMode(false)
+    } catch (error) {
+      console.error('Failed to remove cards from group:', error)
+    }
   }
 
   // 그룹에 멤버 추가 모달 닫기
@@ -877,23 +983,28 @@ function BusinessCardWallet() {
   }
 
   // 그룹에 선택한 멤버 추가 완료
-  const handleConfirmAddMember = () => {
-    if (!selectedGroupId || selectedCardsForMember.length === 0) return
+  const handleConfirmAddMember = async () => {
+    if (!selectedGroupId || selectedCardsForMember.length === 0 || !isAuthenticated()) return
 
-    const updatedGroups = groups.map(group => {
-      if (group.id === selectedGroupId) {
-        const existingCardIds = group.cardIds || []
-        const newCardIds = selectedCardsForMember.filter(id => !existingCardIds.includes(id))
-        return {
-          ...group,
-          cardIds: [...existingCardIds, ...newCardIds]
-        }
+    try {
+      // 각 명함을 순차적으로 추가
+      await Promise.all(
+        selectedCardsForMember.map(cardId =>
+          groupAPI.addCard(selectedGroupId, parseInt(cardId))
+        )
+      )
+
+      // 그룹 정보 다시 가져오기
+      const response = await groupAPI.getById(selectedGroupId)
+      if (response.data.success) {
+        const updatedGroup = response.data.data
+        setGroups(groups.map(g => g.id === selectedGroupId ? updatedGroup : g))
       }
-      return group
-    })
-    setGroups(updatedGroups)
-    localStorage.setItem('cardGroups', JSON.stringify(updatedGroups))
-    handleCloseAddMemberModal()
+
+      handleCloseAddMemberModal()
+    } catch (error) {
+      console.error('Failed to add members to group:', error)
+    }
   }
 
   const handleCardClick = (cardId) => {
@@ -1064,10 +1175,11 @@ function BusinessCardWallet() {
               <button
                 className="wallet-group-back-btn"
                 onClick={() => {
+                  setActiveTab('groups')
                   setSelectedGroupId(null)
                   setCurrentIndex(0)
                 }}
-                aria-label="전체 명함으로 돌아가기"
+                aria-label="그룹으로 돌아가기"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -1124,17 +1236,25 @@ function BusinessCardWallet() {
               </div>
             </div>
             {selectedGroupId && (
-              <button
-                className={`group-selection-btn ${isSelectionMode ? 'active' : ''}`}
-                onClick={() => {
-                  setIsSelectionMode(!isSelectionMode)
-                  if (isSelectionMode) {
-                    setSelectedCardIds([])
-                  }
-                }}
-              >
-                선택
-              </button>
+              <div className="group-action-buttons">
+                <button
+                  className="group-edit-name-btn"
+                  onClick={handleEditGroupName}
+                >
+                  그룹명 수정
+                </button>
+                <button
+                  className={`group-selection-btn ${isSelectionMode ? 'active' : ''}`}
+                  onClick={() => {
+                    setIsSelectionMode(!isSelectionMode)
+                    if (isSelectionMode) {
+                      setSelectedCardIds([])
+                    }
+                  }}
+                >
+                  선택
+                </button>
+              </div>
             )}
             {!selectedGroupId && filteredCards.length > 0 && (
               <div className="view-toggle-section-header">
@@ -1521,7 +1641,7 @@ function BusinessCardWallet() {
           </div>
         )}
 
-        {/* Footer - 관계 그래프 버튼 */}
+        {/* Footer - 관계 그래프 버튼 (명함집 탭이고 그룹 선택 시 숨김) */}
         {activeTab === 'cards' && !selectedGroupId && (
           <div className={`wallet-footer ${isGridView ? 'grid-view-footer' : ''}`}>
             <button
@@ -1923,6 +2043,54 @@ function BusinessCardWallet() {
       )}
 
       {!selectedGroupId && <BottomNavigation />}
+
+      {/* 그룹명 수정 모달 */}
+      {showEditGroupNameModal && selectedGroupId && (
+        <div className="add-group-modal-overlay" onClick={handleCloseEditGroupNameModal}>
+          <div className="add-group-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="add-group-modal-close"
+              onClick={handleCloseEditGroupNameModal}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <div className="add-group-modal-content">
+              <h2 className="add-group-modal-title">그룹명 수정</h2>
+              <div className="add-group-name-section">
+                <input
+                  type="text"
+                  className="add-group-name-input"
+                  placeholder="그룹명을 입력하세요"
+                  value={editingGroupName}
+                  onChange={(e) => setEditingGroupName(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleConfirmEditGroupName()
+                    }
+                  }}
+                  autoFocus
+                />
+              </div>
+              <div className="add-group-modal-buttons">
+                <button
+                  className="add-group-cancel-btn"
+                  onClick={handleCloseEditGroupNameModal}
+                >
+                  취소
+                </button>
+                <button
+                  className="add-group-confirm-btn"
+                  onClick={handleConfirmEditGroupName}
+                >
+                  수정
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 그룹 삭제 확인 모달 */}
       {showDeleteGroupModal && groupToDelete && (
