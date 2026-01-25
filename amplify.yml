@@ -21,8 +21,7 @@ frontend:
           value: 'public, max-age=0, must-revalidate'
   # SPA 라우팅 설정 - 모든 경로를 index.html로 리디렉션
   customRedirects:
-    - source: '/<*>'
+    - source: '</^[^.]+$|\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|woff2|ttf|map|json|webp)$)([^.]+$)/>'
       target: '/index.html'
       status: '200'
-      condition: '#{AWS::Region}'
 
