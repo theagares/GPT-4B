@@ -10,6 +10,10 @@
   overflow-x: hidden;
   --rg-border: rgba(88, 76, 220, 0.18);
   --rg-border-strong: rgba(88, 76, 220, 0.28);
+  /* 모바일 좌우 스크롤 방지 */
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 /* Settings Modal */

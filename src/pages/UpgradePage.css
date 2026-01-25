@@ -5,6 +5,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .upgrade-container {

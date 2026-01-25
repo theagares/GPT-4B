@@ -113,6 +113,9 @@ console.log("  Hostname:", window.location.hostname);
 console.log("  Full URL:", window.location.href);
 console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
+// iOS Safari 무한 루프 방지: 401 에러 재시도 방지 플래그
+let isRedirecting = false;
+
 // axios 인스턴스 생성
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -180,10 +183,22 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 401) {
+      // iOS Safari 무한 루프 방지: 이미 리다이렉트 중이면 다시 리다이렉트하지 않음
+      if (isRedirecting) {
+        return Promise.reject(error);
+      }
+      
       // 인증 실패 시 토큰 제거 및 로그인 페이지로 이동
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
+      const currentPath = window.location.pathname;
+      if (currentPath !== '/login' && currentPath !== '/') {
+        isRedirecting = true;
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        // iOS Safari에서 리다이렉트가 제대로 작동하도록 약간의 지연 추가
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 100);
+      }
     }
     return Promise.reject(error);
   }

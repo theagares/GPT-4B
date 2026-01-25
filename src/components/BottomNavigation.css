@@ -10,7 +10,6 @@
   justify-content: space-around;
   align-items: center;
   padding: 0 17px;
-  padding-bottom: env(safe-area-inset-bottom, 0);
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(30px) saturate(180%);
@@ -18,22 +17,7 @@
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12), 0 -4px 16px rgba(0, 0, 0, 0.08);
-  z-index: 1000;
-}
-
-.nav-background {
-  display: none;
-}
-
-.home-indicator {
-  position: absolute;
-  bottom: -18px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 144px;
-  height: 5px;
-  background-color: #312e28;
-  border-radius: 100px;
+  z-index: 99999;
 }
 
 .nav-item {

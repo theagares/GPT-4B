@@ -9,6 +9,11 @@
   position: relative;
   margin: 0 auto;
   padding-bottom: 100px;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .card-gift-history-container {

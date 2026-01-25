@@ -2,6 +2,19 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* 스크롤바 숨기기 (스크롤 기능은 유지) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Chrome, Safari, Edge 스크롤바 숨기기 */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  overflow: hidden;
+  height: 100%;
 }
 
 body {
@@ -9,14 +22,27 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f5f5f5;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  position: relative;
 }
 
+/* iOS Safari viewport fix: 100vh 대신 100dvh 사용 + CSS 변수 fallback */
 #root {
   width: 100%;
-  min-height: 100vh;
+  /* iOS Safari viewport fix: 100vh는 주소창/툴바로 인해 변동되므로 100dvh 사용 */
+  min-height: 100dvh; /* 동적 viewport height (iOS Safari 15.4+) */
+  min-height: calc(var(--vh, 1vh) * 100); /* CSS 변수 fallback (구형 브라우저) */
   display: flex;
   justify-content: center;
   align-items: center;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 /* 모바일 뷰포트 설정 */

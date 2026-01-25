@@ -222,6 +222,7 @@ function BusinessCardWallet() {
     if (isAuthenticated()) {
       fetchCards();
     }
+    // iOS Safari 무한 루프 방지: 인증되지 않은 경우는 fetchCards 내부에서 처리됨
   }, []) // 빈 배열로 한 번만 실행
 
   // 페이지 포커스 시 카드 목록 새로고침

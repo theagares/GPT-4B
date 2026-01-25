@@ -5,6 +5,11 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .ai-card-select-container {
@@ -15,6 +20,11 @@
   flex-direction: column;
   min-height: 100vh;
   position: relative;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .ai-card-select-container::before {

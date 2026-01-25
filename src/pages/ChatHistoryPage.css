@@ -5,6 +5,11 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .chat-history-container {
@@ -16,6 +21,11 @@
   min-height: 100vh;
   position: relative;
   background-color: white;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .chat-history-header {

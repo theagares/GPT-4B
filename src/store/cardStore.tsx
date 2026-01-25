@@ -93,8 +93,15 @@ export const useCardStore = create<CardState>((set, get) => ({
         }));
         set({ cards, isLoading: false });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch cards:', error);
+      // iOS Safari 무한 루프 방지: 401 에러 시 로딩 상태를 false로 설정하고 빈 배열 반환
+      if (error.response?.status === 401) {
+        set({ cards: [], isLoading: false });
+        return;
+      }
+      // 다른 에러도 로딩 상태를 false로 설정
+      set({ isLoading: false });
     } finally {
       set({ isLoading: false });
     }

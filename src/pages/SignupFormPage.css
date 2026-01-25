@@ -6,6 +6,11 @@
   justify-content: center;
   align-items: flex-start;
   padding: 20px;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .signup-form-container {

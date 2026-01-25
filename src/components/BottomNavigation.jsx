@@ -63,9 +63,6 @@ function BottomNavigation() {
 
   return (
     <div className="bottom-navigation">
-      <div className="nav-background"></div>
-      <div className="home-indicator"></div>
-      
       <Link 
         to="/dashboard" 
         className={`nav-item ${isActive('/dashboard') ? 'active' : ''}`}

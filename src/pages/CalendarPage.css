@@ -15,6 +15,11 @@
   padding-top: 30px;
   position: relative;
   margin: 0 auto;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 /* 캘린더 페이지 헤더 */

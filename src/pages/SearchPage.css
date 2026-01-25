@@ -2,12 +2,24 @@
   min-height: 100vh;
   background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
   padding-bottom: 80px; /* BottomNavigation 공간 */
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .search-container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .search-header {

@@ -9,6 +9,11 @@
   padding-top: 98px; /* 헤더 높이만큼 padding-top 추가 */
   position: relative;
   margin: 0 auto;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .loading,

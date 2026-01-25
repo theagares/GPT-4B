@@ -5,6 +5,11 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .chat-detail-container {
@@ -17,6 +22,11 @@
   position: relative;
   background-color: white;
   padding-top: 60px;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 /* Header */

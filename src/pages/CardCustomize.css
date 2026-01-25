@@ -7,6 +7,11 @@
   overflow-y: auto;
   padding-bottom: 100px;
   margin: 0 auto;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
 }
 
 .card-customize-container {
@@ -15,6 +20,12 @@
   max-width: 405px;
   margin: 0 auto;
   position: relative;
+  /* 모바일 좌우 스크롤 방지 */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Header */
