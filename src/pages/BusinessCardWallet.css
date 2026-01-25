@@ -2086,22 +2086,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
   width: 100%;
-  max-width: 280px;
+  max-width: 240px;
   margin: 0 auto;
-  padding: 14px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 14px 8px;
+  background: #584cdc;
   border: none;
   border-radius: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(88, 76, 220, 0.3);
 }
 
 .relation-graph-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: #4539b0;
+  box-shadow: 0 6px 20px rgba(88, 76, 220, 0.4);
 }
 
 .relation-graph-btn:active {

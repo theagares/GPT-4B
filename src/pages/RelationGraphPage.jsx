@@ -591,7 +591,18 @@ function RelationGraphPage() {
         <>
           <div className="rg-modal-overlay" onClick={() => hasCache && handleUseCache()}></div>
           <div className="rg-settings-modal">
-            <div className="rg-modal-title">🔧 분석 설정</div>
+            <button
+              className="rg-modal-close"
+              onClick={() => {
+                // 그래프가 이미 표시 중이면 닫기만, 최초 진입(표시 데이터 없음)이면 뒤로가기
+                if (graphData || hasCache) setShowSettingsModal(false)
+                else navigate(-1)
+              }}
+              aria-label="닫기"
+            >
+              ×
+            </button>
+            <div className="rg-modal-title">분석 설정</div>
             <p className="rg-modal-desc">관계 그래프 분석에 필요한 설정을 입력해주세요</p>
 
             <div className="rg-modal-field">
@@ -650,7 +661,11 @@ function RelationGraphPage() {
             </div>
 
             {hasCache && (
-              <p className="rg-modal-cache-hint">💡 이전 분석 결과가 있습니다. 캐시를 사용하면 바로 볼 수 있어요!</p>
+              <p className="rg-modal-cache-hint">
+                이전 분석 결과가 있습니다.
+                <br />
+                캐시를 사용하면 바로 볼 수 있어요!
+              </p>
             )}
           </div>
         </>
@@ -664,8 +679,8 @@ function RelationGraphPage() {
           </svg>
         </button>
         <div className="rg-header-content">
-          <h1 className="rg-title">🔗 관계 그래프</h1>
-          <p className="rg-subtitle">명함 데이터 기반 관계 분석</p>
+          <h1 className="rg-title">관계 그래프</h1>
+          <p className="rg-subtitle">명함 데이터를 기반 관계 분석 결과를 확인해보세요</p>
         </div>
         <button className="rg-refresh-btn" onClick={handleRefresh}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -711,10 +726,10 @@ function RelationGraphPage() {
           {/* Graph */}
           <div className="rg-graph-card">
             <div className="rg-graph-header">
-              <div className="rg-graph-title">🕸️ 관계 네트워크 (Top {displayCount})</div>
+              <div className="rg-graph-title">관계 네트워크 (Top {displayCount})</div>
             </div>
             <div className="rg-graph-container" ref={graphRef}>
-              <div className="rg-graph-hint">💡 노드나 선을 탭하여 상세 정보 확인</div>
+              <div className="rg-graph-hint">노드나 선을 탭하여 상세 정보 확인</div>
             </div>
           </div>
 
@@ -728,14 +743,14 @@ function RelationGraphPage() {
                     연락이 뜸해진 <strong>{dormantCards.length}명</strong>의 지인이 있어요
                   </div>
                 </div>
-                <div className="rg-dormant-banner-arrow">→</div>
+                <div className="rg-dormant-banner-arrow">&gt;</div>
               </div>
             </div>
           )}
 
           {/* Score Ranking */}
           <div className="rg-card">
-            <div className="rg-card-title">🏆 관계 점수 순위</div>
+            <div className="rg-card-title">관계 점수 순위</div>
             <div className="rg-score-list">
               {scoreList.map((node, index) => (
                 <div key={node.id} className="rg-score-item" onClick={() => {
@@ -810,14 +825,14 @@ function RelationGraphPage() {
 
             {selectedRelation.summary && (
               <div className="rg-popup-section">
-                <div className="rg-popup-section-title">📝 관계 요약</div>
+                <div className="rg-popup-section-title">관계 요약</div>
                 <div className="rg-popup-section-content">{selectedRelation.summary}</div>
               </div>
             )}
 
             {selectedRelation.reasoning && (
               <div className="rg-popup-section">
-                <div className="rg-popup-section-title">💡 LLM 분석 근거</div>
+                <div className="rg-popup-section-title">LLM 분석 근거</div>
                 <div className="rg-popup-section-content">{selectedRelation.reasoning}</div>
               </div>
             )}
@@ -842,7 +857,7 @@ function RelationGraphPage() {
                 })
               }}
             >
-              📝 명함에 메모 작성하러 가기
+              명함에 메모 작성하러 가기
             </button>
           </div>
         </>
@@ -854,7 +869,7 @@ function RelationGraphPage() {
           <div className="rg-overlay" onClick={() => setShowDormantPopup(false)}></div>
           <div className="rg-dormant-popup">
             <div className="rg-dormant-header">
-              <h3>😴 휴면 관계 명함</h3>
+              <h3>휴면 관계 명함</h3>
               <p>오래 연락하지 못한 분들이에요. 약속을 잡아보세요!</p>
               <button className="rg-dormant-close" onClick={() => setShowDormantPopup(false)}>×</button>
             </div>
@@ -867,8 +882,8 @@ function RelationGraphPage() {
                     <div className="rg-dormant-info">
                       <span className="rg-dormant-name">{card.label}</span>
                       <span className="rg-dormant-company">{card.company || '-'}</span>
-                      <span className="rg-dormant-score">{card.score}점</span>
                     </div>
+                    <span className="rg-dormant-score">{card.score}점</span>
                     <button
                       className="rg-dormant-schedule-btn"
                       onClick={() => {
@@ -885,7 +900,7 @@ function RelationGraphPage() {
                         })
                       }}
                     >
-                      📅 약속잡기
+                      약속잡기
                     </button>
                   </div>
                 ))
