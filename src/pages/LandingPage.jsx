@@ -153,6 +153,15 @@ function LandingPage() {
   const [isSTTSupported, setIsSTTSupported] = useState(false)
   const recognitionRef = useRef(null)
   const handleSearchRef = useRef(null)
+  
+  // 광고 슬라이드 관련 state
+  // 인덱스 구조: 0=마지막 복제본, 1~n=실제 이미지, n+1=첫 번째 복제본
+  const [currentAdIndex, setCurrentAdIndex] = useState(1) // 실제 첫 번째 이미지부터 시작
+  const adImages = [
+    '/assets/명함관리 기능홍보.png',
+    '/assets/선물추천 기능홍보.png',
+    '/assets/캘린더 기능홍보.png'
+  ]
 
   // DB에서 로그인한 유저의 이름 가져오기
   useEffect(() => {
@@ -568,6 +577,45 @@ function LandingPage() {
     const interval = setInterval(fetchAlerts, 30000)
     return () => clearInterval(interval)
   }, [])
+
+  // 광고 슬라이드 자동 전환 (3초마다) - 무한 루프 구현
+  const [isTransitioning, setIsTransitioning] = useState(true)
+  const wrapperRef = useRef(null)
+  
+  useEffect(() => {
+    if (adImages.length <= 1) return // 이미지가 1개 이하면 자동 전환 불필요
+    
+    const interval = setInterval(() => {
+      setCurrentAdIndex((prevIndex) => {
+        // 실제 이미지 인덱스 (1부터 시작, 복제본 제외)
+        const realIndex = prevIndex >= 1 ? prevIndex : 1
+        const nextRealIndex = realIndex + 1
+        
+        // 마지막 실제 이미지를 넘어가면 복제본으로 이동 (왼쪽으로 슬라이드)
+        if (nextRealIndex > adImages.length) {
+          return adImages.length + 1 // 첫 번째 이미지 복제본 인덱스
+        }
+        return nextRealIndex
+      })
+    }, 3000)
+    
+    return () => clearInterval(interval)
+  }, [adImages.length])
+
+  // 복제본에 도달했을 때 실제 첫 번째 이미지로 부드럽게 이동
+  useEffect(() => {
+    if (currentAdIndex === adImages.length + 1 && wrapperRef.current) {
+      // transition 없이 실제 첫 번째 이미지로 이동
+      setTimeout(() => {
+        setIsTransitioning(false)
+        setCurrentAdIndex(1) // 실제 첫 번째 이미지 인덱스
+        // 다음 프레임에서 transition 다시 활성화
+        setTimeout(() => {
+          setIsTransitioning(true)
+        }, 50)
+      }, 500) // 슬라이드 애니메이션 완료 후
+    }
+  }, [currentAdIndex, adImages.length])
 
   // 곧 시작하는 일정의 시간 텍스트 생성 함수
   const generateUpcomingTimeText = (eventStartDate) => {
@@ -1418,8 +1466,85 @@ function LandingPage() {
             </div>
           </div>
         </div>
+      </div>
 
+      {/* 캘린더 기능 홍보 광고 Section - landing-container 밖으로 이동 */}
+      <div className="ad-carousel-section">
+        <div className="ad-carousel-container">
+          <div 
+            ref={wrapperRef}
+            className="ad-carousel-wrapper"
+            style={{
+              transform: `translateX(-${currentAdIndex * 100}%)`,
+              transition: isTransitioning ? 'transform 0.5s ease-in-out' : 'none'
+            }}
+          >
+            {/* 마지막 이미지 복제본 (첫 번째 앞에) */}
+            {adImages.length > 1 && (
+              <div className="ad-carousel-slide">
+                <img 
+                  src={adImages[adImages.length - 1]} 
+                  alt={`캘린더 기능 홍보 ${adImages.length}`}
+                  className="ad-carousel-image"
+                  onError={(e) => {
+                    e.target.style.display = 'none'
+                  }}
+                />
+              </div>
+            )}
+            {/* 실제 이미지들 */}
+            {adImages.map((image, index) => (
+              <div key={index} className="ad-carousel-slide">
+                <img 
+                  src={image} 
+                  alt={`캘린더 기능 홍보 ${index + 1}`}
+                  className="ad-carousel-image"
+                  onError={(e) => {
+                    // 이미지 로드 실패 시 빈 div로 대체
+                    e.target.style.display = 'none'
+                  }}
+                />
+              </div>
+            ))}
+            {/* 첫 번째 이미지 복제본 (마지막 뒤에) */}
+            {adImages.length > 1 && (
+              <div className="ad-carousel-slide">
+                <img 
+                  src={adImages[0]} 
+                  alt={`캘린더 기능 홍보 1`}
+                  className="ad-carousel-image"
+                  onError={(e) => {
+                    e.target.style.display = 'none'
+                  }}
+                />
+              </div>
+            )}
+          </div>
+          {/* 인디케이터 (이미지가 여러 개일 때만 표시) */}
+          {adImages.length > 1 && (
+            <div className="ad-carousel-indicators">
+              {adImages.map((_, index) => {
+                // 실제 인덱스로 변환 (1부터 시작하므로 -1)
+                const realIndex = currentAdIndex > adImages.length ? 0 : currentAdIndex - 1
+                const displayIndex = realIndex < 0 ? adImages.length - 1 : realIndex
+                return (
+                  <button
+                    key={index}
+                    className={`ad-carousel-indicator ${index === displayIndex ? 'active' : ''}`}
+                    onClick={() => {
+                      setIsTransitioning(true)
+                      setCurrentAdIndex(index + 1) // 실제 이미지 인덱스 (1부터 시작)
+                    }}
+                    aria-label={`광고 ${index + 1}로 이동`}
+                  />
+                )
+              })}
+            </div>
+          )}
+        </div>
+      </div>
 
+      <div className="landing-container">
         {/* 5분 전 알림 Section */}
         {upcomingAlerts.length > 0 && (
           <div className="alerts-section">

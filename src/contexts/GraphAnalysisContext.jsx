@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import { cardAPI } from '../utils/api'
+import { isAuthenticated } from '../utils/auth'
 
 const GraphAnalysisContext = createContext(null)
 
@@ -41,6 +42,12 @@ export function GraphAnalysisProvider({ children }) {
 
     // 명함 개수 조회
     const fetchCardCount = useCallback(async () => {
+        // 인증 체크 추가
+        if (!isAuthenticated()) {
+            setTotalCardCount(0)
+            return
+        }
+        
         try {
             const response = await cardAPI.getAll({ limit: 1 })
             if (response.data?.pagination?.total) {
@@ -48,6 +55,10 @@ export function GraphAnalysisProvider({ children }) {
             }
         } catch (err) {
             console.error('명함 개수 조회 오류:', err)
+            // 401 에러인 경우 재시도하지 않도록 처리
+            if (err.response?.status === 401) {
+                setTotalCardCount(0)
+            }
         }
     }, [])
 
@@ -69,9 +80,11 @@ export function GraphAnalysisProvider({ children }) {
             setIsAnalyzing(true)
         }
 
-        // 명함 개수 조회
-        fetchCardCount()
-    }, [fetchCardCount])
+        // 명함 개수 조회 (인증된 경우에만)
+        if (isAuthenticated()) {
+            fetchCardCount()
+        }
+    }, []) // fetchCardCount를 의존성에서 제거하여 무한 루프 방지
 
     // 분석 시작
     const startAnalysis = useCallback(async (analyzeCount = 20, displayCount = 10) => {

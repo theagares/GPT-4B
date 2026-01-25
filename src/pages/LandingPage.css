@@ -133,7 +133,7 @@
 /* Search Section */
 .landing-page .search-section {
   margin-top: 45px;
-  margin-bottom: 48px;
+  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -678,12 +678,12 @@
 
 /* Alerts Section */
 .alerts-section {
-  margin-top: 32px;
+  margin-top: 15px;
   margin-bottom: 24px;
 }
 
 .schedule-alerts-section {
-  margin-top: 56px;
+  margin-top: 0px;
 }
 
 .alerts-title {
@@ -1612,4 +1612,67 @@
   color: #6b7280;
   margin: 0;
   line-height: 1.5;
+}
+
+/* 캘린더 기능 홍보 광고 슬라이드 */
+.ad-carousel-section {
+  width: 100%;
+  margin: 0px 0 0 0;
+  padding: 0;
+}
+
+.ad-carousel-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.ad-carousel-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.ad-carousel-slide {
+  min-width: 100%;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.ad-carousel-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.ad-carousel-indicators {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.ad-carousel-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.ad-carousel-indicator.active {
+  background: white;
+}
+
+.ad-carousel-indicator:hover {
+  background: rgba(255, 255, 255, 0.8);
 }

@@ -907,18 +907,14 @@
   margin: auto;
 }
 
-/* 그룹명 수정 모달 전용 스타일 */
-.edit-group-name-modal {
-  max-width: 280px;
-}
-
 .add-group-modal-close {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: none;
+  background: rgba(0, 0, 0, 0.05);
   border: none;
   padding: 6px;
+  border-radius: 50%;
   cursor: pointer;
   color: #6b7280;
   display: flex;
@@ -926,28 +922,13 @@
   justify-content: center;
   transition: all 0.2s;
   z-index: 10;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 }
 
 .add-group-modal-close:hover {
+  background: rgba(0, 0, 0, 0.1);
   color: #1f2937;
-}
-
-.add-group-modal-close svg {
-  width: 20px;
-  height: 20px;
-}
-
-/* 그룹명 수정 모달의 X 버튼 */
-.edit-group-name-modal .add-group-modal-close {
-  width: 36px;
-  height: 36px;
-}
-
-.edit-group-name-modal .add-group-modal-close svg {
-  width: 24px;
-  height: 24px;
 }
 
 /* 그룹 삭제 확인 모달 */
@@ -1057,15 +1038,6 @@
   margin-top: 16px;
 }
 
-/* 그룹명 수정 모달의 버튼 영역 */
-.edit-group-name-modal .add-group-modal-buttons {
-  margin-top: 2px;
-  width: 100%;
-  max-width: 220px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .add-group-cancel-btn {
   flex: 1;
   padding: 14px 20px;
@@ -1106,15 +1078,6 @@
   transform: translateY(0);
 }
 
-/* 그룹명 수정 모달의 수정 버튼 */
-.edit-group-name-modal .add-group-confirm-btn {
-  background: #584cdc;
-}
-
-.edit-group-name-modal .add-group-confirm-btn:hover {
-  background: #4a3fc0;
-}
-
 /* 그룹 추가 카드 세로 배치 */
 .add-group-cards-row {
   display: flex;
@@ -1147,8 +1110,8 @@
 }
 
 .add-group-card-icon svg {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
 }
 
 .add-group-card-title {
@@ -1183,43 +1146,6 @@
   outline: none;
   border-color: #584cdc;
   box-shadow: 0 0 0 3px rgba(88, 76, 220, 0.1);
-}
-
-/* 그룹명 수정 모달 제목 */
-.add-group-modal-title {
-  font-size: 17px;
-  font-weight: 600;
-  color: #1f2937;
-  font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  margin: 0;
-  text-align: center;
-}
-
-/* 그룹명 수정 입력 필드 */
-.add-group-name-input {
-  width: 100%;
-  max-width: 220px;
-  margin: 0 auto;
-  padding: 12px 14px;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 0;
-  font-size: 14px;
-  color: #1f2937;
-  font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  transition: all 0.2s;
-  background: white;
-  box-sizing: border-box;
-  display: block;
-}
-
-.add-group-name-input:focus {
-  outline: none;
-  border-color: #584cdc;
-  box-shadow: 0 0 0 3px rgba(88, 76, 220, 0.1);
-}
-
-.add-group-name-input::placeholder {
-  color: #9ca3af;
 }
 
 /* 그룹 멤버 추가 모달 검색 입력 */
@@ -1400,7 +1326,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  height: 300px;
   max-height: 300px;
   overflow-y: auto;
   padding-right: 4px;
