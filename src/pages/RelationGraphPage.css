@@ -365,6 +365,13 @@
   margin: 0;
 }
 
+.rg-progress-hint {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin: 8px 0 0 0;
+  font-weight: 400;
+}
+
 /* 로딩 액션 버튼들 */
 .rg-loading-actions {
   display: flex;

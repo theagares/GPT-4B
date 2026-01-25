@@ -733,6 +733,8 @@ function RelationGraphPage() {
                 {analyzedCount} / {totalAnalyzeCount}명 분석 완료
               </p>
             )}
+            
+            <p className="rg-progress-hint">분석 중 다른 서비스를 이용하셔도 돼요 😊</p>
           </div>
           
           <div className="rg-loading-actions">
