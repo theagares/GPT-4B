@@ -270,9 +270,106 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 300px;
+  min-height: 400px;
   gap: 16px;
   color: #6b7280;
+  padding: 20px;
+}
+
+/* 진행률 컨테이너 */
+.rg-progress-container {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 진행률 바 */
+.rg-progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rg-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #584cdc, #8b5cf6);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.rg-progress-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #584cdc;
+}
+
+/* 단계 표시 */
+.rg-progress-steps {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.rg-step {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #f3f4f6;
+  color: #9ca3af;
+  transition: all 0.3s ease;
+}
+
+.rg-step.active {
+  background: #584cdc;
+  color: white;
+}
+
+.rg-step.current {
+  background: #584cdc;
+  color: white;
+  box-shadow: 0 0 0 4px rgba(88, 76, 220, 0.2);
+  animation: pulse-step 1.5s ease infinite;
+}
+
+@keyframes pulse-step {
+  0%, 100% {
+    box-shadow: 0 0 0 4px rgba(88, 76, 220, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(88, 76, 220, 0.1);
+  }
+}
+
+/* 진행 메시지 */
+.rg-progress-message {
+  font-size: 0.95rem;
+  color: #374151;
+  text-align: center;
+  margin: 0;
+  font-weight: 500;
+}
+
+.rg-progress-count {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* 로딩 액션 버튼들 */
+.rg-loading-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .rg-spinner {
@@ -291,7 +388,6 @@
 }
 
 .rg-back-while-loading {
-  margin-top: 8px;
   padding: 10px 24px;
   background: #f3f4f6;
   color: #6b7280;
@@ -306,6 +402,22 @@
 .rg-back-while-loading:hover {
   background: #e5e7eb;
   color: #374151;
+}
+
+.rg-cancel-btn {
+  padding: 10px 24px;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rg-cancel-btn:hover {
+  background: #fecaca;
 }
 
 /* Content */

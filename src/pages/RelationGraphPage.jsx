@@ -37,7 +37,16 @@ function RelationGraphPage() {
     cachedData,
     hasCache,
     totalCardCount,
+    // SSE 진행률 상태
+    progress,
+    progressMessage,
+    currentStep,
+    totalSteps,
+    analyzedCount,
+    totalAnalyzeCount,
+    // 액션
     startAnalysis,
+    cancelAnalysis,
     closeCompletePopup
   } = useGraphAnalysis()
 
@@ -693,11 +702,47 @@ function RelationGraphPage() {
 
       {isAnalyzing ? (
         <div className="rg-loading">
-          <div className="rg-spinner"></div>
-          <p>분석 중... (다른 작업을 하셔도 됩니다.)</p>
-          <button className="rg-back-while-loading" onClick={() => navigate(-1)}>
-            뒤로가기
-          </button>
+          <div className="rg-progress-container">
+            {/* 진행률 바 */}
+            <div className="rg-progress-bar-container">
+              <div 
+                className="rg-progress-bar" 
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <div className="rg-progress-text">{Math.round(progress)}%</div>
+            
+            {/* 단계 표시 */}
+            <div className="rg-progress-steps">
+              {[1, 2, 3, 4, 5].map(step => (
+                <div 
+                  key={step}
+                  className={`rg-step ${currentStep >= step ? 'active' : ''} ${currentStep === step ? 'current' : ''}`}
+                >
+                  {currentStep > step ? '✓' : step}
+                </div>
+              ))}
+            </div>
+            
+            {/* 진행 메시지 */}
+            <p className="rg-progress-message">{progressMessage || '분석 준비 중...'}</p>
+            
+            {/* 분석 카운트 */}
+            {analyzedCount > 0 && (
+              <p className="rg-progress-count">
+                {analyzedCount} / {totalAnalyzeCount}명 분석 완료
+              </p>
+            )}
+          </div>
+          
+          <div className="rg-loading-actions">
+            <button className="rg-back-while-loading" onClick={() => navigate(-1)}>
+              뒤로가기
+            </button>
+            <button className="rg-cancel-btn" onClick={cancelAnalysis}>
+              분석 취소
+            </button>
+          </div>
         </div>
       ) : graphData ? (
         <div className="rg-content">
