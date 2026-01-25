@@ -1648,8 +1648,7 @@ function BusinessCardWallet() {
               className="relation-graph-btn"
               onClick={() => navigate('/relation-graph')}
             >
-              <span className="relation-graph-icon">🔗</span>
-              <span className="relation-graph-text">명함 관계 보기</span>
+              <span className="relation-graph-text">명함 관계도 보러가기</span>
               <svg className="relation-graph-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none">
                 <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
