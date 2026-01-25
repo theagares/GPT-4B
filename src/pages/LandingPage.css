@@ -695,9 +695,6 @@
 }
 
 .schedule-alerts-section {
-<<<<<<< HEAD
-  margin-top: 0px;
-=======
   margin-top: 56px;
   padding: 0 20px;
   max-width: 430px;
@@ -705,7 +702,6 @@
   margin-right: auto;
   width: 100%;
   box-sizing: border-box;
->>>>>>> 4b15dae (style(ui): safari layout fixes and UI adjustments)
 }
 
 .alerts-title {
