@@ -21,7 +21,7 @@ frontend:
           value: 'public, max-age=0, must-revalidate'
   # SPA 라우팅 설정 - 모든 경로를 index.html로 리디렉션
   customRedirects:
-    - source: '/<*>'
+    - source: '</^[^.]+$|\.(?!js$|css$|gif$|jpg$|jpeg$|png$|svg$|woff$|woff2$|eot$|otf$|ttf$|ico$|json$|webp$|map$)/>'
       target: '/index.html'
       status: '200'
 
