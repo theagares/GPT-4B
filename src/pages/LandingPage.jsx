@@ -1374,13 +1374,10 @@ function LandingPage() {
         {/* Header */}
         <div className="landing-header">
           <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="header-logo" />
-          {userName && (
-            <span className="welcome-message">{userName}님 환영합니다!</span>
-          )}
         </div>
           <div className="banner-content">
             <div className="banner-text">
-              <p className="banner-subtitle">AI 맞춤형 비즈니스 인맥 관리 서비스 GPT-4b</p>
+              <p className="banner-subtitle">AI 맞춤형 비즈니스 인맥 관리 어플리케이션 GPT-4b</p>
               <p className="banner-title">명함 관리와 선물 추천으로 인맥 관리를 도와드립니다</p>
             </div>
           </div>
@@ -1388,6 +1385,9 @@ function LandingPage() {
 
         {/* Search Section */}
         <div className="search-section">
+          {userName && (
+            <div className="search-greeting-name">{userName}님 안녕하세요.</div>
+          )}
           <div className="search-greeting">
 누구의 명함을 찾고 계신가요?
           </div>
