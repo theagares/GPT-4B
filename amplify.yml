@@ -20,8 +20,10 @@ frontend:
         - key: 'Cache-Control'
           value: 'public, max-age=0, must-revalidate'
   # SPA 라우팅 설정 - 모든 경로를 index.html로 리디렉션
+  # 정적 파일 확장자를 제외한 모든 경로를 index.html로 리디렉션
   customRedirects:
-    - source: '</^[^.]+$|\.(?!js$|css$|gif$|jpg$|jpeg$|png$|svg$|woff$|woff2$|eot$|otf$|ttf$|ico$|json$|webp$|map$)/>'
+    - source: '/<*>'
       target: '/index.html'
-      status: '200'
+      status: '200-599'
+      condition: '</^[^.]+$|\.(?!css|gif|ico|jpg|js|png|txt|svg|woff|woff2|ttf|map|json|webp)$/>'
 
