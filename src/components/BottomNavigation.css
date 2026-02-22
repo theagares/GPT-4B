@@ -5,12 +5,12 @@
   transform: translateX(-50%);
   width: 100%;
   max-width: 393px;
-  height: 100px;
+  height: 90px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0 17px;
-  background: rgba(255, 255, 255, 0.75);
+  padding: 0 17px 14px;
+  background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(30px) saturate(180%);
   border-top: 1px solid rgba(255, 255, 255, 0.5);
@@ -67,34 +67,34 @@
   position: relative;
   opacity: 1;
   margin-top: -8px;
-  z-index: 10;
+}
+
+.ai-recommend:hover {
+  opacity: 1;
 }
 
 .ai-icon-wrapper {
   position: relative;
-  width: 26px;
-  height: 26px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
-}
-
-.ai-background-icon {
-  position: absolute;
-  width: 26px;
-  height: 26px;
-  top: 0;
-  left: 0;
 }
 
 .ai-logo {
-  position: absolute;
-  width: 23px;
-  height: 25px;
-  top: 1px;
-  left: 2px;
-  object-fit: cover;
+  width: 32px;
+  height: 34px;
+  object-fit: contain;
+}
+
+@keyframes ai-blur-pulse {
+  0%, 100% {
+    box-shadow: 0 4px 16px rgba(88, 76, 220, 0.5), 0 0 28px rgba(88, 76, 220, 0.35);
+  }
+  50% {
+    box-shadow: 0 4px 32px rgba(88, 76, 220, 0.65), 0 0 72px rgba(88, 76, 220, 0.5);
+  }
 }
 
 .ai-recommend::before {
@@ -107,24 +107,18 @@
   height: 72px;
   background-color: #584cdc;
   border-radius: 36px;
-  z-index: 1;
-  box-shadow: 0px 6px 20px rgba(88, 76, 220, 0.6), 0px 2px 8px rgba(88, 76, 220, 0.4);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.ai-recommend:hover::before {
-  background-color: #4a3fc0;
-  box-shadow: 0px 6px 20px rgba(74, 63, 192, 0.8), 0px 2px 8px rgba(74, 63, 192, 0.6);
+  z-index: -1;
+  box-shadow: 0 4px 20px rgba(88, 76, 220, 0.55), 0 0 36px rgba(88, 76, 220, 0.4);
+  animation: ai-blur-pulse 2s ease-in-out infinite;
 }
 
 .ai-label {
-  color: #fff7ef;
-  font-family: 'Pretendard', sans-serif;
+  color: #ffffff;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
   font-weight: 700;
-  font-size: 12px;
-  line-height: 1.2;
-  margin-top: 4px;
-  position: relative;
-  z-index: 2;
+  font-size: 11px;
+  line-height: 16.5px;
+  letter-spacing: 0.0645px;
+  margin-top: -3px;
 }
 

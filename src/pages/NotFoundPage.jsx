@@ -11,14 +11,16 @@ function NotFoundPage() {
           className="not-found-back-button"
           onClick={() => navigate(-1)}
         >
-          &lt;
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </button>
       </div>
       <div className="not-found-container">
         <div className="not-found-logo-section">
           <img 
-            src="/assets/gpt_4b_logo_blueberry.png" 
-            alt="GPT-4b Logo" 
+            src="/assets/mars_logo_blueberry.png" 
+            alt="Mars Logo" 
             className="not-found-logo" 
           />
         </div>

@@ -29,19 +29,17 @@
 .landing-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
+  justify-content: center;
   position: relative;
   z-index: 1;
   max-width: 430px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   padding: 0 20px;
   width: 100%;
 }
 
 .header-logo {
-  height: 32px;
+  height: 44px;
   width: auto;
   object-fit: contain;
 }
@@ -62,15 +60,15 @@
 
 /* AI Banner */
 .ai-banner {
-  background-color: #eeedfb;
+  background-color: #ffffff;
   border-radius: 0;
-  padding: 16px 0;
-  margin-bottom: 24px;
+  padding: 0;
+  margin-bottom: 0;
   margin-top: -24px;
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
   width: 100vw;
-  padding-top: calc(24px + 8px + 40px);
+  padding-top: calc(24px + 16px + 28px);
   position: relative;
 }
 
@@ -142,12 +140,12 @@
 
 /* Search Section */
 .landing-page .search-section {
-  margin-top: 20px;
+  margin-top: 10px;
   margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 12px;
 }
 
 .landing-page .search-greeting-name {
@@ -155,7 +153,7 @@
   font-weight: 600;
   color: #1f2937;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  margin-bottom: 0px;
+  margin-bottom: 12px;
   line-height: 1.5;
   text-align: center;
 }
@@ -179,17 +177,18 @@
 
 .landing-page .search-textarea {
   width: 100%;
-  padding: 16px 60px 16px 16px;
+  padding: 16px 44px 16px 16px;
   font-size: 15px;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   color: #1f2937;
   background-color: white;
-  border: 1px solid #584cdc;
+  border: 1.25px solid #584cdc;
   border-radius: 12px;
   resize: none;
   outline: none;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  box-shadow: 0 2px 10px rgba(88, 76, 220, 0.25);
 }
 
 .landing-page .search-textarea:focus {

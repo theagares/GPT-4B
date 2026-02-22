@@ -15,6 +15,39 @@ const cardDesigns = {
   'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
 }
 
+function hexToRgbLocal(hex: string) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) }
+    : { r: 109, g: 48, b: 223 }
+}
+
+function getCardTextColorsLocal(designId: string) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const light = (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.65
+    return {
+      main: light ? '#1f2937' : 'white',
+      sub: light ? 'rgba(31,41,55,0.6)' : 'rgba(255,255,255,0.7)',
+      contact: light ? 'rgba(31,41,55,0.5)' : 'rgba(255,255,255,0.6)',
+    }
+  }
+  return { main: 'white', sub: 'rgba(255,255,255,0.7)', contact: 'rgba(255,255,255,0.6)' }
+}
+
+function resolveCardDesign(designId: string) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const dr = Math.round(Math.max(0, r * 0.85))
+    const dg = Math.round(Math.max(0, g * 0.85))
+    const db = Math.round(Math.max(0, b * 0.85))
+    return `linear-gradient(147.99deg, rgba(${r},${g},${b},1) 0%, rgba(${dr},${dg},${db},1) 100%)`
+  }
+  return cardDesigns[designId as keyof typeof cardDesigns] || cardDesigns['design-1']
+}
+
 const AddInfo = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,7 +102,7 @@ const AddInfo = () => {
 
   // 명함 디자인 색상 가져오기
   const cardDesign = card?.design || 'design-1';
-  const cardBackground = cardDesigns[cardDesign as keyof typeof cardDesigns] || cardDesigns['design-1'];
+  const cardBackground = resolveCardDesign(cardDesign);
 
   // 수정 폼 제출 핸들러 (CardForm에서 사용)
   const handleFormSubmit = async (updatedCard: BusinessCard) => {
@@ -283,24 +316,26 @@ const AddInfo = () => {
         </div>
 
         {/* Contact Info Card */}
+        {(() => { const tc = getCardTextColorsLocal(cardDesign); return (
         <div 
           className="add-info-contact-card"
           style={{ background: cardBackground }}
         >
           {card.company && (
-            <div className="add-info-contact-item company">{card.company}</div>
+            <div className="add-info-contact-item company" style={{ color: tc.sub }}>{card.company}</div>
           )}
-          <div className="add-info-contact-item name">{card.name}</div>
+          <div className="add-info-contact-item name" style={{ color: tc.main }}>{card.name}</div>
           {card.position && (
-            <div className="add-info-contact-item position">{card.position}</div>
+            <div className="add-info-contact-item position" style={{ color: tc.sub }}>{card.position}</div>
           )}
           {card.phone && (
-            <div className="add-info-contact-item phone">{card.phone}</div>
+            <div className="add-info-contact-item phone" style={{ color: tc.contact }}>{card.phone}</div>
           )}
           {card.email && (
-            <div className="add-info-contact-item email">{card.email}</div>
+            <div className="add-info-contact-item email" style={{ color: tc.contact }}>{card.email}</div>
           )}
         </div>
+        ); })()}
 
         {/* Gender Section */}
         <div className="add-info-gender-section">

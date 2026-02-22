@@ -18,11 +18,7 @@ function WelcomeScreen() {
     <div className="welcome-screen">
       <div className="welcome-content">
         <div className="logo-container">
-          <img src="/assets/gpt_4b_logo_white.png" alt="GPT-4b Logo" className="logo" />
-        </div>
-        <div className="welcome-text">
-          <p>GPT-4b가</p>
-          <p>댱신을 환영합니다</p>
+          <img src="/assets/mars_logo_white.png" alt="M Logo" className="logo" />
         </div>
       </div>
     </div>

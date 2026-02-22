@@ -17,9 +17,9 @@ const TUTORIAL_STEPS = [
   },
   {
     step: 3,
-    title: '명함집',
+    title: '프로필집',
     image: '/assets/tutorial/tutorial-3.png',
-    description: '명함을 등록하고 관리해요.'
+    description: '프로필을 등록하고 관리해요.'
   },
   {
     step: 4,
@@ -35,7 +35,7 @@ const TUTORIAL_STEPS = [
   },
   {
     step: 6,
-    title: 'MY 명함',
+    title: 'MY 프로필',
     image: '/assets/tutorial/tutorial-6.png',
     description: '등록된 내 상세 정보를 확인하고\n내용을 수정할 수 있어요.'
   }

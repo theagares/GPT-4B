@@ -1,0 +1,274 @@
+.my-settings-page {
+  width: 100%;
+  max-width: 393px;
+  min-height: 100vh;
+  margin: 0 auto;
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+  box-sizing: border-box;
+}
+
+.my-settings-background {
+  padding-bottom: 100px;
+  min-height: 100vh;
+  padding-top: 100px;
+}
+
+/* 헤더 - calendar/add와 동일한 위치 (독립적으로 적용) */
+.my-settings-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 393px;
+  margin: 0 auto;
+  z-index: 100;
+  padding: 56px 24px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.my-settings-back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  color: #1f2937;
+  flex-shrink: 0;
+}
+
+.my-settings-back-button:hover {
+  opacity: 0.7;
+}
+
+.my-settings-back-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-settings-back-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.my-settings-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.my-settings-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.my-settings-header-spacer {
+  width: 24px;
+  flex-shrink: 0;
+}
+
+/* 세로 나열 목록 */
+.my-settings-list {
+  padding: 0 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.my-settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.my-settings-section:not(:first-child) {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 40px;
+}
+
+.my-settings-section-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #9ca3af;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.my-settings-section-content {
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.my-settings-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.my-settings-item {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: #1f2937;
+  margin: 0;
+}
+
+.my-settings-item-value {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.my-settings-empty-text {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+  padding: 20px 0;
+}
+
+.my-settings-logout-button {
+  width: auto;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #ef4444;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.my-settings-logout-button:hover {
+  opacity: 0.8;
+}
+
+.my-settings-logout-button:active {
+  opacity: 0.6;
+}
+
+.my-settings-theme-value {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #000000;
+}
+
+.my-settings-theme-label {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.my-settings-theme-arrow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000000;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.my-settings-theme-arrow-btn svg {
+  width: 20px;
+  height: 20px;
+  transform: scaleX(-1);
+}
+
+/* 테마 선택 오버레이 */
+.my-settings-theme-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.my-settings-theme-modal {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.my-settings-theme-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.my-settings-theme-modal-close:hover {
+  color: #1f2937;
+}
+
+.my-settings-theme-modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.my-settings-theme-modal-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
+.my-settings-theme-modal-content {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #6b7280;
+  margin: 0;
+  text-align: center;
+}

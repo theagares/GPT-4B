@@ -78,7 +78,7 @@ function GiftRecommendResultPage() {
     setIsSavingGift(true)
 
     try {
-      // 해당 명함의 모든 기존 선물을 가져와서 삭제 (최종 선택만 남기기 위해)
+      // 해당 프로필의 모든 기존 선물을 가져와서 삭제 (최종 선택만 남기기 위해)
       try {
         const existingGiftsResponse = await giftAPI.getAll({ cardId: String(card.id) })
         if (existingGiftsResponse.data && existingGiftsResponse.data.success) {
@@ -149,7 +149,7 @@ function GiftRecommendResultPage() {
     if (isSavingGift) return // 저장 중이면 무시
 
     if (!card?.id) {
-      alert('명함 정보가 없어 선물을 저장할 수 없습니다.')
+      alert('프로필 정보가 없어 선물을 저장할 수 없습니다.')
       return
     }
 
@@ -214,7 +214,7 @@ function GiftRecommendResultPage() {
         chatMessages,
         `${userName}님을 위한 선물 추천`,
         'gpt',
-        card?.id || null  // 명함 ID 연결
+        card?.id || null  // 프로필 ID 연결
       )
 
       // 생성된 채팅 내역 ID 저장

@@ -42,17 +42,17 @@ function BusinessCardGiftHistoryPage() {
           if (response.data && response.data.success) {
             setCard(response.data.data)
           } else {
-            setError('명함을 찾을 수 없습니다.')
+            setError('프로필을 찾을 수 없습니다.')
             setLoading(false)
           }
         } catch (err) {
           console.error('[BusinessCardGiftHistoryPage] Failed to fetch card:', err)
-          setError('명함 정보를 불러오는데 실패했습니다.')
+          setError('프로필 정보를 불러오는데 실패했습니다.')
           setLoading(false)
         }
       } else {
         // card 정보가 없으면 에러 표시
-        setError('명함 정보가 없습니다.')
+        setError('프로필 정보가 없습니다.')
         setLoading(false)
       }
     }
@@ -83,7 +83,7 @@ function BusinessCardGiftHistoryPage() {
     }
   }, [gifts.length])
 
-  // DB에서 해당 명함의 선물 이력 가져오기 (더미 데이터 없이 DB 데이터만 사용)
+  // DB에서 해당 프로필의 선물 이력 가져오기 (더미 데이터 없이 DB 데이터만 사용)
   useEffect(() => {
     const fetchGifts = async () => {
       if (!isAuthenticated()) {
@@ -100,7 +100,7 @@ function BusinessCardGiftHistoryPage() {
         }
         setGifts([])
         setLoading(false)
-        setError('명함 정보가 없습니다.')
+        setError('프로필 정보가 없습니다.')
         return
       }
 
@@ -227,7 +227,7 @@ function BusinessCardGiftHistoryPage() {
   }))
 
   const handleBack = () => {
-    // 명함 상세 모달을 열기 위해 명함집 페이지로 이동하면서 openCardId 전달
+    // 프로필 상세 모달을 열기 위해 프로필집 페이지로 이동하면서 openCardId 전달
     if (card && card.id) {
       navigate('/business-cards', { 
         state: { 

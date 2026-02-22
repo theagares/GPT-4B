@@ -4,9 +4,9 @@
   background-color: white;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding: 20px;
+  padding: 100px 20px 20px;
   position: relative;
   /* 모바일 좌우 스크롤 방지 */
   overflow-x: hidden;
@@ -21,14 +21,15 @@
   left: 0;
   right: 0;
   width: 100%;
-  max-width: 400px;
+  max-width: 393px;
   margin: 0 auto;
-  padding: 16px 20px;
+  padding: 56px 24px 20px;
   display: flex;
-  justify-content: flex-start;
+  flex-direction: row;
   align-items: center;
   z-index: 100;
   background-color: white;
+  box-sizing: border-box;
 }
 
 .signup-container {
@@ -36,11 +37,11 @@
   max-width: 400px;
   background-color: white;
   border-radius: 40px;
-  padding: 40px 24px;
+  padding: 24px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  gap: 24px;
   position: relative;
 }
 
@@ -53,6 +54,7 @@
   align-items: center;
   justify-content: center;
   transition: opacity 0.2s;
+  flex-shrink: 0;
 }
 
 .signup-back-button:hover {
@@ -63,44 +65,23 @@
   opacity: 0.5;
 }
 
-.logo-section {
-  width: 63px;
-  height: 68px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.signup-logo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 50%;
-}
-
-.signup-text-section {
-  width: 100%;
+.signup-header-content {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  text-align: center;
+  gap: 4px;
 }
 
-.signup-text-main {
-  font-size: 16px;
+.signup-header-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 18px;
   font-weight: 600;
-  color: #252525;
-  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+  color: #1f2937;
   margin: 0;
-}
-
-.signup-text-sub {
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(37, 37, 37, 0.6);
-  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
-  margin: 0;
+  line-height: 1.4;
 }
 
 .signup-form {
@@ -116,6 +97,10 @@
   flex-direction: column;
   gap: 0;
   align-items: flex-start;
+}
+
+.input-group-password-confirm {
+  margin-top: -12px;
 }
 
 .input-group .input-wrapper {
@@ -151,9 +136,10 @@
   width: 100%;
   height: 50px;
   padding: 0 48px 0 16px;
-  border: 1px solid rgba(196, 196, 196, 0.3);
-  background-color: rgba(196, 196, 196, 0.2);
-  border-radius: 10px;
+  border: none;
+  border-bottom: 1px solid rgba(88, 76, 220, 0.3);
+  background-color: transparent;
+  border-radius: 0;
   font-size: 14px;
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
   color: #252525;
@@ -168,18 +154,15 @@
 
 .signup-input:focus {
   outline: none;
-  background-color: rgba(196, 196, 196, 0.3);
-  border-color: rgba(196, 196, 196, 0.5);
+  border-bottom-color: #584CDC;
 }
 
 .signup-input.input-error {
-  border-color: #EA4335;
-  background-color: rgba(234, 67, 53, 0.1);
+  border-bottom-color: #EA4335;
 }
 
 .signup-input.input-valid {
-  border-color: #34A853;
-  background-color: rgba(52, 168, 83, 0.1);
+  border-bottom-color: #584CDC;
 }
 
 .input-check-icon {

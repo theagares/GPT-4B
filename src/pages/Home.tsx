@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <section className="space-y-8">
       <div className="rounded-3xl bg-white px-6 py-5 shadow-glass">
-        <p className="text-sm text-slate-500">오늘의 명함</p>
+        <p className="text-sm text-slate-500">오늘의 프로필</p>
         <h2 className="mt-1 text-2xl font-semibold text-slate-900">
           빠르게 스캔하고 정리하세요
         </h2>
@@ -37,7 +37,7 @@ const Home = () => {
       <div>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-semibold text-slate-900">
-            최근 명함
+            최근 프로필
           </h3>
           <button
             type="button"

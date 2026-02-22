@@ -9,7 +9,7 @@ const Cardbook = () => {
     <section className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-slate-500">전체 명함</p>
+          <p className="text-sm text-slate-500">전체 프로필</p>
           <h2 className="text-2xl font-semibold text-slate-900">
             Cardbook
           </h2>
@@ -19,12 +19,12 @@ const Cardbook = () => {
           onClick={() => navigate("/ocr")}
           className="rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white"
         >
-          새 명함
+          새 프로필
         </button>
       </div>
       {cards.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-slate-200 bg-white/70 p-6 text-center text-sm text-slate-500">
-          아직 저장된 명함이 없습니다. OCR로 첫 명함을 스캔해 보세요.
+          아직 저장된 프로필이 없습니다. OCR로 첫 프로필을 스캔해 보세요.
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">

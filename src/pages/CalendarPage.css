@@ -1266,7 +1266,7 @@
   color: #6b7280;
 }
 
-/* 명함에서 추가된 참여자 태그 스타일 */
+/* 프로필에서 추가된 참여자 태그 스타일 */
 .participant-tag.from-card {
   background: linear-gradient(135deg, #584cdc15 0%, #6366f115 100%);
   border: 1px solid #584cdc30;

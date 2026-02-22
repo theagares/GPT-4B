@@ -37,6 +37,7 @@ function RelationGraphPage() {
     cachedData,
     hasCache,
     totalCardCount,
+    fetchCardCount,
     // SSE 진행률 상태
     progress,
     progressMessage,
@@ -49,6 +50,11 @@ function RelationGraphPage() {
     cancelAnalysis,
     closeCompletePopup
   } = useGraphAnalysis()
+
+  // 페이지 진입 시 보유 명함 개수 갱신 (0개인 경우에도 정확한 값 표시)
+  useEffect(() => {
+    fetchCardCount()
+  }, [fetchCardCount])
 
   // 최대 분석 개수 (명함 개수 또는 기본 50개)
   const maxAnalyzeCount = Math.max(5, totalCardCount || 50)
@@ -615,7 +621,7 @@ function RelationGraphPage() {
             <p className="rg-modal-desc">관계 그래프 분석에 필요한 설정을 입력해주세요</p>
 
             <div className="rg-modal-field">
-              <label>분석할 명함 수</label>
+              <label>분석할 프로필 수</label>
               <input
                 type="number"
                 min="5"
@@ -628,13 +634,13 @@ function RelationGraphPage() {
                 }}
               />
               <span className="rg-modal-hint">
-                LLM이 분석할 명함 (5~{maxAnalyzeCount}개)
-                {totalCardCount > 0 && <span className="rg-card-count"> · 보유 명함: {totalCardCount}개</span>}
+                LLM이 분석할 프로필 (5~{maxAnalyzeCount}개)
+                {totalCardCount > 0 && <span className="rg-card-count"> · 보유 프로필: {totalCardCount}개</span>}
               </span>
             </div>
 
             <div className="rg-modal-field">
-              <label>그래프에 표시할 명함 수</label>
+              <label>그래프에 표시할 프로필 수</label>
               <input
                 type="number"
                 min="3"
@@ -651,7 +657,7 @@ function RelationGraphPage() {
 
             {/* 유효성 검사 경고 */}
             {analyzeCount !== '' && displayCount !== '' && parseInt(analyzeCount) < parseInt(displayCount) && (
-              <p className="rg-modal-warning">⚠️ 분석할 명함 수는 그래프에 표시할 명함 수보다 크거나 같아야 합니다.</p>
+              <p className="rg-modal-warning">⚠️ 분석할 프로필 수는 그래프에 표시할 프로필 수보다 크거나 같아야 합니다.</p>
             )}
 
             <div className="rg-modal-buttons">
@@ -689,7 +695,7 @@ function RelationGraphPage() {
         </button>
         <div className="rg-header-content">
           <h1 className="rg-title">관계 그래프</h1>
-          <p className="rg-subtitle">명함 데이터를 기반 관계 분석 결과를 확인해보세요</p>
+          <p className="rg-subtitle">프로필 데이터를 기반으로 관계 분석 결과를 확인해보세요</p>
         </div>
         <button className="rg-refresh-btn" onClick={handleRefresh}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">

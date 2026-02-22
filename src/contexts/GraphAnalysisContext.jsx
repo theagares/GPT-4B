@@ -70,8 +70,9 @@ export function GraphAnalysisProvider({ children }) {
         
         try {
             const response = await cardAPI.getAll({ limit: 1 })
-            if (response.data?.pagination?.total) {
-                setTotalCardCount(response.data.pagination.total)
+            const total = response.data?.pagination?.total
+            if (typeof total === 'number') {
+                setTotalCardCount(total)
             }
         } catch (err) {
             console.error('명함 개수 조회 오류:', err)

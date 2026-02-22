@@ -121,7 +121,7 @@ const CardDetail = () => {
   if (!card) {
     return (
       <div className="rounded-3xl bg-white/80 p-6 text-center shadow-lg">
-        <p className="text-sm text-slate-500">명함을 찾을 수 없습니다.</p>
+        <p className="text-sm text-slate-500">프로필을 찾을 수 없습니다.</p>
         <button
           type="button"
           onClick={handleBack}
@@ -331,7 +331,7 @@ const CardDetail = () => {
           onClick={() => navigate("/ocr")}
           className="rounded-2xl bg-primary py-3 text-sm font-semibold text-white"
         >
-          새 명함 추가
+          새 프로필 추가
         </button>
       </div>
     </section>

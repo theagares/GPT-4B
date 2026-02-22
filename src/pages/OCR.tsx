@@ -27,22 +27,47 @@ const hasCameraSupport = () => {
 };
 
 // 더미데이터 감지 함수
+// 백엔드에서 반환하는 더미데이터는 모든 필드가 특정 조합으로 일치해야 함
 const isDummyData = (ocrResult: any): boolean => {
   if (!ocrResult) return false;
   
-  // 백엔드 mockOCRResponse에서 반환하는 더미데이터 목록
-  const dummyNames = ["박소윤", "이도현", "최하늘"];
-  const dummyCompanies = ["Luna Collective", "Nova Labs", "Orbit Studio"];
-  const dummyEmails = ["soyoon@luna.co", "dohyun@nova.ai", "ha-neul@orbit.studio"];
-  const dummyPhones = ["010-1234-5678", "010-8765-4321", "010-2345-6789"];
+  // 백엔드 mockOCRResponse에서 반환하는 더미데이터 조합
+  // 모든 필드가 정확히 일치하는 경우에만 더미데이터로 판단
+  const dummyDataSets = [
+    {
+      name: "박소윤",
+      company: "Luna Collective",
+      email: "soyoon@luna.co",
+      phone: "010-1234-5678"
+    },
+    {
+      name: "이도현",
+      company: "Nova Labs",
+      email: "dohyun@nova.ai",
+      phone: "010-8765-4321"
+    },
+    {
+      name: "최하늘",
+      company: "Orbit Studio",
+      email: "ha-neul@orbit.studio",
+      phone: "010-2345-6789"
+    }
+  ];
   
-  const isDummyName = ocrResult.name && dummyNames.includes(ocrResult.name);
-  const isDummyCompany = ocrResult.company && dummyCompanies.includes(ocrResult.company);
-  const isDummyEmail = ocrResult.email && dummyEmails.includes(ocrResult.email);
-  const isDummyPhone = ocrResult.phone && dummyPhones.includes(ocrResult.phone);
+  // 모든 더미데이터 세트와 비교
+  for (const dummySet of dummyDataSets) {
+    const nameMatch = (!ocrResult.name && !dummySet.name) || (ocrResult.name === dummySet.name);
+    const companyMatch = (!ocrResult.company && !dummySet.company) || (ocrResult.company === dummySet.company);
+    const emailMatch = (!ocrResult.email && !dummySet.email) || (ocrResult.email === dummySet.email);
+    const phoneMatch = (!ocrResult.phone && !dummySet.phone) || (ocrResult.phone === dummySet.phone);
+    
+    // 모든 필드가 일치하는 경우에만 더미데이터로 판단
+    if (nameMatch && companyMatch && emailMatch && phoneMatch) {
+      return true;
+    }
+  }
   
-  // 하나라도 더미데이터와 일치하면 더미데이터로 판단
-  return isDummyName || isDummyCompany || isDummyEmail || isDummyPhone;
+  return false;
 };
 
 const OCR = () => {
@@ -259,7 +284,7 @@ const OCR = () => {
   }
 
   const handleBack = () => {
-    // Confirm 페이지에서 온 경우 명함집으로 이동
+    // Confirm 페이지에서 온 경우 프로필집으로 이동
     const fromConfirm = (location.state as { fromConfirm?: boolean } | null)?.fromConfirm;
     if (fromConfirm) {
       navigate("/business-cards");
@@ -289,9 +314,9 @@ const OCR = () => {
             </svg>
           </button>
           <div className="ocr-header-content">
-            <h1 className="ocr-title">명함을 촬영해주세요</h1>
+            <h1 className="ocr-title">프로필을 촬영해주세요</h1>
             <p className="ocr-subtitle">
-              명함이 가이드 안에 들어오도록 조정해주세요
+              프로필이 가이드 안에 들어오도록 조정해주세요
             </p>
           </div>
           <div style={{ width: '24px' }}></div> {/* Placeholder for right alignment */}
@@ -328,7 +353,7 @@ const OCR = () => {
                     />
                   </svg>
                 </div>
-                <p className="ocr-file-upload-text">명함 이미지 선택</p>
+                <p className="ocr-file-upload-text">프로필 이미지 선택</p>
                 <p className="ocr-file-upload-hint">
                   클릭하여 파일을 선택하세요
                 </p>
@@ -345,7 +370,7 @@ const OCR = () => {
         )}
 
         {/* Guide Message */}
-        <div className="ocr-guide-message">명함을 수평으로 맞춰주세요</div>
+        <div className="ocr-guide-message">프로필을 수평으로 맞춰주세요</div>
 
         {/* Error Message */}
         {error && <div className="ocr-error-message">{error}</div>}

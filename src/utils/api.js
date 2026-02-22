@@ -304,7 +304,7 @@ export const giftAPI = {
   // minPrice, maxPrice는 만원 단위
   search: (searchData) => api.post("/gifts/search", searchData),
 
-  // ⭐ 명함 기반 추천 API
+  // ⭐ 프로필 기반 추천 API
   // { cardId, additionalInfo, gender, memos, minPrice, maxPrice, includeNaver }
   // minPrice, maxPrice는 만원 단위
   recommend: (recommendData) => api.post("/gifts/recommend", recommendData),
@@ -362,7 +362,7 @@ export const preferenceAPI = {
 
 // Search API (cardSearch 기반 검색)
 export const searchAPI = {
-  // cardSearch 기반 명함 검색
+  // cardSearch 기반 프로필 검색
   search: (query) => api.post("/card-search", { query }),
 };
 

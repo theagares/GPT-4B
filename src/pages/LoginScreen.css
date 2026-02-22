@@ -25,6 +25,7 @@
   flex-direction: column;
   align-items: center;
   gap: 24px;
+  margin-bottom: 60px;
 }
 
 .logo-section {
@@ -39,18 +40,19 @@
 .login-logo {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: 50% 50%;
 }
 
-.login-title {
-  font-size: 16px;
-  font-weight: 800;
+.login-tagline {
+  font-size: 14px;
+  font-weight: 700;
   color: #252525;
   text-align: center;
-  line-height: 24px;
+  line-height: 20px;
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
   margin: 0;
+  margin-top: -16px;
 }
 
 .login-form {

@@ -22,7 +22,7 @@ const CardSlider = ({ cards, onCardClick }: CardSliderProps) => {
   if (cards.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-100 p-6 text-center text-sm text-gray-500">
-        등록된 명함이 없습니다. OCR로 첫 명함을 추가해 보세요.
+        등록된 프로필이 없습니다. OCR로 첫 프로필을 추가해 보세요.
       </div>
     );
   }

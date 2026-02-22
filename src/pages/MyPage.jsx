@@ -14,14 +14,63 @@ const cardDesigns = {
   'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(221, 214, 254, 1) 100%)',
 }
 
-// 명함 디자인별 배경색 맵
+// 명함 디자인별 배경색 맵 (명함 색상보다 약간 더 밝게)
 const backgroundColors = {
-  'design-1': 'linear-gradient(180deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%)',
-  'design-2': 'linear-gradient(180deg, rgba(59, 130, 246, 1) 0%, rgba(37, 99, 235, 1) 100%)',
-  'design-3': 'linear-gradient(180deg, rgba(16, 185, 129, 1) 0%, rgba(5, 150, 105, 1) 100%)',
-  'design-4': 'linear-gradient(180deg, rgba(236, 72, 153, 1) 0%, rgba(219, 39, 119, 1) 100%)',
-  'design-5': 'linear-gradient(180deg, rgba(249, 115, 22, 1) 0%, rgba(234, 88, 12, 1) 100%)',
-  'design-6': 'linear-gradient(180deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
+  'design-1': 'linear-gradient(180deg, rgba(180, 170, 245, 1) 0%, rgba(140, 125, 235, 1) 100%)',
+  'design-2': 'linear-gradient(180deg, rgba(147, 197, 253, 1) 0%, rgba(96, 165, 250, 1) 100%)',
+  'design-3': 'linear-gradient(180deg, rgba(167, 243, 208, 1) 0%, rgba(110, 231, 183, 1) 100%)',
+  'design-4': 'linear-gradient(180deg, rgba(251, 207, 232, 1) 0%, rgba(244, 114, 182, 1) 100%)',
+  'design-5': 'linear-gradient(180deg, rgba(254, 215, 170, 1) 0%, rgba(253, 186, 116, 1) 100%)',
+  'design-6': 'linear-gradient(180deg, rgba(221, 214, 254, 1) 0%, rgba(165, 180, 252, 1) 100%)',
+}
+
+function hexToRgbLocal(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) }
+    : { r: 109, g: 48, b: 223 }
+}
+
+function resolveCardDesign(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const dr = Math.round(Math.max(0, r * 0.85))
+    const dg = Math.round(Math.max(0, g * 0.85))
+    const db = Math.round(Math.max(0, b * 0.85))
+    return `linear-gradient(147.99deg, rgba(${r},${g},${b},1) 0%, rgba(${dr},${dg},${db},1) 100%)`
+  }
+  return cardDesigns[designId] || cardDesigns['design-1']
+}
+
+function getCardTextColorsLocal(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const light = (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.65
+    return {
+      main: light ? '#1f2937' : 'white',
+      sub: light ? 'rgba(31,41,55,0.6)' : 'rgba(255,255,255,0.7)',
+      contact: light ? 'rgba(31,41,55,0.5)' : 'rgba(255,255,255,0.6)',
+    }
+  }
+  return { main: 'white', sub: 'rgba(255,255,255,0.7)', contact: 'rgba(255,255,255,0.6)' }
+}
+
+function resolveBackgroundColor(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    // 명함 색상보다 약간 더 밝은 배경 (흰색과 블렌드)
+    const lr = Math.min(255, Math.round(r + (255 - r) * 0.4))
+    const lg = Math.min(255, Math.round(g + (255 - g) * 0.4))
+    const lb = Math.min(255, Math.round(b + (255 - b) * 0.4))
+    const mr = Math.min(255, Math.round(r + (255 - r) * 0.2))
+    const mg = Math.min(255, Math.round(g + (255 - g) * 0.2))
+    const mb = Math.min(255, Math.round(b + (255 - b) * 0.2))
+    return `linear-gradient(180deg, rgba(${lr},${lg},${lb},1) 0%, rgba(${mr},${mg},${mb},1) 100%)`
+  }
+  return backgroundColors[designId] || backgroundColors['design-1']
 }
 
 // 뒤로가기 아이콘 SVG 컴포넌트
@@ -485,11 +534,12 @@ function MyPage() {
     <div 
       className="my-page"
       ref={containerRef}
+      style={{ background: resolveBackgroundColor(myCardDesign) }}
     >
       <div 
         className="my-page-background"
         style={{
-          background: backgroundColors[myCardDesign] || backgroundColors['design-1']
+          background: resolveBackgroundColor(myCardDesign)
         }}
       >
         {/* 뒤로 가기 버튼 */}
@@ -516,29 +566,31 @@ function MyPage() {
             <div 
               className="card-content"
               style={{
-                background: cardDesigns[myCardDesign] || cardDesigns['design-1']
+                background: resolveCardDesign(myCardDesign)
               }}
             >
+              {(() => { const tc = getCardTextColorsLocal(myCardDesign); return (<>
               {/* 우측 상단 연락처 정보 */}
               <div className="card-contact">
-                <p className="card-phone">{myInfo.phone}</p>
-                <p className="card-email">{myInfo.email}</p>
+                <p className="card-phone" style={{ color: tc.contact }}>{myInfo.phone}</p>
+                <p className="card-email" style={{ color: tc.contact }}>{myInfo.email}</p>
               </div>
               
               <div className="card-header">
                 <div className="card-logo">
-                  <img src="/assets/gpt_4b_logo_white.png" alt="GPT-4b Logo" />
+                  <img src="/assets/mars_logo_white.png" alt="M Logo" />
                 </div>
                 <div className="card-info">
-                  <h2 className="card-name">{myInfo.name}</h2>
+                  <h2 className="card-name" style={{ color: tc.main }}>{myInfo.name}</h2>
                 </div>
               </div>
               
               {/* 하단 소속/직급 정보 */}
               <div className="card-details">
-                <p className="card-company">{myInfo.company}</p>
-                <p className="card-position">{myInfo.position}</p>
+                <p className="card-company" style={{ color: tc.sub }}>{myInfo.company}</p>
+                <p className="card-position" style={{ color: tc.sub }}>{myInfo.position}</p>
               </div>
+              </>); })()}
             </div>
           </div>
         </div>
@@ -553,7 +605,7 @@ function MyPage() {
               <ArrowUpIcon />
             </div>
           </div>
-          <p className="swipe-text">명함을 눌러서 상세정보 확인하기</p>
+          <p className="swipe-text">내 프로필 카드를 눌러 상세정보 확인</p>
         </div>
       </div>
     </div>

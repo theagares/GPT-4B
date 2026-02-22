@@ -54,7 +54,7 @@ function CardGiftHistoryPage() {
     }
   }, [gifts.length]) // gifts.length를 의존성으로 사용하여 gifts가 로드될 때만 실행
 
-  // DB에서 해당 명함의 선물 이력 가져오기 (peter - API 연동)
+  // DB에서 해당 프로필의 선물 이력 가져오기 (peter - API 연동)
   useEffect(() => {
     const fetchGifts = async () => {
       if (!isAuthenticated()) {
@@ -67,7 +67,7 @@ function CardGiftHistoryPage() {
       if (!card || !card.id) {
         setGifts([])
         setLoading(false)
-        setError('명함 정보가 없습니다.')
+        setError('프로필 정보가 없습니다.')
         return
       }
 

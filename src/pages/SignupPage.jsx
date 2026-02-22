@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import './SignupPage.css'
 
 // 체크 아이콘 SVG 컴포넌트
@@ -13,9 +13,12 @@ function CheckIcon() {
 
 function SignupPage() {
   const navigate = useNavigate()
-  const [userId, setUserId] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const location = useLocation()
+  const { username: savedUsername, password: savedPassword } = location.state || {}
+
+  const [userId, setUserId] = useState(savedUsername || '')
+  const [password, setPassword] = useState(savedPassword || '')
+  const [confirmPassword, setConfirmPassword] = useState(savedPassword || '')
   const [userIdError, setUserIdError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [confirmPasswordError, setConfirmPasswordError] = useState('')
@@ -115,27 +118,20 @@ function SignupPage() {
             <path d="M15 18L9 12L15 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
+        <div className="signup-header-content">
+          <h1 className="signup-header-title">회원가입</h1>
+        </div>
       </div>
       <div className="signup-container">
-        <div className="logo-section">
-          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="signup-logo" />
-        </div>
-
-        <div className="signup-text-section">
-          <p className="signup-text-main">아이디와 비밀번호를 입력해주세요.</p>
-          <p className="signup-text-sub">회원가입에 필요한 정보를 입력하세요</p>
-        </div>
-
         <form onSubmit={handleContinue} className="signup-form">
           <div className="input-group">
-            <label className="input-label">아이디</label>
             <div className="input-wrapper">
               <input
                 type="text"
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
                 className={`signup-input ${userIdError ? 'input-error' : ''} ${isUserIdValid ? 'input-valid' : ''}`}
-                placeholder="아이디를 입력하세요"
+                placeholder="아이디"
               />
               {isUserIdValid && (
                 <div className="input-check-icon">
@@ -149,14 +145,13 @@ function SignupPage() {
           </div>
 
           <div className="input-group">
-            <label className="input-label">비밀번호</label>
             <div className="input-wrapper">
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={`signup-input ${passwordError ? 'input-error' : ''} ${isPasswordValid ? 'input-valid' : ''}`}
-                placeholder="비밀번호를 입력하세요"
+                placeholder="비밀번호"
               />
               {isPasswordValid && (
                 <div className="input-check-icon">
@@ -169,15 +164,14 @@ function SignupPage() {
             </p>
           </div>
 
-          <div className="input-group">
-            <label className="input-label">비밀번호 확인</label>
+          <div className="input-group input-group-password-confirm">
             <div className="input-wrapper">
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className={`signup-input ${confirmPasswordError ? 'input-error' : ''} ${isConfirmPasswordValid ? 'input-valid' : ''}`}
-                placeholder="비밀번호를 다시 입력하세요"
+                placeholder="비밀번호 확인"
               />
               {isConfirmPasswordValid && (
                 <div className="input-check-icon">

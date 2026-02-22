@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
@@ -91,6 +91,64 @@ const pageBackgroundDesigns = {
   'design-4': 'linear-gradient(180deg, rgba(252, 231, 243, 1) 0%, rgba(251, 182, 206, 1) 50%, rgba(236, 72, 153, 1) 100%)',
   'design-5': 'linear-gradient(180deg, rgba(255, 237, 213, 1) 0%, rgba(254, 215, 170, 1) 50%, rgba(249, 115, 22, 1) 100%)',
   'design-6': 'linear-gradient(180deg, rgba(221, 214, 254, 1) 0%, rgba(196, 181, 253, 1) 50%, rgba(99, 102, 241, 1) 100%)',
+}
+
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) }
+    : { r: 109, g: 48, b: 223 }
+}
+
+function getCustomCardGradient(hex) {
+  const { r, g, b } = hexToRgb(hex)
+  const dr = Math.round(Math.max(0, r * 0.85))
+  const dg = Math.round(Math.max(0, g * 0.85))
+  const db = Math.round(Math.max(0, b * 0.85))
+  return `radial-gradient(circle at top right, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.15) 40%, transparent 70%), linear-gradient(147.99deg, rgba(${r},${g},${b},1) 0%, rgba(${dr},${dg},${db},1) 100%)`
+}
+
+function getCustomPageBackground(hex) {
+  const { r, g, b } = hexToRgb(hex)
+  const lr = Math.min(255, Math.round(r + (255 - r) * 0.65))
+  const lg = Math.min(255, Math.round(g + (255 - g) * 0.65))
+  const lb = Math.min(255, Math.round(b + (255 - b) * 0.65))
+  const mr = Math.min(255, Math.round(r + (255 - r) * 0.4))
+  const mg = Math.min(255, Math.round(g + (255 - g) * 0.4))
+  const mb = Math.min(255, Math.round(b + (255 - b) * 0.4))
+  return `linear-gradient(180deg, rgba(${lr},${lg},${lb},1) 0%, rgba(${mr},${mg},${mb},1) 50%, rgba(${r},${g},${b},1) 100%)`
+}
+
+function isLightColor(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgb(hex)
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.65
+  }
+  return false
+}
+
+function getCardTextColors(designId) {
+  const light = isLightColor(designId)
+  return {
+    main: light ? '#1f2937' : 'white',
+    sub: light ? 'rgba(31,41,55,0.6)' : 'rgba(255,255,255,0.7)',
+    contact: light ? 'rgba(31,41,55,0.5)' : 'rgba(255,255,255,0.6)',
+  }
+}
+
+function resolveCardDesign(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    return getCustomCardGradient(designId.replace('custom-', ''))
+  }
+  return cardDesigns[designId] || cardDesigns['design-1']
+}
+
+function resolvePageBackground(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    return getCustomPageBackground(designId.replace('custom-', ''))
+  }
+  return pageBackgroundDesigns[designId] || pageBackgroundDesigns['design-1']
 }
 
 function BusinessCardWallet() {
@@ -1198,8 +1256,8 @@ function BusinessCardWallet() {
             </div>
           ) : (
             <>
-              <p className="wallet-page-header-title">{userName ? `${userName}님의 명함집` : '명함집'}</p>
-              <p className="wallet-page-header-subtitle">명함을 등록/수정하거나 원하는 그룹을 만들 수 있어요</p>
+              <p className="wallet-page-header-title">{userName ? `${userName}님의 프로필 카드집` : '프로필 카드집'}</p>
+              <p className="wallet-page-header-subtitle">프로필 카드를 등록/수정하거나 원하는 그룹을 만들 수 있어요</p>
             </>
           )}
         </div>
@@ -1211,7 +1269,7 @@ function BusinessCardWallet() {
               className={`wallet-tab ${activeTab === 'cards' ? 'active' : ''}`}
               onClick={() => setActiveTab('cards')}
             >
-              명함집
+              프로필 카드집
             </button>
             <button
               className={`wallet-tab ${activeTab === 'groups' ? 'active' : ''}`}
@@ -1341,11 +1399,8 @@ function BusinessCardWallet() {
                   return (
                     <div className="groups-empty-state">
                       <p className="groups-empty-message">
-                        {groupSearchQuery ? '검색 결과가 없습니다' : '등록된 그룹이 없습니다'}
+                        {groupSearchQuery ? '검색 결과가 없습니다' : <>등록된 그룹이 없습니다.<br />'그룹 추가'를 눌러 그룹을 만들어보세요!</>}
                       </p>
-                      {!groupSearchQuery && (
-                        <p className="groups-empty-desc">그룹을 추가하여 명함을 관리하세요</p>
-                      )}
                     </div>
                   )
                 }
@@ -1410,7 +1465,7 @@ function BusinessCardWallet() {
                   <div className="card-carousel-section">
                     {!isGridView && !selectedGroupId ? (
                       <>
-                        <p className="slide-view-hint">명함을 눌러 상세정보 확인</p>
+                        <p className="slide-view-hint">프로필 카드를 눌러 상세정보 확인</p>
                         <div className="carousel-container">
                           <button
                             className="carousel-nav-btn carousel-nav-prev"
@@ -1477,14 +1532,13 @@ function BusinessCardWallet() {
                                     <div
                                       className="business-card-display"
                                       style={{
-                                        background: card.design && cardDesigns[card.design]
-                                          ? cardDesigns[card.design]
-                                          : cardDesigns['design-1']
+                                        background: resolveCardDesign(card.design)
                                       }}
                                     >
+                                      {(() => { const tc = getCardTextColors(card.design); return (
                                       <div className="card-display-content">
                                         <div className="card-top-section">
-                                          {card.company && <p className="card-company">{card.company}</p>}
+                                          {card.company && <p className="card-company" style={{ color: tc.sub }}>{card.company}</p>}
                                           <button
                                             className="card-heart-button"
                                             onClick={(e) => handleToggleFavorite(e, card.id)}
@@ -1495,17 +1549,18 @@ function BusinessCardWallet() {
                                         </div>
                                         <div className="card-info-section">
                                           <div>
-                                            {card.position && <p className="card-position">{card.position}</p>}
-                                            <h3 className="card-name">{card.name}</h3>
+                                            {card.position && <p className="card-position" style={{ color: tc.sub }}>{card.position}</p>}
+                                            <h3 className="card-name" style={{ color: tc.main }}>{card.name}</h3>
                                           </div>
                                         </div>
                                         <div className="card-bottom-section">
                                           <div className="card-contact">
-                                            {card.phone && <p className="card-phone">{card.phone}</p>}
-                                            {card.email && <p className="card-email">{card.email}</p>}
+                                            {card.phone && <p className="card-phone" style={{ color: tc.contact }}>{card.phone}</p>}
+                                            {card.email && <p className="card-email" style={{ color: tc.contact }}>{card.email}</p>}
                                           </div>
                                         </div>
                                       </div>
+                                      ); })()}
                                     </div>
                                   </div>
                                 )
@@ -1570,14 +1625,13 @@ function BusinessCardWallet() {
                                 <div
                                   className="grid-business-card"
                                   style={{
-                                    background: card.design && cardDesigns[card.design]
-                                      ? cardDesigns[card.design]
-                                      : cardDesigns['design-1']
+                                    background: resolveCardDesign(card.design)
                                   }}
                                 >
+                                  {(() => { const tc = getCardTextColors(card.design); return (
                                   <div className="grid-card-content">
                                     <div className="grid-card-top">
-                                      {card.company && <p className="grid-card-company">{card.company}</p>}
+                                      {card.company && <p className="grid-card-company" style={{ color: tc.sub }}>{card.company}</p>}
                                       <button
                                         className="grid-card-heart-button"
                                         onClick={(e) => handleToggleFavorite(e, card.id)}
@@ -1586,13 +1640,14 @@ function BusinessCardWallet() {
                                         <HeartIcon filled={card.isFavorite || false} />
                                       </button>
                                     </div>
-                                    {card.position && <p className="grid-card-position">{card.position}</p>}
+                                    {card.position && <p className="grid-card-position" style={{ color: tc.sub }}>{card.position}</p>}
                                     <div className="grid-card-info">
                                       <div>
-                                        <h3 className="grid-card-name">{card.name}</h3>
+                                        <h3 className="grid-card-name" style={{ color: tc.main }}>{card.name}</h3>
                                       </div>
                                     </div>
                                   </div>
+                                  ); })()}
                                 </div>
                               </div>
                             )
@@ -1634,7 +1689,11 @@ function BusinessCardWallet() {
                   </div>
                 ) : (
                   <div className="empty-state">
-                    <p className="empty-message">검색 결과가 없습니다.</p>
+                    <p className="empty-message">
+                      {cards.length === 0
+                        ? <>아직 등록된 프로필이 없습니다.<br />상대방의 프로필을 등록해보세요!</>
+                        : '검색 결과가 없습니다.'}
+                    </p>
                   </div>
                 )}
               </>
@@ -1649,7 +1708,7 @@ function BusinessCardWallet() {
               className="relation-graph-btn"
               onClick={() => navigate('/relation-graph')}
             >
-              <span className="relation-graph-text">명함 관계도 보러가기</span>
+              <span className="relation-graph-text">인물 관계도 보러가기</span>
               <svg className="relation-graph-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none">
                 <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -1957,7 +2016,7 @@ function BusinessCardWallet() {
                         )
                       })
                     ) : (
-                      <p className="add-group-empty-message">등록된 명함이 없습니다</p>
+                      <p className="add-group-empty-message">등록된 프로필이 없습니다</p>
                     )}
                   </div>
                   <button
@@ -2037,7 +2096,7 @@ function BusinessCardWallet() {
             >
               <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span className="floating-register-label">명함 등록</span>
+            <span className="floating-register-label">프로필 등록</span>
           </button>
         </div>
       )}
@@ -2132,6 +2191,12 @@ function BusinessCardWallet() {
 
 // Card Detail Modal Component
 function CardDetailModal({ card, onClose }) {
+  const [modalDragY, setModalDragY] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStartY = useRef(0)
+  const dragStartPos = useRef(0)
+  const modalDragYRef = useRef(0)
+
   const [giftHistoryCount, setGiftHistoryCount] = useState(0)
   const [isLoadingGifts, setIsLoadingGifts] = useState(false)
   const [preferences, setPreferences] = useState({ likes: [], dislikes: [], uncertain: [] })
@@ -2373,25 +2438,80 @@ function CardDetailModal({ card, onClose }) {
     }
   }
 
+  // 드래그로 모달 닫기
+  const DISMISS_THRESHOLD = 80
+  const handleDragStart = (e) => {
+    e.preventDefault()
+    dragStartY.current = e.clientY ?? e.touches?.[0]?.clientY ?? 0
+    dragStartPos.current = modalDragY
+    setIsDragging(true)
+  }
+  const handleDragMove = useCallback((e) => {
+    const clientY = e.clientY ?? e.changedTouches?.[0]?.clientY ?? 0
+    const deltaY = clientY - dragStartY.current
+    const newY = Math.max(0, dragStartPos.current + deltaY)
+    modalDragYRef.current = newY
+    setModalDragY(newY)
+  }, [])
+  const handleDragEnd = useCallback(() => {
+    setIsDragging(false)
+    const currentY = modalDragYRef.current
+    if (currentY >= DISMISS_THRESHOLD) {
+      onClose()
+    } else {
+      setModalDragY(0)
+    }
+  }, [onClose])
+
+  useEffect(() => {
+    if (!isDragging) return
+    const onMove = (e) => {
+      e.preventDefault()
+      handleDragMove(e)
+    }
+    const onEnd = () => handleDragEnd()
+    document.addEventListener('pointermove', onMove, { passive: false })
+    document.addEventListener('pointerup', onEnd)
+    document.addEventListener('pointercancel', onEnd)
+    return () => {
+      document.removeEventListener('pointermove', onMove)
+      document.removeEventListener('pointerup', onEnd)
+      document.removeEventListener('pointercancel', onEnd)
+    }
+  }, [isDragging, handleDragMove, handleDragEnd])
+
   // 모달 배경색 (명함 디자인에 맞춤)
-  const modalBackground = card?.design
-    ? pageBackgroundDesigns[card.design] || pageBackgroundDesigns['design-1']
-    : pageBackgroundDesigns['design-1']
+  const modalBackground = resolvePageBackground(card?.design)
 
   // 프로필 카드 배경색 (명함 디자인에 맞춤)
-  const profileCardBackground = card?.design
-    ? cardDesigns[card.design] || cardDesigns['design-1']
-    : cardDesigns['design-1']
+  const profileCardBackground = resolveCardDesign(card?.design)
+  const modalCardTextColors = getCardTextColors(card?.design)
 
   return (
     <div className="card-detail-modal-overlay" onClick={onClose}>
-      <div
-        className="card-detail-modal"
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: modalBackground
-        }}
-      >
+      <div className="card-detail-modal-slide-wrapper">
+        <div
+          className="card-detail-modal"
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            background: modalBackground,
+            ...(modalDragY > 0 && {
+              transform: `translateY(${modalDragY}px)`,
+              transition: isDragging ? 'none' : 'transform 0.25s ease-out'
+            })
+          }}
+        >
+        {/* Drag Handle */}
+        <div
+          className="modal-drag-handle"
+          onPointerDown={handleDragStart}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDragStart(e) }}
+          aria-label="끌어내려 닫기"
+        >
+          <div className="modal-drag-handle-bar" />
+        </div>
         {/* Top Navigation */}
         <div className="modal-top-nav">
           <button className="modal-back-button" onClick={onClose}>
@@ -2407,7 +2527,7 @@ function CardDetailModal({ card, onClose }) {
             명함 삭제하기
           </button>
           <button className="modal-customize-button" onClick={handleCustomize}>
-            명함 커스텀하기
+            색상 커스텀
           </button>
         </div>
 
@@ -2420,18 +2540,18 @@ function CardDetailModal({ card, onClose }) {
         >
           {/* 우측 상단 연락처 정보 */}
           <div className="modal-profile-contact">
-            {displayValue(card.phone) !== '-' && <p className="modal-profile-phone">{displayValue(card.phone)}</p>}
-            {displayValue(card.email) !== '-' && <p className="modal-profile-email">{displayValue(card.email)}</p>}
+            {displayValue(card.phone) !== '-' && <p className="modal-profile-phone" style={{ color: modalCardTextColors.contact }}>{displayValue(card.phone)}</p>}
+            {displayValue(card.email) !== '-' && <p className="modal-profile-email" style={{ color: modalCardTextColors.contact }}>{displayValue(card.email)}</p>}
           </div>
 
           {/* 상단 소속 정보 */}
-          {displayValue(card.company) !== '-' && <p className="modal-profile-company">{displayValue(card.company)}</p>}
+          {displayValue(card.company) !== '-' && <p className="modal-profile-company" style={{ color: modalCardTextColors.sub }}>{displayValue(card.company)}</p>}
 
           <div className="modal-profile-section">
             <div className="modal-profile-left">
               <div className="modal-profile-info">
-                {displayValue(card.position) !== '-' && <p className="modal-profile-position">{displayValue(card.position)}</p>}
-                <h2 className="modal-profile-name">
+                {displayValue(card.position) !== '-' && <p className="modal-profile-position" style={{ color: modalCardTextColors.sub }}>{displayValue(card.position)}</p>}
+                <h2 className="modal-profile-name" style={{ color: modalCardTextColors.main }}>
                   {card.name}
                 </h2>
               </div>
@@ -2450,23 +2570,25 @@ function CardDetailModal({ card, onClose }) {
             <div className="gift-card-content-wrapper">
               <div className="gift-card-info">
                 <div className="gift-card-label-row">
-                  <svg className="gift-card-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="6" width="10" height="8" rx="0.5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M3 8L8 11L13 8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M8 11V14" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M5.5 4.5L5.5 8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M10.5 4.5L10.5 8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M5.5 4.5L8 2.5L10.5 4.5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <circle cx="8" cy="5.5" r="0.8" fill="#0a0a0a" />
+                  <svg className="gift-card-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="12" width="18" height="9" rx="1.5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M12 12V21" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" />
+                    <rect x="5" y="8" width="14" height="4" rx="1" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M12 8C12 8 9 8 7.5 6.5C6.5 5.5 6.5 4 7.5 3.5C8.5 3 10 3.5 11 5C11.5 6 12 8 12 8Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M12 8C12 8 15 8 16.5 6.5C17.5 5.5 17.5 4 16.5 3.5C15.5 3 14 3.5 13 5C12.5 6 12 8 12 8Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   <span className="gift-card-label">선물 이력</span>
                 </div>
-                <p className="gift-card-value gift-card-value-left">{giftHistoryCount}회</p>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="gift-card-arrow">
-                <path d="M9 18L15 12L9 6" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
             </div>
+          </button>
+          <button
+            type="button"
+            onClick={handleGiftRecommend}
+            className="action-btn action-btn-primary modal-gift-recommend-btn"
+          >
+            <img src="/assets/mars_logo_blueberry.png" alt="" className="gift-recommend-icon" />
+            선물 추천
           </button>
           <button
             type="button"
@@ -2478,10 +2600,11 @@ function CardDetailModal({ card, onClose }) {
             })}
             className="action-btn action-btn-primary modal-memo-button"
           >
-            <svg className="memo-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 3H13C13.5523 3 14 3.44772 14 4V12C14 12.5523 13.5523 13 13 13H3C2.44772 13 2 12.5523 2 12V4C2 3.44772 2.44772 3 3 3Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M5 6H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M5 9H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <svg className="memo-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <polyline points="14,2 14,8 20,8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             메모
           </button>
@@ -2501,7 +2624,7 @@ function CardDetailModal({ card, onClose }) {
                   className={`modal-tab-toggle-option ${activeTab === 'info' ? 'active' : ''}`}
                   onClick={() => setActiveTab('info')}
                 >
-                  명함 정보
+                  상대 정보
                 </button>
                 <button
                   type="button"
@@ -2519,8 +2642,8 @@ function CardDetailModal({ card, onClose }) {
                 {/* Phone Number */}
                 <div className="modal-info-row">
                   <span className="info-icon">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M14.6667 11.28V13.28C14.6667 13.68 14.3467 14 13.9467 14C6.26667 14 0 7.73333 0 0.0533333C0 -0.346667 0.32 -0.666667 0.72 -0.666667H2.72C3.12 -0.666667 3.44 -0.346667 3.44 0.0533333C3.44 0.72 3.52 1.36 3.65333 1.97333C3.76 2.26667 3.73333 2.61333 3.52 2.85333L2.42667 3.94667C3.22667 5.70667 4.29333 6.77333 6.05333 7.57333L7.14667 6.48C7.38667 6.26667 7.73333 6.24 8.02667 6.34667C8.64 6.48 9.28 6.56 9.94667 6.56C10.3467 6.56 10.6667 6.88 10.6667 7.28V9.28C10.6667 9.68 10.3467 10 9.94667 10H14.6667Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
                   <div className="info-content">
@@ -2534,9 +2657,9 @@ function CardDetailModal({ card, onClose }) {
                 {/* Email */}
                 <div className="modal-info-row">
                   <span className="info-icon">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2.66667 2.66667H13.3333C14.0667 2.66667 14.6667 3.26667 14.6667 4V12C14.6667 12.7333 14.0667 13.3333 13.3333 13.3333H2.66667C1.93333 13.3333 1.33333 12.7333 1.33333 12V4C1.33333 3.26667 1.93333 2.66667 2.66667 2.66667Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M14.6667 4L8 8.66667L1.33333 4" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <polyline points="22,6 12,13 2,6" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
                   <div className="info-content">
@@ -2550,9 +2673,9 @@ function CardDetailModal({ card, onClose }) {
                 {/* Gender/Position/Department */}
                 <div className="modal-info-row">
                   <span className="info-icon">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="8" cy="5" r="2.5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M3 14C3 11 5 10 8 10C11 10 13 11 13 14" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="12" cy="7" r="4" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
                   <div className="info-content">
@@ -2616,11 +2739,9 @@ function CardDetailModal({ card, onClose }) {
                         <div className="modal-preferences-category-header">
                           <h4 className="modal-preferences-category-title">
                             <span className="preference-like-icon">
-                              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="10" cy="10" r="8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                <circle cx="7" cy="8" r="1" fill="#0a0a0a" />
-                                <circle cx="13" cy="8" r="1" fill="#0a0a0a" />
-                                <path d="M6 13C6 13 7.5 15 10 15C12.5 15 14 13 14 13" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7 10v12" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M15 5.88L14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88z" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                               </svg>
                             </span> 좋아함
                           </h4>
@@ -2666,11 +2787,9 @@ function CardDetailModal({ card, onClose }) {
                       <div className="modal-preferences-category">
                         <h4 className="modal-preferences-category-title">
                           <span className="preference-dislike-icon">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <circle cx="10" cy="10" r="8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                              <circle cx="7" cy="8" r="1" fill="#0a0a0a" />
-                              <circle cx="13" cy="8" r="1" fill="#0a0a0a" />
-                              <path d="M6 13C6 13 7.5 11 10 11C12.5 11 14 13 14 13" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M17 2v12" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              <path d="M9 18.12L10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88z" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                           </span> 싫어함
                         </h4>
@@ -2707,9 +2826,10 @@ function CardDetailModal({ card, onClose }) {
                       <div className="modal-preferences-category">
                         <h4 className="modal-preferences-category-title">
                           <span className="preference-uncertain-icon">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M7 3.5C7 2.5 7.5 1.5 8.5 1.5C9.5 1.5 10 2 10 3C10 4 9.5 4.5 9 5C8.5 5.5 8 6 8 7V8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                              <circle cx="9" cy="12" r="1" fill="#0a0a0a" />
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="12" cy="12" r="10" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              <line x1="12" y1="17" x2="12.01" y2="17" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
                             </svg>
                           </span> 불확실
                         </h4>
@@ -2762,6 +2882,7 @@ function CardDetailModal({ card, onClose }) {
             )}
           </div>
         </div>
+      </div>
       </div>
 
       {showToast && (

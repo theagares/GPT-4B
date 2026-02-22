@@ -21,8 +21,7 @@ function SignupInfoPage() {
   return (
     <div className="signup-info-page">
       <div className="signup-info-content">
-        <p className="signup-info-line1">명함 구성을 위해</p>
-        <p className="signup-info-line2">5가지 정보만 더 물어볼게요.</p>
+        <p className="signup-info-text">추가 정보 입력으로 프로필을 완성해주세요!</p>
       </div>
     </div>
   )

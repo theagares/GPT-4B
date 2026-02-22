@@ -13,6 +13,38 @@ const cardDesigns = {
   'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
 }
 
+function hexToRgbLocal(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) }
+    : { r: 109, g: 48, b: 223 }
+}
+
+function resolveCardDesign(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const dr = Math.round(Math.max(0, r * 0.85))
+    const dg = Math.round(Math.max(0, g * 0.85))
+    const db = Math.round(Math.max(0, b * 0.85))
+    return `linear-gradient(147.99deg, rgba(${r},${g},${b},1) 0%, rgba(${dr},${dg},${db},1) 100%)`
+  }
+  return cardDesigns[designId] || cardDesigns['design-1']
+}
+
+function getCardTextColorsLocal(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const light = (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.65
+    return {
+      main: light ? '#1f2937' : 'white',
+      sub: light ? 'rgba(31,41,55,0.6)' : 'rgba(255,255,255,0.7)',
+    }
+  }
+  return { main: 'white', sub: 'rgba(255,255,255,0.7)' }
+}
+
 // 비즈니스 팁 목록
 const businessTips = [
   '명함을 주고받을 때는 두 손으로 받고, 받은 명함을 즉시 명함집에 보관하세요.',
@@ -252,24 +284,24 @@ function GiftRecommendPage() {
         <div 
           className="contact-info-section"
           style={{
-            background: card?.design && cardDesigns[card.design] 
-              ? cardDesigns[card.design] 
-              : cardDesigns['design-1']
+            background: resolveCardDesign(card?.design)
           }}
         >
+          {(() => { const tc = getCardTextColorsLocal(card?.design); return (<>
           <div className="contact-name-row">
-            <h1 className="contact-name">{card?.name || '이름 없음'}</h1>
+            <h1 className="contact-name" style={{ color: tc.main }}>{card?.name || '이름 없음'}</h1>
           </div>
           <div className="contact-details">
             <div className="contact-detail-row">
-              <span className="detail-label">소속</span>
-              <span className="detail-value">{card?.company || '-'}</span>
+              <span className="detail-label" style={{ color: tc.sub }}>소속</span>
+              <span className="detail-value" style={{ color: tc.main }}>{card?.company || '-'}</span>
             </div>
             <div className="contact-detail-row">
-              <span className="detail-label">직급</span>
-              <span className="detail-value">{card?.position || '-'}</span>
+              <span className="detail-label" style={{ color: tc.sub }}>직급</span>
+              <span className="detail-value" style={{ color: tc.main }}>{card?.position || '-'}</span>
             </div>
           </div>
+          </>); })()}
         </div>
 
         {/* Memos Section */}

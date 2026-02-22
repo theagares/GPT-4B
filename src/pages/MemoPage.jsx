@@ -16,6 +16,38 @@ const cardDesigns = {
   'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
 }
 
+function hexToRgbLocal(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) }
+    : { r: 109, g: 48, b: 223 }
+}
+
+function resolveCardDesign(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const dr = Math.round(Math.max(0, r * 0.85))
+    const dg = Math.round(Math.max(0, g * 0.85))
+    const db = Math.round(Math.max(0, b * 0.85))
+    return `linear-gradient(147.99deg, rgba(${r},${g},${b},1) 0%, rgba(${dr},${dg},${db},1) 100%)`
+  }
+  return cardDesigns[designId] || cardDesigns['design-1']
+}
+
+function getCardTextColorsLocal(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const light = (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.65
+    return {
+      main: light ? '#1f2937' : 'white',
+      sub: light ? 'rgba(31,41,55,0.6)' : 'rgba(255,255,255,0.7)',
+    }
+  }
+  return { main: 'white', sub: 'rgba(255,255,255,0.7)' }
+}
+
 // 뒤로가기 아이콘 SVG 컴포넌트
 function BackIcon() {
   return (
@@ -427,7 +459,7 @@ function MemoPage() {
   // 명함 디자인에 따른 헤더 배경색 가져오기
   const getHeaderBackground = () => {
     if (!card || !card.design) return 'linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(88, 76, 220, 1) 100%)'
-    return cardDesigns[card.design] || cardDesigns['design-1']
+    return resolveCardDesign(card.design)
   }
 
   // 검색어로 메모 필터링
@@ -447,18 +479,18 @@ function MemoPage() {
         <button className="memo-back-button" onClick={handleBack}>
           <BackIcon />
         </button>
-        {businessCardId && card && (
+        {businessCardId && card && (() => { const tc = getCardTextColorsLocal(card.design); return (
           <div className="memo-header-info">
-            <p className="memo-card-name">{card.name || '이름 없음'}</p>
+            <p className="memo-card-name" style={{ color: tc.main }}>{card.name || '이름 없음'}</p>
             {(card.position || card.company) && (
               <div className="memo-header-details">
-                {card.company && <p className="memo-card-company">{card.company}</p>}
-                {card.company && card.position && <span className="memo-header-separator">·</span>}
-                {card.position && <p className="memo-card-position">{card.position}</p>}
+                {card.company && <p className="memo-card-company" style={{ color: tc.sub }}>{card.company}</p>}
+                {card.company && card.position && <span className="memo-header-separator" style={{ color: tc.sub }}>·</span>}
+                {card.position && <p className="memo-card-position" style={{ color: tc.sub }}>{card.position}</p>}
               </div>
             )}
           </div>
-        )}
+        ); })()}
       </div>
 
       <div className="memo-container">

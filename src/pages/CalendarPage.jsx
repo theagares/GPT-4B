@@ -276,7 +276,7 @@ function CalendarPage() {
     if (location.state?.scheduleWith) {
       const { cardId, name, company } = location.state.scheduleWith
       
-      // 참석자에 명함 추가
+      // 참석자에 프로필 추가
       setParticipants([{
         id: cardId,
         name: name,
@@ -392,7 +392,7 @@ function CalendarPage() {
     setModalPosition(0)
   }
 
-  // 참여자 자동완성 검색 (명함에서 검색)
+  // 참여자 자동완성 검색 (프로필에서 검색)
   const fetchContactSuggestions = useCallback(async (searchText) => {
     if (!searchText.trim() || !isAuthenticated()) {
       setContactSuggestions([])
@@ -401,7 +401,7 @@ function CalendarPage() {
     }
 
     try {
-      // 명함 목록에서 검색
+      // 프로필 목록에서 검색
       const response = await cardAPI.getAll({ search: searchText, limit: 10 })
       if (response.data.success) {
         const contacts = (response.data.data || []).map(card => ({
@@ -455,7 +455,7 @@ function CalendarPage() {
 
   const handleAddParticipant = () => {
     if (participantInput.trim()) {
-      // 명함에 없는 직접 입력 참여자
+      // 프로필에 없는 직접 입력 참여자
       setParticipants([...participants, {
         name: participantInput.trim(),
         isFromCard: false
@@ -470,7 +470,7 @@ function CalendarPage() {
     const removedParticipant = participants[index]
     setParticipants(participants.filter((_, i) => i !== index))
 
-    // 명함에서 온 참여자면 linkedCardIds에서도 제거
+    // 프로필에서 온 참여자면 linkedCardIds에서도 제거
     if (removedParticipant.isFromCard && removedParticipant.id) {
       setLinkedCardIds(linkedCardIds.filter(id => id !== removedParticipant.id))
     }
@@ -895,7 +895,7 @@ function CalendarPage() {
                 <input
                   type="text"
                   className="participant-input"
-                  placeholder="이름으로 명함 검색 또는 직접 입력"
+                  placeholder="이름으로 프로필 검색 또는 직접 입력"
                   value={participantInput}
                   onChange={handleParticipantInputChange}
                   onKeyPress={handleParticipantKeyPress}
@@ -909,7 +909,7 @@ function CalendarPage() {
                   className={`participant-button ${participantInput.trim() ? 'active' : ''}`}
                   onClick={handleAddParticipant}
                   disabled={!participantInput.trim()}
-                  title="명함에 없는 참여자 직접 추가"
+                  title="프로필에 없는 참여자 직접 추가"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -941,7 +941,7 @@ function CalendarPage() {
                   <div key={index} className={`participant-tag ${participant.isFromCard ? 'from-card' : ''}`}>
                     <span>{typeof participant === 'string' ? participant : participant.name}</span>
                     {participant.isFromCard && (
-                      <span className="participant-card-badge" title="명함에서 추가됨">
+                      <span className="participant-card-badge" title="프로필에서 추가됨">
                         <PersonIcon />
                       </span>
                     )}

@@ -27,7 +27,7 @@
   object-fit: cover;
 }
 
-/* 명함 가이드 프레임 */
+/* 프로필 가이드 프레임 */
 .ocr-guide-frame {
   position: absolute;
   top: 50%;

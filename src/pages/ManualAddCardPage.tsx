@@ -14,13 +14,13 @@ const ManualAddCardPage = () => {
 
   const handleSubmit = async (card: BusinessCard) => {
     try {
-      // 새 명함 추가 (DB에 저장)
+      // 새 프로필 추가 (DB에 저장)
       const saved = await addCard(card);
       setSavedCard(saved);
       setShowMemoPrompt(true);
     } catch (error) {
       console.error('Failed to save card:', error);
-      alert('명함 저장에 실패했습니다. 다시 시도해주세요.');
+      alert('프로필 저장에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -30,7 +30,7 @@ const ManualAddCardPage = () => {
       // 스케줄 종료 팝업에서 온 경우 팝업으로 돌아가기
       if (location.state?.returnToEndedPopup && location.state?.popupState) {
         const popupState = location.state.popupState;
-        // 새로 등록된 명함 정보를 팝업 상태에 추가
+        // 새로 등록된 프로필 정보를 팝업 상태에 추가
         const updatedPopupState = {
           ...popupState,
           savedCardId: savedCard.id,
@@ -43,7 +43,7 @@ const ManualAddCardPage = () => {
           }
         });
       } else if (location.state?.returnToEventDetail && location.state?.eventId) {
-        // 일정 상세에서 온 경우 명함집으로 이동하되, 일정 상세로 돌아갈 수 있도록 state 전달
+        // 일정 상세에서 온 경우 프로필집으로 이동하되, 일정 상세로 돌아갈 수 있도록 state 전달
         navigate("/business-cards", { 
           state: { 
             openCardId: savedCard.id,
@@ -52,7 +52,7 @@ const ManualAddCardPage = () => {
           } 
         });
       } else {
-        // 일반적인 경우 명함집으로 이동
+        // 일반적인 경우 프로필집으로 이동
         navigate("/business-cards", { state: { openCardId: savedCard.id } });
       }
     }
@@ -77,9 +77,9 @@ const ManualAddCardPage = () => {
           </svg>
         </button>
         <div className="manual-add-card-header-content">
-          <h1 className="manual-add-card-title">수동 명함 등록</h1>
+          <h1 className="manual-add-card-title">수동 프로필 등록</h1>
           <p className="manual-add-card-subtitle">
-            상대방의 정보를 직접 입력해서 명함을 등록할 수 있어요.
+            상대방의 정보를 직접 입력해서 프로필을 등록할 수 있어요.
           </p>
         </div>
         <div style={{ width: '24px' }}></div> {/* Placeholder for right alignment */}

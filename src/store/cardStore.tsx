@@ -35,7 +35,7 @@ type CardState = {
 
 const demoCards: BusinessCard[] = [
   {
-    id: "card-park-sangmu", // 박상무 명함 고정 ID
+    id: "card-park-sangmu", // 박상무 프로필 고정 ID
     name: "박상무",
     position: "상무",
     company: "테스트 회사",
@@ -248,7 +248,7 @@ export const useCardStore = create<CardState>((set, get) => ({
               (card.id === id || String(card.id) === String(id)) ? formattedCard : card
             ),
           }));
-          // 명함 수정 후 목록을 새로고침하여 변경사항 반영
+          // 프로필 수정 후 목록을 새로고침하여 변경사항 반영
           get().fetchCards();
         }
       } catch (error) {

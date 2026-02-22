@@ -17,7 +17,7 @@ function WelcomePage() {
   return (
     <div className="welcome-page">
       <div className="welcome-content">
-        <h1>Welcome !!</h1>
+        <h1>환영합니다!</h1>
       </div>
     </div>
   )

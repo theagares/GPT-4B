@@ -17,6 +17,39 @@ const cardDesigns = {
   'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
 }
 
+function hexToRgbLocal(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) }
+    : { r: 109, g: 48, b: 223 }
+}
+
+function resolveCardDesign(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const dr = Math.round(Math.max(0, r * 0.85))
+    const dg = Math.round(Math.max(0, g * 0.85))
+    const db = Math.round(Math.max(0, b * 0.85))
+    return `linear-gradient(147.99deg, rgba(${r},${g},${b},1) 0%, rgba(${dr},${dg},${db},1) 100%)`
+  }
+  return cardDesigns[designId] || cardDesigns['design-1']
+}
+
+function getCardTextColorsLocal(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const light = (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.65
+    return {
+      main: light ? '#1f2937' : 'white',
+      sub: light ? 'rgba(31,41,55,0.6)' : 'rgba(255,255,255,0.7)',
+      contact: light ? 'rgba(31,41,55,0.5)' : 'rgba(255,255,255,0.6)',
+    }
+  }
+  return { main: 'white', sub: 'rgba(255,255,255,0.7)', contact: 'rgba(255,255,255,0.6)' }
+}
+
 // 인기 선물 데이터 (PopularGiftsPage와 동일한 데이터, 상위 5개만 표시)
 const popularGifts = [
   {
@@ -1371,32 +1404,22 @@ function LandingPage() {
       <div className="landing-container">
         {/* AI Gift Recommendation Banner */}
         <div className="ai-banner">
-        {/* Header */}
-        <div className="landing-header">
-          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="header-logo" />
-        </div>
-          <div className="banner-content">
-            <div className="banner-text">
-              <p className="banner-subtitle">AI 맞춤형 비즈니스 인맥 관리 어플리케이션 GPT-4b</p>
-              <p className="banner-title">명함 관리와 선물 추천으로 인맥 관리를 도와드립니다</p>
-            </div>
+          <div className="landing-header">
+            <img src="/assets/mars_logo_blueberry.png" alt="GPT-4b Logo" className="header-logo" />
           </div>
         </div>
 
         {/* Search Section */}
         <div className="search-section">
           {userName && (
-            <div className="search-greeting-name">{userName}님 안녕하세요.</div>
+            <div className="search-greeting-name">안녕하세요 {userName}님!</div>
           )}
-          <div className="search-greeting">
-누구의 명함을 찾고 계신가요?
-          </div>
           
           <div className="search-input-container">
             <textarea
               className="search-textarea"
-              placeholder="상대가 무엇을 좋아하는지, 어떤 성격인지 등을 입력해주세요"
-              rows={3}
+              placeholder={"누구를 찾고 계신가요?\n작성하신 메모를 기반으로 상대방을 찾아드립니다"}
+              rows={4}
               value={searchQuery}
               onChange={(e) => {
                 console.log('✏️ 텍스트 입력:', e.target.value)
@@ -1648,7 +1671,7 @@ function LandingPage() {
         <div className="card-complete-modal-overlay" onClick={handleCloseModal}>
           <div className="card-complete-modal" onClick={(e) => e.stopPropagation()}>
             <p className="card-complete-message">
-              {userName}님의 명함이 완성됐어요.<br />
+              {userName}님의 프로필 카드가 완성됐어요.<br />
               확인하러 갈까요?
             </p>
             <div className="card-complete-buttons">
@@ -1799,16 +1822,14 @@ function LandingPage() {
                 <div 
                   className="card-info-person-header"
                   style={{
-                    background: selectedCardInfo.design && cardDesigns[selectedCardInfo.design]
-                      ? cardDesigns[selectedCardInfo.design]
-                      : cardDesigns['design-1'],
+                    background: resolveCardDesign(selectedCardInfo.design),
                     borderRadius: '12px',
                     padding: '16px',
-                    color: 'white'
+                    color: getCardTextColorsLocal(selectedCardInfo.design).main
                   }}
                 >
-                  <span className="card-info-name" style={{ color: 'white' }}>{selectedCardInfo.name}</span>
-                  <span className="card-info-detail" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+                  <span className="card-info-name" style={{ color: getCardTextColorsLocal(selectedCardInfo.design).main }}>{selectedCardInfo.name}</span>
+                  <span className="card-info-detail" style={{ color: getCardTextColorsLocal(selectedCardInfo.design).sub }}>
                     {selectedCardInfo.company && selectedCardInfo.company}
                     {selectedCardInfo.position && ` · ${selectedCardInfo.position}`}
                   </span>

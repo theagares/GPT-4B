@@ -94,7 +94,7 @@ const OCRCamera = ({ onCapture, isProcessing = false, onError, onCameraToggle }:
           className="ocr-camera-video"
         />
         
-        {/* 명함 가이드 프레임 */}
+        {/* 프로필 가이드 프레임 */}
         <div className="ocr-guide-frame">
           <div className="ocr-guide-corner top-left"></div>
           <div className="ocr-guide-corner top-right"></div>

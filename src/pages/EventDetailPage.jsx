@@ -163,7 +163,7 @@ function EventDetailPage() {
   const [contactSuggestions, setContactSuggestions] = useState([])
   const [showContactSuggestions, setShowContactSuggestions] = useState(false)
   const [linkedCardIds, setLinkedCardIds] = useState([])
-  const [participants, setParticipants] = useState([]) // 참여자 객체 배열 (명함 정보 포함)
+  const [participants, setParticipants] = useState([]) // 참여자 객체 배열 (프로필 정보 포함)
   const participantDropdownRef = useRef(null)
   const [showRegisterCardModal, setShowRegisterCardModal] = useState(false)
   const [selectedParticipantName, setSelectedParticipantName] = useState('')
@@ -210,7 +210,7 @@ function EventDetailPage() {
                 linkedCardIds: linkedCardIdsArray
               }
               
-              // linkedCardIds의 명함 정보를 가져와서 이름으로 매칭
+              // linkedCardIds의 프로필 정보를 가져와서 이름으로 매칭
               const cardInfoMap = new Map()
               if (linkedCardIdsArray.length > 0) {
                 try {
@@ -222,7 +222,7 @@ function EventDetailPage() {
                   )
                   const cardResponses = await Promise.all(cardPromises)
                   
-                  // 명함 정보를 이름을 키로 하는 Map에 저장
+                  // 프로필 정보를 이름을 키로 하는 Map에 저장
                   cardResponses.forEach((response) => {
                     if (response && response.data && response.data.success && response.data.data) {
                       const card = response.data.data
@@ -240,13 +240,13 @@ function EventDetailPage() {
                 }
               }
               
-              // 모든 참여자 이름으로 명함 검색 (명함 등록 후 새로 추가된 명함도 찾기 위해)
+              // 모든 참여자 이름으로 프로필 검색 (프로필 등록 후 새로 추가된 프로필도 찾기 위해)
               try {
                 const allCardsResponse = await cardAPI.getAll({})
                 if (allCardsResponse.data.success && allCardsResponse.data.data) {
                   const allCards = allCardsResponse.data.data || []
                   
-                  // 각 참여자 이름으로 명함 검색
+                  // 각 참여자 이름으로 프로필 검색
                   eventData.participants.forEach((participantName) => {
                     const trimmedName = participantName.trim()
                     // 이미 cardInfoMap에 없으면 검색
@@ -347,7 +347,7 @@ function EventDetailPage() {
     fetchEventData(true)
   }, [eventId])
   
-  // 페이지 포커스 시 이벤트 데이터 새로고침 (명함 등록 후 돌아왔을 때 반영)
+  // 페이지 포커스 시 이벤트 데이터 새로고침 (프로필 등록 후 돌아왔을 때 반영)
   useEffect(() => {
     const handleFocus = () => {
       if (eventId && isAuthenticated()) {
@@ -419,7 +419,7 @@ function EventDetailPage() {
     return endMinutes <= startMinutes
   }
 
-  // 명함 자동완성 검색
+  // 프로필 자동완성 검색
   const fetchContactSuggestions = async (searchText) => {
     if (!searchText || searchText.trim().length < 1) {
       setContactSuggestions([])
@@ -428,7 +428,7 @@ function EventDetailPage() {
     }
     
     try {
-      // 명함 목록에서 검색
+      // 프로필 목록에서 검색
       const response = await cardAPI.getAll({ search: searchText, limit: 10 })
       if (response.data.success) {
         const contacts = (response.data.data || []).map(card => ({
@@ -455,7 +455,7 @@ function EventDetailPage() {
     // 1글자 이상 입력 시 검색
     if (value.trim().length >= 1) {
       fetchContactSuggestions(value)
-      // 명함 검색 결과가 없거나 입력한 이름이 검색 결과에 없으면 직접 입력 옵션 표시
+      // 프로필 검색 결과가 없거나 입력한 이름이 검색 결과에 없으면 직접 입력 옵션 표시
       setShowContactSuggestions(true)
     } else {
       setContactSuggestions([])
@@ -488,7 +488,7 @@ function EventDetailPage() {
 
   const handleAddParticipant = () => {
     if (participantInput.trim()) {
-      // 명함에 없는 직접 입력 참여자
+      // 프로필에 없는 직접 입력 참여자
       const newParticipant = {
         name: participantInput.trim(),
         isFromCard: false
@@ -508,7 +508,7 @@ function EventDetailPage() {
     const updatedParticipants = participants.filter((_, i) => i !== index)
     setParticipants(updatedParticipants)
     
-    // 명함에서 온 참여자면 linkedCardIds에서도 제거
+    // 프로필에서 온 참여자면 linkedCardIds에서도 제거
     if (removedParticipant.isFromCard && removedParticipant.id) {
       setLinkedCardIds(linkedCardIds.filter(id => id !== removedParticipant.id))
     }
@@ -542,10 +542,10 @@ function EventDetailPage() {
     const linkedCardIdsList = event.linkedCardIds || []
     let cardId = null
     
-    // linkedCardIds에 있는 명함들을 가져와서 이름으로 매칭
+    // linkedCardIds에 있는 프로필들을 가져와서 이름으로 매칭
     if (linkedCardIdsList.length > 0) {
       try {
-        // 모든 linkedCardIds의 명함 정보를 가져오기
+        // 모든 linkedCardIds의 프로필 정보를 가져오기
         const cardPromises = linkedCardIdsList.map(cardId => 
           cardAPI.getById(cardId).catch(err => {
             console.error(`Failed to fetch card ${cardId}:`, err)
@@ -555,7 +555,7 @@ function EventDetailPage() {
         
         const cardResponses = await Promise.all(cardPromises)
         
-        // 이름이 정확히 일치하는 명함 찾기
+        // 이름이 정확히 일치하는 프로필 찾기
         for (const response of cardResponses) {
           if (response && response.data && response.data.success && response.data.data) {
             const card = response.data.data
@@ -575,7 +575,7 @@ function EventDetailPage() {
       try {
         const response = await cardAPI.getAll({ search: participantName.trim() })
         if (response.data.success && response.data.data && response.data.data.length > 0) {
-          // 이름이 정확히 일치하는 명함 찾기
+          // 이름이 정확히 일치하는 프로필 찾기
           const matchingCard = response.data.data.find(card => 
             card.name && card.name.trim() === participantName.trim()
           )
@@ -591,7 +591,7 @@ function EventDetailPage() {
     }
     
     if (cardId) {
-      // 명함이 있으면 명함집 페이지로 이동하고 해당 명함 선택
+      // 프로필이 있으면 프로필집 페이지로 이동하고 해당 프로필 선택
       navigate('/business-cards', { 
         state: { 
           openCardId: cardId,
@@ -600,13 +600,13 @@ function EventDetailPage() {
         } 
       })
     } else {
-      // 명함이 없으면 등록 팝업 표시
+      // 프로필이 없으면 등록 팝업 표시
       setSelectedParticipantName(participantName)
       setShowRegisterCardModal(true)
     }
   }
 
-  // 명함 등록하기 버튼 클릭
+  // 프로필 등록하기 버튼 클릭
   const handleGoToRegisterCard = () => {
     setShowRegisterCardModal(false)
     navigate('/manual-add', { 
@@ -618,7 +618,7 @@ function EventDetailPage() {
     })
   }
 
-  // 명함 등록 팝업 닫기
+  // 프로필 등록 팝업 닫기
   const handleCloseRegisterCardModal = () => {
     setShowRegisterCardModal(false)
     setSelectedParticipantName('')
@@ -1084,7 +1084,7 @@ function EventDetailPage() {
                     fetchContactSuggestions(participantInput)
                   }
                 }}
-                placeholder="이름으로 명함 검색 또는 직접 입력"
+                placeholder="이름으로 프로필 검색 또는 직접 입력"
               />
               <button
                 type="button"
@@ -1097,7 +1097,7 @@ function EventDetailPage() {
                   }
                 }}
                 disabled={!participantInput.trim()}
-                title="명함에 없는 참석자 직접 추가"
+                title="프로필에 없는 참석자 직접 추가"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -1138,7 +1138,7 @@ function EventDetailPage() {
                     {participant.isFromCard && (
                       <span 
                         className="participant-card-badge" 
-                        title="명함에서 추가됨"
+                        title="프로필에서 추가됨"
                         style={{
                           color: selectedCategory.color
                         }}
@@ -1197,7 +1197,7 @@ function EventDetailPage() {
                         {isFromCard && (
                           <span 
                             className="participant-card-badge" 
-                            title="명함에서 추가됨"
+                            title="프로필에서 추가됨"
                             style={{
                               color: event?.color || '#584cdc'
                             }}
@@ -1696,12 +1696,12 @@ function EventDetailPage() {
         </button>
       )}
 
-      {/* 명함 등록 팝업 모달 */}
+      {/* 프로필 등록 팝업 모달 */}
       {showRegisterCardModal && (
         <div className="register-card-modal-overlay" onClick={handleCloseRegisterCardModal}>
           <div className="register-card-modal" onClick={(e) => e.stopPropagation()}>
             <div className="register-card-modal-header">
-              <h3 className="register-card-modal-title">명함 등록</h3>
+              <h3 className="register-card-modal-title">프로필 등록</h3>
               <button 
                 className="register-card-modal-close"
                 onClick={handleCloseRegisterCardModal}
@@ -1711,10 +1711,10 @@ function EventDetailPage() {
             </div>
             <div className="register-card-modal-content">
               <p className="register-card-modal-message">
-                <strong>{selectedParticipantName}</strong>님의 명함이 등록되어 있지 않습니다.
+                <strong>{selectedParticipantName}</strong>님의 프로필이 등록되어 있지 않습니다.
               </p>
               <p className="register-card-modal-hint">
-                명함을 등록하시겠습니까?
+                프로필을 등록하시겠습니까?
               </p>
             </div>
             <div className="register-card-modal-actions">
@@ -1728,7 +1728,7 @@ function EventDetailPage() {
                 className="register-card-modal-confirm"
                 onClick={handleGoToRegisterCard}
               >
-                명함 등록하기
+                프로필 등록하기
               </button>
             </div>
           </div>

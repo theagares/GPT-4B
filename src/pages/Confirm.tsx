@@ -55,7 +55,7 @@ const Confirm = () => {
       alert("이름을 입력해주세요.");
       return;
     }
-    // 명함 추가정보 입력 페이지로 이동
+    // 프로필 추가정보 입력 페이지로 이동
     navigate("/add-info", { state: { fromOCR: true, card: pendingCard } });
   };
 
@@ -71,7 +71,7 @@ const Confirm = () => {
         return;
       }
       setPendingCard(editedCard);
-      // 저장 완료 후 명함 추가정보 입력 페이지로 이동
+      // 저장 완료 후 프로필 추가정보 입력 페이지로 이동
       navigate("/add-info", { state: { fromOCR: true, card: editedCard } });
     }
   };

@@ -63,19 +63,19 @@ function SearchResultPage() {
         return
       }
 
-      // 2. cardIds로 명함 정보 가져오기
+      // 2. cardIds로 프로필 정보 가져오기
       const cardIdsParam = cardIds.join(',')
       const cardsResponse = await cardAPI.getAll({ cardIds: cardIdsParam })
-      console.log('✅ 명함 정보 응답:', cardsResponse.data)
+      console.log('✅ 프로필 정보 응답:', cardsResponse.data)
 
       if (!cardsResponse.data.success) {
-        setError('명함 정보를 가져오는데 실패했습니다.')
+        setError('프로필 정보를 가져오는데 실패했습니다.')
         return
       }
 
       const cards = cardsResponse.data.data || []
 
-      // 3. 명함 정보와 evidence를 결합
+      // 3. 프로필 정보와 evidence를 결합
       const combinedResults = cardIds.map((cardId) => {
         const card = cards.find((c) => c.id === cardId)
         let evidences = evidenceMap[cardId] || []
@@ -102,7 +102,7 @@ function SearchResultPage() {
           similarity: 1.0, // cardSearch는 유사도 점수를 제공하지 않으므로 기본값
           finalScore: 1.0,
         }
-      }).filter((result) => result.card && result.card.id) // 유효한 명함만 필터링
+      }).filter((result) => result.card && result.card.id) // 유효한 프로필만 필터링
 
       console.log('📊 최종 결과 개수:', combinedResults.length)
       setResults(combinedResults)

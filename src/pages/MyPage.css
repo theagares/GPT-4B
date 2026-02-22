@@ -1,9 +1,8 @@
 .my-page {
   width: 100%;
-  max-width: 393px;
   min-height: 100vh;
   background-color: #000000;
-  border-radius: 40px;
+  border-radius: 0;
   overflow: visible;
   position: relative;
   margin: 0 auto;
@@ -16,6 +15,8 @@
 
 .my-page-background {
   width: 100%;
+  max-width: 393px;
+  margin: 0 auto;
   height: 100%;
   min-height: 100vh;
   position: relative;
@@ -23,35 +24,43 @@
   transition: background 0.3s ease;
 }
 
-/* 헤더 */
+/* 헤더 - MySettingsPage와 동일한 위치 및 크기 */
 .my-page-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 393px;
+  margin: 0 auto;
+  z-index: 100;
+  padding: 56px 24px 20px;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  padding: 8px 0 0 8px;
-  height: 56px;
-  position: relative;
-  z-index: 10;
-  width: 100%;
+  box-sizing: border-box;
 }
 
 .my-page-header .back-button {
-  width: 40px;
-  height: 40px;
-  background: transparent;
+  background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  z-index: 11;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+
+.my-page-header .back-button:hover {
+  opacity: 0.7;
 }
 
 .my-page-header .back-icon {
   width: 24px;
   height: 24px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -127,8 +136,11 @@
   background: linear-gradient(147.99deg, rgba(109, 48, 223, 1) 0%, rgba(255, 255, 255, 1) 100%);
   border-radius: clamp(20px, 7.6%, 42px);
   padding: clamp(20px, 7.6%, 42px) 0 0 clamp(20px, 7.6%, 42px);
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25),
-              0px 20px 40px -10px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 -8px 28px -2px rgba(0, 0, 0, 0.08),
+              0 8px 28px -2px rgba(0, 0, 0, 0.08),
+              -8px 0 28px -2px rgba(0, 0, 0, 0.08),
+              8px 0 28px -2px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -227,7 +239,7 @@
 
 .card-contact {
   position: absolute;
-  top: clamp(18px, 5.6%, 32px);
+  top: clamp(28px, 9.2%, 50px);
   right: clamp(28px, 8.5%, 48px);
   display: flex;
   flex-direction: column;

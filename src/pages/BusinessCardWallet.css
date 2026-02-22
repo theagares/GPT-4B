@@ -2211,7 +2211,7 @@
   background-color: rgba(0, 0, 0, 0);
   z-index: 1000;
   display: flex;
-  align-items: stretch;
+  align-items: flex-end;
   justify-content: center;
   padding: 0;
   overflow: hidden;
@@ -2228,6 +2228,18 @@
   }
 }
 
+/* 모달 슬라이드 래퍼 - 열기 애니메이션 + overflow */
+.card-detail-modal-slide-wrapper {
+  width: 100%;
+  max-width: 393px;
+  margin-top: auto;
+  max-height: calc(100dvh - 72px);
+  max-height: calc(var(--vh, 1vh) * 100 - 72px);
+  overflow: hidden;
+  animation: slideUpModal 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform: translateY(100%);
+}
+
 /* iOS Safari viewport fix: 모달 높이를 100dvh로 변경 */
 .card-detail-modal {
   /* background-color: #f9fafb; */
@@ -2235,10 +2247,9 @@
   border-radius: 40px 40px 0 0;
   width: 100%;
   max-width: 393px;
-  /* iOS Safari viewport fix: 100vh 대신 100dvh 사용 */
-  height: 100dvh; /* 동적 viewport height */
-  height: calc(var(--vh, 1vh) * 100); /* CSS 변수 fallback */
-  overflow-y: auto;
+  height: calc(100dvh - 72px);
+  height: calc(var(--vh, 1vh) * 100 - 72px);
+  overflow-y: scroll;
   overflow-x: hidden;
   padding: 0;
   position: relative;
@@ -2246,8 +2257,6 @@
   flex-direction: column;
   box-sizing: border-box;
   transition: background 0.3s ease;
-  animation: slideUpModal 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  transform: translateY(100%);
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
@@ -2286,18 +2295,46 @@
   }
 }
 
+/* Modal Drag Handle */
+.modal-drag-handle {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 12px 0 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  flex-shrink: 0;
+  background: inherit;
+}
+
+.modal-drag-handle:active {
+  cursor: grabbing;
+}
+
+.modal-drag-handle-bar {
+  width: 40px;
+  height: 4px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
 /* Top Navigation */
 .modal-top-nav {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 20px 20px 12px 20px;
+  padding: 12px 20px 4px 20px;
   position: relative;
 }
 
 .modal-back-button {
   width: 40px;
   height: 40px;
+  margin-top: 12px;
   background-color: transparent;
   border: none;
   display: flex;
@@ -2305,6 +2342,17 @@
   justify-content: center;
   cursor: pointer;
   padding: 0;
+  outline: none;
+  border-radius: 0;
+}
+
+.modal-back-button:hover,
+.modal-back-button:focus,
+.modal-back-button:focus-visible {
+  outline: none;
+  background-color: transparent;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .modal-top-right {
@@ -2356,6 +2404,7 @@
 }
 
 .modal-customize-button {
+  width: 90px;
   padding: 4px 12px;
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(5px) saturate(180%);
@@ -2566,25 +2615,25 @@
 .modal-action-buttons {
   display: flex;
   gap: 12px;
-  margin: 12px 20px;
+  margin: 4px 20px 12px 20px;
   padding: 0;
   box-sizing: border-box;
 }
 
 .modal-action-buttons .modal-gift-card-button {
-  flex: 0 0 calc(50% - 6px);
+  flex: 1;
+  min-width: 0;
   background-color: white;
   border: none;
-  border-radius: 14px;
-  padding: 12px;
-  height: 60px;
+  border-radius: 9999px;
+  padding: 6px 8px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  min-width: 0;
 }
 
 .modal-action-buttons .modal-gift-card-button .gift-card-content-wrapper {
@@ -2597,14 +2646,21 @@
 
 .modal-action-buttons .modal-gift-card-button .gift-card-info {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   flex: 1;
   justify-content: center;
 }
 
 .modal-action-buttons .modal-gift-card-button .gift-card-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.modal-action-buttons .modal-gift-card-button .gift-card-value-arrow-row {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2617,13 +2673,13 @@
 }
 
 .modal-action-buttons .modal-gift-card-button .gift-card-label {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .modal-action-buttons .modal-gift-card-button .gift-card-value {
   margin: 0;
   padding: 0;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .modal-action-buttons .modal-gift-card-button .gift-card-arrow {
@@ -2634,23 +2690,51 @@
 }
 
 .modal-action-buttons .modal-memo-button {
-  flex: 0 0 calc(50% - 6px);
-  width: auto;
-  height: 60px;
+  flex: 1;
+  min-width: 0;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 13px;
   white-space: nowrap;
   box-sizing: border-box;
-  padding: 12px 16px;
+  padding: 6px 8px;
   gap: 6px;
+  border-radius: 9999px;
 }
 
 .modal-action-buttons .modal-memo-button .memo-icon {
   flex-shrink: 0;
   width: 18px;
   height: 18px;
+}
+
+.modal-action-buttons .modal-gift-recommend-btn {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  gap: 6px;
+  background-color: #ffffff;
+  color: rgba(88, 76, 220, 1);
+  border: none;
+  border-radius: 9999px;
+  font-weight: 600;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.modal-action-buttons .modal-gift-recommend-btn .gift-recommend-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .modal-gift-card-button {
@@ -2848,7 +2932,7 @@
 
 /* Business Card Information Section */
 .modal-info-section {
-  padding: 0 20px 32px 20px;
+  padding: 0 20px 100px 20px;
   margin-top: -1px;
 }
 
@@ -2862,7 +2946,7 @@
 
 .modal-info-card {
   background-color: white;
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 12px 20px 12px 20px;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -2874,7 +2958,7 @@
   position: absolute;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 16px;
+  border-radius: 8px;
   z-index: 10;
   pointer-events: auto;
   cursor: pointer;
@@ -3635,7 +3719,7 @@
 }
 
 .floating-register-label {
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 600;
   color: inherit;
   transition: color 0.3s ease;
@@ -3827,9 +3911,9 @@
 }
 
 .groups-empty-message {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: 14px;
+  font-weight: 400;
+  color: #9ca3af;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0 0 2px 0;
 }
@@ -3837,7 +3921,7 @@
 .groups-empty-desc {
   font-size: 14px;
   font-weight: 400;
-  color: #6b7280;
+  color: #9ca3af;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0;
 }

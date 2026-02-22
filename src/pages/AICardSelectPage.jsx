@@ -49,6 +49,25 @@ const cardDesigns = {
   'design-6': 'linear-gradient(147.99deg, rgba(99, 102, 241, 1) 0%, rgba(79, 70, 229, 1) 100%)',
 }
 
+function hexToRgbLocal(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) }
+    : { r: 109, g: 48, b: 223 }
+}
+
+function resolveCardDesign(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const dr = Math.round(Math.max(0, r * 0.85))
+    const dg = Math.round(Math.max(0, g * 0.85))
+    const db = Math.round(Math.max(0, b * 0.85))
+    return `linear-gradient(147.99deg, rgba(${r},${g},${b},1) 0%, rgba(${dr},${dg},${db},1) 100%)`
+  }
+  return cardDesigns[designId] || cardDesigns['design-1']
+}
+
 function AICardSelectPage() {
   const navigate = useNavigate()
   const { cards, fetchCards, isLoading } = useCardStore()
@@ -148,11 +167,7 @@ function AICardSelectPage() {
   }
 
   const handleCardSelect = (card) => {
-    navigate('/gift-recommend', { state: { card, from: 'ai-card-select' } })
-  }
-
-  const handleHistoryClick = () => {
-    navigate('/chat-history')
+    navigate(`/memo?businessCardId=${card.id}`)
   }
 
   const handleNavigateToCards = () => {
@@ -191,11 +206,9 @@ function AICardSelectPage() {
             </svg>
           </button>
           <div className="ai-card-select-header-content">
-            <h1 className="ai-card-select-header-title">선물 추천</h1>
-            <p className="ai-card-select-header-subtitle">명함을 눌러 선물 추천 대상을 선택할 수 있어요</p>
+            <h1 className="ai-card-select-header-title">메모</h1>
+            <p className="ai-card-select-header-subtitle">프로필 카드를 눌러 메모 작성 대상자를 선택하세요</p>
           </div>
-          {/* Search Bar and History Button Container */}
-          <div className="search-history-container">
           <div className="ai-card-select-search-bar">
             <div className="ai-card-select-search-icon-wrapper">
               <SearchIcon />
@@ -203,14 +216,10 @@ function AICardSelectPage() {
             <input
               type="text"
               className="ai-card-select-search-input"
-              placeholder="명함 검색 (이름, 회사, 직급)"
+              placeholder="프로필 검색 (이름, 회사, 직급)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            </div>
-            <button className="history-button" onClick={handleHistoryClick}>
-              추천 내역
-            </button>
           </div>
         </div>
 
@@ -218,11 +227,11 @@ function AICardSelectPage() {
         <div className="card-list-container">
           {isLoading ? (
             <div className="loading-state">
-              <p>명함을 불러오는 중...</p>
+              <p>프로필 카드를 불러오는 중...</p>
             </div>
           ) : cards.length === 0 ? (
             <div className="empty-state">
-              <p>등록된 명함이 없습니다.</p>
+              <p>등록된 프로필이 없습니다.</p>
             </div>
           ) : (
             <>
@@ -262,7 +271,7 @@ function AICardSelectPage() {
                   </div>
                   {!searchQuery && (
                     <p className="card-add-guide">
-                      명함 추가는{' '}
+                      프로필 추가는{' '}
                       <button 
                         className="card-add-link-button"
                         onClick={handleNavigateToCards}
@@ -288,7 +297,7 @@ function AICardSelectPage() {
               <ToastHeartIcon />
             </span>
             <span className="toast-quote">"</span>
-            <span> 설정은 명함집 탭에서 가능합니다</span>
+            <span> 설정은 프로필 탭에서 가능합니다</span>
           </p>
         </div>
       )}

@@ -61,19 +61,19 @@ function SearchPage() {
         return
       }
 
-      // 2. cardIds로 명함 정보 가져오기
+      // 2. cardIds로 프로필 정보 가져오기
       const cardIdsParam = cardIds.join(',')
       const cardsResponse = await cardAPI.getAll({ cardIds: cardIdsParam })
-      console.log('✅ 명함 정보 응답:', cardsResponse.data)
+      console.log('✅ 프로필 정보 응답:', cardsResponse.data)
 
       if (!cardsResponse.data.success) {
-        setError('명함 정보를 가져오는데 실패했습니다.')
+        setError('프로필 정보를 가져오는데 실패했습니다.')
         return
       }
 
       const cards = cardsResponse.data.data || []
 
-      // 3. 명함 정보와 evidence를 결합
+      // 3. 프로필 정보와 evidence를 결합
       const combinedResults = cardIds.map((cardId) => {
         const card = cards.find((c) => c.id === cardId)
         const evidences = evidenceMap[cardId] || []
@@ -95,7 +95,7 @@ function SearchPage() {
       console.log('📊 최종 결과 개수:', combinedResults.length)
 
       if (searchMode === 'best') {
-        // 가장 적합한 명함 (첫 번째 결과)
+        // 가장 적합한 프로필 (첫 번째 결과)
         setBestMatch(combinedResults[0] || null)
       } else {
         // topN 검색 (최대 5개)
@@ -196,7 +196,7 @@ function SearchPage() {
     }
   }
 
-  // 명함 상세 페이지로 이동
+  // 프로필 상세 페이지로 이동
   const handleCardClick = (cardId) => {
     navigate(`/cards/${cardId}`)
   }
@@ -206,8 +206,8 @@ function SearchPage() {
       <div className="search-container">
         {/* 헤더 */}
         <div className="search-header">
-          <h1>명함 검색</h1>
-          <p className="search-subtitle">evidence 정보를 기반으로 관련 명함을 찾습니다</p>
+          <h1>프로필 검색</h1>
+          <p className="search-subtitle">evidence 정보를 기반으로 관련 프로필을 찾습니다</p>
         </div>
 
         {/* 검색 입력 */}
@@ -330,7 +330,7 @@ function SearchPage() {
             {/* Best Match 결과 */}
             {searchMode === 'best' && bestMatch && (
               <div className="search-results">
-                <h2 className="results-title">가장 적합한 명함</h2>
+                <h2 className="results-title">가장 적합한 프로필</h2>
                 <div className="best-match-card">
                   <div className="result-header">
                     <div className="best-badge">BEST MATCH</div>
@@ -368,7 +368,7 @@ function SearchPage() {
                     className="view-detail-button"
                     onClick={() => handleCardClick(bestMatch.card.id)}
                   >
-                    명함 상세보기
+                    프로필 상세보기
                   </button>
                 </div>
               </div>

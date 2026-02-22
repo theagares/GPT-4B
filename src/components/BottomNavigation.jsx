@@ -26,8 +26,11 @@ function HomeIcon() {
 function CardIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 4H20C20.5304 4 21.0391 4.21071 21.4142 4.58579C21.7893 4.96086 22 5.46957 22 6V18C22 18.5304 21.7893 19.0391 21.4142 19.4142C21.0391 19.7893 20.5304 20 20 20H4C3.46957 20 2.96086 19.7893 2.58579 19.4142C2.21071 19.0391 2 18.5304 2 18V6C2 5.46957 2.21071 4.96086 2.58579 4.58579C2.96086 4.21071 3.46957 4 4 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M2 10H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="8.5" cy="10.5" r="2.5" stroke="currentColor" strokeWidth="1.8"/>
+      <path d="M5 17c0-1.657 1.343-3 3-3h1c1.657 0 3 1.343 3 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M15 9h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M15 13h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   )
 }
@@ -53,8 +56,7 @@ function BottomNavigation() {
       return location.pathname === path || location.pathname.startsWith('/my/')
     }
     if (path === '/ai-card-select') {
-      // AI 추천 탭은 명함 선택 페이지와 선물 추천 관련 페이지에서 활성화
-      return location.pathname === path || 
+      return location.pathname === path ||
              location.pathname === '/gift-recommend' ||
              location.pathname.startsWith('/gift-recommend/')
     }
@@ -76,7 +78,7 @@ function BottomNavigation() {
         className={`nav-item ${isActive('/business-cards') ? 'active' : ''}`}
       >
         <CardIcon />
-        <span className="nav-label">명함집</span>
+        <span className="nav-label">프로필</span>
       </Link>
 
       <Link 
@@ -84,9 +86,9 @@ function BottomNavigation() {
         className={`nav-item ai-recommend ${isActive('/ai-card-select') ? 'active' : ''}`}
       >
         <div className="ai-icon-wrapper">
-          <img src="/assets/gpt_4b_logo_white.png" alt="GPT-4b" className="ai-logo" />
+          <img src="/assets/mars_logo_white.png" alt="메모" className="ai-logo" />
         </div>
-        <span className="nav-label ai-label">선물 추천</span>
+        <span className="nav-label ai-label">메모</span>
       </Link>
 
       <Link 

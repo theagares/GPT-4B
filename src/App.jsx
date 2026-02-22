@@ -16,6 +16,7 @@ import EventDetailPage from './pages/EventDetailPage'
 import AddEventPage from './pages/AddEventPage'
 import MyPage from './pages/MyPage'
 import MyDetailPage from './pages/MyDetailPage'
+import MySettingsPage from './pages/MySettingsPage'
 import GiftHistoryPage from './pages/GiftHistoryPage'
 import PersonalGiftHistoryPage from './pages/PersonalGiftHistoryPage'
 import CardGiftHistoryPage from './pages/CardGiftHistoryPage'
@@ -76,6 +77,7 @@ function App() {
           <Route path="/calendar/add" element={<AddEventPage />} />
           <Route path="/my" element={<MyPage />} />
           <Route path="/my/detail" element={<MyDetailPage />} />
+          <Route path="/my/settings" element={<MySettingsPage />} />
           <Route path="/my/edit" element={<EditMyInfoPage />} />
           <Route path="/my/gift-history" element={<PersonalGiftHistoryPage />} />
           <Route path="/memo" element={<MemoPage />} />

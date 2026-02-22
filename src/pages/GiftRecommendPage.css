@@ -3,7 +3,7 @@
   width: 100%;
   max-width: 393px;
   height: 100vh;
-  background: linear-gradient(180deg, #584cdc 0%, #6d30df 100%);
+  background: #584cdc;
   border-radius: 40px;
   display: flex;
   flex-direction: column;

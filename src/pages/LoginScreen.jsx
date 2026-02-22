@@ -70,10 +70,9 @@ function LoginScreen() {
     <div className="login-screen">
       <div className="login-container">
         <div className="logo-section">
-          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="login-logo" />
+          <img src="/assets/mars_logo_blueberry.png" alt="M Logo" className="login-logo" />
         </div>
-
-        <h1 className="login-title">선물 추천을 위한 최고의 선택, GPT-4b</h1>
+        <p className="login-tagline">Mars로 메모 기반 인맥 관리하기</p>
 
         <form onSubmit={handleLogin} className="login-form">
           <div className="input-group">

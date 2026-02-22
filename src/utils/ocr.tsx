@@ -37,7 +37,7 @@ function removeDataUrlPrefix(base64Image: string): string {
 }
 
 /**
- * 명함 텍스트를 기반으로 필드를 추출하는 함수
+ * 프로필 텍스트를 기반으로 필드를 추출하는 함수
  * 백엔드 서비스의 parseBusinessCardText 로직을 참고하여 개선
  */
 function parseBusinessCard(text: string): Omit<OCRParsedResult, "rawText"> {
@@ -316,7 +316,7 @@ async function processWithTesseract(image: string): Promise<OCRParsedResult> {
 }
 
 /**
- * base64 Data URL(또는 이미지 URL)을 받아서 OCR 수행 후 명함 정보 필드를 파싱해 반환
+ * base64 Data URL(또는 이미지 URL)을 받아서 OCR 수행 후 프로필 정보 필드를 파싱해 반환
  * 백엔드 API를 우선 시도하고, 실패 시 클라이언트 측 Tesseract.js로 폴백
  */
 export async function runOCR(image: string): Promise<OCRParsedResult> {

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import BottomNavigation from '../components/BottomNavigation'
 import { useCardStore } from '../store/cardStore'
 import { userAPI, giftAPI } from '../utils/api'
-import { isAuthenticated, logout } from '../utils/auth'
+import { isAuthenticated } from '../utils/auth'
 import './MyDetailPage.css'
 
 // 명함 디자인 맵 (MyDetailPage용 - 유사 색상 그라데이션)
@@ -26,6 +26,51 @@ const pageBackgroundDesigns = {
   'design-6': 'linear-gradient(180deg, rgba(196, 181, 253, 1) 0%, rgba(99, 102, 241, 1) 100%)',
 }
 
+function hexToRgbLocal(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) }
+    : { r: 109, g: 48, b: 223 }
+}
+
+function resolveCardDesign(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const dr = Math.round(Math.max(0, r * 0.85))
+    const dg = Math.round(Math.max(0, g * 0.85))
+    const db = Math.round(Math.max(0, b * 0.85))
+    return `linear-gradient(147.99deg, rgba(${r},${g},${b},1) 0%, rgba(${dr},${dg},${db},1) 100%)`
+  }
+  return cardDesigns[designId] || cardDesigns['design-1']
+}
+
+function getCardTextColorsLocal(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const light = (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.65
+    return {
+      main: light ? '#1f2937' : 'white',
+      sub: light ? 'rgba(31,41,55,0.6)' : 'rgba(255,255,255,0.7)',
+      contact: light ? 'rgba(31,41,55,0.5)' : 'rgba(255,255,255,0.6)',
+    }
+  }
+  return { main: 'white', sub: 'rgba(255,255,255,0.7)', contact: 'rgba(255,255,255,0.6)' }
+}
+
+function resolvePageBackground(designId) {
+  if (designId && designId.startsWith('custom-')) {
+    const hex = designId.replace('custom-', '')
+    const { r, g, b } = hexToRgbLocal(hex)
+    const lr = Math.min(255, Math.round(r + (255 - r) * 0.4))
+    const lg = Math.min(255, Math.round(g + (255 - g) * 0.4))
+    const lb = Math.min(255, Math.round(b + (255 - b) * 0.4))
+    return `linear-gradient(180deg, rgba(${lr},${lg},${lb},1) 0%, rgba(${r},${g},${b},1) 100%)`
+  }
+  return pageBackgroundDesigns[designId] || pageBackgroundDesigns['design-1']
+}
+
 
 // 화살표 아이콘 SVG 컴포넌트
 function ArrowRightIcon() {
@@ -40,7 +85,7 @@ function ArrowRightIcon() {
 function PhoneIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7292C21.7209 20.9842 21.5573 21.2126 21.3522 21.3992C21.1472 21.5858 20.9053 21.7262 20.6419 21.8115C20.3785 21.8968 20.0996 21.9252 19.82 21.895C16.7428 21.4596 13.787 20.4711 11.19 18.995C8.77382 17.6547 6.72533 15.7567 5.20997 13.459C3.59049 10.9908 2.52934 8.17462 2.10997 5.22499C2.07771 4.94689 2.10487 4.66575 2.18966 4.39977C2.27444 4.13379 2.41485 3.88913 2.60231 3.68157C2.78977 3.474 3.02001 3.30809 3.27868 3.19402C3.53735 3.07994 3.81883 3.02026 4.10497 2.99899H7.10497C7.58779 2.95399 8.06281 3.12411 8.40997 3.46499C8.75713 3.80587 9.02487 4.28133 9.16497 4.82499C9.30507 5.36865 9.30756 5.94767 9.17197 6.49299C9.03638 7.03831 8.77135 7.51676 8.42497 7.86199L7.09497 9.19199C8.51369 11.8842 10.6158 13.9863 13.308 15.405L14.638 14.075C14.9832 13.7286 15.4617 13.4636 16.007 13.328C16.5523 13.1924 17.1313 13.1949 17.675 13.335C18.2186 13.4751 18.6941 13.7428 19.035 14.09C19.3759 14.4372 19.546 14.9122 19.501 15.395L19.501 15.395Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -49,8 +94,8 @@ function PhoneIcon() {
 function EmailIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M22 6L12 13L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points="22,6 12,13 2,6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -59,13 +104,8 @@ function EmailIcon() {
 function BuildingIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3 21H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M5 21V7L13 2V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M19 21V11H13V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M9 9V9.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M9 12V12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M9 15V15.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M9 18V18.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -281,10 +321,8 @@ function MyDetailPage() {
     navigate('/my/edit')
   }
 
-  const handleLogout = () => {
-    if (window.confirm('정말로 로그아웃을 하시겠습니까?')) {
-      logout()
-    }
+  const handleSettings = () => {
+    navigate('/my/settings')
   }
 
   if (isLoading) {
@@ -301,27 +339,29 @@ function MyDetailPage() {
     <div 
       className="my-detail-page"
       style={{
-        background: pageBackgroundDesigns[myCardDesign] || pageBackgroundDesigns['design-1']
+        background: resolvePageBackground(myCardDesign)
       }}
     >
       <div className="my-detail-background">
         {/* 헤더 */}
         <div className="detail-header">
-          <button className="logout-button-top" onClick={handleLogout}>
-            로그아웃
+          <button className="settings-icon-button" onClick={handleSettings} aria-label="설정">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </button>
         </div>
 
         {/* 상단 텍스트 */}
         <div className="my-detail-title-section">
-          <h1 className="my-detail-title">내 정보</h1>
-          <p className="my-detail-subtitle">나의 세부 정보를 확인할 수 있어요.</p>
+          <h1 className="my-detail-title">{myInfo.name}님의 정보</h1>
         </div>
 
         {/* 명함 위 버튼 영역 */}
         <div className="card-actions-section">
           <button className="customize-button" onClick={handleCustomize}>
-            명함 커스텀하기
+            색상 커스텀
           </button>
         </div>
 
@@ -329,31 +369,33 @@ function MyDetailPage() {
         <div 
           className="profile-card"
           style={{
-            background: cardDesigns[myCardDesign] || cardDesigns['design-1']
+            background: resolveCardDesign(myCardDesign)
           }}
         >
+          {(() => { const tc = getCardTextColorsLocal(myCardDesign); return (<>
           {/* 우측 상단 연락처 정보 */}
           <div className="profile-contact">
-            <p className="profile-phone">{myInfo.phone}</p>
-            <p className="profile-email">{myInfo.email}</p>
+            <p className="profile-phone" style={{ color: tc.contact }}>{myInfo.phone}</p>
+            <p className="profile-email" style={{ color: tc.contact }}>{myInfo.email}</p>
           </div>
 
           <div className="profile-header">
             <div className="profile-info">
-              <h2 className="profile-name">{myInfo.name}</h2>
+              <h2 className="profile-name" style={{ color: tc.main }}>{myInfo.name}</h2>
             </div>
           </div>
           
           {/* 하단 소속/직급 정보 */}
           <div className="profile-details">
-            <p className="profile-company">{myInfo.company}</p>
-            <p className="profile-position">{myInfo.position}</p>
+            <p className="profile-company" style={{ color: tc.sub }}>{myInfo.company}</p>
+            <p className="profile-position" style={{ color: tc.sub }}>{myInfo.position}</p>
           </div>
 
           {/* 내 정보 수정하기 버튼 */}
           <button className="edit-my-info-button" onClick={handleEditMyInfo}>
             내 정보 수정
           </button>
+          </>); })()}
         </div>
 
 
@@ -363,39 +405,46 @@ function MyDetailPage() {
             <div className="stat-content">
               <div className="stat-info">
                 <div className="stat-label-row">
-                  <svg className="stat-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 3H13C13.5523 3 14 3.44772 14 4V12C14 12.5523 13.5523 13 13 13H3C2.44772 13 2 12.5523 2 12V4C2 3.44772 2.44772 3 3 3Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M5 6H11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M5 9H9" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <svg className="stat-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="4" width="20" height="16" rx="2" stroke="#0a0a0a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    <circle cx="8.5" cy="10.5" r="2.5" stroke="#0a0a0a" strokeWidth="1.8"/>
+                    <path d="M5 17C5 15.3431 6.34315 14 8 14H9C10.6569 14 12 15.3431 12 17" stroke="#0a0a0a" strokeWidth="1.8" strokeLinecap="round"/>
+                    <path d="M15 9H20" stroke="#0a0a0a" strokeWidth="1.8" strokeLinecap="round"/>
+                    <path d="M15 13H20" stroke="#0a0a0a" strokeWidth="1.8" strokeLinecap="round"/>
                   </svg>
-                  <span className="stat-label">총 명함 개수</span>
+                  <span className="stat-label">총 프로필 개수</span>
                 </div>
-                <p className="stat-value">{cards.length}개</p>
+                <div className="stat-value-row">
+                  <p className="stat-value">{cards.length}개</p>
+                  <ArrowRightIcon />
+                </div>
               </div>
-              <ArrowRightIcon />
             </div>
           </div>
           <div className="stat-card" onClick={handleGiftHistory} style={{ cursor: 'pointer' }}>
             <div className="stat-content">
               <div className="stat-info">
                 <div className="stat-label-row">
-                  <svg className="stat-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 2L3 5V11C3 11.5523 3.44772 12 4 12H12C12.5523 12 13 11.5523 13 11V5L8 2Z" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M3 5L8 8L13 5" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M8 2V8" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <svg className="stat-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="12" width="18" height="9" rx="1.5" stroke="#0a0a0a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 12V21" stroke="#0a0a0a" strokeWidth="1.8" strokeLinecap="round"/>
+                    <rect x="5" y="8" width="14" height="4" rx="1" stroke="#0a0a0a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 8C12 8 9 8 7.5 6.5C6.5 5.5 6.5 4 7.5 3.5C8.5 3 10 3.5 11 5C11.5 6 12 8 12 8Z" stroke="#0a0a0a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 8C12 8 15 8 16.5 6.5C17.5 5.5 17.5 4 16.5 3.5C15.5 3 14 3.5 13 5C12.5 6 12 8 12 8Z" stroke="#0a0a0a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  <span className="stat-label">선물 이력</span>
+                  <span className="stat-label">전체 선물 이력</span>
                 </div>
-                <p className="stat-value">{giftCount}회</p>
+                <div className="stat-value-row">
+                  <p className="stat-value">{giftCount}회</p>
+                  <ArrowRightIcon />
+                </div>
               </div>
-              <ArrowRightIcon />
             </div>
           </div>
         </div>
 
-        {/* 명함 정보 섹션 */}
+        {/* 정보 섹션 */}
         <div className="info-section">
-          <h3 className="info-section-title">명함 정보</h3>
           <div className="info-card">
             <div className="info-row">
               <PhoneIcon />
