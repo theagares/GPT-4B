@@ -2205,7 +2205,7 @@ function BusinessCardWallet() {
               <ToastHeartIcon />
             </span>
             <span className="toast-quote">"</span>
-            <span> 설정은 명함집 탭에서 가능합니다</span>
+            <span> 설정은 프로필 탭에서 가능합니다</span>
           </p>
         </div>
       )}
