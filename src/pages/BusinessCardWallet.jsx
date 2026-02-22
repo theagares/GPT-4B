@@ -180,11 +180,13 @@ function BusinessCardWallet() {
 
   // 그룹 추가 모달 관련 state
   const [showAddGroupModal, setShowAddGroupModal] = useState(false)
+  const [groupNameStepComplete, setGroupNameStepComplete] = useState(false)
   const [groupAddMode, setGroupAddMode] = useState(null) // 'custom', 'company', 'position'
   const [newGroupName, setNewGroupName] = useState('')
   const [selectedCompanies, setSelectedCompanies] = useState([])
   const [selectedPositions, setSelectedPositions] = useState([])
   const [selectedCardsForGroup, setSelectedCardsForGroup] = useState([]) // Custom 추가용 선택된 명함 ID들
+  const [groupStep3SearchQuery, setGroupStep3SearchQuery] = useState('') // 그룹 추가 3단계 검색어
 
   // 그룹에 멤버 추가 관련 state
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
@@ -647,11 +649,32 @@ function BusinessCardWallet() {
   // 그룹 추가 모달 닫기
   const handleCloseAddGroupModal = () => {
     setShowAddGroupModal(false)
+    setGroupNameStepComplete(false)
     setGroupAddMode(null)
     setNewGroupName('')
     setSelectedCompanies([])
     setSelectedPositions([])
     setSelectedCardsForGroup([])
+    setGroupStep3SearchQuery('')
+  }
+
+  // 그룹 이름 입력 완료 → 추가 방식 화면으로
+  const handleGroupNameComplete = () => {
+    if (newGroupName.trim()) {
+      setGroupNameStepComplete(true)
+    }
+  }
+
+  // 추가 방식 화면에서 뒤로가기 (그룹 이름 단계로)
+  const handleBackToGroupNameStep = () => {
+    setGroupNameStepComplete(false)
+    setGroupAddMode(null)
+  }
+
+  // 선택 화면에서 뒤로가기 (추가 방식 단계로)
+  const handleBackToModeStep = () => {
+    setGroupAddMode(null)
+    setGroupStep3SearchQuery('')
   }
 
   // 그룹 추가 모드 선택
@@ -1740,7 +1763,7 @@ function BusinessCardWallet() {
                   </svg>
                 </div>
                 <h3 className="add-group-card-title">그룹 멤버 추가</h3>
-                <p className="add-group-card-desc">그룹에 추가할 명함을 선택하세요</p>
+                <p className="add-group-card-desc">그룹에 추가할 프로필을 선택하세요</p>
                 {/* 검색 입력 필드 */}
                 <div className="add-group-search-wrapper">
                   <div className="add-group-search-icon">
@@ -1776,7 +1799,7 @@ function BusinessCardWallet() {
                       const currentGroupCardIds = currentGroup?.cardIds || []
                       const allAvailableCards = cards.filter(card => card && !currentGroupCardIds.includes(String(card.id)))
                       if (allAvailableCards.length === 0) {
-                        return <p className="add-group-empty-message">추가할 명함이 없습니다</p>
+                        return <p className="add-group-empty-message">추가할 프로필이 없습니다</p>
                       } else {
                         return <p className="add-group-empty-message">검색 결과가 없습니다</p>
                       }
@@ -1839,106 +1862,179 @@ function BusinessCardWallet() {
             </button>
 
             <div className="add-group-modal-content">
-              {/* 그룹 이름 입력 카드와 모드 선택 카드를 가로로 배치 */}
-              <div className="add-group-cards-row">
-                {/* 그룹 이름 입력 카드 */}
+              {/* 스텝 슬라이드 래퍼 */}
+              <div className="add-group-steps-wrapper">
+                <div className={`add-group-steps ${groupNameStepComplete && !groupAddMode ? 'step-2' : ''} ${groupAddMode ? 'step-3' : ''}`}>
+                  {/* 스텝 1: 그룹 이름 입력 */}
+                  <div className="add-group-step add-group-step-1">
+                    <div className="add-group-card">
+                      <div className="add-group-card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                      <h3 className="add-group-card-title">그룹 이름</h3>
+                      <p className="add-group-card-desc">그룹을 구분할 수 있는 이름을 입력하세요</p>
+                      <input
+                        type="text"
+                        className="add-group-name-input-card"
+                        value={newGroupName}
+                        onChange={(e) => setNewGroupName(e.target.value)}
+                        placeholder="예) A사"
+                      />
+                      <button
+                        className="add-group-confirm-button"
+                        onClick={handleGroupNameComplete}
+                        disabled={!newGroupName.trim()}
+                      >
+                        입력 완료
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 스텝 2: 추가 방식 선택 (오른쪽에서 슬라이드) */}
+                  <div className="add-group-step add-group-step-2">
+                    <div className="add-group-card">
+                      <button
+                        type="button"
+                        className="add-group-back-step"
+                        onClick={handleBackToGroupNameStep}
+                        aria-label="이전 단계"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                          <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>그룹 이름</span>
+                      </button>
+                      <div className="add-group-card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 5V19M5 12H19" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M3 7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                      <h3 className="add-group-card-title">추가 방식</h3>
+                      <p className="add-group-card-desc">프로필 그룹화 옵션을 선택하세요</p>
+                      <div className="add-group-mode-buttons">
+                        <button
+                          className="add-group-mode-button"
+                          onClick={() => handleSelectAddMode('custom')}
+                        >
+                          커스텀 추가
+                        </button>
+                        <button
+                          className="add-group-mode-button"
+                          onClick={() => handleSelectAddMode('company')}
+                        >
+                          소속 단위
+                        </button>
+                        <button
+                          className="add-group-mode-button"
+                          onClick={() => handleSelectAddMode('position')}
+                        >
+                          직급 단위
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 스텝 3: 소속/직급/프로필 선택 (슬라이드 내부) */}
+                  <div className="add-group-step add-group-step-3">
+                    {/* 소속 선택 카드 */}
+                    {groupAddMode === 'company' && (
                 <div className="add-group-card">
-                  <div className="add-group-card-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <button
+                    type="button"
+                    className="add-group-back-step"
+                    onClick={handleBackToModeStep}
+                    aria-label="이전 단계"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                  </div>
-                  <h3 className="add-group-card-title">그룹 이름</h3>
-                  <p className="add-group-card-desc">그룹을 구분할 수 있는 이름을 입력하세요</p>
-                  <input
-                    type="text"
-                    className="add-group-name-input-card"
-                    value={newGroupName}
-                    onChange={(e) => setNewGroupName(e.target.value)}
-                    placeholder="예) A사"
-                  />
-                </div>
-
-                {/* 모드 선택 카드 */}
-                {!groupAddMode && (
-                  <div className="add-group-card">
-                    <div className="add-group-card-icon">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 5V19M5 12H19" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M3 7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </div>
-                    <h3 className="add-group-card-title">추가 방식</h3>
-                    <p className="add-group-card-desc">명함 그룹화 옵션을 선택하세요</p>
-                    <div className="add-group-mode-buttons">
-                      <button
-                        className="add-group-mode-button"
-                        onClick={() => handleSelectAddMode('custom')}
-                      >
-                        커스텀 추가
-                      </button>
-                      <button
-                        className="add-group-mode-button"
-                        onClick={() => handleSelectAddMode('company')}
-                      >
-                        소속 단위
-                      </button>
-                      <button
-                        className="add-group-mode-button"
-                        onClick={() => handleSelectAddMode('position')}
-                      >
-                        직급 단위
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* 소속 선택 카드 */}
-              {groupAddMode === 'company' && (
-                <div className="add-group-card">
+                    <span>추가 방식</span>
+                  </button>
                   <div className="add-group-card-icon">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M9 9H15M9 15H15M7 9H7.01M7 15H7.01" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M3 21H21" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M5 21V8L12 3L19 8V21" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M9 10H9.01M9 14H9.01M9 18H9.01M15 10H15.01M15 14H15.01M15 18H15.01" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
                   <h3 className="add-group-card-title">소속 선택</h3>
-                  <p className="add-group-card-desc">그룹에 포함할 회사를 선택하세요</p>
-                  <div className="add-group-select-list-card">
-                    {getUniqueCompanies().length > 0 ? (
-                      getUniqueCompanies().map((company) => {
-                        const isSelected = selectedCompanies.includes(company)
-                        return (
-                          <button
-                            key={company}
-                            className={`add-group-select-button ${isSelected ? 'selected' : ''}`}
-                            onClick={() => handleToggleCompany(company)}
-                          >
-                            {company}
-                          </button>
-                        )
-                      })
-                    ) : (
-                      <p className="add-group-empty-message">등록된 소속이 없습니다</p>
-                    )}
+                  <p className="add-group-card-desc">그룹에 포함할 소속명을 선택하세요</p>
+                  <div className="add-group-search-wrapper">
+                    <div className="add-group-search-icon">
+                      <SearchIcon />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="소속명 검색"
+                      value={groupStep3SearchQuery}
+                      onChange={(e) => setGroupStep3SearchQuery(e.target.value)}
+                      className="add-group-search-input"
+                    />
+                  </div>
+                  <div className="add-group-custom-list">
+                    {(() => {
+                      const companies = groupStep3SearchQuery.trim()
+                        ? getUniqueCompanies().filter(c => (c || '').toLowerCase().includes(groupStep3SearchQuery.toLowerCase().trim()))
+                        : getUniqueCompanies()
+                      return companies.length > 0 ? (
+                        companies.map((company) => {
+                          const isSelected = selectedCompanies.includes(company)
+                          return (
+                            <button
+                              key={company}
+                              className={`add-group-custom-item ${isSelected ? 'selected' : ''}`}
+                              onClick={() => handleToggleCompany(company)}
+                            >
+                              <div className="add-group-custom-checkbox">
+                                {isSelected && (
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
+                                )}
+                              </div>
+                              <div className="add-group-custom-info">
+                                <span className="add-group-custom-name">{company}</span>
+                              </div>
+                            </button>
+                          )
+                        })
+                      ) : (
+                        <p className="add-group-empty-message">
+                          {groupStep3SearchQuery.trim() ? '검색 결과가 없습니다' : '등록된 소속이 없습니다'}
+                        </p>
+                      )
+                    })()}
                   </div>
                   <button
                     className="add-group-confirm-button"
                     onClick={handleConfirmAddGroup}
                     disabled={selectedCompanies.length === 0}
                   >
-                    그룹 생성
+                    그룹 생성 ({selectedCompanies.length})
                   </button>
                 </div>
               )}
 
-              {/* 직급 선택 카드 */}
-              {groupAddMode === 'position' && (
+                    {/* 직급 선택 카드 */}
+                    {groupAddMode === 'position' && (
                 <div className="add-group-card">
+                  <button
+                    type="button"
+                    className="add-group-back-step"
+                    onClick={handleBackToModeStep}
+                    aria-label="이전 단계"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span>추가 방식</span>
+                  </button>
                   <div className="add-group-card-icon">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -1947,47 +2043,113 @@ function BusinessCardWallet() {
                   </div>
                   <h3 className="add-group-card-title">직급 선택</h3>
                   <p className="add-group-card-desc">그룹에 포함할 직급을 선택하세요</p>
-                  <div className="add-group-select-list-card">
-                    {getUniquePositions().length > 0 ? (
-                      getUniquePositions().map((position) => {
-                        const isSelected = selectedPositions.includes(position)
-                        return (
-                          <button
-                            key={position}
-                            className={`add-group-select-button ${isSelected ? 'selected' : ''}`}
-                            onClick={() => handleTogglePosition(position)}
-                          >
-                            {position}
-                          </button>
-                        )
-                      })
-                    ) : (
-                      <p className="add-group-empty-message">등록된 직급이 없습니다</p>
-                    )}
+                  <div className="add-group-search-wrapper">
+                    <div className="add-group-search-icon">
+                      <SearchIcon />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="직급명 검색"
+                      value={groupStep3SearchQuery}
+                      onChange={(e) => setGroupStep3SearchQuery(e.target.value)}
+                      className="add-group-search-input"
+                    />
+                  </div>
+                  <div className="add-group-custom-list">
+                    {(() => {
+                      const positions = groupStep3SearchQuery.trim()
+                        ? getUniquePositions().filter(p => (p || '').toLowerCase().includes(groupStep3SearchQuery.toLowerCase().trim()))
+                        : getUniquePositions()
+                      return positions.length > 0 ? (
+                        positions.map((position) => {
+                          const isSelected = selectedPositions.includes(position)
+                          return (
+                            <button
+                              key={position}
+                              className={`add-group-custom-item ${isSelected ? 'selected' : ''}`}
+                              onClick={() => handleTogglePosition(position)}
+                            >
+                              <div className="add-group-custom-checkbox">
+                                {isSelected && (
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
+                                )}
+                              </div>
+                              <div className="add-group-custom-info">
+                                <span className="add-group-custom-name">{position}</span>
+                              </div>
+                            </button>
+                          )
+                        })
+                      ) : (
+                      <p className="add-group-empty-message">
+                        {groupStep3SearchQuery.trim() ? '검색 결과가 없습니다' : '등록된 직급이 없습니다'}
+                      </p>
+                    )
+                    })()}
                   </div>
                   <button
                     className="add-group-confirm-button"
                     onClick={handleConfirmAddGroup}
                     disabled={selectedPositions.length === 0}
                   >
-                    그룹 생성
+                    그룹 생성 ({selectedPositions.length})
                   </button>
                 </div>
               )}
 
-              {/* Custom 추가 - 명함 선택 */}
-              {groupAddMode === 'custom' && (
+                    {/* Custom 추가 - 프로필 선택 */}
+                    {groupAddMode === 'custom' && (
                 <div className="add-group-card">
+                  <button
+                    type="button"
+                    className="add-group-back-step"
+                    onClick={handleBackToModeStep}
+                    aria-label="이전 단계"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span>추가 방식</span>
+                  </button>
                   <div className="add-group-card-icon">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#584cdc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
-                  <h3 className="add-group-card-title">명함 선택</h3>
-                  <p className="add-group-card-desc">그룹에 포함할 명함을 선택하세요</p>
+<h3 className="add-group-card-title">프로필 선택</h3>
+                <p className="add-group-card-desc">그룹에 포함할 프로필을 선택하세요</p>
+                  <div className="add-group-search-wrapper">
+                    <div className="add-group-search-icon">
+                      <SearchIcon />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="이름, 소속, 직급 검색"
+                      value={groupStep3SearchQuery}
+                      onChange={(e) => setGroupStep3SearchQuery(e.target.value)}
+                      className="add-group-search-input"
+                    />
+                  </div>
                   <div className="add-group-custom-list">
-                    {cards && cards.length > 0 ? (
-                      sortCards(cards).map((card) => {
+                    {(() => {
+                      if (!cards || cards.length === 0) {
+                        return <p className="add-group-empty-message">등록된 프로필이 없습니다</p>
+                      }
+                      const query = groupStep3SearchQuery.toLowerCase().trim()
+                      const filteredCards = query
+                        ? sortCards(cards).filter(card => {
+                            const name = (card.name || '').toLowerCase()
+                            const company = (card.company || '').toLowerCase()
+                            const position = (card.position || '').toLowerCase()
+                            return name.includes(query) || company.includes(query) || position.includes(query)
+                          })
+                        : sortCards(cards)
+                      if (filteredCards.length === 0) {
+                        return <p className="add-group-empty-message">검색 결과가 없습니다</p>
+                      }
+                      return filteredCards.map((card) => {
                         const isSelected = selectedCardsForGroup.includes(String(card.id))
                         return (
                           <button
@@ -2015,9 +2177,7 @@ function BusinessCardWallet() {
                           </button>
                         )
                       })
-                    ) : (
-                      <p className="add-group-empty-message">등록된 프로필이 없습니다</p>
-                    )}
+                    })()}
                   </div>
                   <button
                     className="add-group-confirm-button"
@@ -2028,6 +2188,9 @@ function BusinessCardWallet() {
                   </button>
                 </div>
               )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

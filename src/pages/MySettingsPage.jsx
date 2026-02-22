@@ -59,7 +59,7 @@ function MySettingsPage() {
             <div className="my-settings-section-content">
               <div className="my-settings-item-row">
                 <p className="my-settings-item">버전</p>
-                <span className="my-settings-item-value">0.0.0</span>
+                <span className="my-settings-item-value">0.1.0</span>
               </div>
               <div className="my-settings-item-row">
                 <p className="my-settings-item">테마</p>

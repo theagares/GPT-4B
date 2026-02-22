@@ -31,6 +31,15 @@ function isLightColor(hex: string): boolean {
   return luminance > 0.65;
 }
 
+// 기본 옵션 5가지: Mars 블루베리, 화이트, 블랙, 오렌지, 벚꽃 핑크
+const PRESET_COLORS: { id: string; hex: string; label: string }[] = [
+  { id: "mars", hex: "#584cdc", label: "Mars 블루베리" },
+  { id: "white", hex: "#ffffff", label: "화이트" },
+  { id: "black", hex: "#1f2937", label: "블랙" },
+  { id: "orange", hex: "#f97316", label: "오렌지" },
+  { id: "sakura", hex: "#f9a8d4", label: "라이트 핑크" },
+];
+
 const CardCustomize = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -130,34 +139,60 @@ const CardCustomize = () => {
         <div className="card-customize-header-content">
           <p className="card-customize-title">프로필 카드 색상 선택</p>
           <p className="card-customize-subtitle">
-            하단의 색상 박스를 누르세요
+            색상을 선택하세요
           </p>
         </div>
       </div>
 
       <div className="card-customize-container">
 
-        <div className="card-customize-custom-section">
-          <div className="card-customize-custom-picker-row">
-            <label className="card-customize-color-picker-wrapper">
-              <input
-                type="color"
-                value={customColor}
-                onChange={handleCustomColorChange}
-                className="card-customize-color-input"
+        {/* 3x2 원형 색상 선택 (5 preset + 팔레트, 팔레트는 우측 하단) */}
+        <div className="card-customize-color-grid">
+          {PRESET_COLORS.map((preset) => {
+            const isSelected = customColor.toLowerCase() === preset.hex.toLowerCase();
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                className={`card-customize-color-circle ${isSelected ? "selected" : ""}`}
+                onClick={() => setCustomColor(preset.hex)}
+                aria-pressed={isSelected}
+                style={{ background: generateCardGradient(preset.hex) }}
               />
-              <div
-                className="card-customize-color-preview selected"
-                style={{ background: generateCardGradient(customColor) }}
-              />
-            </label>
-            <div className="card-customize-color-info">
+            );
+          })}
+          <label className={`card-customize-color-circle card-customize-palette-circle ${!PRESET_COLORS.some(p => p.hex.toLowerCase() === customColor.toLowerCase()) ? "selected" : ""}`}>
+            <input
+              type="color"
+              value={customColor}
+              onChange={handleCustomColorChange}
+              className="card-customize-color-input"
+            />
+            <span
+              className="card-customize-palette-inner"
+              style={{
+                background: PRESET_COLORS.some(p => p.hex.toLowerCase() === customColor.toLowerCase())
+                  ? "conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #8b5cf6, #ec4899, #ef4444)"
+                  : generateCardGradient(customColor),
+              }}
+            />
+          </label>
+        </div>
+
+        {/* 선택 색상 정보: 기본 옵션일 때 이름, 팔레트일 때 색상 코드 */}
+        <div className="card-customize-color-info">
+          {PRESET_COLORS.some(p => p.hex.toLowerCase() === customColor.toLowerCase()) ? (
+            <span className="card-customize-color-name">
+              {PRESET_COLORS.find(p => p.hex.toLowerCase() === customColor.toLowerCase())?.label}
+            </span>
+          ) : (
+            <>
               <span className="card-customize-color-hex">{customColor.toUpperCase()}</span>
               <span className="card-customize-color-rgb">
                 RGB({hexToRgb(customColor).r}, {hexToRgb(customColor).g}, {hexToRgb(customColor).b})
               </span>
-            </div>
-          </div>
+            </>
+          )}
         </div>
 
         <div className="card-customize-preview-section">

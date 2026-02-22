@@ -927,7 +927,6 @@
   max-height: calc(calc(var(--vh, 1vh) * 100) - 40px); /* CSS 변수 fallback */
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
   margin: auto;
@@ -941,16 +940,15 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgba(0, 0, 0, 0.05);
+  background: none;
   border: none;
   padding: 8px;
-  border-radius: 50%;
   cursor: pointer;
   color: #6b7280;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: color 0.2s;
   z-index: 10;
   width: 36px;
   height: 36px;
@@ -962,7 +960,6 @@
 }
 
 .add-group-modal-close:hover {
-  background: rgba(0, 0, 0, 0.1);
   color: #1f2937;
 }
 
@@ -1113,6 +1110,56 @@
   transform: translateY(0);
 }
 
+/* 그룹 추가 스텝 슬라이드 */
+.add-group-steps-wrapper {
+  width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.add-group-steps {
+  display: flex;
+  width: 300%;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.add-group-steps.step-2 {
+  transform: translateX(-33.333%);
+}
+
+.add-group-steps.step-3 {
+  transform: translateX(-66.666%);
+}
+
+.add-group-step {
+  flex: 0 0 33.333%;
+  min-width: 33.333%;
+  width: 33.333%;
+}
+
+.add-group-back-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  margin: -4px 0 4px 0;
+  background: none;
+  border: none;
+  color: #584cdc;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+  align-self: flex-start;
+}
+
+.add-group-back-step:hover {
+  color: #584cdc;
+}
+
+.add-group-back-step svg {
+  flex-shrink: 0;
+}
+
 /* 그룹 추가 카드 세로 배치 */
 .add-group-cards-row {
   display: flex;
@@ -1130,7 +1177,6 @@
   background: #ffffff;
   border-radius: 14px;
   padding: 18px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1296,6 +1342,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-height: 200px;
   max-height: 200px;
   overflow-y: auto;
   padding-right: 4px;
@@ -1395,6 +1442,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-height: 300px;
   max-height: 300px;
   overflow-y: auto;
   padding-right: 4px;
@@ -1466,6 +1514,7 @@
   flex-direction: column;
   gap: 4px;
   flex: 1;
+  min-width: 0;
 }
 
 .add-group-custom-name {
@@ -1481,6 +1530,8 @@
 .add-group-custom-detail {
   font-size: 12px;
   color: #6b7280;
+  white-space: normal;
+  word-break: keep-all;
 }
 
 .add-group-custom-item.selected .add-group-custom-detail {

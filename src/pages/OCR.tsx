@@ -314,9 +314,9 @@ const OCR = () => {
             </svg>
           </button>
           <div className="ocr-header-content">
-            <h1 className="ocr-title">프로필을 촬영해주세요</h1>
+            <h1 className="ocr-title">명함을 촬영해주세요</h1>
             <p className="ocr-subtitle">
-              프로필이 가이드 안에 들어오도록 조정해주세요
+              상대방의 명함을 갖고있다면, OCR로 손쉽게 등록해보세요
             </p>
           </div>
           <div style={{ width: '24px' }}></div> {/* Placeholder for right alignment */}
@@ -370,7 +370,7 @@ const OCR = () => {
         )}
 
         {/* Guide Message */}
-        <div className="ocr-guide-message">프로필을 수평으로 맞춰주세요</div>
+        <div className="ocr-guide-message">명함을 수평으로 맞춰주세요</div>
 
         {/* Error Message */}
         {error && <div className="ocr-error-message">{error}</div>}
