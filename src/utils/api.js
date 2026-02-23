@@ -234,9 +234,24 @@ export const authAPI = {
 
   getMe: () => api.get("/auth/me"),
 
+  checkUsername: (username) => api.get(`/auth/check-username/${encodeURIComponent(username)}`),
+
   googleLogin: (idToken) => api.post("/auth/google", { idToken }),
 
   appleLogin: (idToken) => api.post("/auth/apple", { idToken }),
+
+  // ID/PW 찾기
+  findUsernameSendCode: (email) =>
+    api.post("/auth/find-username/send-code", { email }),
+
+  findUsernameVerifyCode: (email, code) =>
+    api.post("/auth/find-username/verify-code", { email, code }),
+
+  resetPasswordRequest: (username, email) =>
+    api.post("/auth/reset-password/request", { username, email }),
+
+  resetPasswordConfirm: (token, password) =>
+    api.post("/auth/reset-password/confirm", { token, password }),
 };
 
 // Business Card API

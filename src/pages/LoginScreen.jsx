@@ -116,8 +116,11 @@ function LoginScreen() {
         </form>
 
         <div className="login-links">
+          <Link to="/find-id" className="forgot-link">
+            아이디 찾기
+          </Link>
           <Link to="/forgot-password" className="forgot-link">
-            아이디 / 비밀번호 찾기
+            비밀번호 찾기
           </Link>
           <Link to="/signup" className="signup-link">
             신규 가입하기

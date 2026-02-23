@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { authAPI } from '../utils/api'
 import './SignupPage.css'
 
 // 체크 아이콘 SVG 컴포넌트
@@ -25,33 +26,74 @@ function SignupPage() {
   const [isUserIdValid, setIsUserIdValid] = useState(false)
   const [isPasswordValid, setIsPasswordValid] = useState(false)
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false)
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false)
+  const checkUsernameTimeoutRef = useRef(null)
 
-  // 이미 존재하는 아이디 목록 (실제로는 서버에서 확인)
-  const existingUserIds = ['hci2025']
-
-  // 아이디 유효성 검사
+  // 아이디 유효성 검사 및 중복 체크
   useEffect(() => {
+    // 기존 타이머 취소
+    if (checkUsernameTimeoutRef.current) {
+      clearTimeout(checkUsernameTimeoutRef.current)
+    }
+
     if (userId.length === 0) {
       setIsUserIdValid(false)
       setUserIdError('')
+      setIsCheckingUsername(false)
       return
     }
 
     // 아이디 규칙: 4자 이상, 영문 또는 영문+숫자 조합
     const usernameRegex = /^[a-zA-Z][a-zA-Z0-9]*$/
     
+    // 형식 검증
     if (userId.length < 4) {
       setIsUserIdValid(false)
       setUserIdError('아이디는 4자 이상이어야 합니다')
-    } else if (!usernameRegex.test(userId)) {
+      setIsCheckingUsername(false)
+      return
+    }
+    
+    if (!usernameRegex.test(userId)) {
       setIsUserIdValid(false)
       setUserIdError('아이디는 영문으로 시작하며 영문 또는 영문+숫자 조합이어야 합니다')
-    } else if (existingUserIds.includes(userId)) {
-      setIsUserIdValid(false)
-      setUserIdError('이미 존재하는 아이디입니다')
-    } else {
-      setIsUserIdValid(true)
-      setUserIdError('')
+      setIsCheckingUsername(false)
+      return
+    }
+
+    // 형식이 올바르면 서버에 중복 체크 요청 (debounce)
+    setIsCheckingUsername(true)
+    checkUsernameTimeoutRef.current = setTimeout(async () => {
+      try {
+        const response = await authAPI.checkUsername(userId)
+        
+        if (response.data.success) {
+          if (response.data.available) {
+            setIsUserIdValid(true)
+            setUserIdError('')
+          } else {
+            setIsUserIdValid(false)
+            setUserIdError(response.data.message || '이미 사용 중인 아이디입니다')
+          }
+        } else {
+          setIsUserIdValid(false)
+          setUserIdError(response.data.message || '아이디 확인 중 오류가 발생했습니다')
+        }
+      } catch (error) {
+        console.error('Username check error:', error)
+        // 네트워크 에러 등은 일단 통과시키고, 회원가입 시 다시 체크
+        setIsUserIdValid(true)
+        setUserIdError('')
+      } finally {
+        setIsCheckingUsername(false)
+      }
+    }, 500) // 500ms debounce
+
+    // cleanup 함수
+    return () => {
+      if (checkUsernameTimeoutRef.current) {
+        clearTimeout(checkUsernameTimeoutRef.current)
+      }
     }
   }, [userId])
 
@@ -132,15 +174,26 @@ function SignupPage() {
                 onChange={(e) => setUserId(e.target.value)}
                 className={`signup-input ${userIdError ? 'input-error' : ''} ${isUserIdValid ? 'input-valid' : ''}`}
                 placeholder="아이디"
+                disabled={isCheckingUsername}
               />
-              {isUserIdValid && (
+              {isCheckingUsername && (
+                <div className="input-check-icon input-loading">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="32" strokeDashoffset="32" opacity="0.5">
+                      <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32" repeatCount="indefinite"/>
+                      <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32" repeatCount="indefinite"/>
+                    </circle>
+                  </svg>
+                </div>
+              )}
+              {isUserIdValid && !isCheckingUsername && (
                 <div className="input-check-icon">
                   <CheckIcon />
                 </div>
               )}
             </div>
             <p className={userIdError ? 'error-message' : 'input-hint'}>
-              {userIdError || '아이디는 4자 이상의 영문 또는 영문+숫자 조합이어야 합니다'}
+              {isCheckingUsername ? '아이디 확인 중...' : (userIdError || '아이디는 4자 이상의 영문 또는 영문+숫자 조합이어야 합니다')}
             </p>
           </div>
 

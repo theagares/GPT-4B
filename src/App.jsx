@@ -1,6 +1,9 @@
 import { Routes, Route } from 'react-router-dom'
 import WelcomeScreen from './pages/WelcomeScreen'
 import LoginScreen from './pages/LoginScreen'
+import FindIdPage from './pages/FindIdPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import SignupPage from './pages/SignupPage'
 import SignupInfoPage from './pages/SignupInfoPage'
 import SignupFormPage from './pages/SignupFormPage'
@@ -51,7 +54,9 @@ function App() {
         <Routes>
           <Route path="/" element={<WelcomeScreen />} />
           <Route path="/login" element={<LoginScreen />} />
-          <Route path="/forgot-password" element={<NotFoundPage />} />
+          <Route path="/find-id" element={<FindIdPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/signup/info" element={<SignupInfoPage />} />
           <Route path="/signup/form" element={<SignupFormPage />} />

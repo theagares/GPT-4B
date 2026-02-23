@@ -129,7 +129,21 @@ function SignupFormPage() {
           if (error.response.data.message) {
             errorMessage = error.response.data.message
           } else if (error.response.data.errors && error.response.data.errors.length > 0) {
-            errorMessage = error.response.data.errors.map(err => err.msg || err.message).join(', ')
+            // validation 에러 메시지 처리
+            const validationErrors = error.response.data.errors.map(err => {
+              if (err.msg) {
+                // 한국어로 변환
+                if (err.msg.includes('Username already exists') || err.msg.includes('이미 사용 중인 아이디')) {
+                  return '이미 사용 중인 아이디입니다.'
+                }
+                if (err.msg.includes('Email already exists') || err.msg.includes('이미 사용 중인 이메일')) {
+                  return '이미 사용 중인 이메일입니다.'
+                }
+                return err.msg
+              }
+              return err.message || '입력값을 확인해주세요.'
+            })
+            errorMessage = validationErrors.join(', ')
           } else if (error.response.data.error) {
             errorMessage = error.response.data.error
           }
@@ -137,7 +151,13 @@ function SignupFormPage() {
           errorMessage = error.message
         }
         
-        alert(`회원가입 실패: ${errorMessage}`)
+        // username 중복 에러인 경우 회원가입 페이지로 돌아가기
+        if (errorMessage.includes('아이디') || errorMessage.includes('Username')) {
+          alert(errorMessage)
+          navigate('/signup', { state: { username, password } })
+        } else {
+          alert(`회원가입 실패: ${errorMessage}`)
+        }
       } finally {
         setIsSubmitting(false)
       }
