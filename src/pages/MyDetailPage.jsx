@@ -353,9 +353,11 @@ function MyDetailPage() {
           </button>
         </div>
 
-        {/* 상단 텍스트 */}
+        {/* 상단 텍스트 (프로필 텍스트 색상에 맞춤) */}
         <div className="my-detail-title-section">
-          <h1 className="my-detail-title">{myInfo.name}님의 정보</h1>
+          <h1 className="my-detail-title" style={{ color: getCardTextColorsLocal(myCardDesign).main }}>
+            {myInfo.name}님의 정보
+          </h1>
         </div>
 
         {/* 명함 위 버튼 영역 */}

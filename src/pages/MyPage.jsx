@@ -73,20 +73,20 @@ function resolveBackgroundColor(designId) {
   return backgroundColors[designId] || backgroundColors['design-1']
 }
 
-// 뒤로가기 아이콘 SVG 컴포넌트
-function BackIcon() {
+// 뒤로가기 아이콘 SVG 컴포넌트 (프로필 텍스트 색상에 맞춤)
+function BackIcon({ color = 'white' }) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M15 18L9 12L15 6" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
 
-// 위로 화살표 아이콘 SVG 컴포넌트
-function ArrowUpIcon() {
+// 위로 화살표 아이콘 SVG 컴포넌트 (프로필 텍스트 색상에 맞춤)
+function ArrowUpIcon({ color = 'white' }) {
   return (
     <svg width="12" height="6" viewBox="0 0 12 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 1L6 5L11 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M1 1L6 5L11 1" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
 }
@@ -546,7 +546,7 @@ function MyPage() {
         <div className="my-page-header">
           <button className="back-button" onClick={handleBack}>
             <div className="back-icon">
-              <BackIcon />
+              <BackIcon color={getCardTextColorsLocal(myCardDesign).main} />
             </div>
           </button>
         </div>
@@ -578,7 +578,7 @@ function MyPage() {
               
               <div className="card-header">
                 <div className="card-logo">
-                  <img src="/assets/mars_logo_white.png" alt="M Logo" />
+                  <img src={tc.main === '#1f2937' ? '/assets/mars_logo_black.png' : '/assets/mars_logo_white.png'} alt="M Logo" />
                 </div>
                 <div className="card-info">
                   <h2 className="card-name" style={{ color: tc.main }}>{myInfo.name}</h2>
@@ -599,13 +599,15 @@ function MyPage() {
         <div className="swipe-up-button" style={{ pointerEvents: 'none' }}>
           <div className="swipe-arrows">
             <div className="arrow-up">
-              <ArrowUpIcon />
+              <ArrowUpIcon color={getCardTextColorsLocal(myCardDesign).main} />
             </div>
             <div className="arrow-up">
-              <ArrowUpIcon />
+              <ArrowUpIcon color={getCardTextColorsLocal(myCardDesign).main} />
             </div>
           </div>
-          <p className="swipe-text">내 프로필 카드를 눌러 상세정보 확인</p>
+          <p className="swipe-text" style={{ color: getCardTextColorsLocal(myCardDesign).main }}>
+            프로필 눌러 상세정보 보기
+          </p>
         </div>
       </div>
     </div>

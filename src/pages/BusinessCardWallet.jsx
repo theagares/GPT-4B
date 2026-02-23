@@ -2205,7 +2205,7 @@ function BusinessCardWallet() {
               <ToastHeartIcon />
             </span>
             <span className="toast-quote">"</span>
-            <span> 설정은 명함집 탭에서 가능합니다</span>
+            <span> 설정은 프로필 탭에서 가능합니다</span>
           </p>
         </div>
       )}
@@ -2750,7 +2750,7 @@ function CardDetailModal({ card, onClose }) {
             onClick={handleGiftRecommend}
             className="action-btn action-btn-primary modal-gift-recommend-btn"
           >
-            <img src="/assets/mars_logo_blueberry.png" alt="" className="gift-recommend-icon" />
+            <img src="/assets/mars_logo_black.png" alt="" className="gift-recommend-icon" />
             선물 추천
           </button>
           <button
