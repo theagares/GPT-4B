@@ -100,7 +100,7 @@
 }
 
 .input-group-password-confirm {
-  margin-top: -12px;
+  margin-top: 0;
 }
 
 .input-group .input-wrapper {
@@ -118,7 +118,7 @@
   font-weight: 600;
   color: #252525;
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
-  margin-bottom: 8px;
+  margin-bottom: 0px;
 }
 
 .input-wrapper {
@@ -170,12 +170,52 @@
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+}
+
+.input-check-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.input-check-icon-left {
+  right: 36px;
+}
+
+.signup-input-password {
+  padding-right: 44px;
+}
+
+.signup-password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.5);
+  width: 20px;
+  height: 20px;
+  z-index: 1;
+}
+
+.signup-password-toggle:hover {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.signup-password-toggle svg {
+  width: 20px;
+  height: 20px;
 }
 
 .input-loading {
@@ -228,10 +268,44 @@
   margin-left: 0 !important;
   padding: 0 !important;
   padding-left: 0 !important;
-  line-height: 1.4;
+  line-height: 1.6;
   min-height: 16px;
   display: block;
   text-align: left;
+}
+
+.input-rule {
+  display: inline;
+}
+
+.rule-icon {
+  margin-right: 4px;
+  font-weight: 600;
+}
+
+.input-rule-neutral .rule-icon,
+.input-rule-neutral {
+  color: rgba(37, 37, 37, 0.4);
+}
+
+.input-rule-invalid .rule-icon,
+.input-rule-invalid {
+  color: #EA4335;
+}
+
+.input-rule-valid .rule-icon,
+.input-rule-valid {
+  color: #34A853;
+}
+
+.rule-error-text {
+  color: #EA4335;
+  font-size: 12px;
+  font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+}
+
+.input-rules {
+  line-height: 1.8;
 }
 
 .continue-button {

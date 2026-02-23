@@ -3,16 +3,6 @@ import { useNavigate, Link } from 'react-router-dom'
 import { authAPI } from '../utils/api'
 import './FindIdPage.css'
 
-// 이메일 아이콘 SVG 컴포넌트
-function EmailIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="rgba(0, 0, 0, 0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="L22 6L12 13L2 6" stroke="rgba(0, 0, 0, 0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  )
-}
-
 function FindIdPage() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1) // 1: 이메일 입력, 2: 코드 입력, 3: 결과
@@ -74,10 +64,6 @@ function FindIdPage() {
   return (
     <div className="find-id-screen">
       <div className="find-id-container">
-        <div className="logo-section">
-          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="find-id-logo" />
-        </div>
-
         <h1 className="find-id-title">아이디 찾기</h1>
 
         {step === 1 && (
@@ -91,15 +77,12 @@ function FindIdPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="find-id-input"
                 />
-                <div className="input-icon-right">
-                  <EmailIcon />
-                </div>
               </div>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <button type="submit" className="find-id-button" disabled={loading}>
+            <button type="submit" className="find-id-button find-id-send-button" disabled={loading}>
               {loading ? '발송 중...' : '인증 코드 발송'}
             </button>
           </form>
@@ -108,7 +91,9 @@ function FindIdPage() {
         {step === 2 && (
           <form onSubmit={handleVerifyCode} className="find-id-form">
             <div className="info-message">
-              {email}로 인증 코드를 발송했습니다.
+              {email}로
+              <br />
+              인증 코드를 발송했습니다.
             </div>
 
             <div className="input-group">
@@ -128,18 +113,6 @@ function FindIdPage() {
 
             <button type="submit" className="find-id-button" disabled={loading || code.length !== 6}>
               {loading ? '확인 중...' : '확인'}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setStep(1)
-                setCode('')
-                setError('')
-              }}
-              className="back-button"
-            >
-              이전으로
             </button>
           </form>
         )}

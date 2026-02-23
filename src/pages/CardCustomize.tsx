@@ -138,9 +138,6 @@ const CardCustomize = () => {
         </button>
         <div className="card-customize-header-content">
           <p className="card-customize-title">프로필 카드 색상 선택</p>
-          <p className="card-customize-subtitle">
-            색상을 선택하세요
-          </p>
         </div>
       </div>
 

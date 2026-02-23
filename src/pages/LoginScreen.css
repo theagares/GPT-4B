@@ -161,11 +161,15 @@
 .login-links {
   width: 100%;
   display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
   font-size: 13px;
   font-family: 'Mulish', 'Noto Sans KR', sans-serif;
+}
+
+.login-links-left {
+  display: flex;
+  gap: 16px;
 }
 
 .forgot-link {

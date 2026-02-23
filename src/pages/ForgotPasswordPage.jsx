@@ -3,26 +3,6 @@ import { useNavigate, Link } from 'react-router-dom'
 import { authAPI } from '../utils/api'
 import './ForgotPasswordPage.css'
 
-// 사용자 아이콘 SVG 컴포넌트
-function UserIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="rgba(0, 0, 0, 0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <circle cx="12" cy="7" r="4" stroke="rgba(0, 0, 0, 0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  )
-}
-
-// 이메일 아이콘 SVG 컴포넌트
-function EmailIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="rgba(0, 0, 0, 0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="L22 6L12 13L2 6" stroke="rgba(0, 0, 0, 0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  )
-}
-
 function ForgotPasswordPage() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1) // 1: 입력, 2: 완료
@@ -58,10 +38,6 @@ function ForgotPasswordPage() {
   return (
     <div className="forgot-password-screen">
       <div className="forgot-password-container">
-        <div className="logo-section">
-          <img src="/assets/gpt_4b_logo_blueberry.png" alt="GPT-4b Logo" className="forgot-password-logo" />
-        </div>
-
         <h1 className="forgot-password-title">비밀번호 찾기</h1>
 
         {step === 1 && (
@@ -70,14 +46,11 @@ function ForgotPasswordPage() {
               <div className="input-wrapper">
                 <input
                   type="text"
-                  placeholder="아이디를 입력하세요"
+                  placeholder="아이디 입력"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="forgot-password-input"
                 />
-                <div className="input-icon-right">
-                  <UserIcon />
-                </div>
               </div>
             </div>
 
@@ -89,20 +62,17 @@ function ForgotPasswordPage() {
               <div className="input-wrapper">
                 <input
                   type="email"
-                  placeholder="이메일을 입력하세요"
+                  placeholder="이메일 입력"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="forgot-password-input"
                 />
-                <div className="input-icon-right">
-                  <EmailIcon />
-                </div>
               </div>
             </div>
 
             {error && <div className="error-message">{error}</div>}
 
-            <button type="submit" className="forgot-password-button" disabled={loading}>
+            <button type="submit" className="forgot-password-button forgot-password-send-button" disabled={loading}>
               {loading ? '요청 중...' : '비밀번호 재설정 링크 발송'}
             </button>
           </form>
@@ -115,20 +85,19 @@ function ForgotPasswordPage() {
               <br />
               이메일을 확인해주세요.
             </div>
-            <button
-              onClick={() => navigate('/login')}
-              className="forgot-password-button"
-            >
+            <Link to="/login" className="back-link">
               로그인으로 돌아가기
-            </button>
+            </Link>
           </div>
         )}
 
-        <div className="forgot-password-links">
-          <Link to="/login" className="back-link">
-            로그인으로 돌아가기
-          </Link>
-        </div>
+        {step === 1 && (
+          <div className="forgot-password-links">
+            <Link to="/login" className="back-link">
+              로그인으로 돌아가기
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   )
