@@ -611,7 +611,7 @@ function LandingPage() {
     return () => clearInterval(interval)
   }, [])
 
-  // 광고 슬라이드 자동 전환 (3초마다) - 무한 루프 구현
+  // 광고 슬라이드 자동 전환 (5초마다) - 무한 루프 구현
   const [isTransitioning, setIsTransitioning] = useState(true)
   const wrapperRef = useRef(null)
   
@@ -630,7 +630,7 @@ function LandingPage() {
         }
         return nextRealIndex
       })
-    }, 3000)
+    }, 5000)
     
     return () => clearInterval(interval)
   }, [adImages.length])

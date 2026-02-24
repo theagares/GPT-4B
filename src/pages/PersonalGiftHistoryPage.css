@@ -21,7 +21,7 @@
   min-height: calc(100vh - 100px);
   position: relative;
   padding: 0 20px;
-  padding-top: 140px; /* Adjusted to accommodate fixed header */
+  padding-top: 200px; /* Adjusted to accommodate fixed header with search */
   box-sizing: border-box;
 }
 
@@ -117,6 +117,51 @@
   background: white;
   color: #0a0a0a;
   font-weight: 600;
+}
+
+/* 검색 */
+.personal-gift-search-wrapper {
+  margin-top: 8px;
+  position: relative;
+}
+
+.personal-gift-search-input {
+  width: 100%;
+  padding: 12px 40px 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1f2937;
+  background: #f3f4f6;
+  box-sizing: border-box;
+}
+
+.personal-gift-search-input::placeholder {
+  color: #9ca3af;
+}
+
+.personal-gift-search-input:focus {
+  outline: none;
+}
+
+.personal-gift-search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.personal-gift-search-clear:hover {
+  opacity: 0.7;
 }
 
 /* 선물 리스트 */
@@ -263,6 +308,18 @@
   font-size: 14px;
   font-weight: 400;
   color: #6a7282;
+}
+
+.personal-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #9ca3af;
 }
 
 .personal-empty-gift-history {

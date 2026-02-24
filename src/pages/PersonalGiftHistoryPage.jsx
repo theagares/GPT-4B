@@ -45,6 +45,9 @@ function PersonalGiftHistoryPage() {
   // 초기 선택 연도: 현재 연도
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString())
 
+  // 검색어 상태
+  const [searchQuery, setSearchQuery] = useState('')
+
   // gifts가 로드되면 가장 최근 연도로 자동 선택
   useEffect(() => {
     if (availableYears.length > 0 && !availableYears.includes(selectedYear)) {
@@ -177,6 +180,16 @@ function PersonalGiftHistoryPage() {
     return giftYear === String(selectedYear)
   })
 
+  // 검색어로 필터링 (이름/소속/상품명)
+  const giftHistoryFiltered = giftHistoryByYear.filter(gift => {
+    if (!searchQuery.trim()) return true
+    const query = searchQuery.trim().toLowerCase()
+    const cardName = (gift.cardName || '').toLowerCase()
+    const cardCompany = (gift.cardCompany || '').toLowerCase()
+    const giftName = (gift.giftName || '').toLowerCase()
+    return cardName.includes(query) || cardCompany.includes(query) || giftName.includes(query)
+  })
+
   // 연도별 개수 계산 (동적으로)
   // 선물이 없으면 현재 연도만 0으로 표시
   const yearCounts = availableYears.reduce((acc, year) => {
@@ -193,7 +206,7 @@ function PersonalGiftHistoryPage() {
   }
 
   // UI 형식으로 변환
-  const giftHistory = giftHistoryByYear.map((gift, index) => {
+  const giftHistory = giftHistoryFiltered.map((gift, index) => {
     const recipientName = gift.cardName || '이름 없음'
     const recipientCompany = gift.cardCompany || ''
     const recipientDisplay = recipientCompany 
@@ -243,6 +256,29 @@ function PersonalGiftHistoryPage() {
             ))}
           </div>
         )}
+
+        {/* 검색 */}
+        <div className="personal-gift-search-wrapper">
+          <input
+            type="text"
+            className="personal-gift-search-input"
+            placeholder="이름, 소속, 상품명 검색"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              className="personal-gift-search-clear"
+              onClick={() => setSearchQuery('')}
+              aria-label="검색어 지우기"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 4L4 12M4 4L12 12" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="personal-gift-history-container">
@@ -252,6 +288,8 @@ function PersonalGiftHistoryPage() {
           <div className="personal-loading">로딩 중...</div>
         ) : error ? (
           <div className="personal-error">{error}</div>
+        ) : giftHistoryByYear.length > 0 && giftHistoryFiltered.length === 0 ? (
+          <div className="personal-empty">검색 결과가 없습니다.</div>
         ) : giftHistory.length > 0 ? (
           <div className="personal-gift-list">
             {giftHistory.length > 0 ? (

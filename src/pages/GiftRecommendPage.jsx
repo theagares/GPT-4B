@@ -253,7 +253,7 @@ function GiftRecommendPage() {
         <div className="loading-spinner">
           <div className="spinner-circle"></div>
         </div>
-        <p className="loading-text">GPT-4b가 생각중입니다</p>
+        <p className="loading-text">Mars가 생각중입니다</p>
         {currentTip && (
           <div className="business-tip-container">
             <p className="business-tip-label">💡 비즈니스 팁</p>

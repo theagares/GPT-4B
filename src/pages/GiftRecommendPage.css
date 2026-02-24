@@ -4,7 +4,6 @@
   max-width: 393px;
   height: 100vh;
   background: #584cdc;
-  border-radius: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -94,7 +93,7 @@
 
 .gift-recommend-container {
   padding: 24px;
-  padding-top: 105px;
+  padding-top: 125px;
   max-width: 405px;
   margin: 0 auto;
 }
@@ -111,9 +110,10 @@
   z-index: 100;
   padding: 56px 20px 20px 20px;
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  flex-direction: row;
+  align-items: center;
   box-sizing: border-box;
+  min-height: 32px;
 }
 
 .back-button {
@@ -125,9 +125,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  position: absolute;
-  left: 20px;
-  top: 56px;
+  width: 32px;
+  height: 32px;
 }
 
 .back-button:hover {
@@ -135,10 +134,11 @@
 }
 
 .gift-recommend-header-content {
+  flex: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  min-height: 32px;
 }
 
 .gift-recommend-header-title {
@@ -147,7 +147,9 @@
   color: #1f2937;
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
   margin: 0;
-  line-height: 1.4;
+  line-height: 32px;
+  display: flex;
+  align-items: center;
 }
 
 /* Contact Info Section */

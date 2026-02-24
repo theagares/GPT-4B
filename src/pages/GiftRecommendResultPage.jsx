@@ -335,11 +335,11 @@ function GiftRecommendResultPage() {
           <div className="message-bubble ai-message">
             <div className="gift-recommendation-header">
               <img
-                src="/assets/gpt_4b_logo_blueberry.png"
-                alt="GPT-4b Logo"
+                src="/assets/mars_logo_blueberry.png"
+                alt="Mars Logo"
                 className="gift-recommendation-logo"
               />
-              <p>GPT-4b의 선물 추천</p>
+              <p>Mars의 선물 추천</p>
             </div>
             <p className="gift-recommendation-subtitle">{userName}님의 관심사를 고려하여 다음 선물들을 추천드립니다:</p>
             {giftsToShow.length > 0 && giftsToShow[0].id !== 'fallback-1' ? (
