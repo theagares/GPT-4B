@@ -10,8 +10,6 @@ import SignupFormPage from './pages/SignupFormPage'
 import WelcomePage from './pages/WelcomePage'
 import TutorialPage from './pages/TutorialPage'
 import LLMPage from './pages/LLMPage'
-import ChatHistoryPage from './pages/ChatHistoryPage'
-import ChatDetailPage from './pages/ChatDetailPage'
 import LandingPage from './pages/LandingPage'
 import BusinessCardWallet from './pages/BusinessCardWallet'
 import CalendarPage from './pages/CalendarPage'
@@ -65,8 +63,6 @@ function App() {
           <Route path="/llm" element={<LLMPage />} />
           <Route path="/ai-card-select" element={<AICardSelectPage />} />
           <Route path="/search-result" element={<SearchResultPage />} />
-          <Route path="/chat-history" element={<ChatHistoryPage />} />
-          <Route path="/chat-history/:id" element={<ChatDetailPage />} />
           <Route path="/dashboard" element={<LandingPage />} />
           <Route path="/business-cards" element={<BusinessCardWallet />} />
           <Route path="/ocr" element={<OCR />} />

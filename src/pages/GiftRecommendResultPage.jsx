@@ -68,7 +68,7 @@ function GiftRecommendResultPage() {
     if (selectedGiftIndex !== null && selectedGift && card?.id) {
       await saveFinalGiftSelection()
     }
-    navigate('/chat-history')
+    navigate('/my/gift-history')
   }
 
   // 최종 선물 선택 저장 함수
