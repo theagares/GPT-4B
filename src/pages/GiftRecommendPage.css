@@ -156,7 +156,7 @@
 .contact-info-section {
   border-radius: 16px;
   padding: 20px;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
 .contact-name-row {
@@ -324,6 +324,17 @@
 .gender-option:has(input[type="radio"]:checked) {
   border-color: #584cdc;
   background: #f2f1ff;
+}
+
+/* 선물 추천 안내 문구 */
+.gift-recommend-description {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: #9ca3af;
+  line-height: 1.25;
+  margin: 0 0 24px 0;
+  text-align: center;
 }
 
 /* Additional Info Section */

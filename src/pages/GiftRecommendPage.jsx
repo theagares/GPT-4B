@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { giftAPI } from '../utils/api'
+import { giftAPI, userAPI } from '../utils/api'
+import { isAuthenticated } from '../utils/auth'
 import './GiftRecommendPage.css'
 
 // 명함 디자인 맵
@@ -76,7 +77,30 @@ function GiftRecommendPage() {
     : []
   
   const [memos, setMemos] = useState(initialMemos)
-  
+  const [userName, setUserName] = useState('')
+
+  // 로그인한 사용자 이름 가져오기
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (!isAuthenticated()) {
+        const name = localStorage.getItem('userName') || '회원'
+        setUserName(name)
+        return
+      }
+      try {
+        const response = await userAPI.getProfile()
+        if (response.data?.success && response.data?.data?.name) {
+          setUserName(response.data.data.name)
+        } else {
+          setUserName(localStorage.getItem('userName') || '회원')
+        }
+      } catch (error) {
+        setUserName(localStorage.getItem('userName') || '회원')
+      }
+    }
+    fetchUserName()
+  }, [])
+
   // 랜덤 팁 선택 함수
   const getRandomTip = () => {
     const randomIndex = Math.floor(Math.random() * businessTips.length)
@@ -303,6 +327,13 @@ function GiftRecommendPage() {
           </div>
           </>); })()}
         </div>
+
+        {/* 선물 추천 안내 문구 */}
+        <p className="gift-recommend-description">
+          {card?.name || '프로필 대상자'}님에 대해 남긴 메모와 하단의 추가 정보를 기반으로,
+          <br />
+          Mars가 적절한 선물을 추천해드려요
+        </p>
 
         {/* Memos Section */}
         {memos.length > 0 && (
